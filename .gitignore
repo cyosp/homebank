@@ -6,6 +6,7 @@
 *.ko
 *.obj
 *.elf
+*.mo
 
 # Linker output
 *.ilk
@@ -50,3 +51,9 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Integrated Development Environment configuration files
+/.idea/
+
+# Output files
+/output/
