@@ -261,6 +261,8 @@ GList *selection, *list;
 static void ui_hub_scheduled_update(GtkWidget *widget, gpointer user_data)
 {
 struct hbfile_data *data;
+GtkTreeSelection *selection;
+gchar *msg;
 gint count;
 //gint filter;
 
@@ -270,7 +272,8 @@ gint count;
 
 	//filter = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_sched_filter));
 
-	count = gtk_tree_selection_count_selected_rows(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_upc)));
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_upc));
+	count = gtk_tree_selection_count_selected_rows(selection);
 
 	//Archive *arc = ui_hub_scheduled_get_selected_item(GTK_TREE_VIEW(data->LV_upc));
 
@@ -289,8 +292,69 @@ gint count;
 		gtk_widget_set_sensitive(GTK_WIDGET(data->BT_sched_editpost), FALSE);
 	}
 
-}
+	DB( g_print(" update list info\n") );
 
+	//#1996505 add sum of selected
+	if( count > 1 )
+	{
+	GList *list, *tmplist;
+	GtkTreeModel *model;
+	GtkTreeIter iter;
+	gchar buf1[64];
+	gchar buf2[64];
+	gchar buf3[64];
+	gdouble sumexp, suminc;
+
+		sumexp = suminc = 0.0;
+		//model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_upc));
+		selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_upc));
+		list = gtk_tree_selection_get_selected_rows(selection, &model);
+		tmplist = g_list_first(list);
+		while (tmplist != NULL)
+		{
+		Archive *item;
+		Account *acc;
+		gdouble txnexp, txninc;
+
+			gtk_tree_model_get_iter(model, &iter, tmplist->data);
+			gtk_tree_model_get(model, &iter, 
+				LST_DSPUPC_DATAS, &item,
+				LST_DSPUPC_EXPENSE, &txnexp,
+				LST_DSPUPC_INCOME, &txninc,
+				LST_DSPUPC_ACCOUNT, &acc,
+				-1);
+
+			//DB( g_print(" collect %f - %f = %f %s\n", txninc, txnexp, txninc + txnexp, item->memo) );
+
+			if( acc != NULL )
+			{
+				//if( item->flags & OF_INCOME )
+					suminc += hb_amount_base(txninc, acc->kcur);
+				//else
+					sumexp += hb_amount_base(txnexp, acc->kcur);
+			}
+
+			DB( g_print(" %f - %f = %f temp\n", suminc, sumexp, suminc + sumexp) );
+		
+			tmplist = g_list_next(tmplist);
+		}
+		g_list_free(list);
+
+		DB( g_print(" %f - %f = %f final\n", suminc, sumexp, suminc + sumexp) );
+
+		hb_strfmon(buf1, 64-1, suminc + sumexp, GLOBALS->kcur, GLOBALS->minor);
+		hb_strfmon(buf2, 64-1, sumexp, GLOBALS->kcur, GLOBALS->minor);
+		hb_strfmon(buf3, 64-1, suminc, GLOBALS->kcur, GLOBALS->minor);
+
+		//TRANSLATORS: example 'sum: 3 (-1 + 4)'
+		msg = g_strdup_printf(_("sum: %s (%s + %s)"), buf1, buf2, buf3);
+		gtk_label_set_markup(GTK_LABEL(data->TX_selection), msg);
+		g_free (msg);
+	}
+	else
+		gtk_label_set_markup(GTK_LABEL(data->TX_selection), "");
+
+}
 
 
 static void ui_hub_scheduled_selection_cb(GtkTreeSelection *treeselection, gpointer user_data)
@@ -350,10 +414,9 @@ gdouble totexp = 0;
 gdouble totinc = 0;
 gint count = 0;
 gchar buffer[256];
-guint32 maxpostdate;
+guint32 maxpostdate = 0;
 guint32 fltmindate, fltmaxdate;
 GDate *date;
-//Account *acc;
 
 	DB( g_print("\n[hub-scheduled] populate\n") );
 
@@ -403,33 +466,31 @@ GDate *date;
 				//#1857636 hide due date scheduled > custom user config if > 0
 				if( (arc->nextdate < fltmindate) || (arc->nextdate > fltmaxdate)  )
 				{
-					DB( g_print(" - skip '%s' : next %d >= maxshow %d\n", arc->memo, arc->nextdate, PREFS->pnl_upc_range) );
+					DB( g_print("  skip '%s' : next %d >= maxshow %d\n", arc->memo, arc->nextdate, PREFS->pnl_upc_range) );
 					//TODO: count hidden
 					
 					goto next;
 				}
 			}
 
-			DB( g_print(" ++ append\n") );
+			DB( g_print("  append\n") );
 
-			if(arc->flags & OF_INCOME)
-			{
+			exp = inc = 0.0;
+			if( arc->amount > 0.0 )
 				inc = arc->amount;
-				exp = 0.0;
-			}
 			else
-			{
 				exp = arc->amount;
-				inc = 0.0;
-			}
+
 
 			/* insert normal txn */
 			acc = da_acc_get(arc->kacc);
-			if( acc)
+			if( acc != NULL )
 			{
+				DB( g_print("  amount: %.2f\n", arc->amount) );
 				totinc += hb_amount_base(inc, acc->kcur);
 				totexp += hb_amount_base(exp, acc->kcur);
 			}
+
 			gtk_list_store_append (GTK_LIST_STORE(model), &iter);
 			gtk_list_store_set (GTK_LIST_STORE(model), &iter,
 				  LST_DSPUPC_DATAS, arc,
@@ -444,11 +505,30 @@ GDate *date;
 			/* insert internal xfer txn : 1378836 */
 			if(arc->flags & OF_INTXFER)
 			{
-				acc = da_acc_get(arc->kxferacc);
-				if( acc)
+			gdouble amount;
+			
+				DB( g_print("  insert dst xfer\n") );
+
+				amount = -arc->amount;
+				if( arc->flags & OF_ADVXFER )
 				{
-					totinc += hb_amount_base(-inc, acc->kcur);
-					totexp += hb_amount_base(-exp, acc->kcur);
+					amount = arc->xferamount;
+					DB( g_print("  amount is != curr %.2f\n", amount ) );
+				}
+
+				exp = inc = 0.0;
+				if( amount > 0.0 )
+					inc = amount;
+				else
+					exp = amount;
+
+				acc = da_acc_get(arc->kxferacc);
+				if( acc != NULL )
+				{
+					DB( g_print("  amount: %.2f => %.2f\n", amount, hb_amount_base(amount, acc->kcur) ) );
+
+					totinc += hb_amount_base(inc, acc->kcur);
+					totexp += hb_amount_base(exp, acc->kcur);
 				}
 				gtk_list_store_append (GTK_LIST_STORE(model), &iter);
 				gtk_list_store_set (GTK_LIST_STORE(model), &iter,
@@ -456,11 +536,13 @@ GDate *date;
 				      LST_DSPUPC_NEXT, nbdays,
 					  LST_DSPUPC_ACCOUNT, acc,
 					  LST_DSPUPC_MEMO, arc->memo,
-					  LST_DSPUPC_EXPENSE, -inc,
-					  LST_DSPUPC_INCOME, -exp,
+					  LST_DSPUPC_EXPENSE, exp,
+					  LST_DSPUPC_INCOME, inc,
 					  LST_DSPUPC_NB_LATE, nblate,
 					  -1);
 			}
+
+			DB( g_print("  totals: %.2f %.2f\n", totexp, totinc) );
 
 		}
 next:
@@ -518,7 +600,7 @@ GtkToolItem *toolitem;
 	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
 	gtk_box_pack_start (GTK_BOX (vbox), tbar, FALSE, FALSE, 0);
 
-	label = make_label_group(_("Scheduled transactions"));
+	/*label = make_label_group(_("Scheduled transactions"));
 	toolitem = gtk_tool_item_new();
 	gtk_container_add (GTK_CONTAINER(toolitem), label);
 	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
@@ -526,7 +608,7 @@ GtkToolItem *toolitem;
 	toolitem = gtk_separator_tool_item_new ();
 	gtk_tool_item_set_expand (toolitem, FALSE);
 	gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(toolitem), FALSE);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);*/
 
 
 	bbox = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
@@ -570,11 +652,19 @@ GtkToolItem *toolitem;
 		gimp_label_set_attributes (GTK_LABEL (label), PANGO_ATTR_SCALE, PANGO_SCALE_SMALL, -1);
 		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
-	toolitem = gtk_separator_tool_item_new ();
+	/*toolitem = gtk_separator_tool_item_new ();
 	gtk_tool_item_set_expand (toolitem, TRUE);
 	gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(toolitem), FALSE);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);*/
 
+	//#1996505 add sum of selected
+	label = make_label(NULL, 0.5, 0.5);
+	gtk_widget_set_margin_end(GTK_WIDGET(label), SPACING_MEDIUM);
+	data->TX_selection = label;
+	toolitem = gtk_tool_item_new();
+	gtk_tool_item_set_expand (toolitem, TRUE);
+	gtk_container_add (GTK_CONTAINER(toolitem), label);
+	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
 
 	//#1857636 add setting to input max due date to show
 	widget = hbtk_combo_box_new_with_data (NULL, CYA_FLT_SCHEDULED);

@@ -1,5 +1,6 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
  *  Copyright (C) 2018-2019 Adrien Dorsaz <adrien@adorsaz.ch>
+ *  Copyright (C) 2019-2023 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -1570,7 +1571,9 @@ ui_bud_tabview_data_t *data = user_data;
 
 	/* --- Annual Total --- */
 	col = gtk_tree_view_column_new();
-	gtk_tree_view_column_set_title(col, _("Annual Total"));
+	//gtk_tree_view_column_set_title(col, _("Annual Total"));
+	gtk_tree_view_column_set_title(col, _("Annual\nTotal"));
+	//gtk_tree_view_column_set_title(col, _("Total"));
 	//#2004631 date and column title alignement
 	gtk_tree_view_column_set_alignment(col, 1.0);
 
@@ -1582,7 +1585,9 @@ ui_bud_tabview_data_t *data = user_data;
 
 	/* --- Monthly average --- */
 	col = gtk_tree_view_column_new();
-	gtk_tree_view_column_set_title(col, _("Monthly Average"));
+	//gtk_tree_view_column_set_title(col, _("Monthly Average"));
+	gtk_tree_view_column_set_title(col, _("Monthly\nAverage"));
+	//gtk_tree_view_column_set_title(col, _("Average"));
 	//#2004631 date and column title alignement
 	gtk_tree_view_column_set_alignment(col, 1.0);
 
@@ -2749,6 +2754,7 @@ static void ui_bud_tabview_dialog_close(ui_bud_tabview_data_t *data, gint respon
 GtkWidget *ui_bud_tabview_manage_dialog(void)
 {
 ui_bud_tabview_data_t *data;
+struct WinGeometry *wg;
 GtkWidget *dialog, *content_area, *grid;
 GtkWidget *radiomode;
 GtkWidget *widget;
@@ -2769,7 +2775,7 @@ gint gridrow;
 	DB( g_print("\n[ui_bud_tabview] open dialog\n") );
 
 	// create window
-	dialog = gtk_dialog_new_with_buttons (_("Budget (table view)"),
+	dialog = gtk_dialog_new_with_buttons (_("Manage Budget"),
 		GTK_WINDOW(GLOBALS->mainwindow),
 		GTK_DIALOG_MODAL,
 		_("_Close"),
@@ -2778,13 +2784,22 @@ gint gridrow;
 
 	data->dialog = dialog;
 
-	//set a nice dialog size
-	gtk_window_get_size(GTK_WINDOW(GLOBALS->mainwindow), &w, &h);
-	dh = (h*1.33/PHI);
-	//ratio 3:2
-	dw = (dh * 3) / 2;
-	DB( g_print(" main w=%d h=%d => diag w=%d h=%d\n", w, h, dw, dh) );
-	gtk_window_set_default_size (GTK_WINDOW(dialog), dw, dh);
+	//#2007714 keep dimension
+	wg = &PREFS->dbud_wg;
+	if( wg->w == 0 && wg->h == 0 )
+	{
+
+		//set a nice dialog size
+		gtk_window_get_size(GTK_WINDOW(GLOBALS->mainwindow), &w, &h);
+		dh = (h*1.33/PHI);
+		//ratio 3:2
+		dw = (dh * 3) / 2;
+		DB( g_print(" main w=%d h=%d => diag w=%d h=%d\n", w, h, dw, dh) );
+		gtk_window_set_default_size (GTK_WINDOW(dialog), dw, dh);
+	}
+	else
+		gtk_window_set_default_size(GTK_WINDOW(dialog), wg->w, wg->h);
+
 
 	// store data inside dialog property to retrieve them easily in callbacks
 	g_object_set_data(G_OBJECT(dialog), "inst_data", (gpointer)&data);
@@ -2803,7 +2818,7 @@ gint gridrow;
 	// First row displays radio button to change mode (edition / view) and search entry
 	gridrow = 0;
 
-	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	gtk_grid_attach (GTK_GRID (grid), hbox, 0, gridrow, 1, 1);
 
 	// edition mode radio buttons
@@ -2812,7 +2827,7 @@ gint gridrow;
 	gtk_box_set_center_widget(GTK_BOX (hbox), radiomode);
 
 	// Search
-	search_entry = gtk_search_entry_new();
+	search_entry = make_search();
 	data->EN_search = search_entry;
 	gtk_box_pack_end (GTK_BOX (hbox), search_entry, FALSE, FALSE, 0);
 
@@ -2978,6 +2993,10 @@ gint gridrow;
 	gtk_widget_show_all (dialog);
 
 	response = gtk_dialog_run (GTK_DIALOG (dialog));
+
+	//#2007714 keep dimension
+	wg = &PREFS->dbud_wg;
+	gtk_window_get_size(GTK_WINDOW(dialog), &wg->w, &wg->h);
 
 	ui_bud_tabview_dialog_close(data, response);
 	gtk_widget_destroy (dialog);

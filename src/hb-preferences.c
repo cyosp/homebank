@@ -884,6 +884,7 @@ GError *error = NULL;
 				homebank_pref_get_wingeometry(keyfile, group, "Car", &PREFS->cst_wg);
 
 				homebank_pref_get_wingeometry(keyfile, group, "Txn", &PREFS->txn_wg);
+				homebank_pref_get_wingeometry(keyfile, group, "DBud", &PREFS->dbud_wg);
 
 				if(version <= 7)	//set maximize to 0
 				{
@@ -1202,6 +1203,7 @@ GError *error = NULL;
 		g_key_file_set_integer_list(keyfile, group, "Car", (gint *)&PREFS->cst_wg, 5);
 
 		g_key_file_set_integer_list(keyfile, group, "Txn", (gint *)&PREFS->txn_wg, 5);
+		g_key_file_set_integer_list(keyfile, group, "DBud", (gint *)&PREFS->dbud_wg, 5);
 
 		g_key_file_set_integer (keyfile, group, "WalVPaned" , PREFS->wal_vpaned);
 		g_key_file_set_integer (keyfile, group, "WalHPaned" , PREFS->wal_hpaned);

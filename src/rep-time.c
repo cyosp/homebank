@@ -68,29 +68,8 @@ static void reptime_cb_pay_changed(GtkCellRendererToggle *cell, gchar *path_str,
 static void reptime_cb_tag_changed(GtkCellRendererToggle *cell, gchar *path_str, gpointer user_data);
 
 
-
-HbKvData CYA_REPORT_SRC_TREND[] = {
-	{ REPORT_SRC_ACCOUNT, 	N_("Account") },
-	{ REPORT_SRC_CATEGORY,	N_("Category") },
-	{ REPORT_SRC_PAYEE,		N_("Payee") },
-	{ REPORT_SRC_TAG,		N_("Tag") },
-	{ 0, NULL }
-};
-
-
-HbKvData CYA_REPORT_INTVL[] = {
-	{ REPORT_INTVL_DAY,		N_("Day") },
-	{ REPORT_INTVL_WEEK,	N_("Week") },
-	{ REPORT_INTVL_MONTH,	N_("Month") },
-	{ REPORT_INTVL_QUARTER,	N_("Quarter") },
-	{ REPORT_INTVL_HALFYEAR,N_("Half Year") },
-	{ REPORT_INTVL_YEAR,	N_("Year") },
-	{ 0, NULL }
-};
-
-
-extern gchar *RA_REPORT_MODE2[];
-extern gchar *CYA_ABMONTHS[];
+extern HbKvData CYA_REPORT_SRC_TREND[];
+extern HbKvData CYA_REPORT_INTVL[];
 
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
@@ -104,6 +83,7 @@ struct reptime_data *data = user_data;
 	gtk_notebook_set_current_page(GTK_NOTEBOOK(data->GR_result), 0);
 	reptime_sensitive(data->window, NULL);
 }
+
 
 static void reptime_action_viewline(GtkToolButton *toolbutton, gpointer user_data)
 {
@@ -1165,8 +1145,8 @@ static void reptime_window_setup(struct reptime_data *data, guint32 accnum)
 	DB( g_print(" populate\n") );
 	
 	ui_acc_listview_populate(data->LV_acc, ACC_LST_INSERT_REPORT);
-	ui_cat_listview_populate(data->LV_cat, CAT_TYPE_ALL, NULL, FALSE);
-	ui_pay_listview_populate(data->LV_pay, NULL, FALSE);
+	ui_cat_listview_populate(data->LV_cat, CAT_TYPE_ALL, NULL, TRUE);
+	ui_pay_listview_populate(data->LV_pay, NULL, TRUE);
 	ui_tag_listview_populate(data->LV_tag, 0);
 
 	DB( g_print(" set widgets default\n") );
@@ -1249,12 +1229,17 @@ struct reptime_data *data;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
+	if( data->mapped_done == TRUE )
+		return FALSE;
+
 	DB( g_print("\n[reptime] window mapped\n") );
 
 	//setup, init and show window
 	reptime_window_setup(data, data->accnum);	
 	reptime_compute(data->window, NULL);
 	reptime_update_daterange(data->window, NULL);
+
+	data->mapped_done = TRUE;
 
 	return FALSE;
 }

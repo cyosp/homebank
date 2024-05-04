@@ -1026,10 +1026,15 @@ struct ui_tag_manage_dialog_data *data;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
+	if( data->mapped_done == TRUE )
+		return FALSE;
+
 	DB( g_print("\n(ui_tag_manage_mapped)\n") );
 
 	ui_tag_manage_setup(data);
 	ui_tag_manage_dialog_update(data->LV_tag, NULL);
+
+	data->mapped_done = TRUE;
 
 	return FALSE;
 }

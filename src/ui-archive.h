@@ -42,6 +42,7 @@ enum {
 struct ui_arc_manage_data
 {
 	GtkWidget	*dialog;
+	gboolean	mapped_done;
 
 	GList		*tmp_list;
 	gint		change;

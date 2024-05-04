@@ -147,22 +147,36 @@ static void
 lst_sch_cell_data_func_payee (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
 Archive *arc;
-Payee *pay;
+Account *acc = NULL;
+gchar *text = NULL;
+gdouble exp, inc;
 
 	gtk_tree_model_get(model, iter,
 		LST_DSPUPC_DATAS, &arc,
+		LST_DSPUPC_EXPENSE, &exp,
+		LST_DSPUPC_INCOME, &inc,
+		LST_DSPUPC_ACCOUNT, &acc,
 		-1);
 
 	if(arc)
 	{
-
-		pay = da_pay_get(arc->kpay);
-
-		if(pay != NULL)
-			g_object_set(renderer, "text", pay->name, NULL);
+		//#bugfix 5.6.3
+		if(arc->flags & OF_INTXFER)
+		{
+			//5.6 use acc strings for 5.3 add > < for internal xfer
+			if( acc )
+				text = ( inc > 0.0 ) ? acc->xferincname : acc->xferexpname;
+			
+		}
+		else
+		{
+		Payee *pay = da_pay_get(arc->kpay);
+			
+			text = (pay != NULL) ? pay->name : NULL;
+		}
 	}
-	else
-		g_object_set(renderer, "text", NULL, NULL);
+
+	g_object_set(renderer, "text", text, NULL);
 
 }
 

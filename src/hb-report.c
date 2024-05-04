@@ -181,10 +181,7 @@ GDateWeekday wday;
 }
 
 
-/*
-** return the week list position correponding to the passed date
-*/
-static guint DateInWeek(guint32 from, guint32 opedate)
+static guint date_in_week(guint32 from, guint32 opedate, guint days)
 {
 GDate *date1, *date2;
 gint pos;
@@ -197,7 +194,7 @@ gint pos;
 
 	//#1915643 week iso 8601
 	hb_date_clamp_iso8601(date1);
-	pos = (opedate - g_date_get_julian(date1)) / 7;
+	pos = (opedate - g_date_get_julian(date1)) / days;
 
 	DB( g_print(" shifted=%d %02d-%02d-%04d pos=%d\n", 
 		g_date_get_weekday(date1), g_date_get_day(date1), g_date_get_month(date1), g_date_get_year(date1), pos) );
@@ -208,6 +205,24 @@ gint pos;
 
 	return(pos);
 }
+
+
+/*
+** return the week list position correponding to the passed date
+*/
+static guint DateInWeek(guint32 from, guint32 opedate)
+{
+	return date_in_week(from, opedate, 7);
+}	
+
+
+/*
+** return the FortNight list position correponding to the passed date
+*/
+static guint DateInFortNight(guint32 from, guint32 opedate)
+{
+	return date_in_week(from, opedate, 14);
+}	
 
 
 /*
@@ -763,7 +778,11 @@ guint row, col;
 			Transaction *txn = lnk_txn->data;
 			
 				//5.5 forgot to filter...
-				if( !((txn->status == TXN_STATUS_REMIND) || (txn->status == TXN_STATUS_VOID)) )
+				//#1886123 include remind based on user prefs
+				if( (txn->status == TXN_STATUS_REMIND) && (PREFS->includeremind == FALSE) )
+					goto next_txn;
+					
+				if( !( txn->status == TXN_STATUS_VOID ) )
 				//TODO: enable filters : make no sense no ?
 				//if( (filter_txn_match(flt, txn) == 1) )
 				{
@@ -788,6 +807,7 @@ guint row, col;
 						datatable_trend_add(dt, pos, 0, trn_amount, TRUE);
 					}
 				}
+			next_txn:
 				lnk_txn = g_list_next(lnk_txn);
 			}
 
@@ -906,6 +926,10 @@ gint pos = 0;
 			//pos = (ope->date - jfrom)/7;
 			pos = DateInWeek(jfrom, ope->date);
 			break;
+		//#2000290
+		case REPORT_INTVL_FORTNIGHT:
+			pos = DateInFortNight(jfrom, ope->date);
+			break;
 		case REPORT_INTVL_MONTH:
 			pos = DateInMonth(jfrom, ope->date);
 			break;
@@ -942,6 +966,11 @@ gint nbintvl = 0;
 			//#2000292 weeknum iso 8601 as well
 			hb_date_clamp_iso8601(date1);
 			nbintvl = 1 + (g_date_days_between(date1, date2) / 7);
+			break;
+		//#2000290
+		case REPORT_INTVL_FORTNIGHT:
+			hb_date_clamp_iso8601(date1);
+			nbintvl = 1 + (g_date_days_between(date1, date2) / 14);		
 			break;
 		case REPORT_INTVL_MONTH:
 			nbintvl = 1 + ((g_date_get_year(date2) - g_date_get_year(date1)) * 12) + g_date_get_month(date2) - g_date_get_month(date1);
@@ -990,6 +1019,13 @@ GDateWeekday wday;
 			g_snprintf(s, slen, _("%d-w%02d"), g_date_get_year(date), g_date_get_iso8601_week_of_year(date));
 			break;
 
+		//#2000290
+		case REPORT_INTVL_FORTNIGHT:
+			hb_date_clamp_iso8601(date);
+			g_date_add_days(date, idx*14);
+			g_date_strftime (s, slen, PREFS->date_format, date);
+			break;
+
 		case REPORT_INTVL_MONTH:
 			g_date_add_months(date, idx);
 			//g_snprintf(buffer, 63, "%d-%02d", g_date_get_year(date), g_date_get_month(date));
@@ -1006,7 +1042,9 @@ GDateWeekday wday;
 
 		case REPORT_INTVL_HALFYEAR:
 			g_date_add_months(date, idx*6);
-			g_snprintf(s, slen, "%d-%s", g_date_get_year(date), g_date_get_month(date) < 7 ? "h1" : "h2");
+			//#2007712
+			//TRANSLATORS: printf string for half-year H, ex. 2019-H1 for 1st half-year of 2019
+			g_snprintf(s, slen, _("%d-h%d"), g_date_get_year(date), g_date_get_month(date) < 7 ? 1 : 2);
 			break;
 
 		case REPORT_INTVL_YEAR:

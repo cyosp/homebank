@@ -95,6 +95,7 @@ struct ui_cat_manage_dialog_data
 	gint	change;
 
 	GtkWidget	*dialog;
+	gboolean	mapped_done;
 
 	GtkWidget	*BT_showhidden;
 	GtkWidget	*BT_showusage;

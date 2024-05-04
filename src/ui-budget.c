@@ -1021,7 +1021,7 @@ gint type;
 	
 	type = hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_type)) == 1 ? CAT_TYPE_INCOME : CAT_TYPE_EXPENSE;
 
-	ui_cat_listview_populate(data->LV_cat, type, NULL, FALSE);
+	ui_cat_listview_populate(data->LV_cat, type, NULL, TRUE);
 	//gtk_tree_view_expand_all (GTK_TREE_VIEW(data->LV_cat));
 
 	DB( g_print(" -- end populate listview\n") );
@@ -1112,11 +1112,16 @@ struct ui_bud_manage_data *data;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
+	if( data->mapped_done == TRUE )
+		return FALSE;
+
 	DB( g_print("\n(ui_bud_manage_mapped)\n") );
 
 	ui_bud_manage_setup(data);
 	ui_bud_manage_compute_total(data->dialog, NULL);
 	ui_bud_manage_update(data->dialog, NULL);
+
+	data->mapped_done = TRUE;
 
 	return FALSE;
 }
@@ -1181,6 +1186,7 @@ gint crow, row;
 	gtk_widget_set_halign (bbox, GTK_ALIGN_CENTER);
 	gtk_box_pack_start (GTK_BOX (hbox), bbox, TRUE, TRUE, 0);
 
+	// menu
 	menu = gtk_menu_new ();
 	gtk_widget_set_halign (menu, GTK_ALIGN_END);
 

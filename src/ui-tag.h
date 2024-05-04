@@ -32,7 +32,8 @@ enum
 struct ui_tag_manage_dialog_data
 {
 	GtkWidget	*dialog;
-	
+	gboolean	mapped_done;
+
 	GtkWidget	*RE_addreveal;
 	GtkWidget	*ST_name;
 	GtkWidget	*LV_tag;

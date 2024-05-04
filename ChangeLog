@@ -1,9 +1,31 @@
 
+2023-03-20  Maxime Doyen
+
+ Made 5.6.3 release
+
+ * change: budget table view is now the default
+ * bugfix: scheduled transaction list was not display src/dst account for xfer
+ * bugfix: scheduled transaction list total was incorrect
+ * bugfix: account future transaction account column was not displayed oblique
+ * bugfix: #2009277 removing tag from multiple transactions
+ * bugfix: #2009250 cannot select Hidden Categories in Statistics Reporting
+ * bugfix: #2008521 account window toggle future transaction is not working
+ * bugfix: #2007947 dropdown boxes in the Edit Transaction dialog box behave inconsistently
+ * bugfix: #2007712 report half-year column header is not translated
+ * bugfix: #2000728 wayland: template window closes only on third attempt
+ * bugfix: #1999699 wayland: click on schedule button select first item and don't open popover
+ * wish  : #2007714	table budget dialog view improvements 
+ * wish  : #2000290	Fortnight interval in Reports 
+ * wish  : #1996505	Sum SELECTED scheduled transaction at main window
+ * wish  : #1956060	sort by amount in statistics report to take sign into consideration
+ * wish  : #1886123	Remind status transactions not calculated in reports despite include preference 
+
+
 2023-02-06  Maxime Doyen
 
  Made 5.6.2 release
 
- * chnage: updated the example.xhb file with up to date data
+ * change: updated the example.xhb file with up to date data
  * change: avoid to call the update currency api unless file last save is less than 24h
  * bugfix: #2004631 date and column title alignement
  * bugfix: #2004053 budget manage table view category column no ellipsis nor resizable

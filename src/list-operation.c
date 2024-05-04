@@ -331,6 +331,10 @@ gchar *text = NULL;
 	if( split == NULL )
 	{
 	Account *acc = da_acc_get(ope->kacc);
+
+		//fixed 5.6.3
+		list_txn_eval_future(renderer, ope);
+
 		if( acc )
 		{
 			text = acc->name;

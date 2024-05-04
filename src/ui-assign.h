@@ -79,6 +79,7 @@ struct ui_asg_manage_data
 	gint	change;
 
 	GtkWidget	*dialog;
+	gboolean	mapped_done;
 
 	GtkWidget	*ST_search;
 	GtkWidget	*LV_rul;

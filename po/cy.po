@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: homebank\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2023-01-28 17:01+0100\n"
-"PO-Revision-Date: 2023-02-02 10:46+0000\n"
-"Last-Translator: Rhoslyn Prys <rprys@posteo.net>\n"
+"POT-Creation-Date: 2023-03-19 08:55+0100\n"
+"PO-Revision-Date: 2023-02-06 15:54+0000\n"
+"Last-Translator: Rhoslyn Prys <Unknown>\n"
 "Language-Team: Welsh <cy@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2023-02-05 19:36+0000\n"
-"X-Generator: Launchpad (build 33dc2e2ab7f8e563f52b8c81cbdf9e3946d2097e)\n"
+"X-Launchpad-Export-Date: 2023-03-19 17:16+0000\n"
+"X-Generator: Launchpad (build 997ba17554f0ee82f56d9282fce82d3e09a43780)\n"
 "Language: cy\n"
 
 #: ../data/homebank.desktop.in.in.h:1 ../src/dsp-mainwindow.c:702
@@ -66,7 +66,7 @@ msgstr "Mae yn %d grŵp o drafodion tebyg"
 
 #: ../src/dsp-account.c:217
 msgid "No similar transaction were found !"
-msgstr "Heb ganfod trafodyn tebyg !"
+msgstr "Heb ganfod unrhyw drafodyn tebyg !"
 
 #: ../src/dsp-account.c:306 ../src/dsp-account.c:316
 msgid "Check internal transfer result"
@@ -82,8 +82,8 @@ msgid ""
 "Inconsistency were found: %d\n"
 "do you want to review and fix?"
 msgstr ""
-"Wedi canfod anghysonderau:  %d\n"
-"Hoffech chi ei adolygu a'i d drwsio?"
+"Wedi canfod anghysonderau: %d\n"
+"Hoffech chi ei adolygu a'i drwsio?"
 
 #: ../src/dsp-account.c:414
 #, c-format
@@ -96,7 +96,7 @@ msgid ""
 "to Euro as Major currency?"
 msgstr ""
 "Ydych chi'n siŵr eich bod eisiau trosi'r cyfrif i\n"
-"Euro fel y prif arian?"
+"Euro fel y Prif arian?"
 
 #: ../src/dsp-account.c:420
 msgid "_Convert"
@@ -104,12 +104,12 @@ msgstr "_Trosi"
 
 #: ../src/dsp-account.c:542
 msgid "No transaction changed"
-msgstr "Dim trafodyn wedi newid"
+msgstr "Dim trafodion wedi newid"
 
 #: ../src/dsp-account.c:544
 #, c-format
 msgid "transaction changed: %d"
-msgstr "trafodyn wedi newid: %d"
+msgstr "trafodion wedi newid: %d"
 
 #: ../src/dsp-account.c:547
 msgid "Automatic assignment result"
@@ -121,11 +121,11 @@ msgid ""
 "each of the selected transaction?"
 msgstr ""
 "Hoffech chi greu aseiniad gyda\n"
-"pob un o'r trafodion a ddewiswyd?"
+"phob un o'r trafodion a ddewiswyd?"
 
 #: ../src/dsp-account.c:683 ../src/dsp-account.c:759
 msgid "_Create"
-msgstr "Creu"
+msgstr "_Creu"
 
 #: ../src/dsp-account.c:728
 msgid "Create Assignment"
@@ -134,7 +134,7 @@ msgstr "Creu Aseiniad"
 #: ../src/dsp-account.c:729 ../src/dsp-account.c:804
 #, c-format
 msgid "%d created and prefixed with **PREFILLED**"
-msgstr "%d wedi'i greu a'r raglenwi gyda **PREFILLED**"
+msgstr "%d wedi'i greu a'i raglenwi gyda **PREFILLED**"
 
 #: ../src/dsp-account.c:758
 msgid ""
@@ -154,13 +154,13 @@ msgid ""
 "each of the selected transaction?"
 msgstr ""
 "Ydych chi am ddileu\n"
-"pob trafodyn dan sylw?"
+"pob trafodyn o dan sylw?"
 
-#: ../src/dsp-account.c:1682 ../src/ui-account.c:1441 ../src/ui-archive.c:823
-#: ../src/ui-assign.c:1442 ../src/ui-budget-tabview.c:2300
-#: ../src/ui-category.c:1481 ../src/ui-category.c:2026
-#: ../src/ui-currency.c:1550 ../src/ui-payee.c:1040 ../src/ui-payee.c:1565
-#: ../src/ui-tag.c:922
+#: ../src/dsp-account.c:1682 ../src/ui-account.c:1486 ../src/ui-archive.c:835
+#: ../src/ui-assign.c:1445 ../src/ui-budget-tabview.c:2321
+#: ../src/ui-category.c:1480 ../src/ui-category.c:2025
+#: ../src/ui-currency.c:1554 ../src/ui-payee.c:1039 ../src/ui-payee.c:1564
+#: ../src/ui-tag.c:923
 msgid "_Delete"
 msgstr "_Dileu"
 
@@ -170,7 +170,7 @@ msgstr "Ydych chi'n siŵr eich bod am newid y statws i Ddim?"
 
 #: ../src/dsp-account.c:1764 ../src/dsp-account.c:1823
 msgid "Some transaction in your selection are already Reconciled."
-msgstr "Eisoes mae rhai trafodion yn eich dewis wedi eu cysoni."
+msgstr "Eisoes mae rhai trafodion yn eich dewis wedi eu Cysoni."
 
 #: ../src/dsp-account.c:1765 ../src/ui-assist-start.c:277
 #: ../src/ui-dialogs.c:430
@@ -193,7 +193,7 @@ msgstr "%d trafodyn"
 #: ../src/dsp-account.c:2232
 #, c-format
 msgid "%d transactions, %d selected, avg: %s, sum: %s (%s - %s)"
-msgstr "%d trafodyn, %d dewiswyd, cyf: %s, swm: %s (%s -%s)"
+msgstr "%d trafodyn, %d wedi'u dewis, cyf: %s, swm: %s (%s -%s)"
 
 #: ../src/dsp-account.c:2244
 msgid "Locked. Click to unlock"
@@ -205,7 +205,7 @@ msgstr "Heb ei gloi. Cliciwch i'w gloi"
 
 #: ../src/dsp-account.c:2521 ../src/dsp-account.c:2622
 msgid "_Add..."
-msgstr "Ychwanegu..."
+msgstr "_Ychwanegu..."
 
 #: ../src/dsp-account.c:2523 ../src/dsp-account.c:2624
 msgid "_Inherit..."
@@ -213,11 +213,11 @@ msgstr "_Etifeddu..."
 
 #: ../src/dsp-account.c:2525 ../src/dsp-account.c:2626
 msgid "_Edit..."
-msgstr "Golygu..."
+msgstr "_Golygu..."
 
 #: ../src/dsp-account.c:2527 ../src/dsp-account.c:2640
 msgid "_Multiple Edit..."
-msgstr "Golygu Lluosog..."
+msgstr "Golygu _Lluosog..."
 
 #: ../src/dsp-account.c:2532 ../src/dsp-account.c:2631
 msgid "_Status"
@@ -284,18 +284,18 @@ msgid "Print..."
 msgstr "Argraffu..."
 
 #: ../src/dsp-account.c:2607 ../src/dsp-mainwindow.c:680
-#: ../src/dsp-mainwindow.c:1851 ../src/ui-account.c:1758
-#: ../src/ui-archive.c:1199 ../src/ui-assign.c:1688 ../src/ui-budget.c:1143
-#: ../src/ui-budget-tabview.c:2759 ../src/ui-category.c:2410
-#: ../src/ui-currency.c:1686 ../src/ui-dialogs.c:194 ../src/ui-payee.c:1764
-#: ../src/ui-split.c:833 ../src/ui-tag.c:1051 ../src/ui-transaction.c:1457
+#: ../src/dsp-mainwindow.c:1851 ../src/ui-account.c:1803
+#: ../src/ui-archive.c:1219 ../src/ui-assign.c:1691 ../src/ui-budget.c:1144
+#: ../src/ui-budget-tabview.c:2781 ../src/ui-category.c:2409
+#: ../src/ui-currency.c:1690 ../src/ui-dialogs.c:194 ../src/ui-payee.c:1763
+#: ../src/ui-split.c:833 ../src/ui-tag.c:1052 ../src/ui-transaction.c:1457
 msgid "_Close"
 msgstr "_Cau"
 
 #. #1818052 wish: copy/paste one/multiple transaction(s)
 #: ../src/dsp-account.c:2611 ../src/dsp-mainwindow.c:1856
 msgid "_Edit"
-msgstr "Golygu"
+msgstr "_Golygu"
 
 #: ../src/dsp-account.c:2613
 msgid "Copy"
@@ -342,10 +342,10 @@ msgid "Convert to Euro..."
 msgstr "Trosi i Euros..."
 
 #: ../src/dsp-account.c:2671 ../src/dsp-mainwindow.c:1960
-#: ../src/ui-account.c:1814 ../src/ui-archive.c:1277 ../src/ui-assign.c:1752
-#: ../src/ui-assist-import.c:1573 ../src/ui-category.c:2524
-#: ../src/ui-currency.c:1762 ../src/ui-payee.c:1878 ../src/ui-split.c:1014
-#: ../src/ui-tag.c:1149
+#: ../src/ui-account.c:1859 ../src/ui-archive.c:1295 ../src/ui-assign.c:1755
+#: ../src/ui-assist-import.c:1576 ../src/ui-category.c:2523
+#: ../src/ui-currency.c:1766 ../src/ui-payee.c:1877 ../src/ui-split.c:1014
+#: ../src/ui-tag.c:1150
 msgid "Add"
 msgstr "Ychwanegu"
 
@@ -362,9 +362,9 @@ msgid "Inherit from the active transaction"
 msgstr "Etifeddu o'r trafodion cyfredol"
 
 #. widget = gtk_button_new_with_mnemonic(_("_Edit"));
-#: ../src/dsp-account.c:2675 ../src/ui-archive.c:1296 ../src/ui-assign.c:1771
-#: ../src/ui-category.c:2543 ../src/ui-currency.c:1780 ../src/ui-payee.c:1896
-#: ../src/ui-split.c:973 ../src/ui-tag.c:1165
+#: ../src/dsp-account.c:2675 ../src/ui-archive.c:1314 ../src/ui-assign.c:1774
+#: ../src/ui-category.c:2542 ../src/ui-currency.c:1784 ../src/ui-payee.c:1895
+#: ../src/ui-split.c:973 ../src/ui-tag.c:1166
 msgid "Edit"
 msgstr "Golygu"
 
@@ -373,8 +373,8 @@ msgid "Edit the active transaction"
 msgstr "Golygu'r trafodion cyfredol"
 
 #. Cleared
-#: ../src/dsp-account.c:2680 ../src/list-account.c:692 ../src/ui-filter.c:1172
-#: ../src/ui-widgets-data.c:164 ../src/ui-widgets-data.c:211
+#: ../src/dsp-account.c:2680 ../src/list-account.c:694 ../src/ui-filter.c:1172
+#: ../src/ui-widgets-data.c:206 ../src/ui-widgets-data.c:253
 msgid "Cleared"
 msgstr "Cliriwyd"
 
@@ -383,8 +383,8 @@ msgid "Toggle cleared for selected transaction(s)"
 msgstr "Toglo'r clirio ar gyfer y trafodion o dan sylw"
 
 #. Reconciled
-#: ../src/dsp-account.c:2681 ../src/list-account.c:688 ../src/ui-filter.c:1177
-#: ../src/ui-widgets-data.c:165 ../src/ui-widgets-data.c:213
+#: ../src/dsp-account.c:2681 ../src/list-account.c:690 ../src/ui-filter.c:1177
+#: ../src/ui-widgets-data.c:207 ../src/ui-widgets-data.c:255
 msgid "Reconciled"
 msgstr "Cysonwyd"
 
@@ -404,10 +404,10 @@ msgstr "Golygu trafodion lluosog"
 msgid "Create template"
 msgstr "Creu templed"
 
-#: ../src/dsp-account.c:2687 ../src/ui-account.c:1818 ../src/ui-archive.c:1281
-#: ../src/ui-assign.c:1756 ../src/ui-assist-import.c:1577
-#: ../src/ui-category.c:2528 ../src/ui-currency.c:1766 ../src/ui-payee.c:1882
-#: ../src/ui-split.c:969 ../src/ui-tag.c:1152
+#: ../src/dsp-account.c:2687 ../src/ui-account.c:1863 ../src/ui-archive.c:1299
+#: ../src/ui-assign.c:1759 ../src/ui-assist-import.c:1580
+#: ../src/ui-category.c:2527 ../src/ui-currency.c:1770 ../src/ui-payee.c:1881
+#: ../src/ui-split.c:969 ../src/ui-tag.c:1153
 msgid "Delete"
 msgstr "Delete"
 
@@ -453,60 +453,62 @@ msgstr "Pob trafodyn"
 msgid "_Refresh"
 msgstr "_Adnewyddu"
 
-#: ../src/dsp-account.c:2828 ../src/rep-balance.c:1068 ../src/rep-budget.c:1351
-#: ../src/rep-stats.c:1749 ../src/rep-time.c:1409 ../src/rep-vehicle.c:1000
+#: ../src/dsp-account.c:2828 ../src/rep-balance.c:1075 ../src/rep-budget.c:1351
+#: ../src/rep-stats.c:1737 ../src/rep-time.c:1389 ../src/rep-vehicle.c:1000
 #: ../src/ui-pref.c:1364 ../src/ui-pref.c:1725 ../src/ui-pref.c:2164
 msgid "_Range:"
 msgstr "_Cyfnod:"
 
-#: ../src/dsp-account.c:2838
-msgid "Toggle show future transaction"
-msgstr "Toglo dangos trafodion y dyfodol"
+#. #2008521 set more accurate tooltip
+#: ../src/dsp-account.c:2842
+#, c-format
+msgid "Toggle show %d days ahead"
+msgstr ""
 
-#: ../src/dsp-account.c:2843 ../src/rep-budget.c:1326 ../src/rep-stats.c:1686
-#: ../src/ui-account.c:1870 ../src/ui-assist-start.c:536
+#: ../src/dsp-account.c:2847 ../src/rep-budget.c:1326 ../src/rep-stats.c:1674
+#: ../src/ui-account.c:1915 ../src/ui-assist-start.c:536
 msgid "_Type:"
 msgstr "_Math:"
 
-#: ../src/dsp-account.c:2850 ../src/ui-transaction.c:1714
+#: ../src/dsp-account.c:2854 ../src/ui-transaction.c:1714
 msgid "_Status:"
 msgstr "_Statws:"
 
-#: ../src/dsp-account.c:2857
+#: ../src/dsp-account.c:2861
 msgid "Open the list filter"
 msgstr "Agor y rhestr hidlo"
 
-#: ../src/dsp-account.c:2862 ../src/rep-balance.c:811 ../src/rep-budget.c:1033
-#: ../src/rep-stats.c:1394 ../src/rep-time.c:1080 ../src/rep-vehicle.c:786
+#: ../src/dsp-account.c:2866 ../src/rep-balance.c:818 ../src/rep-budget.c:1033
+#: ../src/rep-stats.c:1382 ../src/rep-time.c:1060 ../src/rep-vehicle.c:786
 msgid "Refresh results"
 msgstr "Adnewyddu'r canlyniadau"
 
 #. widget = gtk_button_new_with_mnemonic (_("Reset _filters"));
-#: ../src/dsp-account.c:2868 ../src/ui-filter.c:1226 ../src/ui-pref.c:2268
+#: ../src/dsp-account.c:2872 ../src/ui-filter.c:1226 ../src/ui-pref.c:2268
 #: ../src/ui-pref.c:2292
 msgid "_Reset"
 msgstr "_Ailosod"
 
 #. TRANSLATORS: this is for Euro specific users, a toggle to display in 'Minor' currency
-#: ../src/dsp-account.c:2874 ../src/rep-balance.c:1047 ../src/rep-budget.c:1338
-#: ../src/rep-stats.c:1728 ../src/rep-time.c:1388 ../src/rep-vehicle.c:987
+#: ../src/dsp-account.c:2878 ../src/rep-balance.c:1054 ../src/rep-budget.c:1338
+#: ../src/rep-stats.c:1716 ../src/rep-time.c:1368 ../src/rep-vehicle.c:987
 msgid "Euro _minor"
 msgstr "Ewro _lleiaf"
 
 #. account name
-#: ../src/dsp-account.c:2933
+#: ../src/dsp-account.c:2937
 msgid "Reconciled:"
-msgstr "Cysonwyd"
+msgstr "Cysonwyd:"
 
-#: ../src/dsp-account.c:2940
+#: ../src/dsp-account.c:2944
 msgid "Cleared:"
 msgstr "Cliriwyd:"
 
-#: ../src/dsp-account.c:2947
+#: ../src/dsp-account.c:2951
 msgid "Today:"
 msgstr "Heddiw:"
 
-#: ../src/dsp-account.c:2954
+#: ../src/dsp-account.c:2958
 msgid "Future:"
 msgstr "Y dyfodol:"
 
@@ -560,7 +562,7 @@ msgstr "Creu ffeil _newydd"
 
 #: ../src/dsp-mainwindow.c:732
 msgid "_Open an existing file"
-msgstr "_Agor ffeil gyfredol"
+msgstr "_Agor y ffeil gyfredol"
 
 #: ../src/dsp-mainwindow.c:736
 msgid "Open the _example file"
@@ -602,7 +604,7 @@ msgstr "_Agor y copi wrth gefn"
 msgid "Unable to open '%s', the file does not exist.\n"
 msgstr "Methu agor '%s', nid yw'r ffeil yn bodoli.\n"
 
-#: ../src/dsp-mainwindow.c:1139 ../src/ui-currency.c:1325
+#: ../src/dsp-mainwindow.c:1139 ../src/ui-currency.c:1329
 msgid "Unknown error"
 msgstr "Gwall anhysbys"
 
@@ -735,7 +737,7 @@ msgstr "_Cyfrifon..."
 
 #: ../src/dsp-mainwindow.c:1877
 msgid "_Payees..."
-msgstr "_Taleion..."
+msgstr "_Taledigion..."
 
 #: ../src/dsp-mainwindow.c:1878
 msgid "Categories..."
@@ -743,7 +745,7 @@ msgstr "Categorïau..."
 
 #: ../src/dsp-mainwindow.c:1879
 msgid "Scheduled/Template..."
-msgstr "Trefnu/Templed..."
+msgstr "Amserlenwyd/Templed..."
 
 #: ../src/dsp-mainwindow.c:1880
 msgid "Budget..."
@@ -783,11 +785,11 @@ msgstr "Dangos y cyfan..."
 
 #: ../src/dsp-mainwindow.c:1892
 msgid "Set scheduler..."
-msgstr "Gosod trefniadau..."
+msgstr "Gosod amserlenydd..."
 
 #: ../src/dsp-mainwindow.c:1893 ../src/ui-transaction.c:1475
 msgid "Post scheduled"
-msgstr "Cofnod wedi ei drefnu"
+msgstr "Cofnod wedi ei amserlennu"
 
 #: ../src/dsp-mainwindow.c:1895
 msgid "_Reports"
@@ -890,11 +892,11 @@ msgstr "Cadw'r ffeil gyfredol"
 #. gtk_assistant_set_page_title (GTK_ASSISTANT (data->assistant), page, _("Transaction"));
 #. gtk_assistant_set_page_title (GTK_ASSISTANT (data->assistant), page, genacc->name);
 #. header
-#: ../src/dsp-mainwindow.c:1950 ../src/list-operation.c:1657
-#: ../src/list-scheduled.c:678 ../src/rep-stats.c:67 ../src/rep-time.c:73
-#: ../src/ui-account.c:878 ../src/ui-archive.c:484
-#: ../src/ui-assist-import.c:2167 ../src/ui-dialogs.c:213
+#: ../src/dsp-mainwindow.c:1950 ../src/list-operation.c:1667
+#: ../src/list-scheduled.c:701 ../src/ui-account.c:923 ../src/ui-archive.c:488
+#: ../src/ui-assist-import.c:2170 ../src/ui-dialogs.c:213
 #: ../src/ui-filter.c:802 ../src/ui-filter.c:806 ../src/ui-filter.c:1291
+#: ../src/ui-widgets-data.c:60 ../src/ui-widgets-data.c:77
 msgid "Account"
 msgstr "Cyfrif"
 
@@ -907,13 +909,14 @@ msgstr "Rheoli'r cyfrifon"
 #. payee
 #. header
 #: ../src/dsp-mainwindow.c:1951 ../src/hb-export.c:443
-#: ../src/list-operation.c:1691 ../src/list-scheduled.c:593
-#: ../src/rep-stats.c:66 ../src/rep-time.c:75 ../src/ui-archive.c:461
-#: ../src/ui-assign.c:543 ../src/ui-assist-import.c:401 ../src/ui-dialogs.c:268
-#: ../src/ui-filter.c:891 ../src/ui-filter.c:896 ../src/ui-filter.c:1295
-#: ../src/ui-payee.c:942 ../src/ui-pref.c:132 ../src/ui-widgets-data.c:29
+#: ../src/list-operation.c:1702 ../src/list-scheduled.c:611
+#: ../src/ui-archive.c:464 ../src/ui-assign.c:546 ../src/ui-assist-import.c:403
+#: ../src/ui-dialogs.c:268 ../src/ui-filter.c:891 ../src/ui-filter.c:896
+#: ../src/ui-filter.c:1295 ../src/ui-payee.c:938 ../src/ui-pref.c:132
+#: ../src/ui-widgets-data.c:29 ../src/ui-widgets-data.c:59
+#: ../src/ui-widgets-data.c:79
 msgid "Payee"
-msgstr "Talai"
+msgstr "Taledig"
 
 #: ../src/dsp-mainwindow.c:1951
 msgid "Manage the payees"
@@ -924,14 +927,14 @@ msgstr "Rheoli'r taledigion"
 #. category
 #. header
 #: ../src/dsp-mainwindow.c:1952 ../src/hub-spending.c:435
-#: ../src/list-operation.c:1725 ../src/list-scheduled.c:614
-#: ../src/rep-budget.c:1491 ../src/rep-budget.c:1682 ../src/rep-stats.c:64
-#: ../src/rep-time.c:74 ../src/ui-archive.c:465 ../src/ui-assign.c:547
-#: ../src/ui-assist-import.c:405 ../src/ui-budget.c:263
-#: ../src/ui-budget-tabview.c:1543 ../src/ui-category.c:1378
+#: ../src/list-operation.c:1737 ../src/list-scheduled.c:633
+#: ../src/rep-budget.c:1491 ../src/rep-budget.c:1683 ../src/ui-archive.c:468
+#: ../src/ui-assign.c:550 ../src/ui-assist-import.c:407 ../src/ui-budget.c:263
+#: ../src/ui-budget-tabview.c:1544 ../src/ui-category.c:1376
 #: ../src/ui-dialogs.c:277 ../src/ui-filter.c:832 ../src/ui-filter.c:837
-#: ../src/ui-filter.c:1298 ../src/ui-payee.c:964 ../src/ui-split.c:203
+#: ../src/ui-filter.c:1298 ../src/ui-payee.c:961 ../src/ui-split.c:203
 #: ../src/ui-split.c:978 ../src/ui-widgets-data.c:42
+#: ../src/ui-widgets-data.c:57 ../src/ui-widgets-data.c:78
 msgid "Category"
 msgstr "Categorïau"
 
@@ -941,15 +944,15 @@ msgstr "Rheoli'r categorïau"
 
 #: ../src/dsp-mainwindow.c:1953
 msgid "Scheduled/Template"
-msgstr "Amserlen/Templed"
+msgstr "Amserlenwyd/Templed"
 
 #: ../src/dsp-mainwindow.c:1953
 msgid "Manage the scheduled/template transactions"
-msgstr "Rheoli amserlen/templedi trafodion"
+msgstr "Rheoli'r trafodion amserlenwyd/templedi"
 
 #. column: Income
 #: ../src/dsp-mainwindow.c:1954 ../src/dsp-mainwindow.c:1968
-#: ../src/rep-budget.c:655 ../src/rep-budget.c:1491 ../src/rep-budget.c:1696
+#: ../src/rep-budget.c:655 ../src/rep-budget.c:1491 ../src/rep-budget.c:1699
 msgid "Budget"
 msgstr "Cyllidebu"
 
@@ -957,7 +960,7 @@ msgstr "Cyllidebu"
 msgid "Manage the budget"
 msgstr "Rheoli'r gyllideb"
 
-#: ../src/dsp-mainwindow.c:1955 ../src/ui-assign.c:901 ../src/ui-dialogs.c:249
+#: ../src/dsp-mainwindow.c:1955 ../src/ui-assign.c:904 ../src/ui-dialogs.c:249
 msgid "Assignment"
 msgstr "Aseiniad"
 
@@ -971,7 +974,7 @@ msgstr "Dangos"
 
 #: ../src/dsp-mainwindow.c:1959
 msgid "Shows selected account transactions"
-msgstr "Yn dangos trafodion cyfrif dethol"
+msgstr "Yn dangos trafodion cyfrif penodol"
 
 #: ../src/dsp-mainwindow.c:1960
 msgid "Add transactions"
@@ -991,18 +994,18 @@ msgstr "Cyfnod y tuedd"
 
 #: ../src/dsp-mainwindow.c:1966
 msgid "Open the Trend Time report"
-msgstr "Agor yr adroddiad Tuedd Cyfnod"
+msgstr "Agor yr adroddiad Cyfnod y Tuedd"
 
 #. column: Balance
 #: ../src/dsp-mainwindow.c:1967 ../src/hb-export.c:447
-#: ../src/list-operation.c:1737 ../src/rep-balance.c:1395
-#: ../src/ui-widgets-data.c:59
+#: ../src/list-operation.c:1749 ../src/rep-balance.c:1405
+#: ../src/ui-widgets-data.c:101
 msgid "Balance"
-msgstr "Gweddill"
+msgstr "Mantoli"
 
 #: ../src/dsp-mainwindow.c:1967
 msgid "Open the Balance report"
-msgstr "Agor adroddiad y Fantolen"
+msgstr "Agor adroddiad y Mantoli"
 
 #: ../src/dsp-mainwindow.c:1968
 msgid "Open the Budget report"
@@ -1028,18 +1031,18 @@ msgstr "Cyfrannu"
 msgid "Donate to HomeBank project"
 msgstr "Cyfrannu tuag at broject HomeBank"
 
-#: ../src/dsp-mainwindow.c:2087 ../src/ui-archive.c:1236
+#: ../src/dsp-mainwindow.c:2087 ../src/ui-archive.c:1254
 #: ../src/ui-dialogs.c:233
 msgid "Scheduled"
-msgstr "Trefnu"
+msgstr "Amserlenwyd"
 
 #. Future
-#: ../src/dsp-mainwindow.c:2091 ../src/list-account.c:700
+#: ../src/dsp-mainwindow.c:2091 ../src/list-account.c:702
 msgid "Future"
-msgstr "Y dyfodol"
+msgstr "Dyfodol"
 
 #: ../src/dsp-mainwindow.c:2094 ../src/ui-filter.c:1188
-#: ../src/ui-widgets-data.c:166
+#: ../src/ui-widgets-data.c:208
 msgid "Remind"
 msgstr "Atgoffa"
 
@@ -1047,15 +1050,15 @@ msgstr "Atgoffa"
 msgid "_Today"
 msgstr "_Heddiw"
 
-#: ../src/hb-archive.c:215 ../src/ui-archive.c:815
+#: ../src/hb-archive.c:215 ../src/ui-archive.c:827
 msgid "(no memo)"
 msgstr "(dim memo)"
 
 #: ../src/hb-archive.c:388 ../src/hb-archive.c:390 ../src/hb-assign.c:278
 msgid "**PREFILLED**"
-msgstr "**RHAGLANWYD**"
+msgstr "**RHAGLENWYD**"
 
-#: ../src/hb-category.c:492 ../src/hb-report.c:363 ../src/ui-budget.c:113
+#: ../src/hb-category.c:492 ../src/hb-report.c:378 ../src/ui-budget.c:113
 #: ../src/ui-category.c:220 ../src/ui-category.c:763
 msgid "(no category)"
 msgstr "(dim categorïau)"
@@ -1065,23 +1068,23 @@ msgid "invalid CSV format"
 msgstr "fformat CSV annilys"
 
 #. header
-#: ../src/hb-export.c:441 ../src/list-operation.c:1679
-#: ../src/rep-balance.c:1376 ../src/rep-vehicle.c:167 ../src/rep-vehicle.c:1326
-#: ../src/ui-assist-import.c:373 ../src/ui-filter.c:949 ../src/ui-filter.c:1279
+#: ../src/hb-export.c:441 ../src/list-operation.c:1689
+#: ../src/rep-balance.c:1384 ../src/rep-vehicle.c:167 ../src/rep-vehicle.c:1330
+#: ../src/ui-assist-import.c:375 ../src/ui-filter.c:949 ../src/ui-filter.c:1279
 msgid "Date"
 msgstr "Dyddiad"
 
-#: ../src/hb-export.c:442 ../src/list-operation.c:1449
-#: ../src/ui-assist-import.c:387 ../src/ui-pref.c:133 ../src/ui-pref.c:2533
+#: ../src/hb-export.c:442 ../src/list-operation.c:1457
+#: ../src/ui-assist-import.c:389 ../src/ui-pref.c:133 ../src/ui-pref.c:2533
 #: ../src/ui-pref.c:2541
 msgid "Info"
 msgstr "Manylion"
 
 #. column: Memo
 #. memo
-#: ../src/hb-export.c:444 ../src/list-operation.c:1694
-#: ../src/list-scheduled.c:635 ../src/ui-archive.c:469
-#: ../src/ui-assist-import.c:378 ../src/ui-pref.c:131 ../src/ui-split.c:223
+#: ../src/hb-export.c:444 ../src/list-operation.c:1705
+#: ../src/list-scheduled.c:655 ../src/ui-archive.c:472
+#: ../src/ui-assist-import.c:380 ../src/ui-pref.c:131 ../src/ui-split.c:223
 #: ../src/ui-split.c:982 ../src/ui-widgets-data.c:28
 msgid "Memo"
 msgstr "Memo"
@@ -1089,14 +1092,14 @@ msgstr "Memo"
 #. column: Amount
 #. amount
 #. header
-#: ../src/hb-export.c:445 ../src/list-operation.c:1716 ../src/rep-time.c:1620
-#: ../src/rep-time.c:1773 ../src/rep-vehicle.c:171 ../src/rep-vehicle.c:1371
-#: ../src/ui-archive.c:474 ../src/ui-assist-import.c:382 ../src/ui-filter.c:988
+#: ../src/hb-export.c:445 ../src/list-operation.c:1728 ../src/rep-time.c:1600
+#: ../src/rep-time.c:1758 ../src/rep-vehicle.c:171 ../src/rep-vehicle.c:1377
+#: ../src/ui-archive.c:477 ../src/ui-assist-import.c:384 ../src/ui-filter.c:988
 #: ../src/ui-split.c:239 ../src/ui-split.c:986
 msgid "Amount"
 msgstr "Swm"
 
-#: ../src/hb-hbfile.c:611 ../src/ui-assist-import.c:2167
+#: ../src/hb-hbfile.c:615 ../src/ui-assist-import.c:2170
 msgid "Unknown"
 msgstr "Anhysbys"
 
@@ -1116,13 +1119,13 @@ msgstr "km/l"
 msgid "mi./l"
 msgstr "mi./l"
 
-#: ../src/hb-report.c:375 ../src/ui-payee.c:644
+#: ../src/hb-report.c:390 ../src/ui-payee.c:644
 msgid "(no payee)"
-msgstr "(dim talai)"
+msgstr "(dim taledig)"
 
 #. g_snprintf(s, slen, _("%d-w%d"), g_date_get_year(date), g_date_get_monday_week_of_year(date));
 #. TRANSLATORS: printf string for year of week W, ex. 2019-W52 for week 52 of 2019
-#: ../src/hb-report.c:990
+#: ../src/hb-report.c:1019
 #, c-format
 msgid "%d-w%02d"
 msgstr "%d-w%02d"
@@ -1130,14 +1133,21 @@ msgstr "%d-w%02d"
 #. g_snprintf(buffer, 63, "%d-%02d", g_date_get_year(date), g_date_get_month(date));
 #. todo: will be innacurrate here if fiscal year start not 1/jan
 #. TRANSLATORS: printf string for year of quarter Q, ex. 2019-Q4 for quarter 4 of 2019
-#: ../src/hb-report.c:1004
+#: ../src/hb-report.c:1040
 #, c-format
 msgid "%d-q%d"
 msgstr "%d-q%d"
 
+#. #2007712
+#. TRANSLATORS: printf string for half-year H, ex. 2019-H1 for 1st half-year of 2019
+#: ../src/hb-report.c:1047
+#, c-format
+msgid "%d-h%d"
+msgstr ""
+
 #: ../src/homebank.c:70
 msgid "Output version information and exit"
-msgstr "Allbynnu gwybodaeth y fersiwn a chau"
+msgstr "Allbynnu manylion y fersiwn a chau"
 
 #: ../src/homebank.c:73
 msgid "[FILE]"
@@ -1168,17 +1178,17 @@ msgstr "(dim grŵp)"
 msgid "Your accounts"
 msgstr "Eich cyfrifon"
 
-#: ../src/hub-account.c:550 ../src/ui-budget.c:1239
-#: ../src/ui-budget-tabview.c:2904 ../src/ui-category.c:2575
+#: ../src/hub-account.c:550 ../src/ui-budget.c:1241
+#: ../src/ui-budget-tabview.c:2935 ../src/ui-category.c:2574
 #: ../src/ui-filter.c:867
 msgid "Expand all"
-msgstr "Ehangu popeth"
+msgstr "Ehangu'r cyfan"
 
-#: ../src/hub-account.c:554 ../src/ui-budget.c:1243
-#: ../src/ui-budget-tabview.c:2908 ../src/ui-category.c:2579
+#: ../src/hub-account.c:554 ../src/ui-budget.c:1245
+#: ../src/ui-budget-tabview.c:2939 ../src/ui-category.c:2578
 #: ../src/ui-filter.c:871
 msgid "Collapse all"
-msgstr "Cau popeth"
+msgstr "Cau'r cyfan"
 
 #: ../src/hub-account.c:571
 msgid "Show all"
@@ -1196,48 +1206,50 @@ msgstr "Yn ôl grŵp"
 msgid "By institution"
 msgstr "Yn ôl sefydliad"
 
-#: ../src/hub-scheduled.c:330
+#. TRANSLATORS: example 'sum: 3 (-1 + 4)'
+#: ../src/hub-scheduled.c:350
+#, c-format
+msgid "sum: %s (%s + %s)"
+msgstr ""
+
+#: ../src/hub-scheduled.c:394
 msgid "No transaction to add"
 msgstr "Dim trafodion i'w hychwanegu"
 
-#: ../src/hub-scheduled.c:332
+#: ../src/hub-scheduled.c:396
 #, c-format
 msgid "transaction added: %d"
-msgstr "ychwanegwyd y trafodion ]: %d"
+msgstr "ychwanegwyd y trafodyn: %d"
 
-#: ../src/hub-scheduled.c:335
+#: ../src/hub-scheduled.c:399
 msgid "Check scheduled transactions result"
-msgstr "Gwirio canlyniad trafodion rheolaidd wedi eu trefnu"
+msgstr "Gwirio canlyniad trafodion amserlenwyd wedi eu trefnu"
 
 #. column: Total
-#: ../src/hub-scheduled.c:477 ../src/list-account.c:123 ../src/list-report.c:56
-#: ../src/list-report.c:363 ../src/list-report.c:721 ../src/rep-stats.c:78
-#: ../src/rep-stats.c:885 ../src/rep-stats.c:986 ../src/rep-vehicle.c:1071
-#: ../src/ui-widgets-data.c:50 ../src/ui-widgets-data.c:57
+#: ../src/hub-scheduled.c:559 ../src/list-account.c:123 ../src/list-report.c:56
+#: ../src/list-report.c:368 ../src/list-report.c:729 ../src/rep-stats.c:869
+#: ../src/rep-stats.c:970 ../src/rep-vehicle.c:1071 ../src/ui-widgets-data.c:50
+#: ../src/ui-widgets-data.c:71 ../src/ui-widgets-data.c:99
 msgid "Total"
 msgstr "Cyfanswm"
 
-#: ../src/hub-scheduled.c:521 ../src/ui-hbfile.c:278
-msgid "Scheduled transactions"
-msgstr "Trafodion wedi eu trefnu"
-
-#: ../src/hub-scheduled.c:537
+#: ../src/hub-scheduled.c:619
 msgid "_Skip"
 msgstr "_Hepgor"
 
-#: ../src/hub-scheduled.c:541
+#: ../src/hub-scheduled.c:623
 msgid "Edit & P_ost"
 msgstr "Golygu a C_hofnodi"
 
 #. TRANSLATORS: Posting a scheduled transaction is the action to materialize it into its target account.
 #. TRANSLATORS: Before that action the automated transaction occurrence is pending and not yet really existing.
-#: ../src/hub-scheduled.c:547 ../src/ui-transaction.c:1463
+#: ../src/hub-scheduled.c:629 ../src/ui-transaction.c:1463
 msgid "_Post"
 msgstr "_Cofnod"
 
-#: ../src/hub-scheduled.c:562
+#: ../src/hub-scheduled.c:644
 msgid "maximum post date"
-msgstr "dyddiad y cofnod mwyaf"
+msgstr "dyddiad mwyaf y cofnod"
 
 #. hb_label_set_amount(GTK_LABEL(data->TX_topamount), total, GLOBALS->kcur, GLOBALS->minor);
 #: ../src/hub-spending.c:91
@@ -1256,104 +1268,105 @@ msgstr "Arall"
 
 #: ../src/hub-spending.c:402
 msgid "Where your money goes"
-msgstr "Lle'r aeth yr arian"
+msgstr "Lle'r mae'r arian yn mynd..."
 
-#: ../src/hub-spending.c:436 ../src/rep-stats.c:65 ../src/ui-widgets-data.c:43
+#: ../src/hub-spending.c:436 ../src/ui-widgets-data.c:43
+#: ../src/ui-widgets-data.c:58
 msgid "Subcategory"
 msgstr "Is gategori"
 
-#: ../src/hb-import.c:1408
+#: ../src/hb-import.c:1404
 msgid "imported account"
 msgstr "cyfrif wedi ei mewnforio"
 
 #: ../src/list-account.c:127
 msgid "Grand total"
-msgstr "Prif Gyfanswm"
+msgstr "Prif gyfanswm"
 
-#: ../src/list-account.c:535
+#: ../src/list-account.c:536
 msgid "last reconciled"
 msgstr "cysonwyd ddiwethaf"
 
-#: ../src/list-account.c:549
+#: ../src/list-account.c:550
 msgid "until overdraft"
-msgstr "hyd at y gorddrafft"
+msgstr "tan y gorddrafft"
 
-#: ../src/list-account.c:565
+#: ../src/list-account.c:566
 msgid "before maximum"
 msgstr "cyn yr uchafswm"
 
-#: ../src/list-account.c:676
+#: ../src/list-account.c:677
 msgid "Accounts"
 msgstr "Cyfrifon"
 
 #. Today
-#: ../src/list-account.c:696 ../src/ui-widgets-data.c:97
+#: ../src/list-account.c:698 ../src/ui-widgets-data.c:139
 msgid "Today"
 msgstr "Heddiw"
 
-#: ../src/list-operation.c:703 ../src/list-scheduled.c:181
+#: ../src/list-operation.c:710 ../src/list-scheduled.c:195
 #: ../src/ui-archive.c:278
 msgid "- split -"
 msgstr "- hollti -"
 
-#: ../src/list-operation.c:719
+#: ../src/list-operation.c:726
 msgid "- this needs a category -"
 msgstr "- mae angen categori ar hwn -"
 
-#: ../src/list-operation.c:1665
+#: ../src/list-operation.c:1675
 msgid "Match"
 msgstr "Cydweddu"
 
 #. header
-#: ../src/list-operation.c:1699 ../src/ui-filter.c:1155 ../src/ui-filter.c:1285
+#: ../src/list-operation.c:1710 ../src/ui-filter.c:1155 ../src/ui-filter.c:1285
 msgid "Status"
 msgstr "Statws"
 
 #. column: Expense
-#: ../src/list-operation.c:1719 ../src/list-report.c:56
-#: ../src/list-report.c:351 ../src/list-scheduled.c:647
-#: ../src/rep-balance.c:1387 ../src/rep-stats.c:76
-#: ../src/ui-budget-tabview.c:88 ../src/ui-filter.c:1129
-#: ../src/ui-transaction.c:53 ../src/ui-widgets-data.c:35
-#: ../src/ui-widgets-data.c:193 ../src/ui-widgets-data.c:202
+#: ../src/list-operation.c:1731 ../src/list-report.c:56
+#: ../src/list-report.c:356 ../src/list-scheduled.c:668
+#: ../src/rep-balance.c:1397 ../src/ui-budget-tabview.c:89
+#: ../src/ui-filter.c:1129 ../src/ui-transaction.c:53
+#: ../src/ui-widgets-data.c:35 ../src/ui-widgets-data.c:69
+#: ../src/ui-widgets-data.c:235 ../src/ui-widgets-data.c:244
 msgid "Expense"
 msgstr "Gwario"
 
 #. column: Income
-#: ../src/list-operation.c:1722 ../src/list-report.c:56
-#: ../src/list-report.c:357 ../src/list-scheduled.c:658
-#: ../src/rep-balance.c:1391 ../src/rep-stats.c:77
-#: ../src/ui-budget-tabview.c:89 ../src/ui-filter.c:1134
-#: ../src/ui-transaction.c:54 ../src/ui-widgets-data.c:36
-#: ../src/ui-widgets-data.c:194 ../src/ui-widgets-data.c:203
+#: ../src/list-operation.c:1734 ../src/list-report.c:56
+#: ../src/list-report.c:362 ../src/list-scheduled.c:680
+#: ../src/rep-balance.c:1401 ../src/ui-budget-tabview.c:90
+#: ../src/ui-filter.c:1134 ../src/ui-transaction.c:54
+#: ../src/ui-widgets-data.c:36 ../src/ui-widgets-data.c:70
+#: ../src/ui-widgets-data.c:236 ../src/ui-widgets-data.c:245
 msgid "Income"
 msgstr "Incwm"
 
-#: ../src/list-operation.c:1732
+#: ../src/list-operation.c:1744
 msgid "Tags"
 msgstr "Tagiau"
 
 #. column: Result
-#: ../src/list-report.c:56 ../src/list-report.c:340 ../src/rep-budget.c:655
-#: ../src/rep-budget.c:1491 ../src/rep-budget.c:1700
+#: ../src/list-report.c:56 ../src/list-report.c:343 ../src/rep-budget.c:655
+#: ../src/rep-budget.c:1491 ../src/rep-budget.c:1703
 msgid "Result"
 msgstr "Canlyniad"
 
-#: ../src/list-report.c:717
+#: ../src/list-report.c:725
 msgid "Average"
 msgstr "Cyfartaledd"
 
 #. TRANSLATORS: title of list column to inform the scheduled transaction is Late
-#: ../src/list-scheduled.c:544
+#: ../src/list-scheduled.c:558
 msgid "Late"
 msgstr "Hwyr"
 
 #. TRANSLATORS: title of list column to inform how many occurence remain to post for limited scheduled txn
-#: ../src/list-scheduled.c:562
+#: ../src/list-scheduled.c:577
 msgid "Still"
 msgstr "Sefydlog"
 
-#: ../src/list-scheduled.c:576 ../src/ui-archive.c:453
+#: ../src/list-scheduled.c:593 ../src/ui-archive.c:455
 msgid "Next date"
 msgstr "Dyddiad nesaf"
 
@@ -1363,119 +1376,119 @@ msgstr "Dyddiad nesaf"
 msgid "%d/%d under %s"
 msgstr "%d/%d o dan %s"
 
-#: ../src/rep-balance.c:791 ../src/rep-budget.c:1012 ../src/rep-stats.c:1332
-#: ../src/rep-time.c:1048
+#: ../src/rep-balance.c:798 ../src/rep-budget.c:1012 ../src/rep-stats.c:1320
+#: ../src/rep-time.c:1028
 msgid "List"
 msgstr "Rhestr"
 
-#: ../src/rep-balance.c:792 ../src/rep-budget.c:1013 ../src/rep-stats.c:1333
-#: ../src/rep-time.c:1049
+#: ../src/rep-balance.c:799 ../src/rep-budget.c:1013 ../src/rep-stats.c:1321
+#: ../src/rep-time.c:1029
 msgid "View results as list"
 msgstr "Gweld canlyniadau fel rhestr"
 
-#: ../src/rep-balance.c:797 ../src/rep-time.c:1054
+#: ../src/rep-balance.c:804 ../src/rep-time.c:1034
 msgid "Line"
 msgstr "Llinell"
 
-#: ../src/rep-balance.c:798 ../src/rep-time.c:1055
+#: ../src/rep-balance.c:805 ../src/rep-time.c:1035
 msgid "View results as lines"
 msgstr "Gweld canlyniadau fel llinellau"
 
-#: ../src/rep-balance.c:805 ../src/rep-budget.c:1026 ../src/rep-stats.c:1364
-#: ../src/rep-time.c:1068
+#: ../src/rep-balance.c:812 ../src/rep-budget.c:1026 ../src/rep-stats.c:1352
+#: ../src/rep-time.c:1048
 msgid "Detail"
 msgstr "Manylyn"
 
-#: ../src/rep-balance.c:806 ../src/rep-budget.c:1027 ../src/rep-stats.c:1365
-#: ../src/rep-time.c:1069
+#: ../src/rep-balance.c:813 ../src/rep-budget.c:1027 ../src/rep-stats.c:1353
+#: ../src/rep-time.c:1049
 msgid "Toggle detail"
 msgstr "Toglo manylyn"
 
-#: ../src/rep-balance.c:811 ../src/rep-budget.c:1033 ../src/rep-stats.c:1394
-#: ../src/rep-time.c:1080 ../src/rep-vehicle.c:786
+#: ../src/rep-balance.c:818 ../src/rep-budget.c:1033 ../src/rep-stats.c:1382
+#: ../src/rep-time.c:1060 ../src/rep-vehicle.c:786
 msgid "Refresh"
 msgstr "Adnewyddu"
 
-#: ../src/rep-balance.c:814 ../src/rep-budget.c:1076 ../src/rep-stats.c:1437
-#: ../src/rep-time.c:1123
+#: ../src/rep-balance.c:821 ../src/rep-budget.c:1076 ../src/rep-stats.c:1425
+#: ../src/rep-time.c:1103
 msgid "Print"
 msgstr "Argraffu"
 
-#: ../src/rep-balance.c:1001
+#: ../src/rep-balance.c:1008
 msgid "Balance report"
-msgstr "Adroddiad mantolen"
+msgstr "Adroddiad mantoli"
 
-#: ../src/rep-balance.c:1021 ../src/rep-budget.c:1314 ../src/rep-stats.c:1667
-#: ../src/rep-time.c:1357 ../src/rep-vehicle.c:972
+#: ../src/rep-balance.c:1028 ../src/rep-budget.c:1314 ../src/rep-stats.c:1655
+#: ../src/rep-time.c:1337 ../src/rep-vehicle.c:972
 msgid "Display"
 msgstr "Dangos"
 
-#: ../src/rep-balance.c:1034 ../src/rep-stats.c:1700 ../src/rep-time.c:1375
+#: ../src/rep-balance.c:1041 ../src/rep-stats.c:1688 ../src/rep-time.c:1355
 msgid "Inter_val:"
 msgstr "C_yfnod:"
 
-#: ../src/rep-balance.c:1042 ../src/rep-time.c:1383
+#: ../src/rep-balance.c:1049 ../src/rep-time.c:1363
 msgid "Show empty line"
 msgstr "Dangos llinell wag"
 
-#: ../src/rep-balance.c:1052 ../src/rep-stats.c:1720 ../src/rep-time.c:1393
+#: ../src/rep-balance.c:1059 ../src/rep-stats.c:1708 ../src/rep-time.c:1373
 msgid "_Zoom X:"
 msgstr "Chwyddo _X:"
 
-#: ../src/rep-balance.c:1064 ../src/rep-budget.c:1347 ../src/rep-stats.c:1745
-#: ../src/rep-time.c:1405 ../src/rep-vehicle.c:996
+#: ../src/rep-balance.c:1071 ../src/rep-budget.c:1347 ../src/rep-stats.c:1733
+#: ../src/rep-time.c:1385 ../src/rep-vehicle.c:996
 msgid "Date filter"
 msgstr "Hidlo dyddiad"
 
-#: ../src/rep-balance.c:1074 ../src/rep-budget.c:1357 ../src/rep-stats.c:1755
-#: ../src/rep-time.c:1415 ../src/rep-vehicle.c:1006 ../src/ui-filter.c:961
+#: ../src/rep-balance.c:1081 ../src/rep-budget.c:1357 ../src/rep-stats.c:1743
+#: ../src/rep-time.c:1395 ../src/rep-vehicle.c:1006 ../src/ui-filter.c:961
 #: ../src/ui-filter.c:999 ../src/ui-transaction.c:184
 #: ../src/ui-transaction.c:185
 msgid "_From:"
 msgstr "_O:"
 
-#: ../src/rep-balance.c:1080 ../src/rep-budget.c:1363 ../src/rep-stats.c:1761
-#: ../src/rep-time.c:1421 ../src/rep-vehicle.c:1012 ../src/ui-assign.c:1640
+#: ../src/rep-balance.c:1087 ../src/rep-budget.c:1363 ../src/rep-stats.c:1749
+#: ../src/rep-time.c:1401 ../src/rep-vehicle.c:1012 ../src/ui-assign.c:1643
 #: ../src/ui-filter.c:968 ../src/ui-filter.c:1006 ../src/ui-transaction.c:178
 #: ../src/ui-transaction.c:184 ../src/ui-transaction.c:185
 msgid "_To:"
-msgstr "I:"
+msgstr "_Hyd:"
 
-#: ../src/rep-balance.c:1090
+#: ../src/rep-balance.c:1097
 msgid "Account filter"
 msgstr "Hidl cyfrif"
 
-#: ../src/rep-balance.c:1098 ../src/rep-time.c:1439
-#: ../src/ui-assist-import.c:1798 ../src/ui-filter.c:746
+#: ../src/rep-balance.c:1105 ../src/rep-time.c:1419
+#: ../src/ui-assist-import.c:1801 ../src/ui-filter.c:746
 msgid "Select:"
 msgstr "Dewis:"
 
-#: ../src/rep-balance.c:1102 ../src/rep-time.c:1443
-#: ../src/ui-assist-import.c:1801 ../src/ui-filter.c:750
-#: ../src/ui-widgets-data.c:144
+#: ../src/rep-balance.c:1109 ../src/rep-time.c:1423
+#: ../src/ui-assist-import.c:1804 ../src/ui-filter.c:750
+#: ../src/ui-widgets-data.c:186
 msgid "All"
 msgstr "Y Cyfan"
 
-#: ../src/rep-balance.c:1106 ../src/rep-time.c:1447
-#: ../src/ui-assist-import.c:1805 ../src/ui-filter.c:754
-#: ../src/ui-filter.c:1167 ../src/ui-pref.c:106 ../src/ui-widgets-data.c:163
+#: ../src/rep-balance.c:1113 ../src/rep-time.c:1427
+#: ../src/ui-assist-import.c:1808 ../src/ui-filter.c:754
+#: ../src/ui-filter.c:1167 ../src/ui-pref.c:106 ../src/ui-widgets-data.c:205
 msgid "None"
 msgstr "Dim"
 
-#: ../src/rep-balance.c:1110 ../src/rep-time.c:1451
-#: ../src/ui-assist-import.c:1809 ../src/ui-filter.c:758
+#: ../src/rep-balance.c:1117 ../src/rep-time.c:1431
+#: ../src/ui-assist-import.c:1812 ../src/ui-filter.c:758
 msgid "Invert"
 msgstr "Gwrthdroi"
 
 #. update stack chart
-#: ../src/rep-budget.c:649 ../src/ui-budget.c:985
+#: ../src/rep-budget.c:649 ../src/ui-budget.c:986
 #, c-format
 msgid "Budget for %s"
 msgstr "Cyllidebu ar gyfer %s"
 
 #: ../src/rep-budget.c:870
 msgid " over"
-msgstr " drosodd"
+msgstr " mwy na"
 
 #: ../src/rep-budget.c:876
 msgid " left"
@@ -1485,7 +1498,7 @@ msgstr " chwith"
 msgid " under"
 msgstr " o dan"
 
-#: ../src/rep-budget.c:1018 ../src/rep-stats.c:1350
+#: ../src/rep-budget.c:1018 ../src/rep-stats.c:1338
 msgid "Stack"
 msgstr "Stac"
 
@@ -1494,19 +1507,19 @@ msgid "View results as stack bars"
 msgstr "Gweld y canlyniadau fel bariau stac"
 
 #. gtk_widget_set_halign (menu, GTK_ALIGN_END);
-#: ../src/rep-budget.c:1041 ../src/rep-stats.c:1402 ../src/rep-time.c:1088
+#: ../src/rep-budget.c:1041 ../src/rep-stats.c:1390 ../src/rep-time.c:1068
 msgid "_Result to clipboard"
 msgstr "_Canlyniad i'r clipfwrdd"
 
-#: ../src/rep-budget.c:1045 ../src/rep-stats.c:1406 ../src/rep-time.c:1092
+#: ../src/rep-budget.c:1045 ../src/rep-stats.c:1394 ../src/rep-time.c:1072
 msgid "_Result to CSV"
 msgstr "_Canlyniad i CSV"
 
-#: ../src/rep-budget.c:1049 ../src/rep-stats.c:1410 ../src/rep-time.c:1096
+#: ../src/rep-budget.c:1049 ../src/rep-stats.c:1398 ../src/rep-time.c:1076
 msgid "_Detail to clipboard"
 msgstr "_Manylyn i'r clipfwrdd"
 
-#: ../src/rep-budget.c:1054 ../src/rep-stats.c:1415 ../src/rep-time.c:1101
+#: ../src/rep-budget.c:1054 ../src/rep-stats.c:1403 ../src/rep-time.c:1081
 msgid "_Detail to CSV"
 msgstr "_Manylyn i CSV"
 
@@ -1522,13 +1535,13 @@ msgstr "Rhaid cynnwys rhai cyfrifon o'r ddeialog cyfrifon."
 msgid "Budget report"
 msgstr "Adroddiad cyllideb"
 
-#: ../src/rep-budget.c:1318 ../src/rep-stats.c:1678 ../src/rep-time.c:1361
+#: ../src/rep-budget.c:1318 ../src/rep-stats.c:1666 ../src/rep-time.c:1341
 msgid "_View by:"
 msgstr "­_Golwg yn ôl:"
 
 #: ../src/rep-budget.c:1333
 msgid "Only out of budget"
-msgstr "Dim ond allan o'r gyllideb"
+msgstr "Dim ond tu hwnt i'r gyllideb"
 
 #: ../src/rep-budget.c:1392
 msgid "Result:"
@@ -1543,162 +1556,132 @@ msgid "Spent:"
 msgstr "Gwariwyd:"
 
 #. column: Expense
-#: ../src/rep-budget.c:1491 ../src/rep-budget.c:1692
+#: ../src/rep-budget.c:1491 ../src/rep-budget.c:1695
 msgid "Spent"
 msgstr "Gwariwyd"
 
-#. header
-#: ../src/rep-stats.c:68 ../src/rep-time.c:76 ../src/ui-dialogs.c:286
-#: ../src/ui-filter.c:921 ../src/ui-filter.c:925 ../src/ui-filter.c:1301
-msgid "Tag"
-msgstr "Tag"
-
-#: ../src/rep-stats.c:69 ../src/rep-time.c:84 ../src/ui-widgets-data.c:175
-msgid "Month"
-msgstr "Mis"
-
-#: ../src/rep-stats.c:70 ../src/rep-time.c:87 ../src/ui-widgets-data.c:176
-msgid "Year"
-msgstr "Blwyddyn"
-
 #. TRANSLATORS: example 'Expense by Category'
-#: ../src/rep-stats.c:345
+#: ../src/rep-stats.c:329
 #, c-format
 msgid "%s by %s"
 msgstr "%s yn ôl %s"
 
-#: ../src/rep-stats.c:909
+#: ../src/rep-stats.c:893
 msgid "Too much columns to display"
 msgstr "Gormod o golofnau i'w harddangos"
 
-#: ../src/rep-stats.c:910
+#: ../src/rep-stats.c:894
 msgid "Please select a wider interval and / or a narrower date range"
 msgstr "Dewiswch gyfnod ehangach a/neu ystod dyddiad mwy cyfyng"
 
-#: ../src/rep-stats.c:1338 ../src/rep-time.c:1060
+#: ../src/rep-stats.c:1326 ../src/rep-time.c:1040
 msgid "Column"
 msgstr "Colofn"
 
-#: ../src/rep-stats.c:1339 ../src/rep-time.c:1061
+#: ../src/rep-stats.c:1327 ../src/rep-time.c:1041
 msgid "View results as column"
 msgstr "Gweld canlyniadau fel colofn"
 
-#: ../src/rep-stats.c:1344
+#: ../src/rep-stats.c:1332
 msgid "Donut"
 msgstr "Toesen"
 
-#: ../src/rep-stats.c:1345
+#: ../src/rep-stats.c:1333
 msgid "View results as donut"
 msgstr "Gweld canlyniadau fel toesen"
 
-#: ../src/rep-stats.c:1351
+#: ../src/rep-stats.c:1339
 msgid "View results as stack"
-msgstr "Gweld canlyniad fel pentwr"
+msgstr "Gweld canlyniad fel stac"
 
-#: ../src/rep-stats.c:1356
+#: ../src/rep-stats.c:1344
 msgid "Stack 100%"
-msgstr "Pentwr 100%"
+msgstr "Stac 100%"
 
-#: ../src/rep-stats.c:1357
+#: ../src/rep-stats.c:1345
 msgid "View results as stack 100%"
-msgstr "Gweld y canlyniad fel pentwr 100%"
+msgstr "Gweld y canlyniad fel stac 100%"
 
-#: ../src/rep-stats.c:1373
+#: ../src/rep-stats.c:1361
 msgid "Legend"
 msgstr "Mynegai"
 
-#: ../src/rep-stats.c:1374
+#: ../src/rep-stats.c:1362
 msgid "Toggle legend"
 msgstr "Toglo'r mynegai"
 
-#: ../src/rep-stats.c:1382
+#: ../src/rep-stats.c:1370
 msgid "Rate"
 msgstr "Cyfradd"
 
-#: ../src/rep-stats.c:1383
+#: ../src/rep-stats.c:1371
 msgid "Toggle rate"
 msgstr "Toglo'r gyfradd"
 
-#: ../src/rep-stats.c:1391 ../src/rep-time.c:1076
+#: ../src/rep-stats.c:1379 ../src/rep-time.c:1056
 msgid "Filter"
 msgstr "Hidl"
 
-#: ../src/rep-stats.c:1391 ../src/rep-time.c:1076 ../src/ui-filter.c:1218
+#: ../src/rep-stats.c:1379 ../src/rep-time.c:1056 ../src/ui-filter.c:1218
 msgid "Edit filter"
 msgstr "Golygu'r hidl"
 
-#: ../src/rep-stats.c:1648
+#: ../src/rep-stats.c:1636
 msgid "Statistics Report"
 msgstr "Adroddiad Ystadegau"
 
-#: ../src/rep-stats.c:1671
+#: ../src/rep-stats.c:1659
 msgid "Mode:"
 msgstr "Modd:"
 
-#: ../src/rep-stats.c:1695
+#: ../src/rep-stats.c:1683
 msgid "_Balance mode"
-msgstr "Y modd _balans"
+msgstr "Y modd _mantoli"
 
-#: ../src/rep-stats.c:1710
+#: ../src/rep-stats.c:1698
 msgid "Sort by _amount"
 msgstr "Trefnu yn ôl _swm"
 
-#: ../src/rep-stats.c:1715
+#: ../src/rep-stats.c:1703
 msgid "Compare Exp. & Inc."
-msgstr "Cymharu Allforio a Mewnforio"
+msgstr "Cymharu Gwariant ac Incwm"
 
-#: ../src/rep-stats.c:1826
+#: ../src/rep-stats.c:1814
 msgid "Total:"
 msgstr "Cyfanswm:"
 
-#: ../src/rep-stats.c:1832 ../src/ui-budget.c:1277
+#: ../src/rep-stats.c:1820 ../src/ui-budget.c:1279
 msgid "Income:"
 msgstr "Incwm:"
 
-#: ../src/rep-stats.c:1839 ../src/ui-budget.c:1270
+#: ../src/rep-stats.c:1827 ../src/ui-budget.c:1272
 msgid "Expense:"
-msgstr "Gwario:"
-
-#: ../src/rep-time.c:82 ../src/ui-widgets-data.c:173
-msgid "Day"
-msgstr "Diwrnod"
-
-#: ../src/rep-time.c:83 ../src/ui-widgets-data.c:174
-msgid "Week"
-msgstr "Wythnos"
-
-#: ../src/rep-time.c:85
-msgid "Quarter"
-msgstr "Chwarter"
-
-#: ../src/rep-time.c:86
-msgid "Half Year"
-msgstr "Hanner Blwyddyn"
+msgstr "Gwariant:"
 
 #. TRANSLATORS: example 'Category Over Time'
-#: ../src/rep-time.c:293
+#: ../src/rep-time.c:273
 #, c-format
 msgid "%s Over Time"
 msgstr "%s yn Hwyr"
 
-#: ../src/rep-time.c:786
+#: ../src/rep-time.c:766
 #, c-format
 msgid "Average: %s"
 msgstr "Cyfartalog: %s"
 
-#: ../src/rep-time.c:1338
+#: ../src/rep-time.c:1318
 msgid "Trend Time Report"
 msgstr "Adroddiad Tuedd Cyfnod"
 
-#: ../src/rep-time.c:1370
+#: ../src/rep-time.c:1350
 msgid "_Cumulate"
 msgstr "_Crynhoi"
 
-#: ../src/rep-time.c:1431
+#: ../src/rep-time.c:1411
 msgid "Item filter"
 msgstr "Hidl eitemau"
 
-#: ../src/rep-time.c:1620 ../src/rep-time.c:1761
+#: ../src/rep-time.c:1600 ../src/rep-time.c:1742
 msgid "Time slice"
 msgstr "Darn amser"
 
@@ -1724,22 +1707,22 @@ msgstr "Darn amser"
 #. //gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
 #. 
 #. column: Meter
-#: ../src/rep-vehicle.c:168 ../src/rep-vehicle.c:1359
+#: ../src/rep-vehicle.c:168 ../src/rep-vehicle.c:1365
 msgid "Meter"
-msgstr "Metr"
+msgstr "Mesurydd"
 
 #. column: Fuel load
-#: ../src/rep-vehicle.c:169 ../src/rep-vehicle.c:1363
+#: ../src/rep-vehicle.c:169 ../src/rep-vehicle.c:1369
 msgid "Fuel"
 msgstr "Tanwydd"
 
 #. column: Price by unit
-#: ../src/rep-vehicle.c:170 ../src/rep-vehicle.c:1367
+#: ../src/rep-vehicle.c:170 ../src/rep-vehicle.c:1373
 msgid "Price"
 msgstr "Pris"
 
 #. column: Distance done
-#: ../src/rep-vehicle.c:172 ../src/rep-vehicle.c:1375
+#: ../src/rep-vehicle.c:172 ../src/rep-vehicle.c:1381
 msgid "Dist."
 msgstr "Pellter"
 
@@ -1757,14 +1740,14 @@ msgstr "Adroddiad cost cerbyd"
 
 #. label = make_label_widget(_("Vehi_cle:"));
 #. #2001566 make label consistent with properties dialog
-#: ../src/rep-vehicle.c:978 ../src/ui-assign.c:1059 ../src/ui-hbfile.c:340
-#: ../src/ui-payee.c:1287
+#: ../src/rep-vehicle.c:978 ../src/ui-assign.c:1062 ../src/ui-hbfile.c:340
+#: ../src/ui-payee.c:1286
 msgid "_Category:"
 msgstr "_Categori:"
 
 #: ../src/rep-vehicle.c:1038
 msgid "Meter:"
-msgstr "Metr:"
+msgstr "Mesurydd:"
 
 #: ../src/rep-vehicle.c:1042
 msgid "Consumption:"
@@ -1772,7 +1755,7 @@ msgstr "Gwariant:"
 
 #: ../src/rep-vehicle.c:1046
 msgid "Fuel cost:"
-msgstr "Cost y tanwydd:"
+msgstr "Cost tanwydd:"
 
 #: ../src/rep-vehicle.c:1050
 msgid "Other cost:"
@@ -1786,49 +1769,49 @@ msgstr "Cyfanswm:"
 #. every insert the drop-down list size is re-computed.
 #. gtk_combo_box_set_wrap_width(GTK_COMBO_BOX(data->CY_template), 0);
 #. populate template
-#: ../src/ui-account.c:535 ../src/ui-account.c:1682 ../src/ui-assign.c:181
-#: ../src/ui-currency.c:245 ../src/ui-widgets.c:1340
+#: ../src/ui-account.c:580 ../src/ui-account.c:1727 ../src/ui-assign.c:181
+#: ../src/ui-currency.c:245 ../src/ui-widgets.c:1337
 msgid "(none)"
 msgstr "(dim)"
 
-#: ../src/ui-account.c:861 ../src/ui-assign.c:510 ../src/ui-category.c:1312
-#: ../src/ui-currency.c:599 ../src/ui-payee.c:873 ../src/ui-tag.c:484
+#: ../src/ui-account.c:906 ../src/ui-assign.c:511 ../src/ui-category.c:1321
+#: ../src/ui-currency.c:599 ../src/ui-payee.c:881 ../src/ui-tag.c:484
 msgid "Visible"
 msgstr "Gweladwy"
 
 #. GTK_FILE_CHOOSER_ACTION_OPEN,
-#: ../src/ui-account.c:1022 ../src/ui-assign.c:904
-#: ../src/ui-assist-import.c:746 ../src/ui-budget-tabview.c:2101
-#: ../src/ui-budget-tabview.c:2354 ../src/ui-category.c:1723
-#: ../src/ui-category.c:1886 ../src/ui-currency.c:780 ../src/ui-currency.c:1150
+#: ../src/ui-account.c:1067 ../src/ui-assign.c:907
+#: ../src/ui-assist-import.c:749 ../src/ui-budget-tabview.c:2122
+#: ../src/ui-budget-tabview.c:2375 ../src/ui-category.c:1722
+#: ../src/ui-category.c:1885 ../src/ui-currency.c:784 ../src/ui-currency.c:1154
 #: ../src/ui-dialogs.c:81 ../src/ui-dialogs.c:386 ../src/ui-dialogs.c:504
 #: ../src/ui-dialogs.c:559 ../src/ui-dialogs.c:619 ../src/ui-dialogs.c:688
 #: ../src/ui-dialogs.c:752 ../src/ui-dialogs.c:829 ../src/ui-dialogs.c:957
 #: ../src/ui-dialogs.c:1125 ../src/ui-filter.c:1230 ../src/ui-hbfile.c:233
-#: ../src/ui-payee.c:1235 ../src/ui-payee.c:1434 ../src/ui-pref.c:2294
-#: ../src/ui-split.c:902 ../src/ui-tag.c:679 ../src/ui-tag.c:802
-#: ../src/ui-transaction.c:1451 ../src/ui-txn-multi.c:447
+#: ../src/ui-payee.c:1234 ../src/ui-payee.c:1433 ../src/ui-pref.c:2294
+#: ../src/ui-split.c:902 ../src/ui-tag.c:680 ../src/ui-tag.c:803
+#: ../src/ui-transaction.c:1451 ../src/ui-txn-multi.c:454
 msgid "_Cancel"
 msgstr "_Diddymu"
 
-#: ../src/ui-account.c:1024 ../src/ui-assign.c:906 ../src/ui-category.c:1725
-#: ../src/ui-currency.c:782 ../src/ui-currency.c:1152 ../src/ui-dialogs.c:387
-#: ../src/ui-hbfile.c:235 ../src/ui-payee.c:1237 ../src/ui-pref.c:2296
-#: ../src/ui-split.c:915 ../src/ui-tag.c:681 ../src/ui-transaction.c:1452
-#: ../src/ui-txn-multi.c:449
+#: ../src/ui-account.c:1069 ../src/ui-assign.c:909 ../src/ui-category.c:1724
+#: ../src/ui-currency.c:786 ../src/ui-currency.c:1156 ../src/ui-dialogs.c:387
+#: ../src/ui-hbfile.c:235 ../src/ui-payee.c:1236 ../src/ui-pref.c:2296
+#: ../src/ui-split.c:915 ../src/ui-tag.c:682 ../src/ui-transaction.c:1452
+#: ../src/ui-txn-multi.c:456
 msgid "_OK"
 msgstr "_Iawn"
 
-#: ../src/ui-account.c:1363 ../src/ui-account.c:1477
+#: ../src/ui-account.c:1408 ../src/ui-account.c:1522
 msgid "Account name"
 msgstr "Enw'r cyfrif"
 
-#: ../src/ui-account.c:1369 ../src/ui-account.c:1483 ../src/ui-category.c:1815
-#: ../src/ui-payee.c:1354 ../src/ui-tag.c:747
+#: ../src/ui-account.c:1414 ../src/ui-account.c:1528 ../src/ui-category.c:1814
+#: ../src/ui-payee.c:1353 ../src/ui-tag.c:748
 msgid "Error"
 msgstr "Gwall"
 
-#: ../src/ui-account.c:1370
+#: ../src/ui-account.c:1415
 #, c-format
 msgid ""
 "Cannot add an account '%s',\n"
@@ -1837,30 +1820,30 @@ msgstr ""
 "Methu ychwanegu cyfrif '%s',\n"
 "mae'r enw hwn eisoes yn bodoli."
 
-#: ../src/ui-account.c:1418
+#: ../src/ui-account.c:1463
 #, c-format
 msgid "Cannot delete account '%s'"
 msgstr "Methu dileu cyfrif '%s'"
 
-#: ../src/ui-account.c:1422
+#: ../src/ui-account.c:1467
 msgid ""
 "This account contains transactions and/or is part of internal transfers."
 msgstr ""
-"Mae'r cyfrif hwn yn cynnwys trafodion a/neu mae'n rhan o drosglwyddiadau "
+"Mae'r cyfrif hwn yn cynnwys trafodion ac/neu mae'n rhan o drosglwyddiadau "
 "mewnol."
 
-#: ../src/ui-account.c:1433 ../src/ui-archive.c:815 ../src/ui-assign.c:1434
-#: ../src/ui-budget-tabview.c:2288 ../src/ui-category.c:2014
-#: ../src/ui-currency.c:1542 ../src/ui-payee.c:1553 ../src/ui-tag.c:910
+#: ../src/ui-account.c:1478 ../src/ui-archive.c:827 ../src/ui-assign.c:1437
+#: ../src/ui-budget-tabview.c:2309 ../src/ui-category.c:2013
+#: ../src/ui-currency.c:1546 ../src/ui-payee.c:1552 ../src/ui-tag.c:911
 #, c-format
 msgid "Are you sure you want to permanently delete '%s'?"
 msgstr "Ydych chi'n siŵr eich bod am ddileu \"%s\" yn barhaol?"
 
-#: ../src/ui-account.c:1435
+#: ../src/ui-account.c:1480
 msgid "If you delete an account, it will be permanently lost."
 msgstr "Os fyddwch yn dileu cyfrif, bydd yn cael ei golli am byth."
 
-#: ../src/ui-account.c:1484
+#: ../src/ui-account.c:1529
 #, c-format
 msgid ""
 "Cannot rename this Account,\n"
@@ -1871,15 +1854,15 @@ msgstr ""
 "o '%s' i '%s',\n"
 "mae'r enw hwn eisoes yn bodoli."
 
-#: ../src/ui-account.c:1755
+#: ../src/ui-account.c:1800
 msgid "Manage Accounts"
 msgstr "Rheoli Cyfrifon"
 
-#: ../src/ui-account.c:1832
+#: ../src/ui-account.c:1877
 msgid "Rename"
 msgstr "Ailenwi"
 
-#: ../src/ui-account.c:1843
+#: ../src/ui-account.c:1888
 msgid ""
 "Drag & drop to change the order\n"
 "Double-click to rename"
@@ -1887,138 +1870,138 @@ msgstr ""
 "Llusgo a gollwng i newid y drefn\n"
 "Clic dwbl i ailenwi"
 
-#: ../src/ui-account.c:1857 ../src/ui-hbfile.c:260 ../src/ui-pref.c:84
+#: ../src/ui-account.c:1902 ../src/ui-hbfile.c:260 ../src/ui-pref.c:84
 #: ../src/ui-pref.c:1465 ../src/ui-pref.c:1855
 msgid "General"
 msgstr "Cyffredinol"
 
-#: ../src/ui-account.c:1878
+#: ../src/ui-account.c:1923
 msgid "_Group:"
 msgstr "_Grŵp:"
 
-#: ../src/ui-account.c:1887
+#: ../src/ui-account.c:1932
 msgid "_Institution:"
 msgstr "_Sefydliad:"
 
-#: ../src/ui-account.c:1895
+#: ../src/ui-account.c:1940
 msgid "N_umber:"
 msgstr "_Rhif:"
 
-#: ../src/ui-account.c:1903
+#: ../src/ui-account.c:1948
 msgid "Start _balance:"
 msgstr "Mantolen _gychwynnol:"
 
-#: ../src/ui-account.c:1910
+#: ../src/ui-account.c:1955
 msgid "_Currency:"
 msgstr "_Arian:"
 
-#: ../src/ui-account.c:1917
+#: ../src/ui-account.c:1962
 msgid "this account was _closed"
 msgstr "mae'r cyfrif hwn wedi cau"
 
-#: ../src/ui-account.c:1922 ../src/ui-assign.c:1097 ../src/ui-payee.c:1264
+#: ../src/ui-account.c:1967 ../src/ui-assign.c:1100 ../src/ui-payee.c:1263
 msgid "Notes:"
 msgstr "Nodiadau:"
 
-#: ../src/ui-account.c:1943
+#: ../src/ui-account.c:1988
 msgid "Behaviour"
 msgstr "Ymddygiad"
 
-#: ../src/ui-account.c:1952
+#: ../src/ui-account.c:1997
 msgid "Automation"
 msgstr "Awtomeiddio"
 
-#: ../src/ui-account.c:1956
+#: ../src/ui-account.c:2001
 msgid "Default _Template:"
 msgstr "_Templed Rhagosodedig:"
 
-#: ../src/ui-account.c:1977
+#: ../src/ui-account.c:2022
 msgid "Report exclusion"
 msgstr "Eithriadau Adroddiadau"
 
-#: ../src/ui-account.c:1981
+#: ../src/ui-account.c:2026
 msgid "exclude from account _summary"
 msgstr "eithrio o grynodeb y cyfrif"
 
-#: ../src/ui-account.c:1987
+#: ../src/ui-account.c:2032
 msgid "outflow into summary"
 msgstr "all-lif i'r crynodeb"
 
-#: ../src/ui-account.c:1992
+#: ../src/ui-account.c:2037
 msgid "exclude from the _budget"
 msgstr "eithrio o'r _gyllideb"
 
-#: ../src/ui-account.c:1997
+#: ../src/ui-account.c:2042
 msgid "exclude from any _reports"
 msgstr "eithrio o unrhyw _adroddiad"
 
-#: ../src/ui-account.c:2007
+#: ../src/ui-account.c:2052
 msgid "Misc."
 msgstr "Amrywiol"
 
-#: ../src/ui-account.c:2016
+#: ../src/ui-account.c:2061
 msgid "Current check number"
 msgstr "Rhif siec cyfredol"
 
-#: ../src/ui-account.c:2020
+#: ../src/ui-account.c:2065
 msgid "Checkbook _1:"
 msgstr "Llyfr Siec _1:"
 
-#: ../src/ui-account.c:2027
+#: ../src/ui-account.c:2072
 msgid "Checkbook _2:"
 msgstr "Llyfr Siec _2:"
 
-#: ../src/ui-account.c:2039
+#: ../src/ui-account.c:2084
 msgid "Balance limits"
-msgstr "Terfynau'r gweddill/balansau"
+msgstr "Terfynau'r mantoli"
 
-#: ../src/ui-account.c:2043
+#: ../src/ui-account.c:2088
 msgid "_Overdraft at:"
 msgstr "_Gorddrafft:"
 
-#: ../src/ui-account.c:2050
+#: ../src/ui-account.c:2095
 msgid "Max_imum:"
 msgstr "_Uchafswm:"
 
-#: ../src/ui-archive.c:817
+#: ../src/ui-archive.c:829
 msgid "If you delete a scheduled/template, it will be permanently lost."
 msgstr ""
 "Os byddwch yn dileu taliad wedi'i drefnu/templed bydd yn cael ei golli'n "
 "barhaol."
 
-#: ../src/ui-archive.c:1116
+#: ../src/ui-archive.c:1134
 msgid "Next _date:"
 msgstr "_Dyddiad nesaf:"
 
-#: ../src/ui-archive.c:1124
+#: ../src/ui-archive.c:1142
 msgid "Ever_y:"
 msgstr "Pob:"
 
-#: ../src/ui-archive.c:1139
+#: ../src/ui-archive.c:1157
 msgid "More options"
 msgstr "Rhagor o ddewisiadau"
 
-#: ../src/ui-archive.c:1151
+#: ../src/ui-archive.c:1169
 msgid "Week end:"
 msgstr "Penwythos:"
 
-#: ../src/ui-archive.c:1159
+#: ../src/ui-archive.c:1177
 msgid "_Stop after:"
 msgstr "_Aros ar ôl:"
 
-#: ../src/ui-archive.c:1173
+#: ../src/ui-archive.c:1191
 msgid "posts"
 msgstr "cofnodion"
 
-#: ../src/ui-archive.c:1196
+#: ../src/ui-archive.c:1216
 msgid "Manage scheduled/template transactions"
-msgstr "Rheoli trafodion drefnwyd/templed"
+msgstr "Rheoli trafodion amserlenwyd/templed"
 
-#: ../src/ui-archive.c:1240 ../src/ui-dialogs.c:241
+#: ../src/ui-archive.c:1258 ../src/ui-dialogs.c:241
 msgid "Template"
 msgstr "Templed"
 
-#: ../src/ui-archive.c:1310
+#: ../src/ui-archive.c:1328
 msgid "_Schedule"
 msgstr "_Amserlen"
 
@@ -2035,95 +2018,95 @@ msgid "Overwrite"
 msgstr "Trosysgrifennu"
 
 #. column : Search
-#: ../src/ui-assign.c:535
+#: ../src/ui-assign.c:538
 msgid "Search"
 msgstr "Chwilio"
 
 #. column : Notes
-#: ../src/ui-assign.c:539
+#: ../src/ui-assign.c:542
 msgid "Notes"
 msgstr "Nodiadau"
 
-#: ../src/ui-assign.c:698
+#: ../src/ui-assign.c:701
 #, c-format
 msgid "This search text already exists at position %d"
 msgstr "Mae'r testun chwilio yma'n bodoli ar safle %d"
 
-#: ../src/ui-assign.c:946
+#: ../src/ui-assign.c:949
 msgid "Condition"
-msgstr "Amod"
+msgstr "Amod/Cyflwr"
 
 #. label = make_label_widget(_("Con_tains:"));
-#: ../src/ui-assign.c:951
+#: ../src/ui-assign.c:954
 msgid "_Search:"
 msgstr "_Chwilio:"
 
-#: ../src/ui-assign.c:960
+#: ../src/ui-assign.c:963
 msgid "Case sensitive"
 msgstr "Sensitif i faint"
 
-#: ../src/ui-assign.c:965
+#: ../src/ui-assign.c:968
 msgid "Regular expression"
 msgstr "Mynegiad rheolaidd"
 
-#: ../src/ui-assign.c:983
+#: ../src/ui-assign.c:986
 msgid "_In:"
 msgstr "_Yn:"
 
-#: ../src/ui-assign.c:1001
+#: ../src/ui-assign.c:1004
 msgid "_AND"
 msgstr "_A"
 
 #. gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
-#: ../src/ui-assign.c:1010 ../src/ui-transaction.c:1546
-#: ../src/ui-txn-multi.c:499
+#: ../src/ui-assign.c:1013 ../src/ui-transaction.c:1546
+#: ../src/ui-txn-multi.c:506
 msgid "Amou_nt:"
 msgstr "_Swm:"
 
 #. label = make_label_group(_("Assign payee"));
-#: ../src/ui-assign.c:1029
+#: ../src/ui-assign.c:1032
 msgid "Assignments"
 msgstr "Aseiniadau"
 
-#: ../src/ui-assign.c:1039 ../src/ui-transaction.c:1666
-#: ../src/ui-txn-multi.c:564
+#: ../src/ui-assign.c:1042 ../src/ui-transaction.c:1666
+#: ../src/ui-txn-multi.c:571
 msgid "_Payee:"
-msgstr "_Talai:"
+msgstr "_Taledig:"
 
-#: ../src/ui-assign.c:1078
+#: ../src/ui-assign.c:1081
 msgid "Pay_ment:"
 msgstr "_Taliad:"
 
-#: ../src/ui-assign.c:1387
+#: ../src/ui-assign.c:1390
 #, c-format
 msgid "(rule %d)"
 msgstr "(rheol %d)"
 
-#: ../src/ui-assign.c:1436
+#: ../src/ui-assign.c:1439
 msgid "If you delete an assignment, it will be permanently lost."
 msgstr "Os fyddwch yn dileu aseiniad, bydd yn cael ei golli am byth."
 
-#: ../src/ui-assign.c:1622
+#: ../src/ui-assign.c:1625
 msgid "Move to..."
 msgstr "Symud i..."
 
-#: ../src/ui-assign.c:1631
+#: ../src/ui-assign.c:1634
 msgid "Move rule"
 msgstr "Symud rheol"
 
-#: ../src/ui-assign.c:1655
+#: ../src/ui-assign.c:1658
 msgid "Move"
 msgstr "Symud"
 
-#: ../src/ui-assign.c:1685
+#: ../src/ui-assign.c:1688
 msgid "Manage Assignments"
 msgstr "Rheoli Aseiniadau"
 
-#: ../src/ui-assign.c:1785
+#: ../src/ui-assign.c:1788
 msgid "Move up"
 msgstr "Symud i fyny"
 
-#: ../src/ui-assign.c:1789
+#: ../src/ui-assign.c:1792
 msgid "Move down"
 msgstr "Symud i lawr"
 
@@ -2138,7 +2121,7 @@ msgstr ""
 #: ../src/ui-assist-start.c:62
 msgid "All the elements you setup here can be changed later if required."
 msgstr ""
-"Bydd modd newid yr holl elfennau rydych yn eu gosod yma yn hwyrach, os oes "
+"Bydd modd newid yr holl elfennau rydych yn eu gosod yma yn y dyfodol, os oes "
 "angen."
 
 #: ../src/ui-assist-start.c:67
@@ -2173,7 +2156,7 @@ msgstr ""
 
 #: ../src/ui-assist-start.c:272
 msgid "Base:"
-msgstr "Sail"
+msgstr "Sail:"
 
 #: ../src/ui-assist-start.c:282
 msgid "Setup additional currencies"
@@ -2217,8 +2200,8 @@ msgstr ""
 msgid "Create my first account"
 msgstr "Creu fy nghyfrif cyntaf"
 
-#: ../src/ui-assist-start.c:529 ../src/ui-category.c:1740
-#: ../src/ui-currency.c:1231 ../src/ui-payee.c:1254 ../src/ui-tag.c:704
+#: ../src/ui-assist-start.c:529 ../src/ui-category.c:1739
+#: ../src/ui-currency.c:1235 ../src/ui-payee.c:1253 ../src/ui-tag.c:705
 msgid "_Name:"
 msgstr "_Enw:"
 
@@ -2255,81 +2238,81 @@ msgstr "Creu Cyfrif"
 msgid "Finish File Setup"
 msgstr "Gorffen Gosod y Ffeil"
 
-#: ../src/ui-assist-import.c:487
+#: ../src/ui-assist-import.c:489
 msgid "<New account (global)>"
 msgstr "<Cyfrif newydd (eang)>"
 
-#: ../src/ui-assist-import.c:492
+#: ../src/ui-assist-import.c:494
 msgid "<New account>"
 msgstr "<Cyfrif newydd>"
 
-#: ../src/ui-assist-import.c:513
+#: ../src/ui-assist-import.c:515
 msgid "<Skip this account>"
 msgstr "<Hepgor y cyfrif hwn>"
 
-#: ../src/ui-assist-import.c:656 ../src/ui-assist-import.c:1813
+#: ../src/ui-assist-import.c:658 ../src/ui-assist-import.c:1816
 msgid "Valid"
 msgstr "Dilys"
 
-#: ../src/ui-assist-import.c:667 ../src/ui-currency.c:616
-#: ../src/ui-currency.c:1214
+#: ../src/ui-assist-import.c:670 ../src/ui-currency.c:616
+#: ../src/ui-currency.c:1218
 msgid "Name"
 msgstr "Enw"
 
-#: ../src/ui-assist-import.c:748 ../src/ui-dialogs.c:546
+#: ../src/ui-assist-import.c:751 ../src/ui-dialogs.c:546
 #: ../src/ui-dialogs.c:608 ../src/ui-dialogs.c:689
 msgid "_Open"
 msgstr "_Agor"
 
-#: ../src/ui-assist-import.c:758
+#: ../src/ui-assist-import.c:761
 msgid "Known files"
 msgstr "Ffeiliau hysbys"
 
-#: ../src/ui-assist-import.c:769 ../src/ui-dialogs.c:510
+#: ../src/ui-assist-import.c:772 ../src/ui-dialogs.c:510
 msgid "QIF files"
 msgstr "Ffeiliau QIF"
 
-#: ../src/ui-assist-import.c:777
+#: ../src/ui-assist-import.c:780
 msgid "OFX/QFX files"
 msgstr "Ffeiliau OFX/QFX"
 
-#: ../src/ui-assist-import.c:785 ../src/ui-dialogs.c:568
+#: ../src/ui-assist-import.c:788 ../src/ui-dialogs.c:568
 msgid "CSV files"
 msgstr "Ffeiliau CSV"
 
-#: ../src/ui-assist-import.c:792 ../src/ui-dialogs.c:511
+#: ../src/ui-assist-import.c:795 ../src/ui-dialogs.c:511
 #: ../src/ui-dialogs.c:569 ../src/ui-dialogs.c:629
 msgid "All files"
 msgstr "Pob ffeil"
 
-#: ../src/ui-assist-import.c:871
+#: ../src/ui-assist-import.c:874
 msgid "new global account"
 msgstr "cyfrif eang newydd"
 
-#: ../src/ui-assist-import.c:874
+#: ../src/ui-assist-import.c:877
 msgid "new account"
 msgstr "cyfrif newydd"
 
-#: ../src/ui-assist-import.c:877
+#: ../src/ui-assist-import.c:880
 msgid "skipped"
 msgstr "wedi ei hepgor"
 
-#: ../src/ui-assist-import.c:896
+#: ../src/ui-assist-import.c:899
 #, c-format
 msgid ", %d of %d transactions"
 msgstr ", %d o %d trafodyn"
 
-#: ../src/ui-assist-import.c:1025
+#: ../src/ui-assist-import.c:1028
 #, c-format
 msgid "%d transaction(s), %d similar, %d existing, %d selected"
 msgstr "%d trafodyn, %d yn debyg, %d yn bodoli, %d wedi'u dewis"
 
-#: ../src/ui-assist-import.c:1027
+#: ../src/ui-assist-import.c:1030
 #, c-format
 msgid "%d transaction(s), %d selected"
 msgstr "%d trafodyn, %d wedi'u dewis"
 
-#: ../src/ui-assist-import.c:1195
+#: ../src/ui-assist-import.c:1198
 msgid ""
 "Some date cannot be converted. Please try to change the date order to "
 "continue."
@@ -2338,20 +2321,20 @@ msgstr ""
 "parhau."
 
 #. label = g_strdup_printf(_("'%s' - %s"), genacc->name, hb_import_filetype_char_get(genacc));
-#: ../src/ui-assist-import.c:1384
+#: ../src/ui-assist-import.c:1387
 #, c-format
 msgid "Import <b>%s</b> in_to:"
 msgstr "Mewnforio <b>%s</b> _i:"
 
-#: ../src/ui-assist-import.c:1384
+#: ../src/ui-assist-import.c:1387
 msgid "this file"
 msgstr "y ffeil hon"
 
-#: ../src/ui-assist-import.c:1384
+#: ../src/ui-assist-import.c:1387
 msgid "this account"
 msgstr "y cyfrif hwn"
 
-#: ../src/ui-assist-import.c:1391
+#: ../src/ui-assist-import.c:1394
 #, c-format
 msgid ""
 "Name: %s\n"
@@ -2364,11 +2347,11 @@ msgstr ""
 "Feil: %s\n"
 "Amgodio: %s"
 
-#: ../src/ui-assist-import.c:1441
+#: ../src/ui-assist-import.c:1444
 msgid "Import transactions from bank or credit card"
 msgstr "Mewnforio trafodion o gerdyn banc neu gredyd"
 
-#: ../src/ui-assist-import.c:1449
+#: ../src/ui-assist-import.c:1452
 msgid ""
 "With this assistant you will be guided through the process of importing one "
 "or several\n"
@@ -2380,7 +2363,7 @@ msgstr ""
 "neu nifer o ddatganiadau wedi'u llwytho i lawr gan eich cerdyn banc neu "
 "gredyd, yn y fformatau canlynol:"
 
-#: ../src/ui-assist-import.c:1455
+#: ../src/ui-assist-import.c:1458
 msgid ""
 "<b>Recommended:</b> .OFX or .QFX\n"
 "<i>(Sometimes named Money™ or Quicken™)</i>\n"
@@ -2396,19 +2379,19 @@ msgstr ""
 "<b>Defnyddwyr uwch yn unig:</b> .CSV\n"
 "<i>(fformat penodol i HomeBank, gw. y ddogfennaeth)</i>"
 
-#: ../src/ui-assist-import.c:1475
+#: ../src/ui-assist-import.c:1478
 msgid ""
 "No changes will be made until you click \"Apply\" at the end of this "
 "assistant."
 msgstr ""
-"Bydd dim newidiadau'n cael eu gwneud nes i chi glicio \"Defnyddio\" ar "
-"ddiwedd y cynorthwyydd."
+"Bydd dim newidiadau'n cael eu gwneud nes i chi glicio \"Gosod\" ar ddiwedd y "
+"cynorthwyydd."
 
-#: ../src/ui-assist-import.c:1479
+#: ../src/ui-assist-import.c:1482
 msgid "Don't show this again"
 msgstr "Peidio dangos eto"
 
-#: ../src/ui-assist-import.c:1538
+#: ../src/ui-assist-import.c:1541
 msgid ""
 "Drag&Drop one or several files to import.\n"
 "You can also use the add/delete buttons of the list."
@@ -2416,7 +2399,7 @@ msgstr ""
 "Llusgwch a gollwng un neu sawl ffeil i'w mewnforio.\n"
 "Gallwch hefyd ddefnyddio botymau ychwanegu/dileu y rhestr."
 
-#: ../src/ui-assist-import.c:1611
+#: ../src/ui-assist-import.c:1614
 msgid ""
 "There is too much account in the files you choose,\n"
 "please use the back button to select less files."
@@ -2424,100 +2407,100 @@ msgstr ""
 "Mae gormod o gyfrifon yn y ffeiliau rydych chi'n eu dewis,\n"
 "defnyddiwch y botwm Nôl i ddewis llai o ffeiliau."
 
-#: ../src/ui-assist-import.c:1733
+#: ../src/ui-assist-import.c:1736
 msgid "Target account identification by name or number failed."
 msgstr "Wedi methu adnabod cyfrif targed yn ôl enw neu rif."
 
-#: ../src/ui-assist-import.c:1746 ../src/ui-pref.c:1231
+#: ../src/ui-assist-import.c:1749 ../src/ui-pref.c:1231
 msgid "Date order:"
 msgstr "Trefn dyddiadau:"
 
-#: ../src/ui-assist-import.c:1762 ../src/ui-pref.c:1279
+#: ../src/ui-assist-import.c:1765 ../src/ui-pref.c:1279
 msgid "_Import memos"
 msgstr "Mewnforio _memos"
 
-#: ../src/ui-assist-import.c:1766 ../src/ui-pref.c:1282
+#: ../src/ui-assist-import.c:1769 ../src/ui-pref.c:1282
 msgid "_Swap memos with payees"
 msgstr "_Cyfnewid memos gyda'r taledigion"
 
-#: ../src/ui-assist-import.c:1776 ../src/ui-pref.c:1254
+#: ../src/ui-assist-import.c:1779 ../src/ui-pref.c:1254
 msgid "OFX _Name:"
 msgstr "_Enw OFX:"
 
-#: ../src/ui-assist-import.c:1782 ../src/ui-pref.c:1262
+#: ../src/ui-assist-import.c:1785 ../src/ui-pref.c:1262
 msgid "OFX _Memo:"
 msgstr "_Memo OFX:"
 
-#: ../src/ui-assist-import.c:1831 ../src/ui-pref.c:1239
+#: ../src/ui-assist-import.c:1834 ../src/ui-pref.c:1239
 msgid "Sentence _case memo/payee"
 msgstr "Maint llythrennau brawddeg memo/taledig"
 
-#: ../src/ui-assist-import.c:1835
+#: ../src/ui-assist-import.c:1838
 msgid "_Toggle amount"
 msgstr "Toglo'r _swm"
 
-#: ../src/ui-assist-import.c:1869
+#: ../src/ui-assist-import.c:1872
 msgid "Similar transaction in target account (possible duplicate)"
-msgstr "Trafodion tebyg  yn y cyfrif targed (dyblyg posibl)"
+msgstr "Trafodion tebyg yn y cyfrif targed (dyblyg posibl)"
 
-#: ../src/ui-assist-import.c:1892
+#: ../src/ui-assist-import.c:1895
 msgid "Date _gap:"
-msgstr "Ystod _dyddiad:"
+msgstr "Bwlch _dyddiadau:"
 
 #. TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days of date tolerance
 #. TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days in advance the current date
-#: ../src/ui-assist-import.c:1900 ../src/ui-hbfile.c:319 ../src/ui-pref.c:1791
+#: ../src/ui-assist-import.c:1903 ../src/ui-hbfile.c:319 ../src/ui-pref.c:1791
 msgid "days"
 msgstr "diwrnod"
 
-#: ../src/ui-assist-import.c:1908
+#: ../src/ui-assist-import.c:1911
 msgid ""
 "The match is done in order: by account, amount and date.\n"
 "A date tolerance of 0 day means an exact match"
 msgstr ""
-"Mae'r cydweddu'n cael ei wneud mewn trefn: cyfrif, swm a dyddiad.\n"
+"Mae'r cydweddu'n cael ei wneud yn ôl y drefn: cyfrif, swm a dyddiad.\n"
 "Mae goddefiad 0 diwrnod yn golygu cyfatebiaeth llawn"
 
-#: ../src/ui-assist-import.c:1979
+#: ../src/ui-assist-import.c:1982
 msgid "Run automation"
-msgstr "Rhedeg awtomeiddio"
+msgstr "Rhedeg yr awtomeiddio"
 
-#: ../src/ui-assist-import.c:1983
+#: ../src/ui-assist-import.c:1986
 msgid "1) Enrich with _payee default"
-msgstr "1) Cyfoethogi gyda _thaleion rhagosodedig"
+msgstr "1) Cyfoethogi gyda _thaledigion rhagosodedig"
 
-#: ../src/ui-assist-import.c:1989
+#: ../src/ui-assist-import.c:1992
 msgid "2) Run automatic _assigment rules"
 msgstr "2) Rhedeg rheolau _aseinio awtomatig"
 
-#: ../src/ui-assist-import.c:1995
+#: ../src/ui-assist-import.c:1998
 msgid "Click \"Apply\" to update your accounts."
 msgstr "Cliciwch \"Gosod\" i ddiweddaru eich cyfrifon."
 
-#: ../src/ui-assist-import.c:2329
+#: ../src/ui-assist-import.c:2332
 msgid "Welcome"
 msgstr "Croeso"
 
-#: ../src/ui-assist-import.c:2335
+#: ../src/ui-assist-import.c:2338
 msgid "Select file(s)"
 msgstr "Dewis ffeil(iau)"
 
 #. gtk_assistant_set_page_type (GTK_ASSISTANT (assistant), page, GTK_ASSISTANT_PAGE_PROGRESS);
-#: ../src/ui-assist-import.c:2340
+#: ../src/ui-assist-import.c:2343
 msgid "Import"
 msgstr "Mewnforio"
 
-#: ../src/ui-assist-import.c:2353
+#: ../src/ui-assist-import.c:2356
 msgid "Confirmation"
 msgstr "Cadarnhad"
 
-#: ../src/ui-budget.c:529 ../src/ui-category.c:1530 ../src/ui-payee.c:1088
-#: ../src/ui-tag.c:579
+#: ../src/ui-budget.c:530 ../src/ui-category.c:1529 ../src/ui-payee.c:1087
+#: ../src/ui-tag.c:580
 msgid "File format error"
 msgstr "Gwall fformat ffeil"
 
-#: ../src/ui-budget.c:530 ../src/ui-category.c:1531 ../src/ui-payee.c:1089
-#: ../src/ui-tag.c:580
+#: ../src/ui-budget.c:531 ../src/ui-category.c:1530 ../src/ui-payee.c:1088
+#: ../src/ui-tag.c:581
 msgid ""
 "The CSV file must contains the exact numbers of column,\n"
 "separated by a semi-colon, please see the help for more details."
@@ -2525,142 +2508,149 @@ msgstr ""
 "Rhaid i'r ffeil CSV gynnwys yr union nifer o golofnau, wedi'u gwahanu gyda "
 "hanner colon, ewch i'r Cymorth am fwy o fanylion."
 
-#: ../src/ui-budget.c:922
+#: ../src/ui-budget.c:923
 msgid "Are you sure you want to clear input?"
 msgstr "Ydych chi'n siŵr eich bod am glirio'r mewnbwn?"
 
-#: ../src/ui-budget.c:924 ../src/ui-budget-tabview.c:2509
+#: ../src/ui-budget.c:925 ../src/ui-budget-tabview.c:2530
 msgid "If you proceed, every amount will be set to 0."
 msgstr "Os fyddwch yn bwrw ymlaen, bydd pob swm yn cael eu gosod i 0."
 
-#: ../src/ui-budget.c:930 ../src/ui-budget-tabview.c:2515
+#: ../src/ui-budget.c:931 ../src/ui-budget-tabview.c:2536
 msgid "_Clear"
 msgstr "_Clirio"
 
-#: ../src/ui-budget.c:1140
+#. create window
+#: ../src/ui-budget.c:1141 ../src/ui-budget-tabview.c:2778
 msgid "Manage Budget"
 msgstr "Rheoli Cyllideb"
 
-#: ../src/ui-budget.c:1186 ../src/ui-category.c:2463 ../src/ui-payee.c:1821
-#: ../src/ui-tag.c:1098
+#: ../src/ui-budget.c:1188 ../src/ui-category.c:2462 ../src/ui-payee.c:1820
+#: ../src/ui-tag.c:1099
 msgid "_Import CSV"
 msgstr "_Mewnforio CVS"
 
-#: ../src/ui-budget.c:1190 ../src/ui-category.c:2467 ../src/ui-payee.c:1825
-#: ../src/ui-tag.c:1102
+#: ../src/ui-budget.c:1192 ../src/ui-category.c:2466 ../src/ui-payee.c:1824
+#: ../src/ui-tag.c:1103
 msgid "E_xport CSV"
 msgstr "_Allforio CSV"
 
-#: ../src/ui-budget.c:1284
+#: ../src/ui-budget.c:1286
 msgid "Balance:"
-msgstr "Gweddill:"
+msgstr "Mantolen:"
 
-#: ../src/ui-budget.c:1305
+#: ../src/ui-budget.c:1307
 msgid "is the same each month"
 msgstr "yr un peth bob mis"
 
-#: ../src/ui-budget.c:1319
+#: ../src/ui-budget.c:1321
 msgid "_Clear input"
 msgstr "_Clirio'r mewnbwn"
 
-#: ../src/ui-budget.c:1334
+#: ../src/ui-budget.c:1336
 msgid "is different per month"
 msgstr "yn wahanol pob mis"
 
-#: ../src/ui-budget.c:1373 ../src/ui-dialogs.c:866
+#: ../src/ui-budget.c:1375 ../src/ui-dialogs.c:866
 msgid "Options"
 msgstr "Dewisiadau"
 
-#: ../src/ui-budget.c:1378 ../src/ui-budget-tabview.c:2883
+#: ../src/ui-budget.c:1380 ../src/ui-budget-tabview.c:2914
 msgid "_Force monitoring this category"
 msgstr "_Gorfodi monitro'r categori hwn"
 
-#: ../src/ui-budget-tabview.c:79 ../src/ui-widgets-data.c:277
+#: ../src/ui-budget-tabview.c:80 ../src/ui-widgets-data.c:319
 msgid "Jan"
 msgstr "Ion"
 
-#: ../src/ui-budget-tabview.c:79 ../src/ui-widgets-data.c:278
+#: ../src/ui-budget-tabview.c:80 ../src/ui-widgets-data.c:320
 msgid "Feb"
 msgstr "Chw"
 
-#: ../src/ui-budget-tabview.c:79 ../src/ui-widgets-data.c:279
+#: ../src/ui-budget-tabview.c:80 ../src/ui-widgets-data.c:321
 msgid "Mar"
 msgstr "Maw"
 
-#: ../src/ui-budget-tabview.c:80 ../src/ui-widgets-data.c:280
+#: ../src/ui-budget-tabview.c:81 ../src/ui-widgets-data.c:322
 msgid "Apr"
 msgstr "Ebr"
 
-#: ../src/ui-budget-tabview.c:80 ../src/ui-widgets-data.c:261
-#: ../src/ui-widgets-data.c:281
+#: ../src/ui-budget-tabview.c:81 ../src/ui-widgets-data.c:303
+#: ../src/ui-widgets-data.c:323
 msgid "May"
 msgstr "Mai"
 
-#: ../src/ui-budget-tabview.c:80 ../src/ui-widgets-data.c:282
+#: ../src/ui-budget-tabview.c:81 ../src/ui-widgets-data.c:324
 msgid "Jun"
 msgstr "Meh"
 
-#: ../src/ui-budget-tabview.c:81 ../src/ui-widgets-data.c:283
+#: ../src/ui-budget-tabview.c:82 ../src/ui-widgets-data.c:325
 msgid "Jul"
 msgstr "Gor"
 
-#: ../src/ui-budget-tabview.c:81 ../src/ui-widgets-data.c:284
+#: ../src/ui-budget-tabview.c:82 ../src/ui-widgets-data.c:326
 msgid "Aug"
 msgstr "Aws"
 
-#: ../src/ui-budget-tabview.c:81
+#: ../src/ui-budget-tabview.c:82
 msgid "Sept"
 msgstr "Medi"
 
-#: ../src/ui-budget-tabview.c:82 ../src/ui-widgets-data.c:286
+#: ../src/ui-budget-tabview.c:83 ../src/ui-widgets-data.c:328
 msgid "Oct"
 msgstr "Hyd"
 
-#: ../src/ui-budget-tabview.c:82 ../src/ui-widgets-data.c:287
+#: ../src/ui-budget-tabview.c:83 ../src/ui-widgets-data.c:329
 msgid "Nov"
 msgstr "Tac"
 
-#: ../src/ui-budget-tabview.c:82 ../src/ui-widgets-data.c:288
+#: ../src/ui-budget-tabview.c:83 ../src/ui-widgets-data.c:330
 msgid "Dec"
 msgstr "Rha"
 
-#: ../src/ui-budget-tabview.c:87
+#: ../src/ui-budget-tabview.c:88
 msgid "Summary"
 msgstr "Crynodeb"
 
-#: ../src/ui-budget-tabview.c:533 ../src/ui-budget-tabview.c:534
+#: ../src/ui-budget-tabview.c:534 ../src/ui-budget-tabview.c:535
 msgid "Totals"
 msgstr "Cyfansymiau"
 
-#: ../src/ui-budget-tabview.c:1561
-msgid "Annual Total"
-msgstr "Cyfanswm Blynyddol"
+#. gtk_tree_view_column_set_title(col, _("Annual Total"));
+#: ../src/ui-budget-tabview.c:1575
+msgid ""
+"Annual\n"
+"Total"
+msgstr ""
 
-#: ../src/ui-budget-tabview.c:1572
-msgid "Monthly Average"
-msgstr "Cyfartaledd Misol"
+#. gtk_tree_view_column_set_title(col, _("Monthly Average"));
+#: ../src/ui-budget-tabview.c:1589
+msgid ""
+"Monthly\n"
+"Average"
+msgstr ""
 
-#: ../src/ui-budget-tabview.c:1583
+#: ../src/ui-budget-tabview.c:1602
 msgid "Monthly"
 msgstr "Misol"
 
-#: ../src/ui-budget-tabview.c:2098
+#: ../src/ui-budget-tabview.c:2119
 msgid "Add a category"
 msgstr "Ychwanegu categori"
 
-#: ../src/ui-budget-tabview.c:2107 ../src/ui-budget-tabview.c:2360
+#: ../src/ui-budget-tabview.c:2128 ../src/ui-budget-tabview.c:2381
 msgid "_Apply"
 msgstr "_Gosod"
 
-#: ../src/ui-budget-tabview.c:2125
+#: ../src/ui-budget-tabview.c:2146
 msgid "Parent category"
 msgstr "Categori rhiant"
 
-#: ../src/ui-budget-tabview.c:2148
+#: ../src/ui-budget-tabview.c:2169
 msgid "Category name"
 msgstr "Enw categori"
 
-#: ../src/ui-budget-tabview.c:2292 ../src/ui-category.c:2018
+#: ../src/ui-budget-tabview.c:2313 ../src/ui-category.c:2017
 msgid ""
 "This category is used.\n"
 "Any transaction using that category will be set to (no category)"
@@ -2669,11 +2659,11 @@ msgstr ""
 "Bydd unrhyw drafodyn sy'n defnyddio'r categori hwnnw yn cael ei osod i (dim "
 "categori)"
 
-#: ../src/ui-budget-tabview.c:2351
+#: ../src/ui-budget-tabview.c:2372
 msgid "Merge categories"
 msgstr "Cyfuno categorïau"
 
-#: ../src/ui-budget-tabview.c:2378
+#: ../src/ui-budget-tabview.c:2399
 #, c-format
 msgid ""
 "Transactions assigned to category '%s', will be moved to the category "
@@ -2682,59 +2672,54 @@ msgstr ""
 "Bydd trafodion sy'n cael eu rhoi i gategori '%s', yn cael eu symud i'r "
 "categori isod."
 
-#: ../src/ui-budget-tabview.c:2385
+#: ../src/ui-budget-tabview.c:2406
 msgid "Target category"
 msgstr "Categori targed"
 
-#: ../src/ui-budget-tabview.c:2417 ../src/ui-category.c:1910
+#: ../src/ui-budget-tabview.c:2438 ../src/ui-category.c:1909
 #, c-format
 msgid "_Delete the category '%s'"
 msgstr "_Dileu'r categori '%s'"
 
-#: ../src/ui-budget-tabview.c:2508
+#: ../src/ui-budget-tabview.c:2529
 #, c-format
 msgid "Are you sure you want to clear inputs for '%s'?"
 msgstr "Ydych chi'n siŵr eich bod chi am glirio mewnbynnau ar gyfer '%s'?"
 
-#. create window
-#: ../src/ui-budget-tabview.c:2756
-msgid "Budget (table view)"
-msgstr "Cyllidebu (golwg tabl)"
-
 #. Add / Remove / Merge
-#: ../src/ui-budget-tabview.c:2840
+#: ../src/ui-budget-tabview.c:2871
 msgid "Add category"
 msgstr "Ychwanegu categori"
 
-#: ../src/ui-budget-tabview.c:2845
+#: ../src/ui-budget-tabview.c:2876
 msgid "Remove category"
 msgstr "Tynnu categori"
 
-#: ../src/ui-budget-tabview.c:2850 ../src/ui-category.c:1887
-#: ../src/ui-payee.c:1435 ../src/ui-tag.c:803
+#: ../src/ui-budget-tabview.c:2881 ../src/ui-category.c:1886
+#: ../src/ui-payee.c:1434 ../src/ui-tag.c:804
 msgid "Merge"
 msgstr "Cyfuno"
 
-#: ../src/ui-budget-tabview.c:2867
+#: ../src/ui-budget-tabview.c:2898
 msgid "Clear input"
 msgstr "Clirio mewnbwn"
 
 #. TRANSLATORS: 'txn' is abbrevation for transaction
-#: ../src/ui-category.c:1340 ../src/ui-payee.c:905
+#: ../src/ui-category.c:1338 ../src/ui-payee.c:901
 msgid "# txn"
 msgstr "# txn"
 
 #. TRANSLATORS: 'cfg' is abbrevation for configuration
 #. TRANSLATORS: 'txn' is abbrevation for configuration
-#: ../src/ui-category.c:1354 ../src/ui-payee.c:920
+#: ../src/ui-category.c:1352 ../src/ui-payee.c:916
 msgid "# cfg"
 msgstr "# cfg"
 
-#: ../src/ui-category.c:1479
+#: ../src/ui-category.c:1478
 msgid "Delete unused categories"
 msgstr "Dileu categorïau heb eu defnyddio"
 
-#: ../src/ui-category.c:1480
+#: ../src/ui-category.c:1479
 msgid ""
 "Are you sure you want to permanently\n"
 "delete unused categories?"
@@ -2742,23 +2727,23 @@ msgstr ""
 "Ydych chi'n siŵr eich bod am ddileu'n barhaol\n"
 "pob categori heb eu defnyddio?"
 
-#: ../src/ui-category.c:1720
+#: ../src/ui-category.c:1719
 msgid "Edit Category"
 msgstr "Golygu Categori"
 
-#: ../src/ui-category.c:1752
+#: ../src/ui-category.c:1751
 msgid "Change Type"
 msgstr "Newid y math"
 
-#: ../src/ui-category.c:1757
+#: ../src/ui-category.c:1756
 msgid "_Income"
 msgstr "_Incwm"
 
-#: ../src/ui-category.c:1762
+#: ../src/ui-category.c:1761
 msgid "Propagate to _children"
 msgstr "Lledaenu i'r _plant"
 
-#: ../src/ui-category.c:1816
+#: ../src/ui-category.c:1815
 #, c-format
 msgid ""
 "Cannot rename this Category,\n"
@@ -2769,12 +2754,12 @@ msgstr ""
 "o '%s' i '%s',\n"
 "mae'r enw hwn eisoes yn bodoli."
 
-#: ../src/ui-category.c:1875
+#: ../src/ui-category.c:1874
 #, c-format
 msgid "Merge category '%s'"
 msgstr "Cyfuno categori '%s'"
 
-#: ../src/ui-category.c:1896
+#: ../src/ui-category.c:1895
 msgid ""
 "Transactions assigned to this category,\n"
 "will be moved to the category selected below."
@@ -2782,41 +2767,41 @@ msgstr ""
 "Bydd y trafodion sydd yn y categori hwn yn\n"
 "cael eu symud i'r categori sydd wedi ei ddewis isod."
 
-#: ../src/ui-category.c:1906
+#: ../src/ui-category.c:1905
 msgid "Include _subcategories"
-msgstr "Yn cynnwys _is-gategorïau"
+msgstr "Cynnwys _is-gategorïau"
 
-#: ../src/ui-category.c:2407
+#: ../src/ui-category.c:2406
 msgid "Manage Categories"
 msgstr "Rheoli Categorïau"
 
 #. test headerbar
 #. content = gtk_dialog_get_header_bar(GTK_DIALOG (dialog));
-#: ../src/ui-category.c:2447 ../src/ui-payee.c:1809
+#: ../src/ui-category.c:2446 ../src/ui-payee.c:1808
 msgid "Show Hidden"
 msgstr "Dangos Cudd"
 
-#: ../src/ui-category.c:2451 ../src/ui-payee.c:1813
+#: ../src/ui-category.c:2450 ../src/ui-payee.c:1812
 msgid "Show Usage"
 msgstr "Dangos Defnydd"
 
-#: ../src/ui-category.c:2474 ../src/ui-payee.c:1832
+#: ../src/ui-category.c:2473 ../src/ui-payee.c:1831
 msgid "_Delete unused"
 msgstr "_Dileu heb ei ddefnyddio"
 
-#: ../src/ui-category.c:2547 ../src/ui-payee.c:1900 ../src/ui-tag.c:1168
+#: ../src/ui-category.c:2546 ../src/ui-payee.c:1899 ../src/ui-tag.c:1169
 msgid "Move/Merge"
 msgstr "Symud/Cyfuno"
 
-#: ../src/ui-category.c:2561 ../src/ui-payee.c:1914
+#: ../src/ui-category.c:2560 ../src/ui-payee.c:1913
 msgid "Show/Hide"
 msgstr "Dangos/Cuddio"
 
-#: ../src/ui-category.c:2593
+#: ../src/ui-category.c:2592
 msgid "new category"
 msgstr "categori newydd"
 
-#: ../src/ui-category.c:2605
+#: ../src/ui-category.c:2604
 msgid "new subcategory"
 msgstr "is gategori newydd"
 
@@ -2824,87 +2809,87 @@ msgstr "is gategori newydd"
 msgid "Base currency"
 msgstr "Arian sail"
 
-#: ../src/ui-currency.c:627
+#: ../src/ui-currency.c:628
 msgid "Symbol"
 msgstr "Symbol"
 
-#: ../src/ui-currency.c:639 ../src/ui-currency.c:822 ../src/ui-pref.c:1505
+#: ../src/ui-currency.c:640 ../src/ui-currency.c:826 ../src/ui-pref.c:1505
 msgid "Exchange rate"
 msgstr "Cyfradd cyfnewid"
 
-#: ../src/ui-currency.c:652
+#: ../src/ui-currency.c:655
 msgid "Last modified"
 msgstr "Newidiwyd diwethaf"
 
-#: ../src/ui-currency.c:777
+#: ../src/ui-currency.c:781
 msgid "Edit currency"
 msgstr "Golygu'r arian cyfred"
 
-#: ../src/ui-currency.c:808 ../src/ui-dialogs.c:295 ../src/ui-pref.c:1480
+#: ../src/ui-currency.c:812 ../src/ui-dialogs.c:295 ../src/ui-pref.c:1480
 msgid "Currency"
 msgstr "Arian Cyfred"
 
-#: ../src/ui-currency.c:841 ../src/ui-pref.c:1522
+#: ../src/ui-currency.c:845 ../src/ui-pref.c:1522
 msgid "Format"
 msgstr "Fformat"
 
-#: ../src/ui-currency.c:850 ../src/ui-pref.c:1531 ../src/ui-pref.c:1611
+#: ../src/ui-currency.c:854 ../src/ui-pref.c:1531 ../src/ui-pref.c:1611
 msgid "_Customize"
 msgstr "_Cyfaddasu"
 
-#: ../src/ui-currency.c:859 ../src/ui-pref.c:1540
+#: ../src/ui-currency.c:863 ../src/ui-pref.c:1540
 msgid "_Symbol:"
 msgstr "_Symbol:"
 
-#: ../src/ui-currency.c:866 ../src/ui-pref.c:1547
+#: ../src/ui-currency.c:870 ../src/ui-pref.c:1547
 msgid "Is pre_fix"
-msgstr "Y _rhagddodiad"
+msgstr "Yn _rhagddodiad"
 
-#: ../src/ui-currency.c:871 ../src/ui-pref.c:1552
+#: ../src/ui-currency.c:875 ../src/ui-pref.c:1552
 msgid "_Decimal char:"
 msgstr "_Nod degol:"
 
-#: ../src/ui-currency.c:878 ../src/ui-pref.c:1559
+#: ../src/ui-currency.c:882 ../src/ui-pref.c:1559
 msgid "_Frac digits:"
 msgstr "Digidau _frac:"
 
-#: ../src/ui-currency.c:885 ../src/ui-pref.c:1566
+#: ../src/ui-currency.c:889 ../src/ui-pref.c:1566
 msgid "_Grouping char:"
 msgstr "_Grwpio nodau:"
 
-#: ../src/ui-currency.c:1147
+#: ../src/ui-currency.c:1151
 msgid "Select base currency"
 msgstr "Dewiswch arian cyfred sail"
 
-#: ../src/ui-currency.c:1147
+#: ../src/ui-currency.c:1151
 msgid "Select currency"
 msgstr "Dewis y math o arian cyfred"
 
-#: ../src/ui-currency.c:1219
+#: ../src/ui-currency.c:1223
 msgid "ISO Code"
 msgstr "Cod ISO"
 
-#: ../src/ui-currency.c:1225
+#: ../src/ui-currency.c:1229
 msgid "Add a custom _currency"
 msgstr "Ychwanegu _arian cyfred cyfaddas"
 
-#: ../src/ui-currency.c:1238
+#: ../src/ui-currency.c:1242
 msgid "_ISO:"
 msgstr "_ISO:"
 
-#: ../src/ui-currency.c:1333
+#: ../src/ui-currency.c:1337
 msgid "Update online error"
 msgstr "Gwall diweddaru ar-lein"
 
-#: ../src/ui-currency.c:1544
+#: ../src/ui-currency.c:1548
 msgid "If you delete a currency, it will be permanently lost."
 msgstr "Os fyddwch yn dileu arian cyfred, bydd yn cael ei golli am byth."
 
-#: ../src/ui-currency.c:1587
+#: ../src/ui-currency.c:1591
 msgid "Change the base currency"
 msgstr "Newid yr arian cyfred sylfaen"
 
-#: ../src/ui-currency.c:1588
+#: ../src/ui-currency.c:1592
 msgid ""
 "If you proceed, rates of other currencies\n"
 "will be set to 0, don't forget to update it"
@@ -2912,15 +2897,15 @@ msgstr ""
 "Os byddwch yn bwrw ymlaen, bydd cyfraddau arian eraill\n"
 "yn cael eu gosod i 0, peidiwch ag anghofio ei ddiweddaru"
 
-#: ../src/ui-currency.c:1683
+#: ../src/ui-currency.c:1687
 msgid "Currencies"
 msgstr "Arian Cyfred"
 
-#: ../src/ui-currency.c:1732
+#: ../src/ui-currency.c:1736
 msgid "Update online"
 msgstr "Diweddaru ar-lein"
 
-#: ../src/ui-currency.c:1784
+#: ../src/ui-currency.c:1788
 msgid "Set as base"
 msgstr "Gosod fel sylfaen"
 
@@ -2931,6 +2916,13 @@ msgstr "Ystadegau'r ffeil"
 #: ../src/ui-dialogs.c:222
 msgid "Transaction"
 msgstr "Trafodyn"
+
+#. header
+#: ../src/ui-dialogs.c:286 ../src/ui-filter.c:921 ../src/ui-filter.c:925
+#: ../src/ui-filter.c:1301 ../src/ui-tag.c:500 ../src/ui-widgets-data.c:61
+#: ../src/ui-widgets-data.c:80
+msgid "Tag"
+msgstr "Tag"
 
 #: ../src/ui-dialogs.c:383
 msgid "Upgrade"
@@ -3011,7 +3003,7 @@ msgstr "Ffolder:"
 
 #: ../src/ui-dialogs.c:855 ../src/ui-dialogs.c:989
 msgid "Pick a Folder"
-msgstr "Dewis Ffolder"
+msgstr "Dewiswch Ffolder"
 
 #: ../src/ui-dialogs.c:859 ../src/ui-dialogs.c:993
 msgid "Filename:"
@@ -3032,7 +3024,7 @@ msgid ""
 "from 'All transaction', or you selected an option."
 msgstr ""
 "Ni fydd y ffeil yn fformat CSV HomeBank, gan eich bod wedi allforio\n"
-"o 'Bob Traddodyn', neu rydych wedi dewis dewisiad."
+"o 'Bob trafodyn', neu rydych wedi dewis dewisiad."
 
 #: ../src/ui-dialogs.c:954
 msgid "Export as PDF"
@@ -3090,7 +3082,7 @@ msgid "_Memo:"
 msgstr "_Memo:"
 
 #: ../src/ui-filter.c:1032 ../src/ui-transaction.c:1636
-#: ../src/ui-txn-multi.c:548
+#: ../src/ui-txn-multi.c:555
 msgid "_Info:"
 msgstr "_Manylion:"
 
@@ -3100,7 +3092,7 @@ msgstr "_Sensitif i lythrennau bach/mawr"
 
 #. header
 #. TRANSLATORS: this is abbreviation for Payment
-#: ../src/ui-filter.c:1057 ../src/ui-filter.c:1304 ../src/ui-payee.c:978
+#: ../src/ui-filter.c:1057 ../src/ui-filter.c:1304 ../src/ui-payee.c:977
 msgid "Payment"
 msgstr "Taliad"
 
@@ -3110,7 +3102,7 @@ msgid "Type"
 msgstr "Math"
 
 #: ../src/ui-filter.c:1139 ../src/ui-transaction.c:55
-#: ../src/ui-widgets-data.c:204
+#: ../src/ui-widgets-data.c:246
 msgid "Transfer"
 msgstr "Trosglwyddiad"
 
@@ -3118,7 +3110,7 @@ msgstr "Trosglwyddiad"
 msgid "Always show"
 msgstr "Dangos bob tro"
 
-#: ../src/ui-filter.c:1192 ../src/ui-widgets-data.c:167
+#: ../src/ui-filter.c:1192 ../src/ui-widgets-data.c:209
 msgid "Void"
 msgstr "Gwag"
 
@@ -3154,6 +3146,10 @@ msgstr "Ymlaen llaw"
 msgid "File properties"
 msgstr "Priodweddau ffeil"
 
+#: ../src/ui-hbfile.c:278
+msgid "Scheduled transactions"
+msgstr "Trafodion wedi eu trefnu"
+
 #: ../src/ui-hbfile.c:282
 msgid "Automatic post:"
 msgstr "Cofnod awtomatig:"
@@ -3166,48 +3162,48 @@ msgstr "o bob un"
 msgid "month"
 msgstr "mis"
 
-#: ../src/ui-payee.c:1038
+#: ../src/ui-payee.c:1037
 msgid "Delete unused payee"
-msgstr "Dileu talai heb ei ddefnyddio"
+msgstr "Dileu taledig heb ei ddefnyddio"
 
-#: ../src/ui-payee.c:1039
+#: ../src/ui-payee.c:1038
 msgid ""
 "Are you sure you want to\n"
 "permanently delete unused payee?"
 msgstr ""
 "Ydych chi'n siŵr eich bod am\n"
-"ddileu talai heb ei ddefnyddio yn barhaol?"
+"ddileu taledig heb ei ddefnyddio yn barhaol?"
 
-#: ../src/ui-payee.c:1232
+#: ../src/ui-payee.c:1231
 msgid "Edit Payee"
 msgstr "Golygu Taledig"
 
-#: ../src/ui-payee.c:1282
+#: ../src/ui-payee.c:1281
 msgid "Default Fill"
-msgstr "LLanw Rhagosodedig"
+msgstr "Llanw Rhagosodedig"
 
-#: ../src/ui-payee.c:1296 ../src/ui-transaction.c:1624
-#: ../src/ui-txn-multi.c:534
+#: ../src/ui-payee.c:1295 ../src/ui-transaction.c:1624
+#: ../src/ui-txn-multi.c:541
 msgid "Pa_yment:"
-msgstr "­_Taliadau:"
+msgstr "­_Taliad:"
 
-#: ../src/ui-payee.c:1355
+#: ../src/ui-payee.c:1354
 #, c-format
 msgid ""
 "Cannot rename this Payee,\n"
 "from '%s' to '%s',\n"
 "this name already exists."
 msgstr ""
-"Methu ailenwi'r Talai hwn,\n"
+"Methu ailenwi'r Taledig hwn,\n"
 "o '%s' i '%s',\n"
 "mae'r enw hwn eisoes yn bodoli."
 
-#: ../src/ui-payee.c:1423
+#: ../src/ui-payee.c:1422
 #, c-format
 msgid "Merge payee '%s'"
-msgstr "Cyfuno talai '%s'"
+msgstr "Cyfuno taledig '%s'"
 
-#: ../src/ui-payee.c:1444
+#: ../src/ui-payee.c:1443
 msgid ""
 "Transactions assigned to this payee,\n"
 "will be moved to the payee selected below."
@@ -3215,26 +3211,27 @@ msgstr ""
 "Bydd y trafodion fydd yn cael eu rhoi i'r talai hwn\n"
 "yn cael eu symud i'r talai a ddewiswyd isod."
 
-#: ../src/ui-payee.c:1455
+#: ../src/ui-payee.c:1454
 #, c-format
 msgid "_Delete the payee '%s'"
-msgstr "_Dileu talai '%s'"
+msgstr "_Dileu taledig '%s'"
 
-#: ../src/ui-payee.c:1557
+#: ../src/ui-payee.c:1556
 msgid ""
 "This payee is used.\n"
 "Any transaction using that payee will be set to (no payee)"
 msgstr ""
-"Mae'r talai hwn yn cael ei ddefnyddio.\n"
-"Bydd unrhyw drafodyn sy'n defnyddio'r talai hwnnw yn cael ei osod (dim talai)"
+"Mae'r taledig hwn yn cael ei ddefnyddio.\n"
+"Bydd unrhyw drafodyn sy'n defnyddio'r taledig hwnnw yn cael ei osod (dim "
+"taledig)"
 
-#: ../src/ui-payee.c:1761
+#: ../src/ui-payee.c:1760
 msgid "Manage Payees"
-msgstr "Rheoli Taleion"
+msgstr "Rheoli Taledigion"
 
-#: ../src/ui-payee.c:1923
+#: ../src/ui-payee.c:1922
 msgid "new payee"
-msgstr "talai newydd"
+msgstr "taledig newydd"
 
 #: ../src/ui-pref.c:85
 msgid "Interface"
@@ -3334,7 +3331,7 @@ msgstr "Atodi i Femo"
 
 #: ../src/ui-pref.c:141
 msgid "Append to Payee"
-msgstr "Atodi i'r Talai"
+msgstr "Atodi i'r Taledig"
 
 #: ../src/ui-pref.c:146
 msgid "Tab"
@@ -3480,11 +3477,11 @@ msgid ""
 "%y year without century as a decimal number [00,99]. \n"
 "%Y year with century as a decimal number."
 msgstr ""
-"%a enw cryno diwrnod o'r wythnos locale.\n"
-"%A enw llawn diwrnod o'r wythnos locale. \n"
-"%b enw cryno mis locale. \n"
-"%B enw llawn mis locale. \n"
-"%c cyflwyniad addas dyddiad ac amser locale. \n"
+"%a enw cryno diwrnod yr wythnos y locale.\n"
+"%A enw llawn diwrnod yr wythnos y locale. \n"
+"%b enw cryno mis y locale. \n"
+"%B enw llawn mis y locale. \n"
+"%c cyflwyniad addas dyddiad ac amser y locale. \n"
 "%C rhif canrif (y flwyddyn wedi ei rannu gyda 100 ac wedi ei dalfyrru i "
 "gyfanrif) fel rhif degol [00-99]. \n"
 "%d diwrnod y mis fel rhif degol [01,31]. \n"
@@ -3493,7 +3490,7 @@ msgstr ""
 "\n"
 "%j diwrnod o'r flwyddyn fel rhif degol [001,366]. \n"
 "%m mis fel rhif degol [01,12]. \n"
-"%p cyflwyniad addas dyddiad locale. \n"
+"%p cyflwyniad addas dyddiad y locale. \n"
 "%y blwyddyn heb ganrif fel rhif degol [00,99]. \n"
 "%Y blwyddyn â chanrif fel rhif degol."
 
@@ -3725,7 +3722,7 @@ msgstr "Dileu popeth"
 
 #: ../src/ui-split.c:1018
 msgid "Apply"
-msgstr "Defnyddio"
+msgstr "Gosod"
 
 #: ../src/ui-split.c:1022
 msgid "Cancel"
@@ -3755,11 +3752,11 @@ msgstr "Rhybudd: nid yw swm yr holltiadau a swm y trafodion yn cydweddu"
 msgid "(no tag)"
 msgstr "(dim tag)"
 
-#: ../src/ui-tag.c:676
+#: ../src/ui-tag.c:677
 msgid "Edit Tag"
 msgstr "Golygu Tag"
 
-#: ../src/ui-tag.c:748
+#: ../src/ui-tag.c:749
 #, c-format
 msgid ""
 "Cannot rename this Tag,\n"
@@ -3770,12 +3767,12 @@ msgstr ""
 "o '%s' i '%s',\n"
 "mae'r enw hwn yn bodoli eisoes."
 
-#: ../src/ui-tag.c:791
+#: ../src/ui-tag.c:792
 #, c-format
 msgid "Merge tag '%s'"
 msgstr "Cyfuno tag '%s'"
 
-#: ../src/ui-tag.c:812
+#: ../src/ui-tag.c:813
 msgid ""
 "Transactions assigned to this tag,\n"
 "will be moved to the tag selected below."
@@ -3783,12 +3780,12 @@ msgstr ""
 "Bydd trafodion a neilltuwyd i'r tag hwn,\n"
 "yn cael ei symud i'r tag a ddewiswyd isod."
 
-#: ../src/ui-tag.c:822
+#: ../src/ui-tag.c:823
 #, c-format
 msgid "_Delete the tag '%s'"
 msgstr "_Dileu'r tag '%s'"
 
-#: ../src/ui-tag.c:914
+#: ../src/ui-tag.c:915
 msgid ""
 "This tag is used.\n"
 "That tag will be deleted from any transaction using it."
@@ -3796,16 +3793,16 @@ msgstr ""
 "Mae'r tag yma'n ar waith.\n"
 "Bydd y tag yn cael ei ddileu o unrhyw drafodyn sy'n ei ddefnyddio."
 
-#: ../src/ui-tag.c:1048
+#: ../src/ui-tag.c:1049
 msgid "Manage Tags"
 msgstr "Rheoli Tagiau"
 
-#: ../src/ui-tag.c:1176
+#: ../src/ui-tag.c:1177
 msgid "new tag"
 msgstr "tag newydd"
 
 #: ../src/ui-transaction.c:177 ../src/ui-transaction.c:1597
-#: ../src/ui-txn-multi.c:513
+#: ../src/ui-txn-multi.c:520
 msgid "A_ccount:"
 msgstr "C_yfrif:"
 
@@ -3868,7 +3865,7 @@ msgstr "Golygu trafodyn"
 msgid "Edit template"
 msgstr "Golygu templed"
 
-#: ../src/ui-transaction.c:1523 ../src/ui-txn-multi.c:481
+#: ../src/ui-transaction.c:1523 ../src/ui-txn-multi.c:488
 msgid "_Date:"
 msgstr "_Dyddiad:"
 
@@ -3880,7 +3877,7 @@ msgid ""
 "- empty for today"
 msgstr ""
 "- math: d, d/m, m/d dyddiad cyflawn\n"
-"- defnyddio allwedd saeth + ctrl neu shifft\n"
+"- defnyddio allwedd saeth + ctrl neu shift\n"
 "- gwag am heddiw"
 
 #: ../src/ui-transaction.c:1584
@@ -3904,15 +3901,15 @@ msgstr ""
 "- teipiwch ryw nod ar gyfer awtogwblhau\n"
 "- teipiwch destun newydd i greu cofnod"
 
-#: ../src/ui-transaction.c:1686 ../src/ui-txn-multi.c:581
+#: ../src/ui-transaction.c:1686 ../src/ui-txn-multi.c:588
 msgid "Cate_gory:"
 msgstr "_Categori:"
 
-#: ../src/ui-transaction.c:1725 ../src/ui-txn-multi.c:598
+#: ../src/ui-transaction.c:1725 ../src/ui-txn-multi.c:605
 msgid "M_emo:"
 msgstr "M_emo:"
 
-#: ../src/ui-transaction.c:1733 ../src/ui-txn-multi.c:614
+#: ../src/ui-transaction.c:1733 ../src/ui-txn-multi.c:621
 msgid "_Tags:"
 msgstr "_Tagiau:"
 
@@ -3920,292 +3917,322 @@ msgstr "_Tagiau:"
 msgid "Warning: amount and category sign don't match"
 msgstr "Rhybudd: nid yw'r arwydd swm a chategori yn cydweddu"
 
-#: ../src/ui-txn-multi.c:466
+#: ../src/ui-txn-multi.c:473
 msgid "Multiple edit transactions"
 msgstr "Trafodion golygu lluosog"
 
-#: ../src/ui-txn-multi.c:636
+#: ../src/ui-txn-multi.c:643
 msgid ""
 "Type as\n"
 "transfer"
 msgstr ""
 "Teipiwch fel\n"
-"trosglwyddo"
+"trosglwyddiad"
 
 #: ../src/ui-widgets-data.c:51
 msgid "Time"
 msgstr "Amser"
 
-#: ../src/ui-widgets-data.c:58
+#: ../src/ui-widgets-data.c:62 ../src/ui-widgets-data.c:89
+#: ../src/ui-widgets-data.c:217
+msgid "Month"
+msgstr "Mis"
+
+#: ../src/ui-widgets-data.c:63 ../src/ui-widgets-data.c:92
+#: ../src/ui-widgets-data.c:218
+msgid "Year"
+msgstr "Blwyddyn"
+
+#: ../src/ui-widgets-data.c:86 ../src/ui-widgets-data.c:215
+msgid "Day"
+msgstr "Diwrnod"
+
+#: ../src/ui-widgets-data.c:87 ../src/ui-widgets-data.c:216
+msgid "Week"
+msgstr "Wythnos"
+
+#: ../src/ui-widgets-data.c:88
+msgid "Fortnight"
+msgstr ""
+
+#: ../src/ui-widgets-data.c:90
+msgid "Quarter"
+msgstr "Chwarter"
+
+#: ../src/ui-widgets-data.c:91
+msgid "Half Year"
+msgstr "Hanner Blwyddyn"
+
+#: ../src/ui-widgets-data.c:100
 msgid "Trend"
 msgstr "Tuedd"
 
-#: ../src/ui-widgets-data.c:66
+#: ../src/ui-widgets-data.c:108
 msgid "Include"
-msgstr "Yn cynnwys"
+msgstr "Cynnwys"
 
-#: ../src/ui-widgets-data.c:67
+#: ../src/ui-widgets-data.c:109
 msgid "Exclude"
 msgstr "Eithrio"
 
-#: ../src/ui-widgets-data.c:77
+#: ../src/ui-widgets-data.c:119
 msgid "(no type)"
 msgstr "(dim math)"
 
-#: ../src/ui-widgets-data.c:78
+#: ../src/ui-widgets-data.c:120
 msgid "Bank"
 msgstr "Banc"
 
-#: ../src/ui-widgets-data.c:79 ../src/ui-widgets.c:1343
+#: ../src/ui-widgets-data.c:121 ../src/ui-widgets.c:1340
 msgid "Cash"
 msgstr "Arian Parod"
 
-#: ../src/ui-widgets-data.c:80
+#: ../src/ui-widgets-data.c:122
 msgid "Asset"
-msgstr "Ased"
+msgstr "Asedau"
 
-#: ../src/ui-widgets-data.c:81 ../src/ui-widgets.c:1341
+#: ../src/ui-widgets-data.c:123 ../src/ui-widgets.c:1338
 msgid "Credit card"
-msgstr "Cerdyn Credyd"
+msgstr "Cerdyn credyd"
 
-#: ../src/ui-widgets-data.c:82
+#: ../src/ui-widgets-data.c:124
 msgid "Liability"
-msgstr "Atebolrwydd"
+msgstr "Rhwymedigaeth"
 
-#: ../src/ui-widgets-data.c:83
+#: ../src/ui-widgets-data.c:125
 msgid "Checking"
-msgstr "Yn gwirio"
+msgstr "Cyfrif sieciau"
 
-#: ../src/ui-widgets-data.c:84
+#: ../src/ui-widgets-data.c:126
 msgid "Savings"
 msgstr "Cynilion"
 
-#: ../src/ui-widgets-data.c:96
+#: ../src/ui-widgets-data.c:138
 msgid "Yesterday"
 msgstr "Ddoe"
 
-#: ../src/ui-widgets-data.c:98
+#: ../src/ui-widgets-data.c:140
 msgid "Tomorrow"
 msgstr "Yfory"
 
-#: ../src/ui-widgets-data.c:100
+#: ../src/ui-widgets-data.c:142
 msgid "Last Week"
-msgstr "Yr wythnos diwethaf"
+msgstr "Wythnos diwethaf"
 
-#: ../src/ui-widgets-data.c:101
+#: ../src/ui-widgets-data.c:143
 msgid "This Week"
-msgstr "Yr Wythnos Yma"
+msgstr "Wythnos Yma"
 
-#: ../src/ui-widgets-data.c:102
+#: ../src/ui-widgets-data.c:144
 msgid "Next Week"
-msgstr "Yr Wythnos Nesaf"
+msgstr "Wythnos Nesaf"
 
-#: ../src/ui-widgets-data.c:104
+#: ../src/ui-widgets-data.c:146
 msgid "Last Fortnight"
 msgstr "Pythefnos Diwethaf"
 
-#: ../src/ui-widgets-data.c:105
+#: ../src/ui-widgets-data.c:147
 msgid "This Fortnight"
-msgstr "Y Pythefnos Hwn"
+msgstr "Pythefnos Hwn"
 
-#: ../src/ui-widgets-data.c:106
+#: ../src/ui-widgets-data.c:148
 msgid "Next Fortnight"
-msgstr "Y Pythefnos Nesaf"
+msgstr "Pythefnos Nesaf"
 
-#: ../src/ui-widgets-data.c:108
+#: ../src/ui-widgets-data.c:150
 msgid "Last Month"
-msgstr "Y Mis Diwethaf"
+msgstr "Mis Diwethaf"
 
-#: ../src/ui-widgets-data.c:109
+#: ../src/ui-widgets-data.c:151
 msgid "This Month"
-msgstr "Y Mis Hwn"
+msgstr "Mis Hwn"
 
-#: ../src/ui-widgets-data.c:110
+#: ../src/ui-widgets-data.c:152
 msgid "Next Month"
-msgstr "Y Mis Nesaf"
+msgstr "Mis Nesaf"
 
-#: ../src/ui-widgets-data.c:112
+#: ../src/ui-widgets-data.c:154
 msgid "Last Quarter"
-msgstr "Y Chwarter Olaf"
+msgstr "Chwarter Olaf"
 
-#: ../src/ui-widgets-data.c:113
+#: ../src/ui-widgets-data.c:155
 msgid "This Quarter"
-msgstr "Y Chwarter Hwn"
+msgstr "Chwarter Hwn"
 
-#: ../src/ui-widgets-data.c:114
+#: ../src/ui-widgets-data.c:156
 msgid "Next Quarter"
-msgstr "Y Chwarter Nesaf"
+msgstr "Chwarter Nesaf"
 
-#: ../src/ui-widgets-data.c:116
+#: ../src/ui-widgets-data.c:158
 msgid "Last Year"
-msgstr "Y Flwyddyn Ddiwethaf"
+msgstr "Flwyddyn Ddiwethaf"
 
-#: ../src/ui-widgets-data.c:117
+#: ../src/ui-widgets-data.c:159
 msgid "This Year"
 msgstr "Eleni"
 
-#: ../src/ui-widgets-data.c:118
+#: ../src/ui-widgets-data.c:160
 msgid "Next Year"
-msgstr "Y Flwyddyn Nesaf"
+msgstr "Blwyddyn Nesaf"
 
-#: ../src/ui-widgets-data.c:124
+#: ../src/ui-widgets-data.c:166
 msgid "Last 30 Days"
-msgstr "Y 30 Diwrnod Diwethaf"
+msgstr "30 Diwrnod Diwethaf"
 
-#: ../src/ui-widgets-data.c:125
+#: ../src/ui-widgets-data.c:167
 msgid "Last 60 Days"
-msgstr "Y 60 Diwrnod Diwethaf"
+msgstr "60 Diwrnod Diwethaf"
 
-#: ../src/ui-widgets-data.c:126
+#: ../src/ui-widgets-data.c:168
 msgid "Last 90 Days"
-msgstr "Y 90 Diwrnod Diwethaf"
+msgstr "90 Diwrnod Diwethaf"
 
-#: ../src/ui-widgets-data.c:128
+#: ../src/ui-widgets-data.c:170
 msgid "Last 12 Months"
-msgstr "Y 12 Mis Diwethaf"
+msgstr "12 Mis Diwethaf"
 
-#: ../src/ui-widgets-data.c:129
+#: ../src/ui-widgets-data.c:171
 msgid "30 Days Around"
 msgstr "Tua 30 Diwrnod"
 
-#: ../src/ui-widgets-data.c:130
+#: ../src/ui-widgets-data.c:172
 msgid "All Date"
 msgstr "Pob Dyddiad"
 
-#: ../src/ui-widgets-data.c:137
+#: ../src/ui-widgets-data.c:179
 msgid "This month"
-msgstr "Y mis hwn"
+msgstr "Mis hwn"
 
-#: ../src/ui-widgets-data.c:138
+#: ../src/ui-widgets-data.c:180
 msgid "Next month"
 msgstr "Mis nesaf"
 
-#: ../src/ui-widgets-data.c:140
+#: ../src/ui-widgets-data.c:182
 msgid "Next 30 days"
 msgstr "30 diwrnod nesaf"
 
-#: ../src/ui-widgets-data.c:141
+#: ../src/ui-widgets-data.c:183
 msgid "Next 60 days"
 msgstr "60 diwrnod nesaf"
 
-#: ../src/ui-widgets-data.c:142
+#: ../src/ui-widgets-data.c:184
 msgid "Next 90 days"
 msgstr "90 diwrnod nesaf"
 
-#: ../src/ui-widgets-data.c:182
+#: ../src/ui-widgets-data.c:224
 msgid "Possible"
 msgstr "Posib"
 
-#: ../src/ui-widgets-data.c:183
+#: ../src/ui-widgets-data.c:225
 msgid "Before"
 msgstr "Cyn"
 
-#: ../src/ui-widgets-data.c:184
+#: ../src/ui-widgets-data.c:226
 msgid "After"
-msgstr "Ar Ôl"
+msgstr "Wedi"
 
 #. added 5.6
-#: ../src/ui-widgets-data.c:186
+#: ../src/ui-widgets-data.c:228
 msgid "Skip"
 msgstr "Hepgor"
 
-#: ../src/ui-widgets-data.c:192
+#: ../src/ui-widgets-data.c:234
 msgid "Exp. & Inc."
-msgstr "Costau a Chynwysedig."
+msgstr "Costau ac Incwm."
 
-#: ../src/ui-widgets-data.c:200
+#: ../src/ui-widgets-data.c:242
 msgid "Any Type"
 msgstr "Unrhyw Fath"
 
-#: ../src/ui-widgets-data.c:209
+#: ../src/ui-widgets-data.c:251
 msgid "Any Status"
 msgstr "Unrhyw Statws"
 
-#: ../src/ui-widgets-data.c:212
+#: ../src/ui-widgets-data.c:254
 msgid "Uncleared"
 msgstr "Heb eu clirio"
 
-#: ../src/ui-widgets-data.c:214
+#: ../src/ui-widgets-data.c:256
 msgid "Unreconciled"
-msgstr "Heb ei gysoni"
+msgstr "Heb eu cysoni"
 
-#: ../src/ui-widgets-data.c:216
+#: ../src/ui-widgets-data.c:258
 msgid "Uncategorized"
-msgstr "Heb ei gategoreiddio"
+msgstr "Heb eu categoreiddio"
 
-#: ../src/ui-widgets-data.c:243
+#: ../src/ui-widgets-data.c:285
 msgid "Mon"
 msgstr "Llun"
 
-#: ../src/ui-widgets-data.c:244
+#: ../src/ui-widgets-data.c:286
 msgid "Tue"
 msgstr "Maw"
 
-#: ../src/ui-widgets-data.c:245
+#: ../src/ui-widgets-data.c:287
 msgid "Wed"
 msgstr "Mer"
 
-#: ../src/ui-widgets-data.c:246
+#: ../src/ui-widgets-data.c:288
 msgid "Thu"
 msgstr "Iau"
 
-#: ../src/ui-widgets-data.c:247
+#: ../src/ui-widgets-data.c:289
 msgid "Fri"
 msgstr "Gwe"
 
-#: ../src/ui-widgets-data.c:248
+#: ../src/ui-widgets-data.c:290
 msgid "Sat"
 msgstr "Sad"
 
-#: ../src/ui-widgets-data.c:249
+#: ../src/ui-widgets-data.c:291
 msgid "Sun"
 msgstr "Sul"
 
-#: ../src/ui-widgets-data.c:257
+#: ../src/ui-widgets-data.c:299
 msgid "January"
 msgstr "Ionawr"
 
-#: ../src/ui-widgets-data.c:258
+#: ../src/ui-widgets-data.c:300
 msgid "February"
 msgstr "Chwefror"
 
-#: ../src/ui-widgets-data.c:259
+#: ../src/ui-widgets-data.c:301
 msgid "March"
 msgstr "Mawrth"
 
-#: ../src/ui-widgets-data.c:260
+#: ../src/ui-widgets-data.c:302
 msgid "April"
 msgstr "Ebrill"
 
-#: ../src/ui-widgets-data.c:262
+#: ../src/ui-widgets-data.c:304
 msgid "June"
 msgstr "Mehefin"
 
-#: ../src/ui-widgets-data.c:263
+#: ../src/ui-widgets-data.c:305
 msgid "July"
 msgstr "Gorffennaf"
 
-#: ../src/ui-widgets-data.c:264
+#: ../src/ui-widgets-data.c:306
 msgid "August"
 msgstr "Awst"
 
-#: ../src/ui-widgets-data.c:265
+#: ../src/ui-widgets-data.c:307
 msgid "September"
 msgstr "Medi"
 
-#: ../src/ui-widgets-data.c:266
+#: ../src/ui-widgets-data.c:308
 msgid "October"
 msgstr "Hydref"
 
-#: ../src/ui-widgets-data.c:267
+#: ../src/ui-widgets-data.c:309
 msgid "November"
 msgstr "Tachwedd"
 
-#: ../src/ui-widgets-data.c:268
+#: ../src/ui-widgets-data.c:310
 msgid "December"
 msgstr "Rhagfyr"
 
-#: ../src/ui-widgets-data.c:285
+#: ../src/ui-widgets-data.c:327
 msgid "Sep"
 msgstr "Med"
 
@@ -4213,35 +4240,47 @@ msgstr "Med"
 msgid "Search..."
 msgstr "Chwilio..."
 
-#: ../src/ui-widgets.c:1342
+#: ../src/ui-widgets.c:1339
 msgid "Check"
 msgstr "Siec"
 
-#: ../src/ui-widgets.c:1344
+#: ../src/ui-widgets.c:1341
 msgid "Bank Transfer"
 msgstr "Trosglwyddiad Banc"
 
-#: ../src/ui-widgets.c:1345
+#: ../src/ui-widgets.c:1342
 msgid "Debit card"
 msgstr "Cerdyn debyd"
 
-#: ../src/ui-widgets.c:1346
+#: ../src/ui-widgets.c:1343
 msgid "Standing order"
 msgstr "Archeb sefydlog"
 
-#: ../src/ui-widgets.c:1347
+#: ../src/ui-widgets.c:1344
 msgid "Electronic payment"
 msgstr "Taliad electronig"
 
-#: ../src/ui-widgets.c:1348
+#: ../src/ui-widgets.c:1345
 msgid "Deposit"
-msgstr "Adnau"
+msgstr "Cyfrif cadw"
 
 #. TRANSLATORS: Financial institution fee
-#: ../src/ui-widgets.c:1350
+#: ../src/ui-widgets.c:1347
 msgid "FI fee"
-msgstr "Ffi banc"
+msgstr "Ffi FI"
 
-#: ../src/ui-widgets.c:1351
+#: ../src/ui-widgets.c:1348
 msgid "Direct Debit"
 msgstr "Debyd Uniongyrchol"
+
+#~ msgid "Toggle show future transaction"
+#~ msgstr "Toglo dangos trafodion y dyfodol"
+
+#~ msgid "Annual Total"
+#~ msgstr "Cyfanswm Blynyddol"
+
+#~ msgid "Monthly Average"
+#~ msgstr "Cyfartaledd Misol"
+
+#~ msgid "Budget (table view)"
+#~ msgstr "Cyllidebu (golwg tabl)"

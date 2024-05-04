@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.71])
-AC_INIT([homebank],[5.6.2])
+AC_INIT([homebank],[5.6.3])
 #AC_INIT([homebank],[x.x-rc])
 
 AC_CONFIG_HEADERS(config.h)
@@ -24,12 +24,12 @@ AC_PROG_INSTALL
 IT_PROG_INTLTOOL
 
 # Checks for libraries.
-PKG_CHECK_MODULES(DEPS, gtk+-3.0 >= 3.16 glib-2.0 >= 2.39)
+PKG_CHECK_MODULES(DEPS, gtk+-3.0 >= 3.24.8 glib-2.0 >= 2.62)
 AC_SUBST(DEPS_CFLAGS)
 AC_SUBST(DEPS_LIBS)
 AC_CHECK_LIB(m, pow)
 
-PKG_CHECK_MODULES(LIBSOUP, [libsoup-2.4 >= 2.26])
+PKG_CHECK_MODULES(LIBSOUP, [libsoup-2.4 >= 2.65])
 AC_SUBST(LIBSOUP_CFLAGS)
 AC_SUBST(LIBSOUP_LIBS)
 

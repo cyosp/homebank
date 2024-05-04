@@ -2835,9 +2835,13 @@ gint row;
 	widget = gtk_toggle_button_new();
 	image = gtk_image_new_from_icon_name (ICONNAME_HB_OPE_FUTURE, GTK_ICON_SIZE_MENU);
 	g_object_set (widget, "image", image,  NULL);
-	gtk_widget_set_tooltip_text (widget, _("Toggle show future transaction"));
 	data->CM_future = widget;
 	gtk_grid_attach (GTK_GRID(table), widget, row, 0, 1, 1);
+
+	//#2008521 set more accurate tooltip
+	gchar *tt = g_strdup_printf(_("Toggle show %d days ahead"), PREFS->date_future_nbdays);
+	gtk_widget_set_tooltip_text (widget, tt);
+	g_free(tt);
 
 	row++;
 	label = make_label_widget(_("_Type:"));

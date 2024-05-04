@@ -38,6 +38,7 @@ enum
 struct ui_cur_manage_dialog_data
 {
 	GtkWidget	*dialog;
+	gboolean	mapped_done;
 
 	GtkWidget	*LV_cur;
 //	GtkWidget	*CY_curr;

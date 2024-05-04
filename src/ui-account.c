@@ -296,6 +296,50 @@ gint pos1, pos2;
 }
 
 
+static gboolean
+ui_acc_entry_popover_completion_func (GtkEntryCompletion *completion,
+                                              const gchar        *key,
+                                              GtkTreeIter        *iter,
+                                              gpointer            user_data)
+{
+gchar *name = NULL;
+gchar *normalized_string;
+gchar *case_normalized_string;
+gboolean ret = FALSE;
+GtkTreeModel *model;
+
+	model = gtk_entry_completion_get_model (completion);
+
+	gtk_tree_model_get (model, iter,
+		0, &name,
+		-1);
+
+  if (name != NULL)
+    {
+      normalized_string = g_utf8_normalize (name, -1, G_NORMALIZE_ALL);
+
+      if (normalized_string != NULL)
+        {
+          case_normalized_string = g_utf8_casefold (normalized_string, -1);
+
+			//g_print("match '%s' for '%s' ?\n", key, case_normalized_string);
+		//if (!strncmp (key, case_normalized_string, strlen (key)))
+          if (g_strstr_len (case_normalized_string, strlen (case_normalized_string), key ))
+			{
+        		ret = TRUE;
+				//	g_print(" ==> yes !\n");
+				
+			}
+				
+          g_free (case_normalized_string);
+        }
+      g_free (normalized_string);
+    }
+
+  return ret;
+}
+
+
 static void 
 ui_acc_entry_popover_destroy( GtkWidget *widget, gpointer user_data )
 {
@@ -341,6 +385,7 @@ GtkEntryCompletion *completion;
 	gtk_tree_sortable_set_default_sort_func(GTK_TREE_SORTABLE(store), ui_acc_entry_popover_compare_func, NULL, NULL);
 
     gtk_entry_completion_set_model (completion, GTK_TREE_MODEL(store));
+    gtk_entry_completion_set_match_func(completion, ui_acc_entry_popover_completion_func, NULL, NULL);
 	g_object_unref(store);
 
 	gtk_entry_completion_set_text_column (completion, 0);
@@ -1727,11 +1772,15 @@ struct ui_acc_manage_data *data;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
+	if( data->mapped_done == TRUE )
+		return FALSE;
+
 	DB( g_print("\n(ui_acc_manage_mapped)\n") );
 
 	ui_acc_manage_setup(data);
-	
 	ui_acc_manage_update(data->LV_acc, NULL);
+
+	data->mapped_done = TRUE;
 
 	return FALSE;
 }

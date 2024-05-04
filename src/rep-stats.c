@@ -60,24 +60,8 @@ static void repstats_selection(GtkTreeSelection *treeselection, gpointer user_da
 static void repstats_selection2(GtkTreeSelection *treeselection, gpointer user_data);
 
 
-HbKvData CYA_REPORT_SRC[] = {
-	{ REPORT_SRC_CATEGORY,		N_("Category") },
-	{ REPORT_SRC_SUBCATEGORY,	N_("Subcategory") },
-	{ REPORT_SRC_PAYEE,			N_("Payee") },
-	{ REPORT_SRC_ACCOUNT,		N_("Account") },
-	{ REPORT_SRC_TAG,			N_("Tag") },
-	{ REPORT_SRC_MONTH,			N_("Month") },
-	{ REPORT_SRC_YEAR,			N_("Year") },
-	{ 0, NULL }
-};
-
-
-HbKvData CYA_REPORT_TYPE[] = { 
-	{ REPORT_TYPE_EXPENSE,	N_("Expense") },
-	{ REPORT_TYPE_INCOME,	N_("Income") },
-	{ REPORT_TYPE_TOTAL,	N_("Total")} ,
-	{ 0, NULL }
-};
+extern HbKvData CYA_REPORT_SRC[];
+extern HbKvData CYA_REPORT_TYPE[];
 
 extern gchar *CYA_REPORT_MODE[];
 extern HbKvData CYA_REPORT_INTVL[];
@@ -1555,12 +1539,17 @@ struct repstats_data *data;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
+	if( data->mapped_done == TRUE )
+		return FALSE;
+
 	DB( g_print("\n[repdist] window mapped\n") );
 
 	//setup, init and show window
 	repstats_window_setup(data);	
 	repstats_compute(data->window, NULL);
 	//repstats_update_daterange(data->window, NULL);
+
+	data->mapped_done = TRUE;
 
 	return FALSE;
 }

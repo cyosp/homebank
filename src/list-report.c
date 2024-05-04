@@ -263,13 +263,14 @@ gdouble val1, val2;
 					//DB( g_print(" sort %3d = %3d :: %d\n", pos1, pos2, retval) );
 					break;
 				default:
-					retval = (ABS(val1) - ABS(val2)) > 0 ? -1 : 1;
+					//#1956060 sort with sign (no abs), option is possible but complex
+					//retval = (ABS(val1) - ABS(val2)) > 0 ? -1 : 1;
+					retval = (val1 - val2) > 0 ? -1 : 1;
 					//DB( g_print(" sort %.2f = %.2f :: %d\n", val1, val2, retval) );
 					break;
 			}
 		}
 	}
-
 
 	return retval;
 }

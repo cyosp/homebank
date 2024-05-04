@@ -453,8 +453,15 @@ GList *lnk_txn;
 
 gboolean filter_preset_daterange_future_enable(gint range)
 {
+gboolean retval = FALSE;
+
+	DB( g_print("\n[filter] range future enabled\n") );
+
 	switch( range )
 	{
+		case FLT_RANGE_THIS_DAY:
+		case FLT_RANGE_THIS_WEEK:
+		case FLT_RANGE_THIS_FORTNIGHT:
 		case FLT_RANGE_THIS_MONTH:
 		case FLT_RANGE_THIS_QUARTER:
 		case FLT_RANGE_THIS_YEAR:
@@ -462,29 +469,32 @@ gboolean filter_preset_daterange_future_enable(gint range)
 		case FLT_RANGE_LAST_60DAYS:
 		case FLT_RANGE_LAST_90DAYS:
 		case FLT_RANGE_LAST_12MONTHS:
-			return TRUE;
+			retval = TRUE;
 			break;
 	}
 
-	return FALSE;
+	DB( g_print(" %s\n", retval==TRUE ? "yes" : "no") );
+
+	return retval;
 }
 
 
 void filter_preset_daterange_add_futuregap(Filter *filter, gint nbdays)
 {
-
 	DB( g_print("\n[filter] range add future gap\n") );
 	
 	filter->nbdaysfuture = 0;
 	//#1840998 if future active and visible: we should always maxdate to today + nbdays
 	if( filter_preset_daterange_future_enable(filter->range) )
 	{
-	guint32 jtmpmax = GLOBALS->today + nbdays;
+	guint32 jforcedmax = GLOBALS->today + nbdays;
 
-		if( filter->maxdate < jtmpmax )
-			filter->nbdaysfuture = jtmpmax - filter->maxdate;
-		else
-			filter->nbdaysfuture = nbdays;
+		if( filter->maxdate < jforcedmax )
+			filter->nbdaysfuture = jforcedmax - filter->maxdate;
+		//else
+		//	filter->nbdaysfuture = nbdays;
+
+		DB( g_print(" today=%d, tmpmax=%d, nbdays=%d\n final=%d", GLOBALS->today, jforcedmax, nbdays, filter->nbdaysfuture) );
 	}
 }
 

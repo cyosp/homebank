@@ -645,7 +645,7 @@ static void ui_flt_manage_setup(struct ui_flt_manage_data *data)
 	{
 		//gtk_tree_selection_set_mode(GTK_TREE_SELECTION(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_pay))), GTK_SELECTION_MULTIPLE);
 
-		ui_pay_listview_populate(data->LV_pay, NULL, FALSE);
+		ui_pay_listview_populate(data->LV_pay, NULL, TRUE);
 		//populate_view_pay(data->LV_pay, GLOBALS->pay_list, FALSE);
 	}
 
@@ -654,7 +654,7 @@ static void ui_flt_manage_setup(struct ui_flt_manage_data *data)
 		//gtk_tree_selection_set_mode(GTK_TREE_SELECTION(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_cat))), GTK_SELECTION_MULTIPLE);
 
 		//populate_view_cat(data->LV_cat, GLOBALS->cat_list, FALSE);
-		ui_cat_listview_populate(data->LV_cat, CAT_TYPE_ALL, NULL, FALSE);
+		ui_cat_listview_populate(data->LV_cat, CAT_TYPE_ALL, NULL, TRUE);
 		gtk_tree_view_expand_all (GTK_TREE_VIEW(data->LV_cat));
 	}
 	
