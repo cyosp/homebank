@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal ruleing for everyone.
- *  Copyright (C) 1995-2022 Maxime DOYEN
+ *  Copyright (C) 1995-2023 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -87,10 +87,10 @@ static void ui_asg_listview_sort_force(GtkTreeSortable *sortable, gpointer user_
 gint sort_column_id;
 GtkSortType order;
 
-	DB( g_print("ui_asg_listview_sort_force()\n") );
+	DB( g_print("\n[ui-asg-listview] sort force\n") );
 
 	gtk_tree_sortable_get_sort_column_id(sortable, &sort_column_id, &order);
-	DB( g_print(" - id %d order %d\n", sort_column_id, order) );
+	DB( g_print(" id %d\n order %d\n", sort_column_id, order) );
 
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(sortable), GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID, order);
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(sortable), sort_column_id, order);
@@ -250,6 +250,9 @@ gchar *string;
 void
 ui_asg_listview_add(GtkTreeView *treeview, Assign *item)
 {
+
+	DB( g_print("\n[ui-asg-listview] add\n") );
+
 	if( item->search != NULL )
 	{
 	GtkTreeModel *model;
@@ -280,6 +283,8 @@ GtkTreeSelection *selection;
 GtkTreeModel		 *model;
 GtkTreeIter			 iter;
 
+	DB( g_print("\n[ui-asg-listview] get selected key\n") );
+
 	selection = gtk_tree_view_get_selection(treeview);
 	if (gtk_tree_selection_get_selected(selection, &model, &iter))
 	{
@@ -299,6 +304,8 @@ ui_asg_listview_remove_selected(GtkTreeView *treeview)
 GtkTreeSelection *selection;
 GtkTreeModel		 *model;
 GtkTreeIter			 iter;
+
+	DB( g_print("\n[ui-asg-listview] remove selected\n") );
 
 	selection = gtk_tree_view_get_selection(treeview);
 	if (gtk_tree_selection_get_selected(selection, &model, &iter))
@@ -322,6 +329,8 @@ GList *lrul, *list;
 gboolean hastext = FALSE;
 gboolean insert = TRUE;
 
+	DB( g_print("\n[ui-asg-listview] populate\n") );
+
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(view));
 
 	gtk_list_store_clear (GTK_LIST_STORE(model));
@@ -331,8 +340,6 @@ gboolean insert = TRUE;
 
 	if( needle != NULL )
 		hastext = (strlen(needle) >= 2) ? TRUE : FALSE;
-
-
 
 	/* populate */
 	//g_hash_table_foreach(GLOBALS->h_rul, (GHFunc)ui_asg_listview_populate_ghfunc, model);
@@ -364,8 +371,7 @@ gboolean insert = TRUE;
 }
 
 
-
-
+/*
 static gboolean ui_asg_listview_search_equal_func (GtkTreeModel *model,
                                gint column,
                                const gchar *key,
@@ -403,6 +409,7 @@ static gboolean ui_asg_listview_search_equal_func (GtkTreeModel *model,
   }
   return retval;
 }
+*/
 
 
 static GtkTreeViewColumn *
@@ -410,6 +417,8 @@ ui_asg_listview_column_text_create(gchar *title, gint sortcolumnid, GtkTreeCellD
 {
 GtkTreeViewColumn  *column;
 GtkCellRenderer    *renderer;
+
+	DB( g_print("\n[ui-asg-listview] text create\n") );
 
 	renderer = gtk_cell_renderer_text_new ();
 	g_object_set(renderer, 
@@ -469,6 +478,8 @@ GtkListStore *store;
 GtkWidget *treeview;
 GtkCellRenderer		*renderer;
 GtkTreeViewColumn	*column;
+
+	DB( g_print("\n[ui-asg-listview] new\n") );
 
 	// create list store
 	store = gtk_list_store_new(NUM_LST_DEFASG,
@@ -578,7 +589,7 @@ GtkTreeViewColumn	*column;
 
 
 	//#1897810 add quicksearch
-	gtk_tree_view_set_search_equal_func(GTK_TREE_VIEW(treeview), ui_asg_listview_search_equal_func, NULL, NULL);
+	//gtk_tree_view_set_search_equal_func(GTK_TREE_VIEW(treeview), ui_asg_listview_search_equal_func, NULL, NULL);
 
 	return treeview;
 }
@@ -1125,7 +1136,7 @@ ui_asg_manage_refilter(struct ui_asg_manage_data *data)
 {
 gchar *needle;
 
-	DB( g_print("(ui_asg_manage) refilter\n") );
+	DB( g_print("[ui-asg-manage] refilter\n") );
 
 	needle = (gchar *)gtk_entry_get_text(GTK_ENTRY(data->ST_search));
 	ui_asg_listview_populate(data->LV_rul, needle);
@@ -1139,72 +1150,57 @@ static void ui_asg_manage_update(GtkWidget *widget, gpointer user_data)
 {
 struct ui_asg_manage_data *data;
 GtkTreeModel *model;
-GtkTreeIter iter, *previter, *nextiter;
-gboolean selected, sensitive, canupdw, canmove;
-gint sort_column_id, nb_items, searchlen;
+GtkTreeIter iter;
+gboolean selected, sensitive, canup, candw, canto;
+gint sort_column_id;
+//gint searchlen;
 GtkSortType sort_order;
 
-	DB( g_print("\n(ui_asg_manage_update)\n") );
+	DB( g_print("\n[ui-asg-manage] update\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
 	//if true there is a selected node
 	selected = gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_rul)), &model, &iter);
 
-	DB( g_print(" -> selected = %d\n", selected) );
+	DB( g_print(" selected = %d\n", selected) );
 
 	sensitive = (selected == TRUE) ? TRUE : FALSE;
 	//gtk_widget_set_sensitive(data->BT_mod, sensitive);
 	gtk_widget_set_sensitive(data->BT_rem, sensitive);
 	gtk_widget_set_sensitive(data->BT_edit, sensitive);
 
-	//move buttons
+	//#1999243/2000629 rewrite up/down/to button sensitivity
+	canup = candw = canto = selected;
+
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_rul));
-	searchlen = gtk_entry_get_text_length(GTK_ENTRY(data->ST_search));
-	
-	//TODO:warning here
-	if( model != NULL )
-		nb_items = gtk_tree_model_iter_n_children(model, NULL);
-	else
-		nb_items = 0;
+	gtk_tree_sortable_get_sort_column_id(GTK_TREE_SORTABLE(model), &sort_column_id, &sort_order);
+	DB( g_print(" sort is colid=%d order=%d (ok is %d %d)\n", sort_column_id, sort_order, LST_DEFASG_SORT_POS, GTK_SORT_ASCENDING) );
 
-	canupdw = canmove = selected;
-
-	if( searchlen > 0 )
-		canupdw = canmove = FALSE;
-
-	if( nb_items < 4 )
-		canmove = FALSE;
+	if( !((sort_column_id == LST_DEFASG_SORT_POS) && (sort_order == GTK_SORT_ASCENDING)) )
+	{
+		canup = candw = FALSE;
+		DB( g_print(" sort is not by position ASC\n") );
+		goto end;
+	}
 
 	if( selected == TRUE )
 	{
-		gtk_tree_sortable_get_sort_column_id(GTK_TREE_SORTABLE(model), &sort_column_id, &sort_order);
-		if( (sort_column_id != LST_DEFASG_SORT_POS) && (sort_order != GTK_SORT_ASCENDING) )
-			canupdw = FALSE;
+	Assign *item;
+
+		gtk_tree_model_get(model, &iter, LST_DEFASG_DATAS, &item, -1);
+		
+		DB( g_print(" item pos is %d\n", item->pos) );
+
+		canup = (item->pos <= 1) ? FALSE : TRUE;
+		candw = (item->pos >= da_asg_length()) ? FALSE : TRUE;
 	}
 
-	DB( g_print(" -> can up/dw=%d can move=%d\n", canupdw, canmove) );
-
-	gtk_widget_set_sensitive(data->BT_up  , canupdw);
-	gtk_widget_set_sensitive(data->BT_down, canupdw);
-	gtk_widget_set_sensitive(data->BT_move, canmove);
-
-	//TODO: manage if sort is ot by pos here
-	//set up/down button with prev/next iter
-	if( selected == TRUE )
-	{
-		model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_rul));
-		previter = gtk_tree_iter_copy(&iter);
-		if( !gtk_tree_model_iter_previous(model, previter) )
-			gtk_widget_set_sensitive(data->BT_up, FALSE);
-		gtk_tree_iter_free(previter);
-
-		nextiter = gtk_tree_iter_copy(&iter);
-		if( !gtk_tree_model_iter_next(model, nextiter) )
-			gtk_widget_set_sensitive(data->BT_down, FALSE);
-		gtk_tree_iter_free(nextiter);
-	}
-
+end:
+	DB( g_print(" can up=%d dw=%d to=%d\n", canup, candw, canto) );
+	gtk_widget_set_sensitive(data->BT_up  , canup);
+	gtk_widget_set_sensitive(data->BT_down, candw);
+	gtk_widget_set_sensitive(data->BT_move, canto);
 }
 
 
@@ -1224,11 +1220,11 @@ GtkTreeSelection *selection;
 GtkTreeModel *model;
 GtkTreeIter iter;
 Assign *curitem;
-gushort curpos, newpos;
+guint32 curpos, newpos;
 GList *lrul, *list;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-	DB( g_print("\n(ui_asg_manage_move_to) (data=%p)\n", data) );
+	DB( g_print("\n[ui-asg-manage] moveto apply (data=%p)\n", data) );
 
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_rul));
 	//if true there is a selected node
@@ -1268,11 +1264,27 @@ GList *lrul, *list;
 		g_list_free(lrul);
 
 		curitem->pos = newpos;
+		//#1999243 add change
+		data->change++;
 		
 		ui_asg_listview_sort_force(GTK_TREE_SORTABLE(model), NULL);
 	}
 end:
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->MB_moveto), FALSE);
+}
+
+
+//#1999243 set maximum position when popover open
+static void ui_asg_manage_cb_move_to(GtkWidget *widget, gpointer user_data)
+{
+struct ui_asg_manage_data *data;
+gint maxpos;
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+	DB( g_print("\n[ui-asg-manage] moveto init (data=%p)\n", data) );
+
+	maxpos = da_asg_length();
+	gtk_spin_button_set_range(GTK_SPIN_BUTTON(data->ST_poppos), 1.0, (gdouble)maxpos);
 }
 
 
@@ -1287,7 +1299,7 @@ gboolean hasprvnxt;
 Assign *curitem, *prvnxtitem;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-	DB( g_print("\n(ui_asg_manage_up) (data=%p)\n", data) );
+	DB( g_print("\n[ui-asg-manage] up/down (data=%p)\n", data) );
 
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_rul));
 	//if true there is a selected node
@@ -1308,6 +1320,8 @@ Assign *curitem, *prvnxtitem;
 			//swap position
 			curitem->pos = prvnxtitem->pos;
 			prvnxtitem->pos = tmp;
+			//#1999243 add change
+			data->change++;
 			
 			ui_asg_listview_sort_force(GTK_TREE_SORTABLE(model), NULL);
 		}
@@ -1325,7 +1339,7 @@ Assign *item;
 GtkWidget *dialog;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-	DB( g_print("\n(ui_asg_manage_edit) (data=%p)\n", data) );
+	DB( g_print("\n[ui-asg-manage] edit (data=%p)\n", data) );
 
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_rul));
 	//if true there is a selected node
@@ -1367,7 +1381,7 @@ GtkWidget *dialog;
 Assign *item;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-	DB( g_print("\n(ui_asg_manage_add) (data=%p)\n", data) );
+	DB( g_print("\n[ui-asg-manage] add (data=%p)\n", data) );
 
 	item = da_asg_malloc();
 	item->search = g_strdup_printf( _("(rule %d)"), da_asg_length()+1);
@@ -1407,7 +1421,7 @@ guint32 key;
 gint result;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-	DB( g_print("\n(ui_asg_manage_delete) (data=%p)\n", data) );
+	DB( g_print("\n[ui-asg-manage] delete) data=%p\n", data) );
 
 	key = ui_asg_listview_get_selected_key(GTK_TREE_VIEW(data->LV_rul));
 	if( key > 0 )
@@ -1437,25 +1451,18 @@ gint result;
 			ui_asg_listview_remove_selected(GTK_TREE_VIEW(data->LV_rul));
 			data->change++;
 		}
+		
+		da_asg_update_position();
 	}
 }
-
-
-
-static void
-ui_asg_manage_row_deleted (GtkTreeModel *tree_model, GtkTreePath *path, GtkTreeIter *iter, gpointer user_data)
-{
-	DB( g_print("\n(ui_asg_manage_row_deleted)\n") );
-
-	//ui_asg_manage_persist_position(tree_model);
-}
-
 
 
 static gboolean ui_asg_manage_cb_on_key_press(GtkWidget *source, GdkEventKey *event, gpointer user_data)
 {
 struct ui_asg_manage_data *data = user_data;
 
+	DB( g_printf("\n[ui-asg-manage] cb key press\n") );
+	
 	// On Control-f enable search entry
 	if (event->state & GDK_CONTROL_MASK
 		&& event->keyval == GDK_KEY_f)
@@ -1478,6 +1485,7 @@ struct ui_asg_manage_data *data = user_data;
 static void
 ui_asg_manage_cb_row_activated (GtkTreeView *treeview, GtkTreePath *path, GtkTreeViewColumn *col, gpointer userdata)
 {
+	DB( g_printf("\n[ui-asg-manage] row activated\n") );
 	ui_asg_manage_edit(GTK_WIDGET(treeview), userdata);
 }
 
@@ -1485,6 +1493,8 @@ ui_asg_manage_cb_row_activated (GtkTreeView *treeview, GtkTreePath *path, GtkTre
 static void
 ui_asg_manage_selection(GtkTreeSelection *treeselection, gpointer user_data)
 {
+	DB( g_printf("\n[ui-asg-manage] selection\n") );
+
 	ui_asg_manage_update(GTK_WIDGET(gtk_tree_selection_get_tree_view (treeselection)), NULL);
 }
 
@@ -1493,6 +1503,8 @@ static void
 ui_asg_manage_sort_changed(GtkTreeSortable *sortable, gpointer user_data)
 {
 struct ui_asg_manage_data *data = user_data;
+
+	DB( g_printf("\n[ui-asg-manage] sort changed\n") );
 
 	ui_asg_manage_update(data->dialog, NULL);
 }
@@ -1503,7 +1515,7 @@ ui_asg_manage_search_changed_cb (GtkWidget *widget, gpointer user_data)
 {
 struct ui_asg_manage_data *data = user_data;
 
-	DB( g_printf("\n[ui_asg_manage] search_changed_cb\n") );
+	DB( g_printf("\n[ui-asg-manage] search_changed_cb\n") );
 
 	ui_asg_manage_refilter(data);
 }
@@ -1516,7 +1528,7 @@ ui_asg_manage_cleanup(struct ui_asg_manage_data *data, gint result)
 //GtkTreeModel *tree_model;
 gboolean doupdate = FALSE;
 
-	DB( g_print("\n(ui_asg_manage_cleanup) %p\n", data) );
+	DB( g_print("\n[ui-asg-manage] cleanup data=%p\n", data) );
 
 	//tree_model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_rul));
 	//data->change += ui_asg_manage_persist_position(tree_model);
@@ -1530,7 +1542,7 @@ gboolean doupdate = FALSE;
 static void ui_asg_manage_setup(struct ui_asg_manage_data *data)
 {
 
-	DB( g_print("\n(ui_asg_manage_setup)\n") );
+	DB( g_print("\n[ui-asg-manage] setup\n") );
 
 	DB( g_print(" init data\n") );
 
@@ -1539,6 +1551,8 @@ static void ui_asg_manage_setup(struct ui_asg_manage_data *data)
 	data->change = 0;
 
 	DB( g_print(" populate\n") );
+	
+	da_asg_update_position();
 
 	ui_asg_listview_populate(data->LV_rul, NULL);
 	//5.5 done in popover
@@ -1549,7 +1563,8 @@ static void ui_asg_manage_setup(struct ui_asg_manage_data *data)
 	
 	DB( g_print(" connect widgets signals\n") );
 
-	gtk_tree_view_set_search_entry(GTK_TREE_VIEW(data->LV_rul), GTK_ENTRY(data->ST_search));
+	//gtk_tree_view_set_search_entry(GTK_TREE_VIEW(data->LV_rul), GTK_ENTRY(data->ST_search));
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(data->LV_rul), FALSE);
 
 	g_signal_connect (data->ST_search, "search-changed", G_CALLBACK (ui_asg_manage_search_changed_cb), data);
 	
@@ -1557,17 +1572,13 @@ static void ui_asg_manage_setup(struct ui_asg_manage_data *data)
 	g_signal_connect (data->LV_rul, "row-activated", G_CALLBACK (ui_asg_manage_cb_row_activated), NULL);
 	g_signal_connect (gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_rul)), "sort-column-changed", G_CALLBACK (ui_asg_manage_sort_changed), data);
 
-	//TODO: useless ?
-	g_signal_connect (gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_rul)), "row-deleted", G_CALLBACK (ui_asg_manage_row_deleted), NULL);
-	
-	
 	g_signal_connect (G_OBJECT (data->BT_add), "clicked", G_CALLBACK (ui_asg_manage_add), NULL);
 	g_signal_connect (G_OBJECT (data->BT_rem), "clicked", G_CALLBACK (ui_asg_manage_delete), NULL);
 	
 	g_signal_connect (G_OBJECT (data->BT_edit), "clicked", G_CALLBACK (ui_asg_manage_edit), NULL);
 	g_signal_connect (G_OBJECT (data->BT_up  ), "clicked", G_CALLBACK (ui_asg_manage_cb_move_updown), GUINT_TO_POINTER(GTK_DIR_UP));
 	g_signal_connect (G_OBJECT (data->BT_down), "clicked", G_CALLBACK (ui_asg_manage_cb_move_updown), GUINT_TO_POINTER(GTK_DIR_DOWN));
-	//g_signal_connect (G_OBJECT (data->BT_move), "clicked", G_CALLBACK (ui_asg_manage_cb_move_to), NULL);
+	g_signal_connect (G_OBJECT (data->BT_move), "clicked", G_CALLBACK (ui_asg_manage_cb_move_to), NULL);
 
 	// popover signals
 	g_signal_connect (G_OBJECT (data->ST_poppos), "activate", G_CALLBACK (ui_asg_manage_popmove), NULL);
@@ -1583,7 +1594,7 @@ struct ui_asg_manage_data *data;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	DB( g_print("\n(ui_ars_manage_mapped)\n") );
+	DB( g_print("\n[ui-asg-manage] mapped\n") );
 
 	ui_asg_manage_setup(data);
 	ui_asg_manage_update(data->LV_rul, NULL);
@@ -1597,6 +1608,8 @@ static GtkWidget *ui_asg_popover_move_after_new(struct ui_asg_manage_data *data)
 {
 GtkWidget *box, *menubutton, *label, *widget, *image;
 GtkWidget *pop_content;
+
+	DB( g_print("\n[ui-asg-manage] create popmove\n") );
 
 	menubutton = gtk_menu_button_new ();
 	data->MB_moveto = menubutton;
@@ -1627,7 +1640,6 @@ GtkWidget *pop_content;
 		label = make_label_widget(_("_To:"));
 		gtk_box_pack_start(GTK_BOX(box), label, FALSE, FALSE, 0);
 
-		//TODO: get max pos
 		widget = make_numeric(label, 1, 99);
 		data->ST_poppos = widget;
 		gtk_entry_set_width_chars(GTK_ENTRY(widget), 10);
@@ -1665,6 +1677,8 @@ GtkWidget *widget, *content;
 GtkToolItem *toolitem;
 gint w, h, dw, dh;
 
+	DB( g_print("\n[ui-asg-manage] dialog\n") );
+
 	data = g_malloc0(sizeof(struct ui_asg_manage_data));
 	if(!data) return NULL;
 
@@ -1688,7 +1702,7 @@ gint w, h, dw, dh;
 
 	//store our dialog private data
 	g_object_set_data(G_OBJECT(dialog), "inst_data", (gpointer)data);
-	DB( g_print("(ui_asg_manage_) dialog=%p, inst_data=%p\n", dialog, data) );
+	DB( g_print(" dialog=%p, inst_data=%p\n", dialog, data) );
 
 	//dialog content
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG (dialog));	 	// return a vbox

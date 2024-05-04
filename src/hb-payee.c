@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2022 Maxime DOYEN
+ *  Copyright (C) 1995-2023 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -698,13 +698,13 @@ gchar *outstr;
 				else
 					outstr = g_strdup_printf("%s;\n", item->name);
 
-				DB( g_print(" + export %s\n", outstr) );
+				DB( g_print(" + export %s %s\n", item->name, fullcatname) );
 
 				g_io_channel_write_chars(io, outstr, -1, NULL, NULL);
 
 				g_free(outstr);
-				g_free(fullcatname);
-
+				//#1999250 don't free here...
+				//g_free(fullcatname);
 			}
 			list = g_list_next(list);
 		}
@@ -712,5 +712,7 @@ gchar *outstr;
 
 		g_io_channel_unref (io);
 	}
+	
+	DB( g_print(" export ok\n") );
 }
 

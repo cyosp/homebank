@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2022 Maxime DOYEN
+ *  Copyright (C) 1995-2023 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -1473,9 +1473,7 @@ static void repstats_window_setup(struct repstats_data *data)
 	DB( g_print(" init data\n") );
 	
 	repstats_filter_setup(data);
-	data->detail = PREFS->stat_showdetail;
-	data->legend = 1;
-	data->rate = PREFS->stat_showrate^1;
+
 
 	//DB( g_print(" populate\n") );
 
@@ -1609,6 +1607,10 @@ static void repstats_window_acquire(struct repstats_data *data)
 
 	data->txn_queue = g_queue_new ();
 	data->filter = da_flt_malloc();
+	data->detail = PREFS->stat_showdetail;
+	data->legend = 1;
+	data->rate = PREFS->stat_showrate^1;
+
 }
 
 

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2022 Maxime DOYEN
+ *  Copyright (C) 1995-2023 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -167,7 +167,7 @@ GtkWidget *hub, *vbox, *sw, *widget;
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start (GTK_BOX (vbox), sw, TRUE, TRUE, 0);
 	
-	widget = (GtkWidget *)create_list_transaction(LIST_TXN_TYPE_DETAIL, PREFS->lst_ope_columns);
+	widget = (GtkWidget *)create_list_transaction(LIST_TXN_TYPE_OTHER, PREFS->lst_ope_columns);
 	list_txn_set_column_acc_visible(GTK_TREE_VIEW(widget), TRUE);
 	data->LV_txn[type] = widget;
 	gtk_container_add (GTK_CONTAINER (sw), widget);

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2022 Maxime DOYEN
+ *  Copyright (C) 1995-2023 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -510,22 +510,27 @@ GDateWeekday wday;
 
 	qnum = 0;
 	yfiscal = year;
-	if( range == FLT_RANGE_LAST_QUARTER || range == FLT_RANGE_THIS_QUARTER ||range == FLT_RANGE_NEXT_QUARTER )
+	if( range == FLT_RANGE_LAST_QUARTER || range == FLT_RANGE_THIS_QUARTER ||range == FLT_RANGE_NEXT_QUARTER ||
+		//#2000834    
+	    range == FLT_RANGE_LAST_YEAR || range == FLT_RANGE_THIS_YEAR ||range == FLT_RANGE_NEXT_YEAR
+	  )
 	{
-
 		g_date_set_dmy(tmpdate, PREFS->fisc_year_day, PREFS->fisc_year_month, year);
 		jfiscal = g_date_get_julian(tmpdate);
 		DB( hb_print_date(jfiscal, "fiscal") );
 
 		yfiscal = (jtoday >= jfiscal) ? year : year-1;
 
-		g_date_set_dmy(tmpdate, PREFS->fisc_year_day, PREFS->fisc_year_month, yfiscal);
-		while( (qnum < 5) && (g_date_get_julian(tmpdate) < jtoday) )
+		if( range == FLT_RANGE_LAST_QUARTER || range == FLT_RANGE_THIS_QUARTER ||range == FLT_RANGE_NEXT_QUARTER )
 		{
-			qnum++;
-			g_date_add_months (tmpdate, 3);
+			g_date_set_dmy(tmpdate, PREFS->fisc_year_day, PREFS->fisc_year_month, yfiscal);
+			while( (qnum < 5) && (g_date_get_julian(tmpdate) < jtoday) )
+			{
+				qnum++;
+				g_date_add_months (tmpdate, 3);
+			}
+			DB( g_print(" qnum: %d\n", qnum ) );
 		}
-		DB( g_print(" qnum: %d\n", qnum ) );
 	}
 		
 	switch( range )
@@ -560,9 +565,9 @@ GDateWeekday wday;
 		case FLT_RANGE_LAST_FORTNIGHT:
 		case FLT_RANGE_THIS_FORTNIGHT:
 		case FLT_RANGE_NEXT_FORTNIGHT:
-			//ISO 8601 from must be monday, to slice in correct weekœ
+			//ISO 8601 from must be monday, to slice in correct week
 			wday = g_date_get_weekday(tmpdate);
-			g_date_subtract_days (tmpdate, wday-G_DATE_MONDAY);
+			g_date_subtract_days (tmpdate, wday - G_DATE_MONDAY);
 			if( range == FLT_RANGE_LAST_FORTNIGHT )
 				g_date_subtract_days(tmpdate, 14);
 			else
@@ -968,13 +973,14 @@ void filter_preset_status_set(Filter *flt, gint status)
 				break;
 
 			case FLT_STATUS_UNRECONCILED:
-				flt->option[FLT_GRP_STATUS] = 2;
-				flt->sta_rec = TRUE;
+				flt->option[FLT_GRP_STATUS] = 1;
+				flt->sta_non = TRUE;
+				flt->sta_clr = TRUE;
 				break;
 
 			case FLT_STATUS_UNCLEARED:
-				flt->option[FLT_GRP_STATUS] = 2;
-				flt->sta_clr = TRUE;
+				flt->option[FLT_GRP_STATUS] = 1;
+				flt->sta_non = TRUE;
 				break;
 
 			case FLT_STATUS_RECONCILED:
@@ -1259,6 +1265,23 @@ end:
 }
 
 
+gint filter_acc_match(Filter *flt, Account *acc)
+{
+gboolean status;
+gint insert = 1;
+
+/* account */
+	if(flt->option[FLT_GRP_ACCOUNT])
+	{
+		status = da_flt_status_acc_get(flt, acc->key);
+		insert = ( status == TRUE ) ? 1 : 0;
+		if(flt->option[FLT_GRP_ACCOUNT] == 2) insert ^= 1;
+	}
+	
+	return(insert);
+}
+
+
 gint filter_txn_match(Filter *flt, Transaction *txn)
 {
 gboolean status;
@@ -1432,12 +1455,21 @@ end:
 	{
 		if( ((flt->forceadd == TRUE) && (txn->flags & OF_ADDED))
 		 || ((flt->forcechg == TRUE) && (txn->flags & OF_CHANGED))
-		 || ((flt->forceremind == TRUE) && (txn->status == TXN_STATUS_REMIND))
-		 || ((flt->forcevoid == TRUE) && (txn->status == TXN_STATUS_VOID))
 		  )
 		insert = 1;
 	}
 
+	//#1999186 pref void/remind to false do not work
+	if( txn->status == TXN_STATUS_REMIND )
+	{
+		insert = flt->forceremind;
+	}
+	
+	if( txn->status == TXN_STATUS_VOID )
+	{
+		insert = flt->forcevoid;
+	}
+	
 //	DB( g_print(" %d :: %d :: %d\n", flt->mindate, txn->date, flt->maxdate) );
 //	DB( g_print(" [%d] %s => %d (%d)\n", txn->account, txn->memo, insert, count) );
 	return(insert);

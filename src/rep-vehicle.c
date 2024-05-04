@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2022 Maxime DOYEN
+ *  Copyright (C) 1995-2023 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -984,7 +984,9 @@ gint row, col;
 	gtk_grid_attach (GTK_GRID (table), label, 0, row, 3, 1);
 
 	row++;
-	label = make_label_widget(_("Vehi_cle:"));
+	//label = make_label_widget(_("Vehi_cle:"));
+	//#2001566 make label consistent with properties dialog
+	label = make_label_widget(_("_Category:"));
 	gtk_grid_attach (GTK_GRID (table), label, 1, row, 1, 1);
 
 	//widget = ui_cat_comboboxentry_new(label);

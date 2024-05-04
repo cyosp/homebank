@@ -1,4 +1,30 @@
 
+2023-01-08  Maxime Doyen
+
+ Made 5.6.1 release
+
+ * bugfix: #2001566 vehicule cost report label vehicle while properties label Category
+ * bugfix: #2000834 when fiscal year is not 01 jan last/this/next year is 1 year ahead
+ * bugfix: #2000809 user feedback when create template or assignment
+ * bugfix: #2000760 typo in french translation
+ * bugfix: #2000629 move buttons in Manage Assignments window do not update at ends
+ * bugfix: #2000294 statistics Time 'Balance mode' ignores filters
+ * bugfix: #2000292 week 51/52 display incorrectly in Statistics Report
+ * bugfix: #2000269 quick filter transactions uncleared shows reconciled transactions
+ * bugfix: #2000266 duplicated 'This fortnight' label in date range
+ * bugfix: #1999963 category list with an & show other name
+ * bugfix: #1999879 new assignment by amount do not save the amount
+ * bugfix: #1999322 When I hide a payee, changes are not saved
+ * bugfix: #1999297 win: crash in scheduled transaction
+ * bugfix: #1999265 future/remind list column width to 0 (hidden)
+ * bugfix: #1999250 program crashes exporting Payees to csv
+ * bugfix: #1999243 moving assignment rule is not subject to saving and moving to position>99 fails
+ * bugfix: #1999188 show detail preference is ignored + column width to 0
+ * bugfix: #1999186 void transactions show regardless of preferences setting
+ * bugfix: #1998987 translation is missing for days and transaction status
+ * bugfix: #1998912 translation is missing for the new date selector
+
+
 2022-12-06  Maxime Doyen
 
  Made 5.6 release

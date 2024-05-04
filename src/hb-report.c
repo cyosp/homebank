@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2022 Maxime DOYEN
+ *  Copyright (C) 1995-2023 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -170,7 +170,17 @@ gdouble da_datarow_get_cell_sum(DataRow *dr, guint32 index)
 /* = = = = = = = = = = = = = = = = = = = = */
 
 
-//#1915643 week iso 8601
+// slide the date to monday of the week
+static void hb_date_clamp_iso8601(GDate *date)
+{
+GDateWeekday wday;
+
+	//ISO 8601 from must be monday, to slice in correct week
+	wday = g_date_get_weekday(date);
+	g_date_subtract_days (date, wday - G_DATE_MONDAY);
+}
+
+
 /*
 ** return the week list position correponding to the passed date
 */
@@ -178,18 +188,20 @@ static guint DateInWeek(guint32 from, guint32 opedate)
 {
 GDate *date1, *date2;
 gint pos;
-GDateWeekday wday;
 
 	date1 = g_date_new_julian(from);
 	date2 = g_date_new_julian(opedate);
 
-	//ISO 8601 from must be monday, to slice in correct week
-	wday = g_date_get_weekday(date1);
-	g_date_subtract_days (date1, wday-G_DATE_MONDAY);
+	DB( g_print(" from=%d %02d-%02d-%04d ", 
+		g_date_get_weekday(date1), g_date_get_day(date1), g_date_get_month(date1), g_date_get_year(date1)) );
 
+	//#1915643 week iso 8601
+	hb_date_clamp_iso8601(date1);
 	pos = (opedate - g_date_get_julian(date1)) / 7;
 
-	DB( g_print(" from=%d %02d-%02d-%04d (shift %d) => %d\n", g_date_get_weekday(date1), g_date_get_day(date1), g_date_get_month(date1), g_date_get_year(date1), (wday-1), pos) );
+	DB( g_print(" shifted=%d %02d-%02d-%04d pos=%d\n", 
+		g_date_get_weekday(date1), g_date_get_day(date1), g_date_get_month(date1), g_date_get_year(date1), pos) );
+
 
 	g_date_free(date2);
 	g_date_free(date1);
@@ -585,7 +597,7 @@ gint n_result, n_cols;
 	n_result = report_items_count(tmpsrc, flt->mindate, flt->maxdate);
 	n_cols   = report_interval_count(tmpintvl, flt->mindate, flt->maxdate);
 
-	DB( g_print(" %d :: n_result=%d\n", tmpsrc, n_result) );
+	DB( g_print(" %d :: rows=%d cols=%d\n", tmpsrc, n_result, n_cols) );
 	
 	dt = da_datatable_malloc (0, n_result, n_cols);
 	if( dt != NULL )
@@ -733,6 +745,10 @@ guint row, col;
 			//#1674045 ony rely on nosummary
 			if( (acc->flags & (AF_NOREPORT)) )
 				goto next_acc;
+				
+			//#2000294 enable account filtering
+			if( filter_acc_match(flt, acc) == 0 )
+				goto next_acc;
 
 			//add initial amount
 			trn_amount = hb_amount_base(acc->initial, acc->kcur);
@@ -748,6 +764,8 @@ guint row, col;
 			
 				//5.5 forgot to filter...
 				if( !((txn->status == TXN_STATUS_REMIND) || (txn->status == TXN_STATUS_VOID)) )
+				//TODO: enable filters : make no sense no ?
+				//if( (filter_txn_match(flt, txn) == 1) )
 				{
 					pos = report_items_get_pos(tmpsrc, flt->mindate, txn);
 
@@ -921,7 +939,9 @@ gint nbintvl = 0;
 			nbintvl = 1 + (jto - jfrom);
 			break;
 		case REPORT_INTVL_WEEK:
-			nbintvl = 1 + ((jto - jfrom) / 7);
+			//#2000292 weeknum iso 8601 as well
+			hb_date_clamp_iso8601(date1);
+			nbintvl = 1 + (g_date_days_between(date1, date2) / 7);
 			break;
 		case REPORT_INTVL_MONTH:
 			nbintvl = 1 + ((g_date_get_year(date2) - g_date_get_year(date1)) * 12) + g_date_get_month(date2) - g_date_get_month(date1);

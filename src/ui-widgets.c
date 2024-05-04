@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2022 Maxime DOYEN
+ *  Copyright (C) 1995-2023 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -949,7 +949,7 @@ guint i;
     //button = gtk_radio_button_new_with_label (NULL, _(items[0]));
 	button = gtk_radio_button_new(NULL);
 	image = gtk_image_new_from_icon_name (tmp->iconname, GTK_ICON_SIZE_BUTTON);
-	g_object_set (button, "image", image, "tooltip-text", tmp->name, NULL);
+	g_object_set (button, "image", image, "tooltip-text", _(tmp->name), NULL);
 	gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (button), !buttonstyle);
     gtk_box_pack_start (GTK_BOX (box), button, FALSE, FALSE, 0);
 	for (i = 1; ; i++)
@@ -961,7 +961,7 @@ guint i;
 		//newbutton = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (button), _(items[i]));
 		newbutton = gtk_radio_button_new_from_widget (GTK_RADIO_BUTTON (button));
 		image = gtk_image_new_from_icon_name (tmp->iconname, GTK_ICON_SIZE_BUTTON);
-		g_object_set (newbutton, "image", image, "tooltip-text", tmp->name, NULL);
+		g_object_set (newbutton, "image", image, "tooltip-text", _(tmp->name), NULL);
 		gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (newbutton), !buttonstyle);
 	    gtk_box_pack_start (GTK_BOX (box), newbutton, FALSE, FALSE, 0);
 	}
@@ -1094,7 +1094,7 @@ guint i;
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 
-#define HB_KV_BUFFER_MAX_LEN	8
+#define HB_KV_BUFFER_MAX_LEN	16
 #define HB_KV_ITEMS_MAX_LEN		32
 
 gchar *hbtk_get_label(HbKvData *kvdata, guint32 key)

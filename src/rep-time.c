@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2022 Maxime DOYEN
+ *  Copyright (C) 1995-2023 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -1159,7 +1159,7 @@ static void reptime_window_setup(struct reptime_data *data, guint32 accnum)
 	DB( g_print(" init data\n") );
 
 	reptime_filter_setup(data);
-	data->detail = 0;
+
 
 
 	DB( g_print(" populate\n") );
@@ -1300,6 +1300,7 @@ static void reptime_window_acquire(struct reptime_data *data)
 
 	data->txn_queue = g_queue_new ();
 	data->filter = da_flt_malloc();
+	data->detail = 0;
 }
 
 

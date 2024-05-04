@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2022 Maxime DOYEN
+ *  Copyright (C) 1995-2023 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -1047,9 +1047,12 @@ void list_txn_set_lockreconciled(GtkTreeView *treeview, gboolean lockreconciled)
 {
 struct list_txn_data *data;
 
+	DB( g_print("\n[list_txn] set lock reconciled\n") );
+
 	data = g_object_get_data(G_OBJECT(treeview), "inst_data");
 
 	data->lockreconciled = lockreconciled;
+	DB( g_print(" lockrecon=%d\n", data->lockreconciled) );
 }
 
 
@@ -1174,10 +1177,9 @@ gint *col_width_ptr;
 
 #if MYDEBUG == 1
 	DB( g_print("\n debug column sortid\n") );
-
 	for(i=0; i < NUM_LST_DSPOPE-1 ; i++ )   // -1 cause account not to be processed
 	{
-		DB( g_print(" - pos:%2d sortid:%2d\n", i, col_id[i]) );
+		DB( g_print(" pos:%2d sortid:%2d\n", i, col_id[i]) );
 	}
 #endif	
 
@@ -1228,8 +1230,8 @@ gint *col_width_ptr;
 
 			gtk_tree_view_column_set_visible (column, visible);
 
-			//5.6 only apply width to BOOK||DETAIL to allow autosize on XFER dialog
-			if( (data->list_type == LIST_TXN_TYPE_BOOK) || (data->list_type == LIST_TXN_TYPE_DETAIL) )
+			//5.6 do not apply to allow autosize on XFER dialog
+			if( (data->list_type != LIST_TXN_TYPE_XFERSOURCE) && (data->list_type != LIST_TXN_TYPE_XFERTARGET) )
 			{
 				col_width_ptr = PREFS->lst_ope_col_width;
 				if( data->list_type == LIST_TXN_TYPE_DETAIL )
@@ -1423,10 +1425,13 @@ GtkCellRenderer    *renderer;
 	gtk_tree_view_column_set_resizable(column, TRUE);
 
 	gtk_tree_view_column_set_sort_column_id (column, sortcolumnid);
-	if(list_type == LIST_TXN_TYPE_BOOK)
+
+	gtk_tree_view_column_set_min_width (column, HB_MINWIDTH_COLUMN);
+
+	if(list_type == LIST_TXN_TYPE_BOOK || list_type == LIST_TXN_TYPE_DETAIL)
 	{
-		gtk_tree_view_column_set_reorderable(column, TRUE);
-		gtk_tree_view_column_set_min_width (column, HB_MINWIDTH_COLUMN);
+		if(list_type == LIST_TXN_TYPE_BOOK)
+			gtk_tree_view_column_set_reorderable(column, TRUE);
 		gtk_tree_view_column_set_sizing (column, GTK_TREE_VIEW_COLUMN_FIXED);
 	}
 
@@ -1460,10 +1465,13 @@ GtkCellRenderer    *renderer;
 	gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_column_set_resizable(column, TRUE);
 	gtk_tree_view_column_set_sort_column_id (column, LST_DSPOPE_INFO);
-	if(list_type == LIST_TXN_TYPE_BOOK)
+
+	gtk_tree_view_column_set_min_width (column, HB_MINWIDTH_COLUMN);
+
+	if(list_type == LIST_TXN_TYPE_BOOK || list_type == LIST_TXN_TYPE_DETAIL)
 	{
-		gtk_tree_view_column_set_reorderable(column, TRUE);
-		gtk_tree_view_column_set_min_width (column, HB_MINWIDTH_COLUMN);
+		if(list_type == LIST_TXN_TYPE_BOOK)
+			gtk_tree_view_column_set_reorderable(column, TRUE);
 		gtk_tree_view_column_set_sizing (column, GTK_TREE_VIEW_COLUMN_FIXED);
 	}
 
@@ -1483,7 +1491,7 @@ struct list_txn_data *data;
 	{
 		list_txn_get_columns(GTK_TREE_VIEW(data->treeview));
 	}
-		
+
 	DB( g_print(" - view=%p, inst_data=%p\n", widget, data) );
 	g_free(data);
 }

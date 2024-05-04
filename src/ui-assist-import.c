@@ -1,5 +1,5 @@
 /*	HomeBank -- Free, easy, personal accounting for everyone.
- *	Copyright (C) 1995-2022 Maxime DOYEN
+ *	Copyright (C) 1995-2023 Maxime DOYEN
  *
  *	This file is part of HomeBank.
  *
@@ -1882,8 +1882,7 @@ gint row;
 		gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
 		gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 		gtk_widget_set_hexpand(scrollwin, TRUE);
-		//widget = create_list_transaction(LIST_TXN_TYPE_DETAIL, PREFS->lst_ope_columns);
-		widget = create_list_transaction(LIST_TXN_TYPE_IMPOPE, PREFS->lst_impope_columns);
+		widget = create_list_transaction(LIST_TXN_TYPE_OTHER, PREFS->lst_impope_columns);
 		txndata->LV_duptxn = widget;
 		gtk_container_add (GTK_CONTAINER (scrollwin), widget);
 		gtk_widget_set_size_request(scrollwin, -1, HB_MINWIDTH_LIST/2);

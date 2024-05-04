@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2022 Maxime DOYEN
+ *  Copyright (C) 1995-2023 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -553,7 +553,6 @@ gboolean selected, sensitive;
 	gtk_widget_set_sensitive(data->CM_limit, sensitive);
 
 	gtk_widget_set_sensitive(data->LB_posts, sensitive);
-
 	
 	sensitive = (sensitive == TRUE) ? gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_limit)) : sensitive;
 	gtk_widget_set_sensitive(data->NB_limit, sensitive);
@@ -569,7 +568,7 @@ gboolean selected, sensitive;
 
 		//	gtk_tree_view_columns_autosize (GTK_TREE_VIEW(data->LV_arc));
 		//gtk_widget_queue_draw (GTK_WIDGET(data->LV_arc));
-	}	
+	}
 }
 
 
@@ -630,7 +629,10 @@ gint i, typsch, typtpl;
 	DB( g_print(" - typsch=%d / typtpl=%d\n", typsch, typtpl) );
 
 	gtk_list_store_clear (GTK_LIST_STORE(model));
-	
+
+	g_object_ref(model); /* Make sure the model stays with us after the tree view unrefs it */
+	gtk_tree_view_set_model(GTK_TREE_VIEW(data->LV_arc), NULL); /* Detach model from view */
+
 	i=0;
 	list = g_list_first(GLOBALS->arc_list);
 	while (list != NULL)
@@ -666,6 +668,8 @@ gint i, typsch, typtpl;
 		i++; list = g_list_next(list);
 	}
 
+	gtk_tree_view_set_model(GTK_TREE_VIEW(data->LV_arc), model); /* Re-attach model to view */
+	g_object_unref(model);
 
 //	gtk_tree_view_expand_all (GTK_TREE_VIEW(data->LV_arc));
 }
@@ -844,7 +848,7 @@ GtkTreeModel *model;
 GtkTreeIter iter;
 Archive *item;
 
-	DB( g_print("\n[ui_scheduled] set\n") );
+	DB( g_print("\n[ui_scheduled] set popover\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -976,6 +980,9 @@ Archive *arcitem;
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(treeview, GTK_TYPE_WINDOW)), "inst_data");
 	
 	selected = gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_arc)), &model, &iter);
+
+	DB( g_print(" a row is selected = %d\n", selected) );
+
 	if(selected)
 	{
 		gtk_tree_model_get(model, &iter, LST_DEFARC_DATAS, &arcitem, -1);
@@ -1029,19 +1036,24 @@ ui_arc_manage_setup(struct ui_arc_manage_data *data)
 	data->tmp_list = NULL; //hb-glist_clone_list(GLOBALS->arc_list, sizeof(struct _Archive));
 	data->change = 0;
 
-	//DB( g_print(" populate\n") );
-
 	DB( g_print(" set widgets default\n") );
 
 	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_unit), 2);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->BT_typsch), TRUE);
+
+
+	DB( g_print(" populate\n") );
+	ui_arc_manage_populate_listview(data);
+
 
 	DB( g_print(" connect widgets signals\n") );
 
 	g_signal_connect (data->BT_typsch, "toggled", G_CALLBACK (ui_arc_manage_cb_flttype_changed), data);
 	g_signal_connect (data->BT_typtpl, "toggled", G_CALLBACK (ui_arc_manage_cb_flttype_changed), data);
 
-	gtk_tree_view_set_search_entry(GTK_TREE_VIEW(data->LV_arc), GTK_ENTRY(data->ST_search));
+	//#1999297 seems to crash because of internal gtk search
+	//gtk_tree_view_set_search_entry(GTK_TREE_VIEW(data->LV_arc), GTK_ENTRY(data->ST_search));
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(data->LV_arc), FALSE);
 
 	g_signal_connect (data->ST_search, "search-changed", G_CALLBACK (ui_arc_manage_cb_flttype_changed), data);
 	
@@ -1073,9 +1085,8 @@ struct ui_arc_manage_data *data;
 	DB( g_print("\n(ui_arc_manage_mapped)\n") );
 
 	ui_arc_manage_setup(data);
-	ui_arc_manage_populate_listview(data);
 	ui_arc_manage_update(data->LV_arc, NULL);
-	gtk_widget_grab_focus(GTK_WIDGET(data->LV_arc));
+	//gtk_widget_grab_focus(GTK_WIDGET(data->LV_arc));
 
 	return FALSE;
 }

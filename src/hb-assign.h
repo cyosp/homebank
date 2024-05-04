@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2022 Maxime DOYEN
+ *  Copyright (C) 1995-2023 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -34,7 +34,7 @@ struct _assign
 	guint32		kpay;		//dst payee
 	guint32		kcat;		//dst category
 	gushort		paymode;	//dst_payment mode
-	gushort		pos;		//position
+	guint32		pos;		//position
 	gdouble		amount;		//5.6 #1710085 assignment based on amount
 };
 
@@ -70,6 +70,7 @@ Assign		*da_asg_get_by_name(gchar *name);
 Assign		*da_asg_get(guint32 key);
 void da_asg_consistency(Assign *item);
 Assign *da_asg_init_from_transaction(Assign *asg, Transaction *txn);
+void da_asg_update_position(void);
 
 gchar *assign_get_target_payee(Assign *asgitem);
 gchar *assign_get_target_category(Assign *asgitem);

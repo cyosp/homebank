@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2022 Maxime DOYEN
+ *  Copyright (C) 1995-2023 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -285,6 +285,25 @@ Assign *da_asg_init_from_transaction(Assign *asg, Transaction *txn)
 		asg->paymode = txn->paymode;
 	}
 	return asg;
+}
+
+
+void da_asg_update_position(void)
+{
+GList *lrul, *list;
+guint32 newpos = 1;
+
+	DB( g_print("da_asg_update_position\n") );
+
+	lrul = list = assign_glist_sorted(HB_GLIST_SORT_POS);
+	while (list != NULL)
+	{
+	Assign *item = list->data;
+
+		item->pos = newpos++;
+		list = g_list_next(list);
+	}
+	g_list_free(lrul);
 }
 
 

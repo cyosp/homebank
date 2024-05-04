@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2022 Maxime DOYEN
+ *  Copyright (C) 1995-2023 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -589,6 +589,8 @@ gint i;
 		else if(!strcmp (attribute_names[i], "payee"   )) { entry->kpay = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "category")) { entry->kcat = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "paymode" )) { entry->paymode = atoi(attribute_values[i]); }
+		//#1999879 assignment by amount do not save
+		else if(!strcmp (attribute_names[i], "amount"  )) { entry->amount = g_ascii_strtod(attribute_values[i], NULL); }
 		// prior v08
 		else if(!strcmp (attribute_names[i], "exact" )) { exact = atoi(attribute_values[i]); }
 	}
@@ -619,7 +621,7 @@ gint i;
 		//DB( g_print(" att='%s' val='%s'\n", attribute_names[i], attribute_values[i]) );
 
 			 if(!strcmp (attribute_names[i], "key"  )) { entry->key = atoi(attribute_values[i]); }
-		//else if(!strcmp (attribute_names[i], "flags")) { entry->flags = atoi(attribute_values[i]); }
+		else if(!strcmp (attribute_names[i], "flags")) { entry->flags = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "name" )) { entry->name = g_strdup(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "category")) { entry->kcat = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "paymode" )) { entry->paymode = atoi(attribute_values[i]); }
@@ -1460,6 +1462,7 @@ GError *error = NULL;
 			g_string_assign(node, "<pay");
 
 			hb_xml_append_int(node, "key", item->key);
+			hb_xml_append_int(node, "flags", item->flags);
 			hb_xml_append_txt(node, "name", item->name);
 			hb_xml_append_int(node, "category", item->kcat);
 			hb_xml_append_int(node, "paymode" , item->paymode);
@@ -1648,6 +1651,8 @@ GError *error = NULL;
 		hb_xml_append_int(node, "payee"   , item->kpay);
 		hb_xml_append_int(node, "category", item->kcat);
 		hb_xml_append_int(node, "paymode" , item->paymode);
+		//#1999879 assignment by amount do not save
+		hb_xml_append_amt(node, "amount", item->amount);
 
 		g_string_append(node, "/>\n");
 		

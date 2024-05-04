@@ -1,5 +1,5 @@
 /*	HomeBank -- Free, easy, personal accounting for everyone.
- *	Copyright (C) 1995-2022 Maxime DOYEN
+ *	Copyright (C) 1995-2023 Maxime DOYEN
  *
  *	This file is part of HomeBank.
  *
@@ -722,6 +722,14 @@ gint result, count;
 
 			g_list_foreach(selection, (GFunc)gtk_tree_path_free, NULL);
 			g_list_free(selection);
+			
+			//#2000809 add confirmation
+			ui_dialog_msg_infoerror(GTK_WINDOW(data->window), GTK_MESSAGE_INFO,
+				_("Create Assignment"),
+				_("%d created and prefixed with **PREFILLED**"),
+				count
+				);
+
 		}
 	}
 }
@@ -789,6 +797,14 @@ gint result, count;
 
 			g_list_foreach(selection, (GFunc)gtk_tree_path_free, NULL);
 			g_list_free(selection);
+
+			//#2000809 add confirmation
+			ui_dialog_msg_infoerror(GTK_WINDOW(data->window), GTK_MESSAGE_INFO,
+				_("Create Template"),
+				_("%d created and prefixed with **PREFILLED**"),
+				count
+				);
+
 		}
 	}
 }
@@ -2622,8 +2638,8 @@ GtkAccelGroup *accel_group = NULL;
 			gtk_widget_add_accelerator(menuitem, "activate", accel_group, GDK_KEY_r, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 
 		data->MI_multiedit = hbtk_menu_add_menuitem(menu, _("_Multiple Edit...") );
-		data->MI_assign    = hbtk_menu_add_menuitem(menu, _("Create assignment..."));
 		data->MI_template  = hbtk_menu_add_menuitem(menu, _("Create template...") );
+		data->MI_assign    = hbtk_menu_add_menuitem(menu, _("Create assignment..."));
 		data->MI_delete    = menuitem = hbtk_menu_add_menuitem(menu, _("_Delete...") );
 		gtk_widget_add_accelerator (menuitem, "activate", accel_group, GDK_KEY_Delete, (GdkModifierType)0, GTK_ACCEL_VISIBLE);
 
@@ -3013,6 +3029,8 @@ gint row;
 	g_signal_connect (data->MI_statclear , "activate", G_CALLBACK (register_panel_action_clear), (gpointer)data);
 	g_signal_connect (data->MI_statrecon , "activate", G_CALLBACK (register_panel_action_reconcile), (gpointer)data);
 	g_signal_connect (data->MI_multiedit , "activate", G_CALLBACK (register_panel_action_multiedit), (gpointer)data);
+	//#2000809 assign menu do nothing
+	g_signal_connect (data->MI_assign    , "activate", G_CALLBACK (register_panel_action_createassignment), (gpointer)data);
 	g_signal_connect (data->MI_template  , "activate", G_CALLBACK (register_panel_action_createtemplate), (gpointer)data);
 	g_signal_connect (data->MI_delete    , "activate", G_CALLBACK (register_panel_action_delete), (gpointer)data);
 	g_signal_connect (data->MI_find      , "activate", G_CALLBACK (register_panel_action_find), (gpointer)data);

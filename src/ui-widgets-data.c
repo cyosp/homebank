@@ -1,5 +1,5 @@
 /*	HomeBank -- Free, easy, personal accounting for everyone.
- *	Copyright (C) 1995-2022 Maxime DOYEN
+ *	Copyright (C) 1995-2023 Maxime DOYEN
  *
  *	This file is part of HomeBank.
  *
@@ -93,41 +93,41 @@ HbKvData CYA_ACC_TYPE[] =
 
 
 HbKvData CYA_FLT_RANGE[] = {
-	{  FLT_RANGE_LAST_DAY       , "Yesterday" },
-	{  FLT_RANGE_THIS_DAY       , "Today" },
-	{  FLT_RANGE_NEXT_DAY       , "Tomorrow" },
+	{  FLT_RANGE_LAST_DAY       , N_("Yesterday") },
+	{  FLT_RANGE_THIS_DAY       , N_("Today") },
+	{  FLT_RANGE_NEXT_DAY       , N_("Tomorrow") },
 
-	{  FLT_RANGE_LAST_WEEK      , "Last Week" },
-	{  FLT_RANGE_THIS_WEEK      , "This Week" },
-	{  FLT_RANGE_NEXT_WEEK      , "Next Week" },
+	{  FLT_RANGE_LAST_WEEK      , N_("Last Week") },
+	{  FLT_RANGE_THIS_WEEK      , N_("This Week") },
+	{  FLT_RANGE_NEXT_WEEK      , N_("Next Week") },
 
-	{  FLT_RANGE_LAST_FORTNIGHT , "This Fortnight" },
-	{  FLT_RANGE_THIS_FORTNIGHT , "This Fortnight" },
-	{  FLT_RANGE_NEXT_FORTNIGHT , "Next Fortnight" },
+	{  FLT_RANGE_LAST_FORTNIGHT , N_("Last Fortnight") },
+	{  FLT_RANGE_THIS_FORTNIGHT , N_("This Fortnight") },
+	{  FLT_RANGE_NEXT_FORTNIGHT , N_("Next Fortnight") },
 
-	{  FLT_RANGE_LAST_MONTH     , "Last Month" },
-	{  FLT_RANGE_THIS_MONTH     , "This Month" },
-	{  FLT_RANGE_NEXT_MONTH     , "Next Month" },
+	{  FLT_RANGE_LAST_MONTH     , N_("Last Month") },
+	{  FLT_RANGE_THIS_MONTH     , N_("This Month") },
+	{  FLT_RANGE_NEXT_MONTH     , N_("Next Month") },
 
-	{  FLT_RANGE_LAST_QUARTER   , "Last Quarter" },
-	{  FLT_RANGE_THIS_QUARTER   , "This Quarter" },
-	{  FLT_RANGE_NEXT_QUARTER   , "Next Quarter" },
+	{  FLT_RANGE_LAST_QUARTER   , N_("Last Quarter") },
+	{  FLT_RANGE_THIS_QUARTER   , N_("This Quarter") },
+	{  FLT_RANGE_NEXT_QUARTER   , N_("Next Quarter") },
 
-	{  FLT_RANGE_LAST_YEAR      , "Last Year" },
-	{  FLT_RANGE_THIS_YEAR      , "This Year" },
-	{  FLT_RANGE_NEXT_YEAR      , "Next Year" },
+	{  FLT_RANGE_LAST_YEAR      , N_("Last Year") },
+	{  FLT_RANGE_THIS_YEAR      , N_("This Year") },
+	{  FLT_RANGE_NEXT_YEAR      , N_("Next Year") },
 
 	{ HBTK_IS_SEPARATOR, "" },
 	{ HBTK_IS_SEPARATOR, "" },
 	{ HBTK_IS_SEPARATOR, "" },
 
-	{  FLT_RANGE_LAST_30DAYS    , "Last 30 Days" },
-	{  FLT_RANGE_LAST_60DAYS    , "Last 60 Days" },
-	{  FLT_RANGE_LAST_90DAYS    , "Last 90 Days" },
+	{  FLT_RANGE_LAST_30DAYS    , N_("Last 30 Days") },
+	{  FLT_RANGE_LAST_60DAYS    , N_("Last 60 Days") },
+	{  FLT_RANGE_LAST_90DAYS    , N_("Last 90 Days") },
 
-	{  FLT_RANGE_LAST_12MONTHS  , "Last 12 Months" },
-	{  FLT_RANGE_MISC_30DAYS    , "30 Days Around" },
-	{  FLT_RANGE_MISC_ALLDATE   , "All Date" },
+	{  FLT_RANGE_LAST_12MONTHS  , N_("Last 12 Months") },
+	{  FLT_RANGE_MISC_30DAYS    , N_("30 Days Around") },
+	{  FLT_RANGE_MISC_ALLDATE   , N_("All Date") },
 
 	{ 0, NULL }
 };
