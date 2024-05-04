@@ -705,7 +705,8 @@ gint i;
 	node = g_string_sized_new(512);
 	//todo: think about encapsulate the API call ourself
 	//todo: let the user choose http / https
-	g_string_append_printf(node, "https://frankfurter.app/latest?base=%s&symbols=", base->iso_code);
+	g_string_append_printf(node, "https://api.frankfurter.app/latest?base=%s&symbols=", base->iso_code);
+	//g_string_append_printf(node, "https://frankfurter.app/latest?base=%s&symbols=", base->iso_code);
 	//g_string_append_printf(node, "https://api.fixer.io/latest?base=%s&symbols=", base->iso_code);
 
 	list = g_hash_table_get_values(GLOBALS->h_cur);

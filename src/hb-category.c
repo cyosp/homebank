@@ -540,6 +540,15 @@ void da_cat_consistency(Category *item)
 }
 
 
+//#2026641
+void da_cat_anonymize(Category *item)
+{
+	g_free(item->name);
+	item->name = g_strdup_printf("category %d", item->key);
+
+	da_cat_build_fullname(item);
+}
+
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
@@ -967,8 +976,10 @@ category_glist_sorted(gint column)
 GList *list = g_hash_table_get_values(GLOBALS->h_cat);
 
 	if(column == 0)
+		// sort by cat and their consecutive subcat
 		return g_list_sort(list, (GCompareFunc)category_glist_key_compare_func);
 	else
+		// sort by name
 		return g_list_sort(list, (GCompareFunc)category_glist_name_compare_func);
 }
 

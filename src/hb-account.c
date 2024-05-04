@@ -147,7 +147,7 @@ da_acc_delete(guint32 key)
 
 
 static void
-da_cat_build_xfername(Account *item)
+da_acc_build_xfername(Account *item)
 {
 
 	g_free(item->xferexpname);
@@ -189,7 +189,7 @@ da_acc_rename(Account *item, gchar *newname)
 
 	//#1889659: ensure name != null/empty
 	da_acc_ensure_name(item);
-	da_cat_build_xfername(item);
+	da_acc_build_xfername(item);
 
 }
 
@@ -214,7 +214,7 @@ guint32 *new_key;
 	
 	//#1889659: ensure name != null/empty
 	da_acc_ensure_name(item);
-	da_cat_build_xfername(item);
+	da_acc_build_xfername(item);
 
 	g_hash_table_insert(GLOBALS->h_acc, new_key, item);
 
@@ -336,6 +336,29 @@ void da_acc_consistency(Account *item)
 	
 	//#1889659: ensure name != null/empty
 	da_acc_ensure_name(item);
+}
+
+
+//#2026641
+void da_acc_anonymize(Account *item)
+{
+	g_free(item->name);
+	item->name = g_strdup_printf("account %d", item->key);
+
+	g_free(item->number);
+	item->number = NULL;
+
+	g_free(item->bankname);
+	item->bankname = NULL;
+
+	//#2026641 account notes, start balance, overdraft
+	g_free(item->notes);
+	item->notes = NULL;
+
+	item->initial = 0.0;
+	item->minimum = 0.0;
+
+	da_acc_build_xfername(item);
 }
 
 
@@ -565,14 +588,16 @@ gboolean retval = FALSE;
 /* 
  * change the account currency
  * change every txn to currency
- * ensure dst xfer transaction account will be set to same currency
+ * #2026594 no more change target currency
+ * #1673260 internal transfer with different currency
+ *  => no more ensure dst xfer transaction account will be set to same currency
  */
 void account_set_currency(Account *acc, guint32 kcur)
 {
 GList *list;
-Account *dstacc;
+/*Account *dstacc;
 gboolean *xfer_list;
-guint32 maxkey, i;
+guint32 maxkey, i;*/
 
 	DB( g_print("\n[account] set currency\n") );
 
@@ -584,9 +609,10 @@ guint32 maxkey, i;
 
 	DB( g_print(" - set for '%s'\n", acc->name)  );
 
-	maxkey = da_acc_get_max_key () + 1;
+	//#1673260 internal transfer with different currency
+	/*maxkey = da_acc_get_max_key () + 1;
 	xfer_list = g_malloc0(sizeof(gboolean) * maxkey );
-	DB( g_print(" - alloc for %d account\n", da_acc_length() ) );
+	DB( g_print(" - alloc for %d account\n", da_acc_length() ) );*/
 
 	list = g_queue_peek_head_link(acc->txn_queue);
 	while (list != NULL)
@@ -594,17 +620,18 @@ guint32 maxkey, i;
 	Transaction *txn = list->data;
 
 		txn->kcur = kcur;
-		if( (txn->flags & OF_INTXFER) && (txn->kxferacc > 0) && (txn->kxfer > 0) )
+		/*if( (txn->flags & OF_INTXFER) && (txn->kxferacc > 0) && (txn->kxfer > 0) )
 		{
 			xfer_list[txn->kxferacc] = TRUE;
-		}
+		}*/
 		list = g_list_next(list);
 	}
 
 	acc->kcur = kcur;
 	DB( g_print(" - '%s'\n", acc->name) );
 	
-	for(i=1;i<maxkey;i++)
+	//#1673260 internal transfer with different currency
+	/*for(i=1;i<maxkey;i++)
 	{
 		DB( g_print(" - %d '%d'\n", i, xfer_list[i]) );
 		if( xfer_list[i] == TRUE )
@@ -614,7 +641,7 @@ guint32 maxkey, i;
 		}
 	}
 
-	g_free(xfer_list);
+	g_free(xfer_list);*/
 
 }
 

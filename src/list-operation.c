@@ -55,10 +55,10 @@ list_txn_sort_iter_compare_strings(gchar *s1, gchar *s2)
 static gint
 list_txn_sort_iter_compare_func (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer userdata)
 {
-    gint sortcol = GPOINTER_TO_INT(userdata);
-    gint retval = 0;
-	Transaction *ope1, *ope2;
-	gdouble tmpval = 0;
+gint sortcol = GPOINTER_TO_INT(userdata);
+gint retval = 0;
+Transaction *ope1, *ope2;
+gdouble tmpval = 0;
 
 	gtk_tree_model_get(model, a, MODEL_TXN_POINTER, &ope1, -1);
 	gtk_tree_model_get(model, b, MODEL_TXN_POINTER, &ope2, -1);
@@ -73,15 +73,8 @@ list_txn_sort_iter_compare_func (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIte
 			break;
 
 		case LST_DSPOPE_DATE:
- 			if(! (retval = ope1->date - ope2->date) )
-			{
-				//g_print("sort on balance d1=%d, d2=%d %f %f\n", ope1->date, ope2->date, ope1->balance , ope2->balance);
-
-				tmpval = ope1->pos - ope2->pos;
-				retval = tmpval > 0 ? 1 : -1;
-			}
-			//g_print("ret=%d\n", ret);
-			break;
+ 			//5.7 let date as last sorting
+ 			break;
 
 		case LST_DSPOPE_ACCOUNT:
 			{
@@ -151,14 +144,27 @@ list_txn_sort_iter_compare_func (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIte
 
 		case LST_DSPOPE_CATEGORY:
 			{
-			Category *c1, *c2;
+			//2027201 order - split -
+			gchar *name1 = NULL;
+			gchar *name2 = NULL;
 
-				c1 = da_cat_get(ope1->kcat);
-				c2 = da_cat_get(ope2->kcat);
-				if( c1 != NULL && c2 != NULL )
+				if( ope1->flags & OF_SPLIT )
+					name1 = _("- split -");
+				else
 				{
-					retval = list_txn_sort_iter_compare_strings(c1->fullname, c2->fullname);
+				Category *cat = da_cat_get(ope1->kcat);
+					name1 = cat->fullname;
 				}
+			
+				if( ope2->flags & OF_SPLIT )
+					name2 = _("- split -");
+				else
+				{
+				Category *cat = da_cat_get(ope2->kcat);
+					name2 = cat->fullname;
+				}
+			
+				retval = list_txn_sort_iter_compare_strings(name1, name2);
 			}
 			break;
 
@@ -188,6 +194,19 @@ list_txn_sort_iter_compare_func (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIte
 		default:
 			g_return_val_if_reached(0);
     }
+
+	//5.7 let date as last sorting
+	if( retval == 0 )
+	{
+		if(! (retval = ope1->date - ope2->date) )
+		{
+			//g_print("sort on balance d1=%d, d2=%d %f %f\n", ope1->date, ope2->date, ope1->balance , ope2->balance);
+
+			tmpval = ope1->pos - ope2->pos;
+			retval = tmpval > 0 ? 1 : -1;
+		}
+		//g_print("ret=%d\n", ret);
+	}
 
     return retval;
 }
@@ -1488,25 +1507,6 @@ GtkCellRenderer    *renderer;
 }
 
 
-static void list_txn_destroy( GtkWidget *widget, gpointer user_data )
-{
-struct list_txn_data *data;
-
-	data = g_object_get_data(G_OBJECT(widget), "inst_data");
-
-	DB( g_print ("\n[list_transaction] destroy event occurred\n") );
-
-	if( data->save_column_width )
-	{
-		list_txn_get_columns(GTK_TREE_VIEW(data->treeview));
-	}
-
-	DB( g_print(" - view=%p, inst_data=%p\n", widget, data) );
-	g_free(data);
-}
-
-
-
 Transaction *list_txn_get_surround_transaction(GtkTreeView *treeview, Transaction **prev, Transaction **next)
 {
 GtkTreeModel *model;
@@ -1580,6 +1580,24 @@ Transaction *ope;
 }
 
 
+static void list_txn_destroy( GtkWidget *widget, gpointer user_data )
+{
+struct list_txn_data *data;
+
+	data = g_object_get_data(G_OBJECT(widget), "inst_data");
+
+	DB( g_print ("\n[list_transaction] destroy event occurred\n") );
+
+	if( data->save_column_width )
+	{
+		list_txn_get_columns(GTK_TREE_VIEW(data->treeview));
+	}
+
+	DB( g_print(" - view=%p, inst_data=%p\n", widget, data) );
+	g_free(data);
+}
+
+
 /*
 ** create our transaction list
 ** 1 line: Status, Date, Info, Payee, Category, Tags, CLR, (Amount), Expense, Income, Balance, Memo, (Account)
@@ -1613,7 +1631,7 @@ GtkTreeViewColumn *column, *col_acc = NULL, *col_status = NULL, *col_match = NUL
 	data->treeview = treeview;
 	g_object_unref(store);
 
-	//store our window private data
+	//store our private data
 	g_object_set_data(G_OBJECT(treeview), "inst_data", (gpointer)data);
 	DB( g_print(" - treeview=%p, inst_data=%p\n", treeview, data) );
 
@@ -1696,6 +1714,7 @@ GtkTreeViewColumn *column, *col_acc = NULL, *col_status = NULL, *col_match = NUL
 	//gtk_tree_view_column_set_resizable(column, TRUE);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
+	//info
 	column = list_txn_column_info_create(list_type);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 

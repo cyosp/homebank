@@ -293,3 +293,28 @@ guint i;
 	return splits->len;
 }
 
+
+//#2026641
+guint da_splits_anonymize (GPtrArray *splits)
+{
+Split *split;
+guint cnt, i;
+
+	if(splits == NULL)
+		return 0;
+		
+	cnt = da_splits_length (splits);
+	for(i=0;i<cnt;i++)
+	{
+		split = da_splits_get(splits, i);
+		if( split == NULL )
+			break;
+
+		if(split->memo != NULL)
+			g_free(split->memo);
+		
+		split->memo = g_strdup_printf("memo %d", i);
+	}
+	return cnt;		
+}
+

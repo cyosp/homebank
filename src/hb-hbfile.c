@@ -375,7 +375,7 @@ void hbfile_anonymize(void)
 GList *lst_acc, *lnk_acc;
 GList *lnk_txn;
 GList *lxxx, *list;
-guint cnt, i;
+guint cnt;
 
 	DB( g_print("\n[hbfile] anonymize\n") );
 
@@ -391,14 +391,9 @@ guint cnt, i;
 	lxxx = list = g_hash_table_get_values(GLOBALS->h_acc);
 	while (list != NULL)
 	{
-	Account *item = list->data;
-		g_free(item->name);
-		item->name = g_strdup_printf("account %d", item->key);
-		g_free(item->number);
-		item->number = NULL;
-		g_free(item->bankname);
-		item->bankname = NULL;
-		
+		//#2026641
+		da_acc_anonymize(list->data);
+
 		GLOBALS->changes_count++;
 		list = g_list_next(list);
 	}
@@ -414,6 +409,7 @@ guint cnt, i;
 		{
 			g_free(item->name);
 			item->name = g_strdup_printf("payee %d", item->key);
+			
 			GLOBALS->changes_count++;
 		}
 		list = g_list_next(list);
@@ -421,15 +417,17 @@ guint cnt, i;
 	g_list_free(lxxx);
 
 	//categories
-	lxxx = list = g_hash_table_get_values(GLOBALS->h_cat);
+	//lxxx = list = g_hash_table_get_values(GLOBALS->h_cat);
+	lxxx = list = category_glist_sorted(HB_GLIST_SORT_KEY);
 	while (list != NULL)
 	{
 	Category *item = list->data;
 
 		if(item->key != 0)
 		{
-			g_free(item->name);
-			item->name = g_strdup_printf("category %d", item->key);
+			//#2026641
+			da_cat_anonymize(item);
+			
 			GLOBALS->changes_count++;
 		}
 		list = g_list_next(list);
@@ -446,6 +444,7 @@ guint cnt, i;
 		{
 			g_free(item->name);
 			item->name = g_strdup_printf("tag %d", item->key);
+			
 			GLOBALS->changes_count++;
 		}
 		list = g_list_next(list);
@@ -462,6 +461,10 @@ guint cnt, i;
 		{
 			g_free(item->search);
 			item->search = g_strdup_printf("assign %d", item->key);
+			//#2026641 assignment notes
+			g_free(item->notes);
+			item->notes = NULL;
+			
 			GLOBALS->changes_count++;
 		}
 		list = g_list_next(list);
@@ -478,9 +481,14 @@ guint cnt, i;
 		g_free(item->memo);
 		item->memo = g_strdup_printf("archive %d", cnt++);
 		GLOBALS->changes_count++;
-		
-		//later split anonymize also
-		
+
+		//#2026641 splits memo as well	
+		if(item->flags & OF_SPLIT)
+		{
+			cnt = da_splits_anonymize(item->splits);
+			GLOBALS->changes_count += cnt;
+		}
+
 		list = g_list_next(list);
 	}
 
@@ -495,7 +503,6 @@ guint cnt, i;
 		while (lnk_txn != NULL)
 		{
 		Transaction *item = lnk_txn->data;
-		Split *split;
 
 			g_free(item->info);
 			item->info = NULL;
@@ -505,18 +512,9 @@ guint cnt, i;
 		
 			if(item->flags & OF_SPLIT)
 			{
-				cnt = da_splits_length (item->splits);
-				for(i=0;i<cnt;i++)
-				{
-					split = da_splits_get(item->splits, i);
-					if( split == NULL ) break;
-
-					if(split->memo != NULL)
-						g_free(split->memo);
-					
-					split->memo = g_strdup_printf("memo %d", i);
-					GLOBALS->changes_count++;
-				}		
+				//#2026641
+				cnt = da_splits_anonymize(item->splits);
+				GLOBALS->changes_count += cnt;
 			}
 			lnk_txn = g_list_next(lnk_txn);
 		}

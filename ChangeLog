@@ -1,5 +1,19 @@
 
 
+2023-08-04  Maxime Doyen
+
+ Made 5.6.6 release
+
+ * bugfix: #2027201 when ordering the transaction list by category, split ones are not ordered
+ * bugfix: #2026641 anonymise does not deal with account notes, start balance, overdraft and automatic assignment notes
+ * bugfix: #2026626 anonymise feature doesn't fully anonymise accounts name
+ * bugfix: #2026594 changing currency account with xfer faulty change target account currency
+ * bugfix: #2026184 statistics report doesn't always show total for parent category
+ * bugfix: #2024940 statistics faulty hide items with data when result is 0.0
+ * bugfix: #2024389 filter Status always show section should always be visible
+ * bugfix: #2019312 status column included in export detail txn from report break re-import 
+
+
 2023-06-21  Maxime Doyen
 
  Made 5.6.5 release
@@ -7,7 +21,6 @@
  * bugfix: #2024243	when creating splits for income transactions, expenses are added as incomes regardless of amount sign
  * bugfix: #2023388	account cannot be deleted message is not precise enough
  * bugfix: #2022049	windows: displayed values overflow int32 in 5.6.4
- * bugfix: #2019312	status column included in export detail txn from report break re-import
  * bugfix: #2018039	lock icon for reconciled txn is not displayed in report detail 
 
 

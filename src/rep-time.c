@@ -370,11 +370,12 @@ GString *node;
 static void reptime_export_detail_csv(GtkWidget *widget, gpointer user_data)
 {
 struct reptime_data *data;
-gchar *filename = NULL;
+gchar *filepath = NULL;
 GString *node;
 GIOChannel *io;
 gchar *name;
 gint tmpsrc;
+gboolean hassplit, hasstatus;
 
 	DB( g_print("\n[reptime] export detail csv\n") );
 
@@ -384,23 +385,26 @@ gint tmpsrc;
 	tmpsrc  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_src));
 	name = g_strdup_printf("hb-reptime-detail_%s.csv", hbtk_get_label(CYA_REPORT_SRC_TREND, tmpsrc) );
 
-	if( ui_file_chooser_csv(GTK_WINDOW(data->window), GTK_FILE_CHOOSER_ACTION_SAVE, &filename, name) == TRUE )
-	{
-		DB( g_print(" + filename is %s\n", filename) );
+	filepath = g_build_filename(PREFS->path_export, name, NULL);
 
-		io = g_io_channel_new_file(filename, "w", NULL);
+	//#2019312
+	//if( ui_file_chooser_csv(GTK_WINDOW(data->window), GTK_FILE_CHOOSER_ACTION_SAVE, &filepath, name) == TRUE )
+	if( ui_dialog_export_csv(GTK_WINDOW(data->window), &filepath, &hassplit, &hasstatus, FALSE) == GTK_RESPONSE_ACCEPT )
+	{
+		DB( g_print(" + filename is %s\n", filepath) );
+
+		io = g_io_channel_new_file(filepath, "w", NULL);
 		if(io != NULL)
 		{
-			node = list_txn_to_string(GTK_TREE_VIEW(data->LV_detail), FALSE, FALSE, TRUE, FALSE);
+			node = list_txn_to_string(GTK_TREE_VIEW(data->LV_detail), FALSE, hassplit, hasstatus, FALSE);
 			g_io_channel_write_chars(io, node->str, -1, NULL, NULL);
 
 			g_io_channel_unref (io);
 			g_string_free(node, TRUE);
 		}
-
-		g_free( filename );
 	}
 
+	g_free( filepath );
 	g_free(name);
 }
 
