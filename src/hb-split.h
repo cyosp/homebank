@@ -21,7 +21,8 @@
 #define __HB_SPLIT_H__
 
 
-#define TXN_MAX_SPLIT 60
+//for the record, quicken is limited to 250
+#define TXN_MAX_SPLIT 62
 
 typedef struct _split Split;
 

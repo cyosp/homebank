@@ -7,10 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: homebank\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-05 21:31+0200\n"
+"POT-Creation-Date: 2023-10-07 08:49+0200\n"
 "PO-Revision-Date: 2023-04-01 20:45+0000\n"
 "Last-Translator: Evan <Unknown>\n"
 "Language-Team: Hellenic <christosvas@in.gr>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -63,7 +64,7 @@ msgstr ""
 "προσωπικά σας οικονικά, τότε το HomeBank πρέπει να είναι το λογισμικό της "
 "επιλογής σας."
 
-#: ../src/dsp-account.c:175 ../src/dsp-account.c:2843
+#: ../src/dsp-account.c:175 ../src/dsp-account.c:2840
 msgid "All transactions"
 msgstr "Όλες οι συναλλαγές"
 
@@ -123,7 +124,7 @@ msgstr "η συναλλαγή άλλαξε: %d"
 msgid "Automatic assignment result"
 msgstr "Αποτέλεσμα αυτόματης ανάθεσης"
 
-#: ../src/dsp-account.c:715
+#: ../src/dsp-account.c:716
 msgid ""
 "Do you want to create an assignment with\n"
 "each of the selected transaction?"
@@ -131,20 +132,20 @@ msgstr ""
 "Θέλετε να δημιουργήσετε μια ανάθεση για\n"
 "κάθε μία από τις επιλεγμένες συναλλαγές;"
 
-#: ../src/dsp-account.c:716 ../src/dsp-account.c:792
+#: ../src/dsp-account.c:717 ../src/dsp-account.c:789
 msgid "_Create"
 msgstr "_Δημιουργία"
 
-#: ../src/dsp-account.c:761
+#: ../src/dsp-account.c:759
 msgid "Create Assignment"
 msgstr "Δημιουργία Ανάθεσης"
 
-#: ../src/dsp-account.c:762 ../src/dsp-account.c:837
+#: ../src/dsp-account.c:760 ../src/dsp-account.c:834
 #, c-format
 msgid "%d created with a prefilled icon"
 msgstr ""
 
-#: ../src/dsp-account.c:791
+#: ../src/dsp-account.c:788
 msgid ""
 "Do you want to create a template with\n"
 "each of the selected transaction?"
@@ -152,11 +153,11 @@ msgstr ""
 "Θέλετε να δημιουργήσετε ένα πρότυπο για\n"
 "κάθε μία από τις επιλεγμένες συναλλαγές;"
 
-#: ../src/dsp-account.c:836
+#: ../src/dsp-account.c:833
 msgid "Create Template"
 msgstr "Δημιουργία προτύπου"
 
-#: ../src/dsp-account.c:1743
+#: ../src/dsp-account.c:1740
 msgid ""
 "Do you want to delete\n"
 "each of the selected transaction?"
@@ -164,360 +165,360 @@ msgstr ""
 "Θέλετε να διαγράψετε\n"
 "κάθε μία από τις επιλεγμένες συναλλαγές;"
 
-#: ../src/dsp-account.c:1744 ../src/ui-account.c:1514 ../src/ui-archive.c:880
+#: ../src/dsp-account.c:1741 ../src/ui-account.c:1514 ../src/ui-archive.c:880
 #: ../src/ui-assign.c:1509 ../src/ui-budget-tabview.c:2322
 #: ../src/ui-category.c:1480 ../src/ui-category.c:2025
 #: ../src/ui-currency.c:1572 ../src/ui-payee.c:1039 ../src/ui-payee.c:1565
-#: ../src/ui-tag.c:925
+#: ../src/ui-split.c:554 ../src/ui-tag.c:925
 msgid "_Delete"
 msgstr "_Διαγραφή"
 
-#: ../src/dsp-account.c:1825
+#: ../src/dsp-account.c:1822
 msgid "Are you sure you want to change the status to None?"
 msgstr "Είστε σίγουροι ότι θέλετε να αλλάξετε την κατάσταση σε Κανένα;"
 
-#: ../src/dsp-account.c:1826 ../src/dsp-account.c:1886
+#: ../src/dsp-account.c:1823 ../src/dsp-account.c:1883
 msgid "Some transaction in your selection are already Reconciled."
 msgstr "Ορισμένες από τις επιλεγμένες συναλλαγές σας είναι ήδη Συμφωνημένες."
 
-#: ../src/dsp-account.c:1827 ../src/ui-assist-start.c:277
+#: ../src/dsp-account.c:1824 ../src/ui-assist-start.c:277
 #: ../src/ui-dialogs.c:430
 msgid "_Change"
 msgstr "_Αλλαγή"
 
-#: ../src/dsp-account.c:1885
+#: ../src/dsp-account.c:1882
 msgid "Are you sure you want to toggle the status Reconciled?"
 msgstr "Είστε σίγουρος ότι θέλετε να αλλάξετε την κατάσταση σε Συμφωνημένο;"
 
-#: ../src/dsp-account.c:1887
+#: ../src/dsp-account.c:1884
 msgid "_Toggle"
 msgstr "_Εναλλαγή"
 
-#: ../src/dsp-account.c:2299
+#: ../src/dsp-account.c:2296
 #, c-format
 msgid "%d transactions"
 msgstr "%d συναλλαγές"
 
-#: ../src/dsp-account.c:2302
+#: ../src/dsp-account.c:2299
 #, c-format
 msgid "%d transactions, %d selected, avg: %s, sum: %s (%s - %s)"
 msgstr "%d συναλλαγές, %d επιλεγμένες, μ.ο: %s, αθρ: %s (%s - %s)"
 
-#: ../src/dsp-account.c:2315
+#: ../src/dsp-account.c:2312
 msgid "Locked. Click to unlock"
 msgstr "Κλειδωμένο. Πατήστε για ξεκλείδωμα"
 
-#: ../src/dsp-account.c:2315
+#: ../src/dsp-account.c:2312
 msgid "Unlocked. Click to lock"
 msgstr "Ξεκλείδωτο. Πατήστε για κλείδωμα"
 
-#: ../src/dsp-account.c:2594 ../src/dsp-account.c:2696
+#: ../src/dsp-account.c:2591 ../src/dsp-account.c:2693
 msgid "_Add..."
 msgstr "_Προσθήκη..."
 
-#: ../src/dsp-account.c:2596 ../src/dsp-account.c:2698
+#: ../src/dsp-account.c:2593 ../src/dsp-account.c:2695
 msgid "_Inherit..."
 msgstr "_Μεταβίβαση..."
 
-#: ../src/dsp-account.c:2598 ../src/dsp-account.c:2700
+#: ../src/dsp-account.c:2595 ../src/dsp-account.c:2697
 msgid "_Edit..."
 msgstr "_Επεξεργασία..."
 
-#: ../src/dsp-account.c:2600 ../src/dsp-account.c:2714
+#: ../src/dsp-account.c:2597 ../src/dsp-account.c:2711
 msgid "_Multiple Edit..."
 msgstr "_Πολλαπλή επεξεργασία..."
 
-#: ../src/dsp-account.c:2605 ../src/dsp-account.c:2705
+#: ../src/dsp-account.c:2602 ../src/dsp-account.c:2702
 msgid "_Status"
 msgstr "_Κατάσταση"
 
-#: ../src/dsp-account.c:2607 ../src/dsp-account.c:2707
+#: ../src/dsp-account.c:2604 ../src/dsp-account.c:2704
 msgid "_None"
 msgstr "_Τίποτα"
 
-#: ../src/dsp-account.c:2609 ../src/dsp-account.c:2709
+#: ../src/dsp-account.c:2606 ../src/dsp-account.c:2706
 msgid "_Cleared"
 msgstr "_Εκκαθαρισμένο"
 
-#: ../src/dsp-account.c:2611 ../src/dsp-account.c:2711
+#: ../src/dsp-account.c:2608 ../src/dsp-account.c:2708
 msgid "_Reconciled"
 msgstr "_Συμφωνημένο"
 
-#: ../src/dsp-account.c:2616
+#: ../src/dsp-account.c:2613
 msgid "View _Split"
 msgstr "Εμφάνιση _Διαχωρισμών"
 
-#: ../src/dsp-account.c:2618
+#: ../src/dsp-account.c:2615
 msgid "Copy raw amount"
 msgstr "Αντιγραφή του ποσού (σε αρχική μορφή)"
 
-#: ../src/dsp-account.c:2620 ../src/dsp-account.c:2715
+#: ../src/dsp-account.c:2617 ../src/dsp-account.c:2712
 msgid "Create template..."
 msgstr "Δημιουργία πρότυπου..."
 
-#: ../src/dsp-account.c:2622 ../src/dsp-account.c:2716
+#: ../src/dsp-account.c:2619 ../src/dsp-account.c:2713
 msgid "Create assignment..."
 msgstr "Δημιουργία ανάθεσης..."
 
-#: ../src/dsp-account.c:2624 ../src/dsp-account.c:2717
+#: ../src/dsp-account.c:2621 ../src/dsp-account.c:2714
 msgid "_Delete..."
 msgstr "_Διαγραφή..."
 
-#: ../src/dsp-account.c:2629
+#: ../src/dsp-account.c:2626
 msgid "_Up"
 msgstr "_Πάνω"
 
-#: ../src/dsp-account.c:2631
+#: ../src/dsp-account.c:2628
 msgid "_Down"
 msgstr "_Κάτω"
 
-#: ../src/dsp-account.c:2671
+#: ../src/dsp-account.c:2668
 msgid "A_ccount"
 msgstr "Λο_γαριασμός"
 
-#: ../src/dsp-account.c:2673
+#: ../src/dsp-account.c:2670
 msgid "Export QIF..."
 msgstr "Εξαγωγή QIF..."
 
-#: ../src/dsp-account.c:2674
+#: ../src/dsp-account.c:2671
 msgid "Export CSV..."
 msgstr "Εξαγωγή CSV..."
 
-#: ../src/dsp-account.c:2676 ../src/hub-account.c:592
+#: ../src/dsp-account.c:2673 ../src/hub-account.c:592
 msgid "Print..."
 msgstr "Εκτύπωση..."
 
-#: ../src/dsp-account.c:2679
+#: ../src/dsp-account.c:2676 ../src/hub-account.c:638
 msgid "Browse Website"
 msgstr ""
 
-#: ../src/dsp-account.c:2681 ../src/dsp-mainwindow.c:696
+#: ../src/dsp-account.c:2678 ../src/dsp-mainwindow.c:696
 #: ../src/dsp-mainwindow.c:1885 ../src/ui-account.c:1865
 #: ../src/ui-archive.c:1268 ../src/ui-assign.c:1761 ../src/ui-budget.c:1148
 #: ../src/ui-budget-tabview.c:2782 ../src/ui-category.c:2413
 #: ../src/ui-currency.c:1712 ../src/ui-dialogs.c:194 ../src/ui-payee.c:1766
-#: ../src/ui-split.c:843 ../src/ui-tag.c:1058 ../src/ui-transaction.c:1491
+#: ../src/ui-split.c:868 ../src/ui-tag.c:1058 ../src/ui-transaction.c:1491
 msgid "_Close"
 msgstr "_Κλείσιμο"
 
 #. #1818052 wish: copy/paste one/multiple transaction(s)
-#: ../src/dsp-account.c:2685 ../src/dsp-mainwindow.c:1890
+#: ../src/dsp-account.c:2682 ../src/dsp-mainwindow.c:1890
 msgid "_Edit"
 msgstr "_Επεξεργασία"
 
-#: ../src/dsp-account.c:2687
+#: ../src/dsp-account.c:2684
 msgid "Copy"
 msgstr "Αντιγραφή"
 
-#: ../src/dsp-account.c:2689
+#: ../src/dsp-account.c:2686
 msgid "Paste"
 msgstr "Επικόλληση"
 
-#: ../src/dsp-account.c:2691
+#: ../src/dsp-account.c:2688
 msgid "Paste (today)"
 msgstr "Επικόλληση (σήμερα)"
 
-#: ../src/dsp-account.c:2694
+#: ../src/dsp-account.c:2691
 msgid "Transacti_on"
 msgstr "Συν_αλλαγή"
 
-#: ../src/dsp-account.c:2722
+#: ../src/dsp-account.c:2719
 msgid "_Find"
 msgstr "_Εύρεση"
 
-#: ../src/dsp-account.c:2725 ../src/dsp-mainwindow.c:1939
+#: ../src/dsp-account.c:2722 ../src/dsp-mainwindow.c:1939
 msgid "_Tools"
 msgstr "_Εργαλεία"
 
-#: ../src/dsp-account.c:2727
+#: ../src/dsp-account.c:2724
 msgid "Mark duplicate..."
 msgstr "Επισήμανση διπλότυπου..."
 
-#: ../src/dsp-account.c:2728
+#: ../src/dsp-account.c:2725
 msgid "Check internal transfer"
 msgstr "Έλεγχος εσωτερικής μεταφοράς"
 
-#: ../src/dsp-account.c:2729
+#: ../src/dsp-account.c:2726
 msgid "Auto. assignments"
 msgstr "Αυτόματες αναθέσεις"
 
-#: ../src/dsp-account.c:2730
+#: ../src/dsp-account.c:2727
 msgid "_Filter..."
 msgstr "_Φίλτρο..."
 
-#: ../src/dsp-account.c:2731
+#: ../src/dsp-account.c:2728
 msgid "Convert to Euro..."
 msgstr "Μετατροπή σε Ευρώ..."
 
-#: ../src/dsp-account.c:2745 ../src/dsp-mainwindow.c:1996
+#: ../src/dsp-account.c:2742 ../src/dsp-mainwindow.c:1996
 #: ../src/ui-account.c:1925 ../src/ui-archive.c:1340 ../src/ui-assign.c:1821
 #: ../src/ui-assist-import.c:1572 ../src/ui-category.c:2523
-#: ../src/ui-currency.c:1784 ../src/ui-payee.c:1875 ../src/ui-split.c:1024
+#: ../src/ui-currency.c:1784 ../src/ui-payee.c:1875 ../src/ui-split.c:1059
 #: ../src/ui-tag.c:1151
 msgid "Add"
 msgstr "Προσθήκη"
 
-#: ../src/dsp-account.c:2745
+#: ../src/dsp-account.c:2742
 msgid "Add a new transaction"
 msgstr "Προσθήκη νέας συναλλαγής"
 
-#: ../src/dsp-account.c:2747
+#: ../src/dsp-account.c:2744
 msgid "Inherit"
 msgstr "Μεταβίβαση"
 
-#: ../src/dsp-account.c:2747
+#: ../src/dsp-account.c:2744
 msgid "Inherit from the active transaction"
 msgstr "Μεταβίβαση από την τρέχουσα συναλλαγή"
 
 #. widget = gtk_button_new_with_mnemonic(_("_Edit"));
-#: ../src/dsp-account.c:2749 ../src/ui-archive.c:1352 ../src/ui-assign.c:1832
+#: ../src/dsp-account.c:2746 ../src/ui-archive.c:1352 ../src/ui-assign.c:1832
 #: ../src/ui-category.c:2534 ../src/ui-currency.c:1795 ../src/ui-payee.c:1882
-#: ../src/ui-split.c:983 ../src/ui-tag.c:1158
+#: ../src/ui-split.c:1008 ../src/ui-tag.c:1158
 msgid "Edit"
 msgstr "Επεξεργασία"
 
-#: ../src/dsp-account.c:2749
+#: ../src/dsp-account.c:2746
 msgid "Edit the active transaction"
 msgstr "Επεξεργασία της τρέχουσας συναλλαγής"
 
 #. Cleared
-#: ../src/dsp-account.c:2754 ../src/list-account.c:811 ../src/ui-filter.c:1161
+#: ../src/dsp-account.c:2751 ../src/list-account.c:811 ../src/ui-filter.c:1161
 #: ../src/ui-widgets-data.c:232 ../src/ui-widgets-data.c:280
 msgid "Cleared"
 msgstr "Εκκαθαρισμένο"
 
-#: ../src/dsp-account.c:2754
+#: ../src/dsp-account.c:2751
 msgid "Toggle cleared for selected transaction(s)"
 msgstr "Εναλλαγή της κατάστασης εκκαθάρισης για την επιλεγμένη συναλλαγή(ες)"
 
 #. Reconciled
-#: ../src/dsp-account.c:2755 ../src/list-account.c:807 ../src/ui-filter.c:1166
+#: ../src/dsp-account.c:2752 ../src/list-account.c:807 ../src/ui-filter.c:1166
 #: ../src/ui-widgets-data.c:233 ../src/ui-widgets-data.c:282
 msgid "Reconciled"
 msgstr "Συμφωνημένο"
 
-#: ../src/dsp-account.c:2755
+#: ../src/dsp-account.c:2752
 msgid "Toggle reconciled for selected transaction(s)"
 msgstr "Εναλλαγή της κατάστασης συμφωνίας για την επιλεγμένη συναλλαγή(ες)"
 
-#: ../src/dsp-account.c:2759
+#: ../src/dsp-account.c:2756
 msgid "Edit Multiple"
 msgstr "Επεξεργασία πολλαπλών"
 
-#: ../src/dsp-account.c:2759
+#: ../src/dsp-account.c:2756
 msgid "Edit multiple transaction"
 msgstr "Επεξεργασία πολλαπλών συναλλαγών"
 
-#: ../src/dsp-account.c:2760
+#: ../src/dsp-account.c:2757
 msgid "Create template"
 msgstr "Δημιουργία πρότυπου"
 
-#: ../src/dsp-account.c:2761 ../src/ui-account.c:1929 ../src/ui-archive.c:1344
+#: ../src/dsp-account.c:2758 ../src/ui-account.c:1929 ../src/ui-archive.c:1344
 #: ../src/ui-assign.c:1825 ../src/ui-assist-import.c:1576
 #: ../src/ui-category.c:2527 ../src/ui-currency.c:1788 ../src/ui-payee.c:1877
-#: ../src/ui-split.c:979 ../src/ui-tag.c:1153
+#: ../src/ui-split.c:1004 ../src/ui-tag.c:1153
 msgid "Delete"
 msgstr "Διαγραφή"
 
-#: ../src/dsp-account.c:2761
+#: ../src/dsp-account.c:2758
 msgid "Delete selected transaction(s)"
 msgstr "Διαγραφή επιλεγμένης(ων) συναλλαγής(ων)"
 
-#: ../src/dsp-account.c:2767
+#: ../src/dsp-account.c:2764
 msgid "Up"
 msgstr "Πάνω"
 
-#: ../src/dsp-account.c:2767
+#: ../src/dsp-account.c:2764
 msgid "Move transaction up"
 msgstr "Μετακίνηση συναλλαγής πάνω"
 
-#: ../src/dsp-account.c:2768
+#: ../src/dsp-account.c:2765
 msgid "Down"
 msgstr "Κάτω"
 
-#: ../src/dsp-account.c:2768
+#: ../src/dsp-account.c:2765
 msgid "Move transaction down"
 msgstr "Μετακίνηση συναλλαγής κάτω"
 
-#: ../src/dsp-account.c:2775
+#: ../src/dsp-account.c:2772
 msgid "Reconciled changes is"
 msgstr "Οι ενημερώσεις που έχουν συμφωνηθεί/επικυρωθεί είναι"
 
-#: ../src/dsp-account.c:2836
+#: ../src/dsp-account.c:2833
 msgid "(closed)"
 msgstr "(κλειστός)"
 
-#: ../src/dsp-account.c:2843
+#: ../src/dsp-account.c:2840
 #, c-format
 msgid "%s - HomeBank"
 msgstr "%s - HomeBank"
 
 #. info bar for duplicate
-#: ../src/dsp-account.c:2870
+#: ../src/dsp-account.c:2867
 msgid "_Refresh"
 msgstr "_Ανανέωση"
 
-#: ../src/dsp-account.c:2897 ../src/rep-balance.c:1089 ../src/rep-budget.c:1728
-#: ../src/rep-stats.c:1968 ../src/rep-time.c:1441 ../src/rep-vehicle.c:1003
+#: ../src/dsp-account.c:2894 ../src/rep-balance.c:1089 ../src/rep-budget.c:1732
+#: ../src/rep-stats.c:1985 ../src/rep-time.c:1441 ../src/rep-vehicle.c:1003
 #: ../src/ui-pref.c:1379 ../src/ui-pref.c:1795
 msgid "_Range:"
 msgstr "_Εύρος:"
 
 #. #2008521 set more accurate tooltip
-#: ../src/dsp-account.c:2911
+#: ../src/dsp-account.c:2908
 #, c-format
 msgid "Toggle show %d days ahead"
 msgstr "Εναλλαγή εμφάνισης %d επόμενων ημερών"
 
-#: ../src/dsp-account.c:2916 ../src/rep-budget.c:1689 ../src/rep-stats.c:1890
+#: ../src/dsp-account.c:2913 ../src/rep-budget.c:1693 ../src/rep-stats.c:1907
 #: ../src/ui-account.c:1976 ../src/ui-assist-start.c:536
 msgid "_Type:"
 msgstr "_Τύπος:"
 
-#: ../src/dsp-account.c:2923 ../src/ui-transaction.c:1752
+#: ../src/dsp-account.c:2920 ../src/ui-transaction.c:1752
 msgid "_Status:"
 msgstr "_Κατάσταση:"
 
-#: ../src/dsp-account.c:2930
+#: ../src/dsp-account.c:2927
 msgid "Open the list filter"
 msgstr "Άνοιγμα της λίστας φίλτρων"
 
-#: ../src/dsp-account.c:2935 ../src/rep-balance.c:828 ../src/rep-budget.c:1398
-#: ../src/rep-stats.c:1576 ../src/rep-time.c:1114 ../src/rep-vehicle.c:786
+#: ../src/dsp-account.c:2932 ../src/rep-balance.c:828 ../src/rep-budget.c:1402
+#: ../src/rep-stats.c:1593 ../src/rep-time.c:1114 ../src/rep-vehicle.c:786
 msgid "Refresh results"
 msgstr "Ανανέωση αποτελεσμάτων"
 
 #. widget = gtk_button_new_with_mnemonic (_("Reset _filters"));
-#: ../src/dsp-account.c:2941 ../src/ui-filter.c:1192 ../src/ui-pref.c:2320
+#: ../src/dsp-account.c:2938 ../src/ui-filter.c:1192 ../src/ui-pref.c:2320
 #: ../src/ui-pref.c:2344
 msgid "_Reset"
 msgstr "_Επαναφορά"
 
-#: ../src/dsp-account.c:2946 ../src/rep-balance.c:831 ../src/rep-budget.c:1441
-#: ../src/rep-stats.c:1619 ../src/rep-time.c:1157
+#: ../src/dsp-account.c:2943 ../src/rep-balance.c:831 ../src/rep-budget.c:1445
+#: ../src/rep-stats.c:1636 ../src/rep-time.c:1157
 msgid "Print"
 msgstr "Εκτύπωση"
 
 #. TRANSLATORS: this is for Euro specific users, a toggle to display in 'Minor' currency
-#: ../src/dsp-account.c:2953 ../src/rep-balance.c:1068 ../src/rep-budget.c:1701
-#: ../src/rep-stats.c:1933 ../src/rep-time.c:1420 ../src/rep-vehicle.c:990
+#: ../src/dsp-account.c:2950 ../src/rep-balance.c:1068 ../src/rep-budget.c:1705
+#: ../src/rep-stats.c:1950 ../src/rep-time.c:1420 ../src/rep-vehicle.c:990
 msgid "Euro _minor"
 msgstr "Ευρώ _σε δευτερεύον νόμισμα"
 
 #. account name
-#: ../src/dsp-account.c:3012
+#: ../src/dsp-account.c:3009
 msgid "Reconciled:"
 msgstr "Συμφωνημένο:"
 
-#: ../src/dsp-account.c:3019
+#: ../src/dsp-account.c:3016
 msgid "Cleared:"
 msgstr "Εκκαθαρισμένο:"
 
-#: ../src/dsp-account.c:3026
+#: ../src/dsp-account.c:3023
 msgid "Today:"
 msgstr "Σήμερα:"
 
-#: ../src/dsp-account.c:3033
+#: ../src/dsp-account.c:3030
 msgid "Future:"
 msgstr "Μελλοντικά:"
 
@@ -532,8 +533,8 @@ msgid ""
 "- File will be reloaded from the last save (.xhb~)"
 msgstr ""
 "- Αλλαγές που τυχόν έγιναν στο αρχείο θα χαθούν οριστικά\n"
-"- Θα φορτωθεί αντίγραφο ασφαλείας από την τελευταία αποθήκευση (.xhb ~) "
-"(.xhb~)"
+"- Θα φορτωθεί αντίγραφο ασφαλείας από την τελευταία αποθήκευση (.xhb ~) (."
+"xhb~)"
 
 #: ../src/dsp-mainwindow.c:137
 msgid "_Revert"
@@ -646,8 +647,7 @@ msgid "The file has been modified since reading it."
 msgstr "Το αρχείο έχει τροποποιηθεί από την τελευταία ανάγνωση."
 
 #: ../src/dsp-mainwindow.c:1248
-msgid ""
-"If you save it, all the external changes could be lost. Save it anyway?"
+msgid "If you save it, all the external changes could be lost. Save it anyway?"
 msgstr ""
 "Αν επιλέξετε αποθήκευση όλες οι αλλαγές που κάνατε μπορεί να χαθούν. "
 "Αποθήκευση ούτως ή άλλως;"
@@ -948,13 +948,13 @@ msgstr "Διαχείριση των δικαιούχων"
 #. = = = = = = = = = = = = = = = = = = = =
 #: ../src/dsp-mainwindow.c:1988 ../src/hub-reptotal.c:556
 #: ../src/list-operation.c:972 ../src/list-operation.c:1813
-#: ../src/list-scheduled.c:651 ../src/rep-budget.c:69 ../src/rep-budget.c:1930
-#: ../src/rep-budget.c:2201 ../src/ui-archive.c:511 ../src/ui-assign.c:575
+#: ../src/list-scheduled.c:651 ../src/rep-budget.c:69 ../src/rep-budget.c:1934
+#: ../src/rep-budget.c:2205 ../src/ui-archive.c:511 ../src/ui-assign.c:575
 #: ../src/ui-assist-import.c:407 ../src/ui-budget.c:263
 #: ../src/ui-budget-tabview.c:1544 ../src/ui-category.c:1376
 #: ../src/ui-dialogs.c:277 ../src/ui-filter.c:831 ../src/ui-filter.c:836
 #: ../src/ui-filter.c:1264 ../src/ui-payee.c:961 ../src/ui-split.c:203
-#: ../src/ui-split.c:988 ../src/ui-widgets-data.c:26
+#: ../src/ui-split.c:1013 ../src/ui-widgets-data.c:26
 #: ../src/ui-widgets-data.c:43 ../src/ui-widgets-data.c:58
 #: ../src/ui-widgets-data.c:79
 msgid "Category"
@@ -974,7 +974,7 @@ msgstr "Διαχείριση των προγραμματισμένων/προτ�
 
 #. column: Income
 #: ../src/dsp-mainwindow.c:1990 ../src/dsp-mainwindow.c:2004
-#: ../src/rep-budget.c:746 ../src/rep-budget.c:1930 ../src/rep-budget.c:2217
+#: ../src/rep-budget.c:746 ../src/rep-budget.c:1934 ../src/rep-budget.c:2221
 msgid "Budget"
 msgstr "Προϋπολογισμός"
 
@@ -1070,7 +1070,7 @@ msgstr "Μελλοντικά"
 msgid "Remind"
 msgstr "Υπενθύμιση"
 
-#: ../src/gtk-dateentry.c:677
+#: ../src/gtk-dateentry.c:704
 msgid "_Today"
 msgstr "_Σήμερα"
 
@@ -1078,11 +1078,11 @@ msgstr "_Σήμερα"
 msgid "(no memo)"
 msgstr "(χωρίς σημείωση)"
 
-#: ../src/hb-assign.c:217 ../src/ui-assign.c:1427
+#: ../src/hb-assign.c:221 ../src/ui-assign.c:1427
 msgid "(copy)"
 msgstr ""
 
-#: ../src/hb-category.c:492 ../src/hb-report.c:524 ../src/ui-budget.c:113
+#: ../src/hb-category.c:492 ../src/hb-report.c:547 ../src/ui-budget.c:113
 #: ../src/ui-category.c:220 ../src/ui-category.c:763
 msgid "(no category)"
 msgstr "(χωρίς κατηγορία)"
@@ -1111,50 +1111,50 @@ msgstr "χλμ/λίτρο"
 msgid "mi./l"
 msgstr "μίλια / λίτρο"
 
-#: ../src/hb-report.c:567 ../src/ui-payee.c:644
+#: ../src/hb-report.c:590 ../src/ui-payee.c:644
 msgid "(no payee)"
 msgstr "(κανένας δικαιούχος)"
 
-#: ../src/hb-report.c:627 ../src/ui-tag.c:323
+#: ../src/hb-report.c:650 ../src/ui-tag.c:323
 msgid "(no tag)"
 msgstr "(χωρίς ετικέτα)"
 
 #. TRANSLATORS: printf string for year of week W, ex. 2019-W52 for week 52 of 2019
-#: ../src/hb-report.c:654
+#: ../src/hb-report.c:677
 #, c-format
 msgid "w%02d"
 msgstr ""
 
 #. todo: will be innacurrate here if fiscal year start not 1/jan
 #. TRANSLATORS: printf string for year of quarter Q, ex. 2019-Q4 for quarter 4 of 2019
-#: ../src/hb-report.c:662
+#: ../src/hb-report.c:685
 #, c-format
 msgid "q%d"
 msgstr ""
 
 #. #2007712
 #. TRANSLATORS: printf string for half-year H, ex. 2019-H1 for 1st half-year of 2019
-#: ../src/hb-report.c:667
+#: ../src/hb-report.c:690
 #, c-format
 msgid "h%d"
 msgstr ""
 
 #. TRANSLATORS: printf string for year of week W, ex. 2019-W52 for week 52 of 2019
-#: ../src/hb-report.c:1428
+#: ../src/hb-report.c:1454
 #, c-format
 msgid "%d-w%02d"
 msgstr "%d-Εβδ.%02d"
 
 #. todo: will be innacurrate here if fiscal year start not 1/jan
 #. TRANSLATORS: printf string for year of quarter Q, ex. 2019-Q4 for quarter 4 of 2019
-#: ../src/hb-report.c:1440
+#: ../src/hb-report.c:1466
 #, c-format
 msgid "%d-q%d"
 msgstr "%d-Τ%d"
 
 #. #2007712
 #. TRANSLATORS: printf string for half-year H, ex. 2019-H1 for 1st half-year of 2019
-#: ../src/hb-report.c:1445
+#: ../src/hb-report.c:1471
 #, c-format
 msgid "%d-h%d"
 msgstr "%d-Εξάμ.%d"
@@ -1216,13 +1216,13 @@ msgstr ""
 msgid "Show all"
 msgstr "Προβολή όλων"
 
-#: ../src/hub-account.c:627 ../src/rep-budget.c:1711 ../src/rep-stats.c:1943
+#: ../src/hub-account.c:627 ../src/rep-budget.c:1715 ../src/rep-stats.c:1960
 #: ../src/ui-budget.c:1235 ../src/ui-budget-tabview.c:2902
 #: ../src/ui-category.c:2552 ../src/ui-filter.c:856
 msgid "Expand all"
 msgstr "Επέκταση όλων"
 
-#: ../src/hub-account.c:631 ../src/rep-budget.c:1715 ../src/rep-stats.c:1947
+#: ../src/hub-account.c:631 ../src/rep-budget.c:1719 ../src/rep-stats.c:1964
 #: ../src/ui-budget.c:1239 ../src/ui-budget-tabview.c:2906
 #: ../src/ui-category.c:2556 ../src/ui-filter.c:860
 msgid "Collapse all"
@@ -1266,7 +1266,7 @@ msgstr "μέγιστη ημερομηνία εκτέλεσης"
 #. column: Total
 #: ../src/hub-scheduled.c:581 ../src/hub-reptime.c:278 ../src/list-account.c:86
 #: ../src/list-account.c:240 ../src/list-report.c:90 ../src/list-report.c:479
-#: ../src/list-report.c:913 ../src/rep-stats.c:994 ../src/rep-stats.c:1122
+#: ../src/list-report.c:949 ../src/rep-stats.c:1014 ../src/rep-stats.c:1142
 #: ../src/rep-vehicle.c:1074 ../src/ui-widgets-data.c:51
 #: ../src/ui-widgets-data.c:72 ../src/ui-widgets-data.c:100
 msgid "Total"
@@ -1399,7 +1399,7 @@ msgstr "Πληροφορίες"
 #: ../src/list-operation.c:957 ../src/list-operation.c:1781
 #: ../src/list-scheduled.c:673 ../src/ui-archive.c:515
 #: ../src/ui-assist-import.c:380 ../src/ui-pref.c:134 ../src/ui-split.c:223
-#: ../src/ui-split.c:992 ../src/ui-widgets-data.c:29
+#: ../src/ui-split.c:1017 ../src/ui-widgets-data.c:29
 msgid "Memo"
 msgstr "Αιτιολογία"
 
@@ -1407,11 +1407,12 @@ msgstr "Αιτιολογία"
 #. column: Amount
 #. amount
 #. header
+#. 5.7.1
 #: ../src/list-operation.c:961 ../src/list-operation.c:1804
 #: ../src/rep-time.c:1652 ../src/rep-time.c:1810 ../src/rep-vehicle.c:171
 #: ../src/rep-vehicle.c:1380 ../src/ui-archive.c:520
 #: ../src/ui-assist-import.c:384 ../src/ui-filter.c:977 ../src/ui-split.c:239
-#: ../src/ui-split.c:996
+#: ../src/ui-split.c:1022
 msgid "Amount"
 msgstr "Ποσό"
 
@@ -1433,7 +1434,7 @@ msgstr "Κατάσταση"
 #: ../src/list-operation.c:1807 ../src/list-report.c:90
 #: ../src/list-report.c:467 ../src/list-scheduled.c:686
 #: ../src/rep-balance.c:1266 ../src/rep-balance.c:1477
-#: ../src/ui-budget-tabview.c:89 ../src/ui-filter.c:1118
+#: ../src/ui-budget-tabview.c:89 ../src/ui-filter.c:1118 ../src/ui-split.c:1023
 #: ../src/ui-transaction.c:53 ../src/ui-widgets-data.c:36
 #: ../src/ui-widgets-data.c:70 ../src/ui-widgets-data.c:261
 #: ../src/ui-widgets-data.c:270
@@ -1444,7 +1445,7 @@ msgstr "Έξοδα"
 #: ../src/list-operation.c:1810 ../src/list-report.c:90
 #: ../src/list-report.c:473 ../src/list-scheduled.c:698
 #: ../src/rep-balance.c:1268 ../src/rep-balance.c:1481
-#: ../src/ui-budget-tabview.c:90 ../src/ui-filter.c:1123
+#: ../src/ui-budget-tabview.c:90 ../src/ui-filter.c:1123 ../src/ui-split.c:1025
 #: ../src/ui-transaction.c:54 ../src/ui-widgets-data.c:37
 #: ../src/ui-widgets-data.c:71 ../src/ui-widgets-data.c:262
 #: ../src/ui-widgets-data.c:271
@@ -1453,11 +1454,11 @@ msgstr "Έσοδα"
 
 #. column: Result
 #: ../src/list-report.c:90 ../src/list-report.c:454 ../src/rep-budget.c:746
-#: ../src/rep-budget.c:1930 ../src/rep-budget.c:2232
+#: ../src/rep-budget.c:1934 ../src/rep-budget.c:2236
 msgid "Result"
 msgstr "Αποτέλεσμα"
 
-#: ../src/list-report.c:908
+#: ../src/list-report.c:943
 msgid "Average"
 msgstr "Μέση τιμή"
 
@@ -1487,12 +1488,12 @@ msgstr ""
 msgid "%d/%d under %s"
 msgstr "%d/%d κάτω από %s"
 
-#: ../src/rep-balance.c:808 ../src/rep-budget.c:1377 ../src/rep-stats.c:1514
+#: ../src/rep-balance.c:808 ../src/rep-budget.c:1381 ../src/rep-stats.c:1531
 #: ../src/rep-time.c:1082
 msgid "List"
 msgstr "Λίστα"
 
-#: ../src/rep-balance.c:809 ../src/rep-budget.c:1378 ../src/rep-stats.c:1515
+#: ../src/rep-balance.c:809 ../src/rep-budget.c:1382 ../src/rep-stats.c:1532
 #: ../src/rep-time.c:1083
 msgid "View results as list"
 msgstr "Εμφάνιση αποτελεσμάτων ως λίστα"
@@ -1505,17 +1506,17 @@ msgstr "Γραμμή"
 msgid "View results as lines"
 msgstr "Προβολή αποτελεσμάτων ως γραμμές"
 
-#: ../src/rep-balance.c:822 ../src/rep-budget.c:1391 ../src/rep-stats.c:1546
+#: ../src/rep-balance.c:822 ../src/rep-budget.c:1395 ../src/rep-stats.c:1563
 #: ../src/rep-time.c:1102
 msgid "Detail"
 msgstr "Λεπτομέρειες"
 
-#: ../src/rep-balance.c:823 ../src/rep-budget.c:1392 ../src/rep-stats.c:1547
+#: ../src/rep-balance.c:823 ../src/rep-budget.c:1396 ../src/rep-stats.c:1564
 #: ../src/rep-time.c:1103
 msgid "Toggle detail"
 msgstr "Εναλλαγή εμφάνισης λεπτομερειών"
 
-#: ../src/rep-balance.c:828 ../src/rep-budget.c:1398 ../src/rep-stats.c:1576
+#: ../src/rep-balance.c:828 ../src/rep-budget.c:1402 ../src/rep-stats.c:1593
 #: ../src/rep-time.c:1114 ../src/rep-vehicle.c:786
 msgid "Refresh"
 msgstr "Ανανέωση"
@@ -1524,12 +1525,12 @@ msgstr "Ανανέωση"
 msgid "Balance report"
 msgstr "Αναφορά ισοζυγίου"
 
-#: ../src/rep-balance.c:1042 ../src/rep-budget.c:1678 ../src/rep-stats.c:1866
+#: ../src/rep-balance.c:1042 ../src/rep-budget.c:1682 ../src/rep-stats.c:1883
 #: ../src/rep-time.c:1389 ../src/rep-vehicle.c:975
 msgid "Display"
 msgstr "Προβολή"
 
-#: ../src/rep-balance.c:1055 ../src/rep-stats.c:1899 ../src/rep-time.c:1407
+#: ../src/rep-balance.c:1055 ../src/rep-stats.c:1916 ../src/rep-time.c:1407
 msgid "Inter_val:"
 msgstr "Διάστ_ημα:"
 
@@ -1537,23 +1538,23 @@ msgstr "Διάστ_ημα:"
 msgid "Show empty line"
 msgstr "Εμφάνιση κενής γραμμής"
 
-#: ../src/rep-balance.c:1073 ../src/rep-stats.c:1925 ../src/rep-time.c:1425
+#: ../src/rep-balance.c:1073 ../src/rep-stats.c:1942 ../src/rep-time.c:1425
 msgid "_Zoom X:"
 msgstr "_Μεγένθυνση X:"
 
-#: ../src/rep-balance.c:1085 ../src/rep-budget.c:1724 ../src/rep-stats.c:1964
+#: ../src/rep-balance.c:1085 ../src/rep-budget.c:1728 ../src/rep-stats.c:1981
 #: ../src/rep-time.c:1437 ../src/rep-vehicle.c:999
 msgid "Date filter"
 msgstr "Φίλτρο κατά ημερομηνία"
 
-#: ../src/rep-balance.c:1095 ../src/rep-budget.c:1747 ../src/rep-stats.c:1974
+#: ../src/rep-balance.c:1095 ../src/rep-budget.c:1751 ../src/rep-stats.c:1991
 #: ../src/rep-time.c:1447 ../src/rep-vehicle.c:1009 ../src/ui-filter.c:950
 #: ../src/ui-filter.c:988 ../src/ui-transaction.c:186
 #: ../src/ui-transaction.c:187
 msgid "_From:"
 msgstr "_Από:"
 
-#: ../src/rep-balance.c:1101 ../src/rep-budget.c:1754 ../src/rep-stats.c:1980
+#: ../src/rep-balance.c:1101 ../src/rep-budget.c:1758 ../src/rep-stats.c:1997
 #: ../src/rep-time.c:1453 ../src/rep-vehicle.c:1015 ../src/ui-assign.c:1714
 #: ../src/ui-filter.c:957 ../src/ui-filter.c:995 ../src/ui-transaction.c:180
 #: ../src/ui-transaction.c:186 ../src/ui-transaction.c:187
@@ -1599,83 +1600,83 @@ msgstr ""
 msgid "Budget by month"
 msgstr ""
 
-#: ../src/rep-budget.c:936 ../src/rep-budget.c:1139
+#: ../src/rep-budget.c:936 ../src/rep-budget.c:1143
 msgid " over"
 msgstr " κενό"
 
-#: ../src/rep-budget.c:942 ../src/rep-budget.c:1145
+#: ../src/rep-budget.c:942 ../src/rep-budget.c:1149
 msgid " left"
 msgstr " αριστερά"
 
-#: ../src/rep-budget.c:945 ../src/rep-budget.c:1148
+#: ../src/rep-budget.c:945 ../src/rep-budget.c:1152
 msgid " under"
 msgstr " κάτω"
 
-#: ../src/rep-budget.c:1383 ../src/rep-stats.c:1532
+#: ../src/rep-budget.c:1387 ../src/rep-stats.c:1549
 msgid "Stack"
 msgstr "Στοίβα"
 
-#: ../src/rep-budget.c:1384
+#: ../src/rep-budget.c:1388
 msgid "View results as stack bars"
 msgstr "Προβολή αποτελεσμάτων ως μπάρες στοίβας"
 
 #. gtk_widget_set_halign (menu, GTK_ALIGN_END);
-#: ../src/rep-budget.c:1406 ../src/rep-stats.c:1584 ../src/rep-time.c:1122
+#: ../src/rep-budget.c:1410 ../src/rep-stats.c:1601 ../src/rep-time.c:1122
 msgid "_Result to clipboard"
 msgstr "_Αποτέλεσμα στο πρόχειρο"
 
-#: ../src/rep-budget.c:1410 ../src/rep-stats.c:1588 ../src/rep-time.c:1126
+#: ../src/rep-budget.c:1414 ../src/rep-stats.c:1605 ../src/rep-time.c:1126
 msgid "_Result to CSV"
 msgstr "_Αποτέλεσμα σε CSV"
 
-#: ../src/rep-budget.c:1414 ../src/rep-stats.c:1592 ../src/rep-time.c:1130
+#: ../src/rep-budget.c:1418 ../src/rep-stats.c:1609 ../src/rep-time.c:1130
 msgid "_Detail to clipboard"
 msgstr "_Λεπτομέρειες στο πρόχειρο"
 
-#: ../src/rep-budget.c:1419 ../src/rep-stats.c:1597 ../src/rep-time.c:1135
+#: ../src/rep-budget.c:1423 ../src/rep-stats.c:1614 ../src/rep-time.c:1135
 msgid "_Detail to CSV"
 msgstr "Λεπτομέρειες σε CSV"
 
-#: ../src/rep-budget.c:1569
+#: ../src/rep-budget.c:1573
 msgid "No account is defined to be part of the budget."
 msgstr "Δεν έχει οριστεί λογαριασμός ώστε να είναι μέρος του προϋπολογισμού."
 
-#: ../src/rep-budget.c:1570
+#: ../src/rep-budget.c:1574
 msgid "You should include some accounts from the account dialog."
 msgstr ""
 "Θα πρέπει συμπεριλάβετε κάποιους λογαριασμούς από το παράθυρο διαλόγου των "
 "λογαριασμών."
 
-#: ../src/rep-budget.c:1660
+#: ../src/rep-budget.c:1664
 msgid "Budget report"
 msgstr "Αναφορά Προϋπολογισμού"
 
-#: ../src/rep-budget.c:1682 ../src/rep-stats.c:1870
+#: ../src/rep-budget.c:1686 ../src/rep-stats.c:1887
 msgid "Mode:"
 msgstr "Λειτουργία:"
 
-#: ../src/rep-budget.c:1696
+#: ../src/rep-budget.c:1700
 msgid "Only out of budget"
 msgstr "Μόνο εκτός προϋπολογισμού"
 
-#: ../src/rep-budget.c:1796
+#: ../src/rep-budget.c:1800
 msgid "Result:"
 msgstr "Αποτέλεσμα:"
 
-#: ../src/rep-budget.c:1802
+#: ../src/rep-budget.c:1806
 msgid "Budget:"
 msgstr "Προϋπολογισμός:"
 
-#: ../src/rep-budget.c:1808
+#: ../src/rep-budget.c:1812
 msgid "Spent:"
 msgstr "Έξοδα:"
 
 #. column: Expense
-#: ../src/rep-budget.c:1930 ../src/rep-budget.c:2213
+#: ../src/rep-budget.c:1934 ../src/rep-budget.c:2217
 msgid "Spent"
 msgstr "Έξοδα"
 
-#: ../src/rep-budget.c:1930 ../src/rep-budget.c:2224
+#: ../src/rep-budget.c:1934 ../src/rep-budget.c:2228
 msgid "Fulfilled"
 msgstr ""
 
@@ -1686,101 +1687,101 @@ msgstr ""
 msgid "%s by %s"
 msgstr "%s ανά %s"
 
-#: ../src/rep-stats.c:1019
+#: ../src/rep-stats.c:1039
 msgid "Too much columns to display"
 msgstr "Πάρα πολλές στήλες για εμφάνιση"
 
-#: ../src/rep-stats.c:1020
+#: ../src/rep-stats.c:1040
 msgid "Please select a wider interval and / or a narrower date range"
 msgstr ""
 "Παρακαλώ επιλέξτε ένα ευρύτερο διάστημα ή / και ένα μικρότερο εύρος "
 "ημερομηνιών"
 
-#: ../src/rep-stats.c:1520 ../src/rep-time.c:1094
+#: ../src/rep-stats.c:1537 ../src/rep-time.c:1094
 msgid "Column"
 msgstr "Στήλη"
 
-#: ../src/rep-stats.c:1521 ../src/rep-time.c:1095
+#: ../src/rep-stats.c:1538 ../src/rep-time.c:1095
 msgid "View results as column"
 msgstr "Προβολή αποτελεσμάτων ως στήλη"
 
-#: ../src/rep-stats.c:1526
+#: ../src/rep-stats.c:1543
 msgid "Donut"
 msgstr "Ντόνατ"
 
-#: ../src/rep-stats.c:1527
+#: ../src/rep-stats.c:1544
 msgid "View results as donut"
 msgstr "Δείτε τα αποτελέσματα ως κύκλο"
 
-#: ../src/rep-stats.c:1533
+#: ../src/rep-stats.c:1550
 msgid "View results as stack"
 msgstr "Προβολή αποτελεσμάτων με μορφή στοιβαγμένης γραμμής"
 
-#: ../src/rep-stats.c:1538
+#: ../src/rep-stats.c:1555
 msgid "Stack 100%"
 msgstr "Γράφημα 100% στοιβαγμένης γραμμής"
 
-#: ../src/rep-stats.c:1539
+#: ../src/rep-stats.c:1556
 msgid "View results as stack 100%"
 msgstr "Προβολή αποτελεσμάτων με μορφή 100% στοιβαγμένης γραμμής"
 
-#: ../src/rep-stats.c:1555
+#: ../src/rep-stats.c:1572
 msgid "Legend"
 msgstr "Υπόμνημα"
 
-#: ../src/rep-stats.c:1556
+#: ../src/rep-stats.c:1573
 msgid "Toggle legend"
 msgstr "Εναλλαγή εμφάνισης υπομνήματος"
 
-#: ../src/rep-stats.c:1564
+#: ../src/rep-stats.c:1581
 msgid "Rate"
 msgstr "Ισοτιμία"
 
-#: ../src/rep-stats.c:1565
+#: ../src/rep-stats.c:1582
 msgid "Toggle rate"
 msgstr "Εναλλαγή εμφάνισης ισοτιμίας"
 
-#: ../src/rep-stats.c:1573 ../src/rep-time.c:1110
+#: ../src/rep-stats.c:1590 ../src/rep-time.c:1110
 msgid "Filter"
 msgstr "Φίλτρο"
 
-#: ../src/rep-stats.c:1573 ../src/rep-time.c:1110 ../src/ui-filter.c:1184
+#: ../src/rep-stats.c:1590 ../src/rep-time.c:1110 ../src/ui-filter.c:1184
 msgid "Edit filter"
 msgstr "Επεξεργασία φίλτρου"
 
-#: ../src/rep-stats.c:1847
+#: ../src/rep-stats.c:1864
 msgid "Statistics Report"
 msgstr "Αναφορά στατιστικών"
 
-#: ../src/rep-stats.c:1877 ../src/rep-time.c:1393
+#: ../src/rep-stats.c:1894 ../src/rep-time.c:1393
 msgid "_View by:"
 msgstr "_Προβολή κατά:"
 
-#: ../src/rep-stats.c:1885
+#: ../src/rep-stats.c:1902
 msgid "_Balance mode"
 msgstr "Λειτουργία ισοζυγίου"
 
-#: ../src/rep-stats.c:1910
+#: ../src/rep-stats.c:1927
 msgid "_Forecast"
 msgstr ""
 
-#: ../src/rep-stats.c:1915
+#: ../src/rep-stats.c:1932
 msgid "Sort by _amount"
 msgstr "Ταξινόμηση κατά _ποσό"
 
-#: ../src/rep-stats.c:1920
+#: ../src/rep-stats.c:1937
 msgid "Compare Exp. & Inc."
 msgstr "Σύγκριση Εξ. & Εσ."
 
-#: ../src/rep-stats.c:2008
+#: ../src/rep-stats.c:2025
 msgid "Total:"
 msgstr "Σύνολο:"
 
-#: ../src/rep-stats.c:2014 ../src/ui-budget.c:1272
+#: ../src/rep-stats.c:2031 ../src/ui-budget.c:1272
 msgid "Income:"
 msgstr "Έσοδα:"
 
-#: ../src/rep-stats.c:2021 ../src/ui-budget.c:1265
+#: ../src/rep-stats.c:2038 ../src/ui-budget.c:1265
 msgid "Expense:"
 msgstr "Έξοδα:"
 
@@ -1805,7 +1806,7 @@ msgstr "Φίλτρο αντικειμένου"
 msgid "Time slice"
 msgstr "Μερίδιο χρόνου"
 
-#. 
+#.
 #. LST_CAR_DATE,
 #. LST_CAR_MEMO,
 #. LST_CAR_METER,
@@ -1814,10 +1815,10 @@ msgstr "Μερίδιο χρόνου"
 #. LST_CAR_AMOUNT,
 #. LST_CAR_DIST,
 #. LST_CAR_100KM
-#. 
-#. 
+#.
+#.
 #. column: Memo
-#. 
+#.
 #. column = gtk_tree_view_column_new();
 #. gtk_tree_view_column_set_title(column, _("Memo"));
 #. gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
@@ -1825,7 +1826,7 @@ msgstr "Μερίδιο χρόνου"
 #. gtk_tree_view_column_pack_start(column, renderer, TRUE);
 #. gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_MEMO);
 #. //gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
-#. 
+#.
 #. column: Meter
 #: ../src/rep-vehicle.c:168 ../src/rep-vehicle.c:1368
 msgid "Meter"
@@ -1909,7 +1910,7 @@ msgstr "Ορατό"
 #: ../src/ui-dialogs.c:752 ../src/ui-dialogs.c:829 ../src/ui-dialogs.c:957
 #: ../src/ui-dialogs.c:1125 ../src/ui-filter.c:1196 ../src/ui-hbfile.c:234
 #: ../src/ui-payee.c:1234 ../src/ui-payee.c:1434 ../src/ui-pref.c:2346
-#: ../src/ui-split.c:912 ../src/ui-tag.c:681 ../src/ui-tag.c:805
+#: ../src/ui-split.c:937 ../src/ui-tag.c:681 ../src/ui-tag.c:805
 #: ../src/ui-transaction.c:1485 ../src/ui-txn-multi.c:454
 msgid "_Cancel"
 msgstr "_Άκυρο"
@@ -1917,7 +1918,7 @@ msgstr "_Άκυρο"
 #: ../src/ui-account.c:1042 ../src/ui-assign.c:934 ../src/ui-category.c:1724
 #: ../src/ui-currency.c:788 ../src/ui-currency.c:1158 ../src/ui-dialogs.c:387
 #: ../src/ui-hbfile.c:236 ../src/ui-payee.c:1236 ../src/ui-pref.c:2348
-#: ../src/ui-split.c:925 ../src/ui-tag.c:683 ../src/ui-transaction.c:1486
+#: ../src/ui-split.c:950 ../src/ui-tag.c:683 ../src/ui-transaction.c:1486
 #: ../src/ui-txn-multi.c:456
 msgid "_OK"
 msgstr "_Εντάξει"
@@ -2441,8 +2442,7 @@ msgstr ", %d από %d συναλλαγές"
 #: ../src/ui-assist-import.c:1029
 #, c-format
 msgid "%d transaction(s), %d similar, %d existing, %d selected"
-msgstr ""
-"%d συναλλαγή(ές), %d παρόμοια(ες), %d υπάρχουσα(ες), %d επιλεγμένη(ες)"
+msgstr "%d συναλλαγή(ές), %d παρόμοια(ες), %d υπάρχουσα(ες), %d επιλεγμένη(ες)"
 
 #: ../src/ui-assist-import.c:1031
 #, c-format
@@ -2612,8 +2612,7 @@ msgstr "2) Εκτέλεση κανόνων αυτόματης _ανάθεσης"
 
 #: ../src/ui-assist-import.c:1994
 msgid "Click \"Apply\" to update your accounts."
-msgstr ""
-"Κάντε κλικ στο \"Εφαρμογή\" για να ενημερώσετε τους λογαριασμούς σας."
+msgstr "Κάντε κλικ στο \"Εφαρμογή\" για να ενημερώσετε τους λογαριασμούς σας."
 
 #: ../src/ui-assist-import.c:2328
 msgid "Welcome"
@@ -3641,8 +3640,8 @@ msgstr ""
 "δεκαδικός αριθμός [00-99]. \n"
 "%d ημέρα του μήνα ως δεκαδικός αριθμός [01,31]. \n"
 "%D ίδιο με %m/%d/%y. \n"
-"%e ημέρα του μήνα ως δεκαδικός αριθμός [1,31], σε μονοψήφιο προηγείται κενό. "
-"\n"
+"%e ημέρα του μήνα ως δεκαδικός αριθμός [1,31], σε μονοψήφιο προηγείται "
+"κενό. \n"
 "%j ημέρα του έτους ως δεκαδικός αριθμός [001,366]. \n"
 "%m μήνας ως δεκαδικός αριθμός [01,12]. \n"
 "%p κατάλληλη αναπαράσταση ημερομηνίας τοπικής γλώσσας. \n"
@@ -3840,7 +3839,7 @@ msgstr "Αναφορές κυρίου παραθύρου"
 #. widget = make_daterange(label, DATE_RANGE_CUSTOM_HIDDEN);
 #. data->CY_daterange_wal = widget;
 #. gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-#. 
+#.
 #. row++;
 #: ../src/ui-pref.c:2223
 msgid "Max _items:"
@@ -3880,44 +3879,59 @@ msgstr ""
 "Ο κατάλογος του αντιγράφου ασφαλείας έχει αλλάξει,\n"
 "ίσως χρειαστεί να αντιγράψετε το '.bak' αρχείο σε αυτήν την νέα τοποθεσία."
 
-#: ../src/ui-split.c:840 ../src/ui-split.c:909 ../src/ui-transaction.c:1595
+#: ../src/ui-split.c:553
+#, fuzzy
+msgid "Do you want to delete all split lines"
+msgstr ""
+"Θέλετε να διαγράψετε\n"
+"κάθε μία από τις επιλεγμένες συναλλαγές;"
+
+#: ../src/ui-split.c:865 ../src/ui-split.c:934 ../src/ui-transaction.c:1595
 msgid "Transaction splits"
 msgstr "Διαχωρισμοί συναλλαγής"
 
-#: ../src/ui-split.c:975
+#: ../src/ui-split.c:1000
 msgid "Delete all"
 msgstr "Διαγραφή όλων"
 
-#: ../src/ui-split.c:1028
+#: ../src/ui-split.c:1052
+msgid "Prefix with -/+ to force the sign"
+msgstr ""
+
+#: ../src/ui-split.c:1063
 msgid "Apply"
 msgstr "Εφαρμογή"
 
-#: ../src/ui-split.c:1032
+#: ../src/ui-split.c:1067
 msgid "Cancel"
 msgstr "Ακύρωση"
 
-#: ../src/ui-split.c:1040
+#: ../src/ui-split.c:1075
 msgid "Transaction amount:"
 msgstr "Ποσό συναλλαγής:"
 
-#: ../src/ui-split.c:1049
+#: ../src/ui-split.c:1084
 msgid "Unassigned:"
 msgstr "Δεν έχει ανατεθεί:"
 
-#: ../src/ui-split.c:1064
+#: ../src/ui-split.c:1099
 msgid "Sum of splits:"
 msgstr "Άθροισμα των διαχωρισμών:"
 
-#: ../src/ui-split.c:1076
-msgid "Warning: sum of splits and transaction amount don't match"
+#: ../src/ui-split.c:1111
+msgid "Number of splits limit is reached"
 msgstr ""
-"Προειδοποίηση: το άθροισμα των διαχωρισμών και το ποσό συναλλαγής δεν "
-"ταιριάζουν"
 
-#: ../src/ui-split.c:1084
+#: ../src/ui-split.c:1119
 msgid "Warning: sum of splits and transaction type don't match"
 msgstr ""
 "Προειδοποίηση: το άθροισμα των διαχωρισμών και ο τύπος συναλλαγής δεν "
+"ταιριάζουν"
+
+#: ../src/ui-split.c:1127
+msgid "Warning: sum of splits and transaction amount don't match"
+msgstr ""
+"Προειδοποίηση: το άθροισμα των διαχωρισμών και το ποσό συναλλαγής δεν "
 "ταιριάζουν"
 
 #: ../src/ui-tag.c:678

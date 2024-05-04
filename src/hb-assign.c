@@ -20,6 +20,10 @@
 #include "homebank.h"
 #include "hb-assign.h"
 
+/****************************************************************************/
+/* Debug macros											                    */
+/****************************************************************************/
+
 #define MYDEBUG 0
 
 #if MYDEBUG
@@ -121,15 +125,13 @@ da_asg_remove(guint32 key)
 static gboolean
 da_asg_ensure_name(Assign *item)
 {
-	// (no assign) does not exists
-	if( item->key > 0 )
+	if( item->search == NULL || strlen(item->search) == 0 )
 	{
-		if( item->search == NULL || strlen(item->search) == 0 )
-		{
-			g_free(item->search);
-			item->search = g_strdup_printf("no name %d", item->key);
-			return TRUE;
-		}
+	gint key = item->key > 0 ? item->key : da_asg_get_max_key() + 1;
+
+		g_free(item->search);
+		item->search = g_strdup_printf("no name %d", key);
+		return TRUE;
 	}
 	return FALSE;
 }
@@ -197,9 +199,11 @@ guint32 *new_key;
 			g_hash_table_insert(GLOBALS->h_rul, new_key, item);
 			return TRUE;
 		}
+
+		DB( g_print(" -> %s already exist: %d\n", item->search, item->key) );
 	}
 
-	DB( g_print(" -> %s already exist: %d\n", item->search, item->key) );
+	DB( g_print(" -> %s search null: %d\n", item->search, item->key) );
 
 	return FALSE;
 }
@@ -321,7 +325,12 @@ Assign *da_asg_init_from_transaction(Assign *asg, Transaction *txn)
 
 	//#2018680
 	//asg->search = g_strdup_printf("%s %s", _("**PREFILLED**"), txn->memo );
-	asg->search = g_strdup( txn->memo );
+	//#2037132 ensure memo is not empty
+	if( txn->memo != NULL )
+		asg->search = g_strdup( txn->memo );
+
+	da_asg_ensure_name(asg);
+
 	asg->flags |= ASGF_PREFILLED;
 	asg->flags |= (ASGF_DOPAY|ASGF_DOCAT|ASGF_DOMOD);
 	asg->kcat = txn->kcat;

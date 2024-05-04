@@ -1,5 +1,32 @@
 
 
+2023-10-08  Maxime Doyen
+
+ Made 5.7.1 release
+
+ * new   : split dialog: add a confirm dialog before delete all split lines
+ * new   : dateentry only rely on token and date order detection, glib failover
+ * change: split dialog: add info+tooltip icon next to the amount input
+ * change: split dialog: amount input is named according transaction type
+ * bugfix: dateentry d, dm, md was sometimes wrong
+ * bugfix: dateentry 2 year digits fix with 40/60 windowing
+ * bugfix: #2037597 top 10 Spending Category chart legend labels sometimes ellipsized
+ * bugfix: #2037468 "All Transactions" CSV export no longer includes account
+ * bugfix: #2037132 cannot create assignments from a transaction with empty memo
+ * bugfix: #2036703 budget report shows wrong Spent and Budget totals
+ * bugfix: #2036290 migrate libsoup-2.4 to libsoup-3.0
+ * bugfix: #2036270 no message when split limit is reached
+ * bugfix: #2036228 forecast only limited to time span set in preferences
+ * bugfix: #2036097 budget report date range from/to does not localized month name
+ * bugfix: #2035401 Main panel size not retained; account info concealed on start
+ * bugfix: #2035129 incorrect values in "tooltip" message for forcast view (subcategory)
+ * bugfix: #2034764 statistics Report Total Row not reflecting displayed amounts
+ * bugfix: #2034647 trend time Report Title does not match Interval
+ * bugfix: #2034618	statistics report sometimes crashes with half year interval 
+ * wish  : #2038601 "Schedule" and "Template" linked togglebuttons are not mutually exclusive (don't act like switchers)
+ * wish  : #2034625	statistics Reportsorting by expense or income when using the Time Mode
+
+
 2023-09-06  Maxime Doyen
 
  Made 5.7 release
@@ -403,7 +430,7 @@
  * wish  : #1869112 "Export CSV" feature for the "Show all..." transactions view
  * wish  : #1837550 export transaction from account as CSV with every split line
  * bugfix: #1892828 position of auto assignments is lost after reload a file
- * bugfix: #1885413 inversion of sign in splits causes the transaction to not be savable
+ * bugfix: #1885413 inversion of sign in splits causes the transaction to not be saveable
  * bugfix: #1883403 Cancel editing a "splitted transaction" is updating the expense value in transaction list
  * bugfix: #1883063 Scheduled entries can't have a blank memo
  * bugfix: #1879451 press delete while the focus is in quicksearch try to delete txn
@@ -773,7 +800,7 @@
  * wish  : #1586211 import to always shows date tolerance
  * wish  : #1579494 prevent to import csv invalid date combinations
  * wish  : #1500227 add quick filter for manage payees window
- * wish  : #1225122 split the amount of a transaction into more than 10 categories
+ * wish  : #1225122 split the amount of a transaction into more than 10 categories (60)
  * wish  : #1008629 optional default transaction template for each account
  * wish  :  #969218 include tags in scheduled/template transaction
  * wish  :  #829418 option to help detect duplicated transaction

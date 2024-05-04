@@ -35,11 +35,18 @@ enum
 
 #define LST_REPORT_POS_TOTAL G_MAXINT
 
-//special column id
-#define LST_REP_COLID_AVERAGE -1
-#define LST_REP_COLID_TOTAL   -3
 
-//test
+// --- time stuff ---
+
+//time maximum column (4 years = 365,25 * 4)
+#define LST_REP_COLID_MAX		1461
+
+//special column id
+#define LST_REP_COLID_POS     LST_REP_COLID_MAX + 10
+#define LST_REP_COLID_AVERAGE LST_REP_COLID_MAX + 11
+#define LST_REP_COLID_TOTAL   LST_REP_COLID_MAX + 12
+
+
 enum {
 	LST_REPORT2_POS,
 	LST_REPORT2_KEY,
@@ -74,7 +81,7 @@ GString *lst_rep_time_to_string(GtkTreeView *treeview, gint src, gchar *title, g
 GtkWidget *lst_rep_time_createtype(GtkListStore *store);
 GtkTreeStore *lst_rep_time_new(void);
 GtkWidget *lst_rep_time_create(void);
-void lst_rep_time_renewcol(GtkTreeView *treeview, DataTable *dt, guint32 nbintvl, guint32 jfrom, gint intvl, gboolean avg);
+void lst_rep_time_renewcol(GtkTreeView *treeview, GtkTreeModel *model, DataTable *dt, gboolean avg);
 
 
 #endif

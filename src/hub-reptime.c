@@ -226,7 +226,7 @@ guint i, n_inserted;
 		g_object_ref(model); // Make sure the model stays with us after the tree view unrefs it
 		gtk_tree_view_set_model(GTK_TREE_VIEW(data->LV_hubtim), NULL); // Detach model from view
 
-		lst_rep_time_renewcol(GTK_TREE_VIEW(data->LV_hubtim), dt, dt->nbcols, data->hubtim_filter->mindate, tmpintvl, TRUE);
+		lst_rep_time_renewcol(GTK_TREE_VIEW(data->LV_hubtim), model, dt, TRUE);
 
 		n_inserted = 0;
 		for(i=0; i<dt->nbrows; i++)

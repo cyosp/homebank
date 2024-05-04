@@ -6,11 +6,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: homebank\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2023-09-05 21:31+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-10-07 08:49+0200\n"
 "PO-Revision-Date: 2016-09-05 16:32+0000\n"
 "Last-Translator: abuyop <Unknown>\n"
 "Language-Team: Malay <ms@li.org>\n"
+"Language: ms\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -52,7 +53,7 @@ msgid ""
 "personal accounting then HomeBank should be the software of choice."
 msgstr ""
 
-#: ../src/dsp-account.c:175 ../src/dsp-account.c:2843
+#: ../src/dsp-account.c:175 ../src/dsp-account.c:2840
 msgid "All transactions"
 msgstr ""
 
@@ -108,395 +109,395 @@ msgstr ""
 msgid "Automatic assignment result"
 msgstr ""
 
-#: ../src/dsp-account.c:715
+#: ../src/dsp-account.c:716
 msgid ""
 "Do you want to create an assignment with\n"
 "each of the selected transaction?"
 msgstr ""
 
-#: ../src/dsp-account.c:716 ../src/dsp-account.c:792
+#: ../src/dsp-account.c:717 ../src/dsp-account.c:789
 msgid "_Create"
 msgstr ""
 
-#: ../src/dsp-account.c:761
+#: ../src/dsp-account.c:759
 msgid "Create Assignment"
 msgstr ""
 
-#: ../src/dsp-account.c:762 ../src/dsp-account.c:837
+#: ../src/dsp-account.c:760 ../src/dsp-account.c:834
 #, c-format
 msgid "%d created with a prefilled icon"
 msgstr ""
 
-#: ../src/dsp-account.c:791
+#: ../src/dsp-account.c:788
 msgid ""
 "Do you want to create a template with\n"
 "each of the selected transaction?"
 msgstr ""
 
-#: ../src/dsp-account.c:836
+#: ../src/dsp-account.c:833
 msgid "Create Template"
 msgstr ""
 
-#: ../src/dsp-account.c:1743
+#: ../src/dsp-account.c:1740
 msgid ""
 "Do you want to delete\n"
 "each of the selected transaction?"
 msgstr ""
 
-#: ../src/dsp-account.c:1744 ../src/ui-account.c:1514 ../src/ui-archive.c:880
+#: ../src/dsp-account.c:1741 ../src/ui-account.c:1514 ../src/ui-archive.c:880
 #: ../src/ui-assign.c:1509 ../src/ui-budget-tabview.c:2322
 #: ../src/ui-category.c:1480 ../src/ui-category.c:2025
 #: ../src/ui-currency.c:1572 ../src/ui-payee.c:1039 ../src/ui-payee.c:1565
-#: ../src/ui-tag.c:925
+#: ../src/ui-split.c:554 ../src/ui-tag.c:925
 msgid "_Delete"
 msgstr ""
 
-#: ../src/dsp-account.c:1825
+#: ../src/dsp-account.c:1822
 msgid "Are you sure you want to change the status to None?"
 msgstr ""
 
-#: ../src/dsp-account.c:1826 ../src/dsp-account.c:1886
+#: ../src/dsp-account.c:1823 ../src/dsp-account.c:1883
 msgid "Some transaction in your selection are already Reconciled."
 msgstr ""
 
-#: ../src/dsp-account.c:1827 ../src/ui-assist-start.c:277
+#: ../src/dsp-account.c:1824 ../src/ui-assist-start.c:277
 #: ../src/ui-dialogs.c:430
 msgid "_Change"
 msgstr "_Ubah"
 
-#: ../src/dsp-account.c:1885
+#: ../src/dsp-account.c:1882
 msgid "Are you sure you want to toggle the status Reconciled?"
 msgstr ""
 
-#: ../src/dsp-account.c:1887
+#: ../src/dsp-account.c:1884
 msgid "_Toggle"
 msgstr "_Togol"
 
-#: ../src/dsp-account.c:2299
+#: ../src/dsp-account.c:2296
 #, c-format
 msgid "%d transactions"
 msgstr ""
 
-#: ../src/dsp-account.c:2302
+#: ../src/dsp-account.c:2299
 #, c-format
 msgid "%d transactions, %d selected, avg: %s, sum: %s (%s - %s)"
 msgstr ""
 
-#: ../src/dsp-account.c:2315
+#: ../src/dsp-account.c:2312
 msgid "Locked. Click to unlock"
 msgstr ""
 
-#: ../src/dsp-account.c:2315
+#: ../src/dsp-account.c:2312
 msgid "Unlocked. Click to lock"
 msgstr ""
 
-#: ../src/dsp-account.c:2594 ../src/dsp-account.c:2696
+#: ../src/dsp-account.c:2591 ../src/dsp-account.c:2693
 msgid "_Add..."
 msgstr "T_ambah..."
 
-#: ../src/dsp-account.c:2596 ../src/dsp-account.c:2698
+#: ../src/dsp-account.c:2593 ../src/dsp-account.c:2695
 msgid "_Inherit..."
 msgstr "_Warisi..."
 
-#: ../src/dsp-account.c:2598 ../src/dsp-account.c:2700
+#: ../src/dsp-account.c:2595 ../src/dsp-account.c:2697
 msgid "_Edit..."
 msgstr "_Sunting..."
 
-#: ../src/dsp-account.c:2600 ../src/dsp-account.c:2714
+#: ../src/dsp-account.c:2597 ../src/dsp-account.c:2711
 msgid "_Multiple Edit..."
 msgstr ""
 
-#: ../src/dsp-account.c:2605 ../src/dsp-account.c:2705
+#: ../src/dsp-account.c:2602 ../src/dsp-account.c:2702
 msgid "_Status"
 msgstr "_Status"
 
-#: ../src/dsp-account.c:2607 ../src/dsp-account.c:2707
+#: ../src/dsp-account.c:2604 ../src/dsp-account.c:2704
 msgid "_None"
 msgstr "_Tiada"
 
-#: ../src/dsp-account.c:2609 ../src/dsp-account.c:2709
+#: ../src/dsp-account.c:2606 ../src/dsp-account.c:2706
 msgid "_Cleared"
 msgstr ""
 
-#: ../src/dsp-account.c:2611 ../src/dsp-account.c:2711
+#: ../src/dsp-account.c:2608 ../src/dsp-account.c:2708
 msgid "_Reconciled"
 msgstr ""
 
-#: ../src/dsp-account.c:2616
+#: ../src/dsp-account.c:2613
 msgid "View _Split"
 msgstr ""
 
-#: ../src/dsp-account.c:2618
+#: ../src/dsp-account.c:2615
 msgid "Copy raw amount"
 msgstr ""
 
-#: ../src/dsp-account.c:2620 ../src/dsp-account.c:2715
+#: ../src/dsp-account.c:2617 ../src/dsp-account.c:2712
 msgid "Create template..."
 msgstr "Cipta templat..."
 
-#: ../src/dsp-account.c:2622 ../src/dsp-account.c:2716
+#: ../src/dsp-account.c:2619 ../src/dsp-account.c:2713
 msgid "Create assignment..."
 msgstr ""
 
-#: ../src/dsp-account.c:2624 ../src/dsp-account.c:2717
+#: ../src/dsp-account.c:2621 ../src/dsp-account.c:2714
 msgid "_Delete..."
 msgstr "_Padam..."
 
-#: ../src/dsp-account.c:2629
+#: ../src/dsp-account.c:2626
 msgid "_Up"
 msgstr ""
 
-#: ../src/dsp-account.c:2631
+#: ../src/dsp-account.c:2628
 msgid "_Down"
 msgstr ""
 
-#: ../src/dsp-account.c:2671
+#: ../src/dsp-account.c:2668
 msgid "A_ccount"
 msgstr "A_kaun"
 
-#: ../src/dsp-account.c:2673
+#: ../src/dsp-account.c:2670
 msgid "Export QIF..."
 msgstr "Eksport QIF..."
 
-#: ../src/dsp-account.c:2674
+#: ../src/dsp-account.c:2671
 msgid "Export CSV..."
 msgstr "Eksport CSV..."
 
-#: ../src/dsp-account.c:2676 ../src/hub-account.c:592
+#: ../src/dsp-account.c:2673 ../src/hub-account.c:592
 msgid "Print..."
 msgstr ""
 
-#: ../src/dsp-account.c:2679
+#: ../src/dsp-account.c:2676 ../src/hub-account.c:638
 msgid "Browse Website"
 msgstr ""
 
-#: ../src/dsp-account.c:2681 ../src/dsp-mainwindow.c:696
+#: ../src/dsp-account.c:2678 ../src/dsp-mainwindow.c:696
 #: ../src/dsp-mainwindow.c:1885 ../src/ui-account.c:1865
 #: ../src/ui-archive.c:1268 ../src/ui-assign.c:1761 ../src/ui-budget.c:1148
 #: ../src/ui-budget-tabview.c:2782 ../src/ui-category.c:2413
 #: ../src/ui-currency.c:1712 ../src/ui-dialogs.c:194 ../src/ui-payee.c:1766
-#: ../src/ui-split.c:843 ../src/ui-tag.c:1058 ../src/ui-transaction.c:1491
+#: ../src/ui-split.c:868 ../src/ui-tag.c:1058 ../src/ui-transaction.c:1491
 msgid "_Close"
 msgstr "_Tutup"
 
 #. #1818052 wish: copy/paste one/multiple transaction(s)
-#: ../src/dsp-account.c:2685 ../src/dsp-mainwindow.c:1890
+#: ../src/dsp-account.c:2682 ../src/dsp-mainwindow.c:1890
 msgid "_Edit"
 msgstr "_Sunting"
 
-#: ../src/dsp-account.c:2687
+#: ../src/dsp-account.c:2684
 msgid "Copy"
 msgstr ""
 
-#: ../src/dsp-account.c:2689
+#: ../src/dsp-account.c:2686
 msgid "Paste"
 msgstr ""
 
-#: ../src/dsp-account.c:2691
+#: ../src/dsp-account.c:2688
 msgid "Paste (today)"
 msgstr ""
 
-#: ../src/dsp-account.c:2694
+#: ../src/dsp-account.c:2691
 msgid "Transacti_on"
 msgstr "Transaks_i"
 
-#: ../src/dsp-account.c:2722
+#: ../src/dsp-account.c:2719
 msgid "_Find"
 msgstr ""
 
-#: ../src/dsp-account.c:2725 ../src/dsp-mainwindow.c:1939
+#: ../src/dsp-account.c:2722 ../src/dsp-mainwindow.c:1939
 msgid "_Tools"
 msgstr "A_lat"
 
-#: ../src/dsp-account.c:2727
+#: ../src/dsp-account.c:2724
 msgid "Mark duplicate..."
 msgstr ""
 
-#: ../src/dsp-account.c:2728
+#: ../src/dsp-account.c:2725
 msgid "Check internal transfer"
 msgstr ""
 
-#: ../src/dsp-account.c:2729
+#: ../src/dsp-account.c:2726
 msgid "Auto. assignments"
 msgstr ""
 
-#: ../src/dsp-account.c:2730
+#: ../src/dsp-account.c:2727
 msgid "_Filter..."
 msgstr "_Penapis..."
 
-#: ../src/dsp-account.c:2731
+#: ../src/dsp-account.c:2728
 msgid "Convert to Euro..."
 msgstr "Tukar ke Euro..."
 
-#: ../src/dsp-account.c:2745 ../src/dsp-mainwindow.c:1996
+#: ../src/dsp-account.c:2742 ../src/dsp-mainwindow.c:1996
 #: ../src/ui-account.c:1925 ../src/ui-archive.c:1340 ../src/ui-assign.c:1821
 #: ../src/ui-assist-import.c:1572 ../src/ui-category.c:2523
-#: ../src/ui-currency.c:1784 ../src/ui-payee.c:1875 ../src/ui-split.c:1024
+#: ../src/ui-currency.c:1784 ../src/ui-payee.c:1875 ../src/ui-split.c:1059
 #: ../src/ui-tag.c:1151
 msgid "Add"
 msgstr "Tambah"
 
-#: ../src/dsp-account.c:2745
+#: ../src/dsp-account.c:2742
 msgid "Add a new transaction"
 msgstr "Tambah transaksi baru"
 
-#: ../src/dsp-account.c:2747
+#: ../src/dsp-account.c:2744
 msgid "Inherit"
 msgstr "Warisi"
 
-#: ../src/dsp-account.c:2747
+#: ../src/dsp-account.c:2744
 msgid "Inherit from the active transaction"
 msgstr "Warisi dari transaksi aktif"
 
 #. widget = gtk_button_new_with_mnemonic(_("_Edit"));
-#: ../src/dsp-account.c:2749 ../src/ui-archive.c:1352 ../src/ui-assign.c:1832
+#: ../src/dsp-account.c:2746 ../src/ui-archive.c:1352 ../src/ui-assign.c:1832
 #: ../src/ui-category.c:2534 ../src/ui-currency.c:1795 ../src/ui-payee.c:1882
-#: ../src/ui-split.c:983 ../src/ui-tag.c:1158
+#: ../src/ui-split.c:1008 ../src/ui-tag.c:1158
 msgid "Edit"
 msgstr "Sunting"
 
-#: ../src/dsp-account.c:2749
+#: ../src/dsp-account.c:2746
 msgid "Edit the active transaction"
 msgstr "Sunting transaksi aktif"
 
 #. Cleared
-#: ../src/dsp-account.c:2754 ../src/list-account.c:811 ../src/ui-filter.c:1161
+#: ../src/dsp-account.c:2751 ../src/list-account.c:811 ../src/ui-filter.c:1161
 #: ../src/ui-widgets-data.c:232 ../src/ui-widgets-data.c:280
 msgid "Cleared"
 msgstr ""
 
-#: ../src/dsp-account.c:2754
+#: ../src/dsp-account.c:2751
 msgid "Toggle cleared for selected transaction(s)"
 msgstr ""
 
 #. Reconciled
-#: ../src/dsp-account.c:2755 ../src/list-account.c:807 ../src/ui-filter.c:1166
+#: ../src/dsp-account.c:2752 ../src/list-account.c:807 ../src/ui-filter.c:1166
 #: ../src/ui-widgets-data.c:233 ../src/ui-widgets-data.c:282
 msgid "Reconciled"
 msgstr ""
 
-#: ../src/dsp-account.c:2755
+#: ../src/dsp-account.c:2752
 msgid "Toggle reconciled for selected transaction(s)"
 msgstr ""
 
-#: ../src/dsp-account.c:2759
+#: ../src/dsp-account.c:2756
 msgid "Edit Multiple"
 msgstr ""
 
-#: ../src/dsp-account.c:2759
+#: ../src/dsp-account.c:2756
 msgid "Edit multiple transaction"
 msgstr ""
 
-#: ../src/dsp-account.c:2760
+#: ../src/dsp-account.c:2757
 msgid "Create template"
 msgstr "Cipta templat"
 
-#: ../src/dsp-account.c:2761 ../src/ui-account.c:1929 ../src/ui-archive.c:1344
+#: ../src/dsp-account.c:2758 ../src/ui-account.c:1929 ../src/ui-archive.c:1344
 #: ../src/ui-assign.c:1825 ../src/ui-assist-import.c:1576
 #: ../src/ui-category.c:2527 ../src/ui-currency.c:1788 ../src/ui-payee.c:1877
-#: ../src/ui-split.c:979 ../src/ui-tag.c:1153
+#: ../src/ui-split.c:1004 ../src/ui-tag.c:1153
 msgid "Delete"
 msgstr ""
 
-#: ../src/dsp-account.c:2761
+#: ../src/dsp-account.c:2758
 msgid "Delete selected transaction(s)"
 msgstr ""
 
-#: ../src/dsp-account.c:2767
+#: ../src/dsp-account.c:2764
 msgid "Up"
 msgstr ""
 
-#: ../src/dsp-account.c:2767
+#: ../src/dsp-account.c:2764
 msgid "Move transaction up"
 msgstr ""
 
-#: ../src/dsp-account.c:2768
+#: ../src/dsp-account.c:2765
 msgid "Down"
 msgstr ""
 
-#: ../src/dsp-account.c:2768
+#: ../src/dsp-account.c:2765
 msgid "Move transaction down"
 msgstr ""
 
-#: ../src/dsp-account.c:2775
+#: ../src/dsp-account.c:2772
 msgid "Reconciled changes is"
 msgstr ""
 
-#: ../src/dsp-account.c:2836
+#: ../src/dsp-account.c:2833
 msgid "(closed)"
 msgstr ""
 
-#: ../src/dsp-account.c:2843
+#: ../src/dsp-account.c:2840
 #, c-format
 msgid "%s - HomeBank"
 msgstr ""
 
 #. info bar for duplicate
-#: ../src/dsp-account.c:2870
+#: ../src/dsp-account.c:2867
 msgid "_Refresh"
 msgstr ""
 
-#: ../src/dsp-account.c:2897 ../src/rep-balance.c:1089 ../src/rep-budget.c:1728
-#: ../src/rep-stats.c:1968 ../src/rep-time.c:1441 ../src/rep-vehicle.c:1003
+#: ../src/dsp-account.c:2894 ../src/rep-balance.c:1089 ../src/rep-budget.c:1732
+#: ../src/rep-stats.c:1985 ../src/rep-time.c:1441 ../src/rep-vehicle.c:1003
 #: ../src/ui-pref.c:1379 ../src/ui-pref.c:1795
 msgid "_Range:"
 msgstr "_Julat:"
 
 #. #2008521 set more accurate tooltip
-#: ../src/dsp-account.c:2911
+#: ../src/dsp-account.c:2908
 #, c-format
 msgid "Toggle show %d days ahead"
 msgstr ""
 
-#: ../src/dsp-account.c:2916 ../src/rep-budget.c:1689 ../src/rep-stats.c:1890
+#: ../src/dsp-account.c:2913 ../src/rep-budget.c:1693 ../src/rep-stats.c:1907
 #: ../src/ui-account.c:1976 ../src/ui-assist-start.c:536
 msgid "_Type:"
 msgstr "_Jenis:"
 
-#: ../src/dsp-account.c:2923 ../src/ui-transaction.c:1752
+#: ../src/dsp-account.c:2920 ../src/ui-transaction.c:1752
 msgid "_Status:"
 msgstr "_Status:"
 
-#: ../src/dsp-account.c:2930
+#: ../src/dsp-account.c:2927
 msgid "Open the list filter"
 msgstr "Buka senarai penapis"
 
-#: ../src/dsp-account.c:2935 ../src/rep-balance.c:828 ../src/rep-budget.c:1398
-#: ../src/rep-stats.c:1576 ../src/rep-time.c:1114 ../src/rep-vehicle.c:786
+#: ../src/dsp-account.c:2932 ../src/rep-balance.c:828 ../src/rep-budget.c:1402
+#: ../src/rep-stats.c:1593 ../src/rep-time.c:1114 ../src/rep-vehicle.c:786
 msgid "Refresh results"
 msgstr "Segar semula keputusan"
 
 #. widget = gtk_button_new_with_mnemonic (_("Reset _filters"));
-#: ../src/dsp-account.c:2941 ../src/ui-filter.c:1192 ../src/ui-pref.c:2320
+#: ../src/dsp-account.c:2938 ../src/ui-filter.c:1192 ../src/ui-pref.c:2320
 #: ../src/ui-pref.c:2344
 msgid "_Reset"
 msgstr ""
 
-#: ../src/dsp-account.c:2946 ../src/rep-balance.c:831 ../src/rep-budget.c:1441
-#: ../src/rep-stats.c:1619 ../src/rep-time.c:1157
+#: ../src/dsp-account.c:2943 ../src/rep-balance.c:831 ../src/rep-budget.c:1445
+#: ../src/rep-stats.c:1636 ../src/rep-time.c:1157
 msgid "Print"
 msgstr ""
 
 #. TRANSLATORS: this is for Euro specific users, a toggle to display in 'Minor' currency
-#: ../src/dsp-account.c:2953 ../src/rep-balance.c:1068 ../src/rep-budget.c:1701
-#: ../src/rep-stats.c:1933 ../src/rep-time.c:1420 ../src/rep-vehicle.c:990
+#: ../src/dsp-account.c:2950 ../src/rep-balance.c:1068 ../src/rep-budget.c:1705
+#: ../src/rep-stats.c:1950 ../src/rep-time.c:1420 ../src/rep-vehicle.c:990
 msgid "Euro _minor"
 msgstr ""
 
 #. account name
-#: ../src/dsp-account.c:3012
+#: ../src/dsp-account.c:3009
 msgid "Reconciled:"
 msgstr ""
 
-#: ../src/dsp-account.c:3019
+#: ../src/dsp-account.c:3016
 msgid "Cleared:"
 msgstr ""
 
-#: ../src/dsp-account.c:3026
+#: ../src/dsp-account.c:3023
 msgid "Today:"
 msgstr "Hari Ini:"
 
-#: ../src/dsp-account.c:3033
+#: ../src/dsp-account.c:3030
 msgid "Future:"
 msgstr "Masa Depan:"
 
@@ -615,8 +616,7 @@ msgid "The file has been modified since reading it."
 msgstr ""
 
 #: ../src/dsp-mainwindow.c:1248
-msgid ""
-"If you save it, all the external changes could be lost. Save it anyway?"
+msgid "If you save it, all the external changes could be lost. Save it anyway?"
 msgstr ""
 
 #: ../src/dsp-mainwindow.c:1249
@@ -915,13 +915,13 @@ msgstr ""
 #. = = = = = = = = = = = = = = = = = = = =
 #: ../src/dsp-mainwindow.c:1988 ../src/hub-reptotal.c:556
 #: ../src/list-operation.c:972 ../src/list-operation.c:1813
-#: ../src/list-scheduled.c:651 ../src/rep-budget.c:69 ../src/rep-budget.c:1930
-#: ../src/rep-budget.c:2201 ../src/ui-archive.c:511 ../src/ui-assign.c:575
+#: ../src/list-scheduled.c:651 ../src/rep-budget.c:69 ../src/rep-budget.c:1934
+#: ../src/rep-budget.c:2205 ../src/ui-archive.c:511 ../src/ui-assign.c:575
 #: ../src/ui-assist-import.c:407 ../src/ui-budget.c:263
 #: ../src/ui-budget-tabview.c:1544 ../src/ui-category.c:1376
 #: ../src/ui-dialogs.c:277 ../src/ui-filter.c:831 ../src/ui-filter.c:836
 #: ../src/ui-filter.c:1264 ../src/ui-payee.c:961 ../src/ui-split.c:203
-#: ../src/ui-split.c:988 ../src/ui-widgets-data.c:26
+#: ../src/ui-split.c:1013 ../src/ui-widgets-data.c:26
 #: ../src/ui-widgets-data.c:43 ../src/ui-widgets-data.c:58
 #: ../src/ui-widgets-data.c:79
 msgid "Category"
@@ -941,7 +941,7 @@ msgstr ""
 
 #. column: Income
 #: ../src/dsp-mainwindow.c:1990 ../src/dsp-mainwindow.c:2004
-#: ../src/rep-budget.c:746 ../src/rep-budget.c:1930 ../src/rep-budget.c:2217
+#: ../src/rep-budget.c:746 ../src/rep-budget.c:1934 ../src/rep-budget.c:2221
 msgid "Budget"
 msgstr "Bajet"
 
@@ -1037,7 +1037,7 @@ msgstr "Masa depan"
 msgid "Remind"
 msgstr ""
 
-#: ../src/gtk-dateentry.c:677
+#: ../src/gtk-dateentry.c:704
 msgid "_Today"
 msgstr ""
 
@@ -1045,11 +1045,11 @@ msgstr ""
 msgid "(no memo)"
 msgstr ""
 
-#: ../src/hb-assign.c:217 ../src/ui-assign.c:1427
+#: ../src/hb-assign.c:221 ../src/ui-assign.c:1427
 msgid "(copy)"
 msgstr ""
 
-#: ../src/hb-category.c:492 ../src/hb-report.c:524 ../src/ui-budget.c:113
+#: ../src/hb-category.c:492 ../src/hb-report.c:547 ../src/ui-budget.c:113
 #: ../src/ui-category.c:220 ../src/ui-category.c:763
 msgid "(no category)"
 msgstr ""
@@ -1078,50 +1078,50 @@ msgstr ""
 msgid "mi./l"
 msgstr ""
 
-#: ../src/hb-report.c:567 ../src/ui-payee.c:644
+#: ../src/hb-report.c:590 ../src/ui-payee.c:644
 msgid "(no payee)"
 msgstr ""
 
-#: ../src/hb-report.c:627 ../src/ui-tag.c:323
+#: ../src/hb-report.c:650 ../src/ui-tag.c:323
 msgid "(no tag)"
 msgstr ""
 
 #. TRANSLATORS: printf string for year of week W, ex. 2019-W52 for week 52 of 2019
-#: ../src/hb-report.c:654
+#: ../src/hb-report.c:677
 #, c-format
 msgid "w%02d"
 msgstr ""
 
 #. todo: will be innacurrate here if fiscal year start not 1/jan
 #. TRANSLATORS: printf string for year of quarter Q, ex. 2019-Q4 for quarter 4 of 2019
-#: ../src/hb-report.c:662
+#: ../src/hb-report.c:685
 #, c-format
 msgid "q%d"
 msgstr ""
 
 #. #2007712
 #. TRANSLATORS: printf string for half-year H, ex. 2019-H1 for 1st half-year of 2019
-#: ../src/hb-report.c:667
+#: ../src/hb-report.c:690
 #, c-format
 msgid "h%d"
 msgstr ""
 
 #. TRANSLATORS: printf string for year of week W, ex. 2019-W52 for week 52 of 2019
-#: ../src/hb-report.c:1428
+#: ../src/hb-report.c:1454
 #, c-format
 msgid "%d-w%02d"
 msgstr ""
 
 #. todo: will be innacurrate here if fiscal year start not 1/jan
 #. TRANSLATORS: printf string for year of quarter Q, ex. 2019-Q4 for quarter 4 of 2019
-#: ../src/hb-report.c:1440
+#: ../src/hb-report.c:1466
 #, c-format
 msgid "%d-q%d"
 msgstr ""
 
 #. #2007712
 #. TRANSLATORS: printf string for half-year H, ex. 2019-H1 for 1st half-year of 2019
-#: ../src/hb-report.c:1445
+#: ../src/hb-report.c:1471
 #, c-format
 msgid "%d-h%d"
 msgstr ""
@@ -1183,13 +1183,13 @@ msgstr ""
 msgid "Show all"
 msgstr ""
 
-#: ../src/hub-account.c:627 ../src/rep-budget.c:1711 ../src/rep-stats.c:1943
+#: ../src/hub-account.c:627 ../src/rep-budget.c:1715 ../src/rep-stats.c:1960
 #: ../src/ui-budget.c:1235 ../src/ui-budget-tabview.c:2902
 #: ../src/ui-category.c:2552 ../src/ui-filter.c:856
 msgid "Expand all"
 msgstr ""
 
-#: ../src/hub-account.c:631 ../src/rep-budget.c:1715 ../src/rep-stats.c:1947
+#: ../src/hub-account.c:631 ../src/rep-budget.c:1719 ../src/rep-stats.c:1964
 #: ../src/ui-budget.c:1239 ../src/ui-budget-tabview.c:2906
 #: ../src/ui-category.c:2556 ../src/ui-filter.c:860
 msgid "Collapse all"
@@ -1233,7 +1233,7 @@ msgstr ""
 #. column: Total
 #: ../src/hub-scheduled.c:581 ../src/hub-reptime.c:278 ../src/list-account.c:86
 #: ../src/list-account.c:240 ../src/list-report.c:90 ../src/list-report.c:479
-#: ../src/list-report.c:913 ../src/rep-stats.c:994 ../src/rep-stats.c:1122
+#: ../src/list-report.c:949 ../src/rep-stats.c:1014 ../src/rep-stats.c:1142
 #: ../src/rep-vehicle.c:1074 ../src/ui-widgets-data.c:51
 #: ../src/ui-widgets-data.c:72 ../src/ui-widgets-data.c:100
 msgid "Total"
@@ -1366,7 +1366,7 @@ msgstr "Maklumat"
 #: ../src/list-operation.c:957 ../src/list-operation.c:1781
 #: ../src/list-scheduled.c:673 ../src/ui-archive.c:515
 #: ../src/ui-assist-import.c:380 ../src/ui-pref.c:134 ../src/ui-split.c:223
-#: ../src/ui-split.c:992 ../src/ui-widgets-data.c:29
+#: ../src/ui-split.c:1017 ../src/ui-widgets-data.c:29
 msgid "Memo"
 msgstr ""
 
@@ -1374,11 +1374,12 @@ msgstr ""
 #. column: Amount
 #. amount
 #. header
+#. 5.7.1
 #: ../src/list-operation.c:961 ../src/list-operation.c:1804
 #: ../src/rep-time.c:1652 ../src/rep-time.c:1810 ../src/rep-vehicle.c:171
 #: ../src/rep-vehicle.c:1380 ../src/ui-archive.c:520
 #: ../src/ui-assist-import.c:384 ../src/ui-filter.c:977 ../src/ui-split.c:239
-#: ../src/ui-split.c:996
+#: ../src/ui-split.c:1022
 msgid "Amount"
 msgstr "Amaun"
 
@@ -1400,7 +1401,7 @@ msgstr ""
 #: ../src/list-operation.c:1807 ../src/list-report.c:90
 #: ../src/list-report.c:467 ../src/list-scheduled.c:686
 #: ../src/rep-balance.c:1266 ../src/rep-balance.c:1477
-#: ../src/ui-budget-tabview.c:89 ../src/ui-filter.c:1118
+#: ../src/ui-budget-tabview.c:89 ../src/ui-filter.c:1118 ../src/ui-split.c:1023
 #: ../src/ui-transaction.c:53 ../src/ui-widgets-data.c:36
 #: ../src/ui-widgets-data.c:70 ../src/ui-widgets-data.c:261
 #: ../src/ui-widgets-data.c:270
@@ -1411,7 +1412,7 @@ msgstr "Perbelanjaan"
 #: ../src/list-operation.c:1810 ../src/list-report.c:90
 #: ../src/list-report.c:473 ../src/list-scheduled.c:698
 #: ../src/rep-balance.c:1268 ../src/rep-balance.c:1481
-#: ../src/ui-budget-tabview.c:90 ../src/ui-filter.c:1123
+#: ../src/ui-budget-tabview.c:90 ../src/ui-filter.c:1123 ../src/ui-split.c:1025
 #: ../src/ui-transaction.c:54 ../src/ui-widgets-data.c:37
 #: ../src/ui-widgets-data.c:71 ../src/ui-widgets-data.c:262
 #: ../src/ui-widgets-data.c:271
@@ -1420,11 +1421,11 @@ msgstr "Pendapatan"
 
 #. column: Result
 #: ../src/list-report.c:90 ../src/list-report.c:454 ../src/rep-budget.c:746
-#: ../src/rep-budget.c:1930 ../src/rep-budget.c:2232
+#: ../src/rep-budget.c:1934 ../src/rep-budget.c:2236
 msgid "Result"
 msgstr "Keputusan"
 
-#: ../src/list-report.c:908
+#: ../src/list-report.c:943
 msgid "Average"
 msgstr ""
 
@@ -1454,12 +1455,12 @@ msgstr ""
 msgid "%d/%d under %s"
 msgstr "%d/%d dibawah %s"
 
-#: ../src/rep-balance.c:808 ../src/rep-budget.c:1377 ../src/rep-stats.c:1514
+#: ../src/rep-balance.c:808 ../src/rep-budget.c:1381 ../src/rep-stats.c:1531
 #: ../src/rep-time.c:1082
 msgid "List"
 msgstr "Senarai"
 
-#: ../src/rep-balance.c:809 ../src/rep-budget.c:1378 ../src/rep-stats.c:1515
+#: ../src/rep-balance.c:809 ../src/rep-budget.c:1382 ../src/rep-stats.c:1532
 #: ../src/rep-time.c:1083
 msgid "View results as list"
 msgstr "Papar keputusan dalam senarai"
@@ -1472,17 +1473,17 @@ msgstr "Baris"
 msgid "View results as lines"
 msgstr "Papar keputusan dalam baris"
 
-#: ../src/rep-balance.c:822 ../src/rep-budget.c:1391 ../src/rep-stats.c:1546
+#: ../src/rep-balance.c:822 ../src/rep-budget.c:1395 ../src/rep-stats.c:1563
 #: ../src/rep-time.c:1102
 msgid "Detail"
 msgstr "Terperinci"
 
-#: ../src/rep-balance.c:823 ../src/rep-budget.c:1392 ../src/rep-stats.c:1547
+#: ../src/rep-balance.c:823 ../src/rep-budget.c:1396 ../src/rep-stats.c:1564
 #: ../src/rep-time.c:1103
 msgid "Toggle detail"
 msgstr "Togol perincian"
 
-#: ../src/rep-balance.c:828 ../src/rep-budget.c:1398 ../src/rep-stats.c:1576
+#: ../src/rep-balance.c:828 ../src/rep-budget.c:1402 ../src/rep-stats.c:1593
 #: ../src/rep-time.c:1114 ../src/rep-vehicle.c:786
 msgid "Refresh"
 msgstr "Segar Semula"
@@ -1491,12 +1492,12 @@ msgstr "Segar Semula"
 msgid "Balance report"
 msgstr "Laporan imbangan"
 
-#: ../src/rep-balance.c:1042 ../src/rep-budget.c:1678 ../src/rep-stats.c:1866
+#: ../src/rep-balance.c:1042 ../src/rep-budget.c:1682 ../src/rep-stats.c:1883
 #: ../src/rep-time.c:1389 ../src/rep-vehicle.c:975
 msgid "Display"
 msgstr ""
 
-#: ../src/rep-balance.c:1055 ../src/rep-stats.c:1899 ../src/rep-time.c:1407
+#: ../src/rep-balance.c:1055 ../src/rep-stats.c:1916 ../src/rep-time.c:1407
 msgid "Inter_val:"
 msgstr ""
 
@@ -1504,23 +1505,23 @@ msgstr ""
 msgid "Show empty line"
 msgstr ""
 
-#: ../src/rep-balance.c:1073 ../src/rep-stats.c:1925 ../src/rep-time.c:1425
+#: ../src/rep-balance.c:1073 ../src/rep-stats.c:1942 ../src/rep-time.c:1425
 msgid "_Zoom X:"
 msgstr "_Zum X:"
 
-#: ../src/rep-balance.c:1085 ../src/rep-budget.c:1724 ../src/rep-stats.c:1964
+#: ../src/rep-balance.c:1085 ../src/rep-budget.c:1728 ../src/rep-stats.c:1981
 #: ../src/rep-time.c:1437 ../src/rep-vehicle.c:999
 msgid "Date filter"
 msgstr ""
 
-#: ../src/rep-balance.c:1095 ../src/rep-budget.c:1747 ../src/rep-stats.c:1974
+#: ../src/rep-balance.c:1095 ../src/rep-budget.c:1751 ../src/rep-stats.c:1991
 #: ../src/rep-time.c:1447 ../src/rep-vehicle.c:1009 ../src/ui-filter.c:950
 #: ../src/ui-filter.c:988 ../src/ui-transaction.c:186
 #: ../src/ui-transaction.c:187
 msgid "_From:"
 msgstr "_Dari:"
 
-#: ../src/rep-balance.c:1101 ../src/rep-budget.c:1754 ../src/rep-stats.c:1980
+#: ../src/rep-balance.c:1101 ../src/rep-budget.c:1758 ../src/rep-stats.c:1997
 #: ../src/rep-time.c:1453 ../src/rep-vehicle.c:1015 ../src/ui-assign.c:1714
 #: ../src/ui-filter.c:957 ../src/ui-filter.c:995 ../src/ui-transaction.c:180
 #: ../src/ui-transaction.c:186 ../src/ui-transaction.c:187
@@ -1566,81 +1567,81 @@ msgstr ""
 msgid "Budget by month"
 msgstr ""
 
-#: ../src/rep-budget.c:936 ../src/rep-budget.c:1139
+#: ../src/rep-budget.c:936 ../src/rep-budget.c:1143
 msgid " over"
 msgstr ""
 
-#: ../src/rep-budget.c:942 ../src/rep-budget.c:1145
+#: ../src/rep-budget.c:942 ../src/rep-budget.c:1149
 msgid " left"
 msgstr ""
 
-#: ../src/rep-budget.c:945 ../src/rep-budget.c:1148
+#: ../src/rep-budget.c:945 ../src/rep-budget.c:1152
 msgid " under"
 msgstr ""
 
-#: ../src/rep-budget.c:1383 ../src/rep-stats.c:1532
+#: ../src/rep-budget.c:1387 ../src/rep-stats.c:1549
 msgid "Stack"
 msgstr ""
 
-#: ../src/rep-budget.c:1384
+#: ../src/rep-budget.c:1388
 msgid "View results as stack bars"
 msgstr ""
 
 #. gtk_widget_set_halign (menu, GTK_ALIGN_END);
-#: ../src/rep-budget.c:1406 ../src/rep-stats.c:1584 ../src/rep-time.c:1122
+#: ../src/rep-budget.c:1410 ../src/rep-stats.c:1601 ../src/rep-time.c:1122
 msgid "_Result to clipboard"
 msgstr ""
 
-#: ../src/rep-budget.c:1410 ../src/rep-stats.c:1588 ../src/rep-time.c:1126
+#: ../src/rep-budget.c:1414 ../src/rep-stats.c:1605 ../src/rep-time.c:1126
 msgid "_Result to CSV"
 msgstr ""
 
-#: ../src/rep-budget.c:1414 ../src/rep-stats.c:1592 ../src/rep-time.c:1130
+#: ../src/rep-budget.c:1418 ../src/rep-stats.c:1609 ../src/rep-time.c:1130
 msgid "_Detail to clipboard"
 msgstr ""
 
-#: ../src/rep-budget.c:1419 ../src/rep-stats.c:1597 ../src/rep-time.c:1135
+#: ../src/rep-budget.c:1423 ../src/rep-stats.c:1614 ../src/rep-time.c:1135
 msgid "_Detail to CSV"
 msgstr ""
 
-#: ../src/rep-budget.c:1569
+#: ../src/rep-budget.c:1573
 msgid "No account is defined to be part of the budget."
 msgstr ""
 
-#: ../src/rep-budget.c:1570
+#: ../src/rep-budget.c:1574
 msgid "You should include some accounts from the account dialog."
 msgstr ""
 
-#: ../src/rep-budget.c:1660
+#: ../src/rep-budget.c:1664
 msgid "Budget report"
 msgstr "Laporan bajet"
 
-#: ../src/rep-budget.c:1682 ../src/rep-stats.c:1870
+#: ../src/rep-budget.c:1686 ../src/rep-stats.c:1887
 msgid "Mode:"
 msgstr ""
 
-#: ../src/rep-budget.c:1696
+#: ../src/rep-budget.c:1700
 msgid "Only out of budget"
 msgstr ""
 
-#: ../src/rep-budget.c:1796
+#: ../src/rep-budget.c:1800
 msgid "Result:"
 msgstr ""
 
-#: ../src/rep-budget.c:1802
+#: ../src/rep-budget.c:1806
 msgid "Budget:"
 msgstr "Bajet:"
 
-#: ../src/rep-budget.c:1808
+#: ../src/rep-budget.c:1812
 msgid "Spent:"
 msgstr "Digunakan:"
 
 #. column: Expense
-#: ../src/rep-budget.c:1930 ../src/rep-budget.c:2213
+#: ../src/rep-budget.c:1934 ../src/rep-budget.c:2217
 msgid "Spent"
 msgstr "Digunakan"
 
-#: ../src/rep-budget.c:1930 ../src/rep-budget.c:2224
+#: ../src/rep-budget.c:1934 ../src/rep-budget.c:2228
 msgid "Fulfilled"
 msgstr ""
 
@@ -1651,99 +1652,99 @@ msgstr ""
 msgid "%s by %s"
 msgstr ""
 
-#: ../src/rep-stats.c:1019
+#: ../src/rep-stats.c:1039
 msgid "Too much columns to display"
 msgstr ""
 
-#: ../src/rep-stats.c:1020
+#: ../src/rep-stats.c:1040
 msgid "Please select a wider interval and / or a narrower date range"
 msgstr ""
 
-#: ../src/rep-stats.c:1520 ../src/rep-time.c:1094
+#: ../src/rep-stats.c:1537 ../src/rep-time.c:1094
 msgid "Column"
 msgstr ""
 
-#: ../src/rep-stats.c:1521 ../src/rep-time.c:1095
+#: ../src/rep-stats.c:1538 ../src/rep-time.c:1095
 msgid "View results as column"
 msgstr ""
 
-#: ../src/rep-stats.c:1526
+#: ../src/rep-stats.c:1543
 msgid "Donut"
 msgstr ""
 
-#: ../src/rep-stats.c:1527
+#: ../src/rep-stats.c:1544
 msgid "View results as donut"
 msgstr ""
 
-#: ../src/rep-stats.c:1533
+#: ../src/rep-stats.c:1550
 msgid "View results as stack"
 msgstr ""
 
-#: ../src/rep-stats.c:1538
+#: ../src/rep-stats.c:1555
 msgid "Stack 100%"
 msgstr ""
 
-#: ../src/rep-stats.c:1539
+#: ../src/rep-stats.c:1556
 msgid "View results as stack 100%"
 msgstr ""
 
-#: ../src/rep-stats.c:1555
+#: ../src/rep-stats.c:1572
 msgid "Legend"
 msgstr ""
 
-#: ../src/rep-stats.c:1556
+#: ../src/rep-stats.c:1573
 msgid "Toggle legend"
 msgstr "Togol petunjuk"
 
-#: ../src/rep-stats.c:1564
+#: ../src/rep-stats.c:1581
 msgid "Rate"
 msgstr ""
 
-#: ../src/rep-stats.c:1565
+#: ../src/rep-stats.c:1582
 msgid "Toggle rate"
 msgstr "Togol kadar"
 
-#: ../src/rep-stats.c:1573 ../src/rep-time.c:1110
+#: ../src/rep-stats.c:1590 ../src/rep-time.c:1110
 msgid "Filter"
 msgstr ""
 
-#: ../src/rep-stats.c:1573 ../src/rep-time.c:1110 ../src/ui-filter.c:1184
+#: ../src/rep-stats.c:1590 ../src/rep-time.c:1110 ../src/ui-filter.c:1184
 msgid "Edit filter"
 msgstr ""
 
-#: ../src/rep-stats.c:1847
+#: ../src/rep-stats.c:1864
 msgid "Statistics Report"
 msgstr "Laporan Statistik"
 
-#: ../src/rep-stats.c:1877 ../src/rep-time.c:1393
+#: ../src/rep-stats.c:1894 ../src/rep-time.c:1393
 msgid "_View by:"
 msgstr "_Papar berdasarkan:"
 
-#: ../src/rep-stats.c:1885
+#: ../src/rep-stats.c:1902
 msgid "_Balance mode"
 msgstr ""
 
-#: ../src/rep-stats.c:1910
+#: ../src/rep-stats.c:1927
 msgid "_Forecast"
 msgstr ""
 
-#: ../src/rep-stats.c:1915
+#: ../src/rep-stats.c:1932
 msgid "Sort by _amount"
 msgstr ""
 
-#: ../src/rep-stats.c:1920
+#: ../src/rep-stats.c:1937
 msgid "Compare Exp. & Inc."
 msgstr ""
 
-#: ../src/rep-stats.c:2008
+#: ../src/rep-stats.c:2025
 msgid "Total:"
 msgstr ""
 
-#: ../src/rep-stats.c:2014 ../src/ui-budget.c:1272
+#: ../src/rep-stats.c:2031 ../src/ui-budget.c:1272
 msgid "Income:"
 msgstr "Pendapatan:"
 
-#: ../src/rep-stats.c:2021 ../src/ui-budget.c:1265
+#: ../src/rep-stats.c:2038 ../src/ui-budget.c:1265
 msgid "Expense:"
 msgstr "Perbelanjaan:"
 
@@ -1768,7 +1769,7 @@ msgstr ""
 msgid "Time slice"
 msgstr "Hirisan masa"
 
-#. 
+#.
 #. LST_CAR_DATE,
 #. LST_CAR_MEMO,
 #. LST_CAR_METER,
@@ -1777,10 +1778,10 @@ msgstr "Hirisan masa"
 #. LST_CAR_AMOUNT,
 #. LST_CAR_DIST,
 #. LST_CAR_100KM
-#. 
-#. 
+#.
+#.
 #. column: Memo
-#. 
+#.
 #. column = gtk_tree_view_column_new();
 #. gtk_tree_view_column_set_title(column, _("Memo"));
 #. gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
@@ -1788,7 +1789,7 @@ msgstr "Hirisan masa"
 #. gtk_tree_view_column_pack_start(column, renderer, TRUE);
 #. gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_MEMO);
 #. //gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
-#. 
+#.
 #. column: Meter
 #: ../src/rep-vehicle.c:168 ../src/rep-vehicle.c:1368
 msgid "Meter"
@@ -1872,7 +1873,7 @@ msgstr "Tampak"
 #: ../src/ui-dialogs.c:752 ../src/ui-dialogs.c:829 ../src/ui-dialogs.c:957
 #: ../src/ui-dialogs.c:1125 ../src/ui-filter.c:1196 ../src/ui-hbfile.c:234
 #: ../src/ui-payee.c:1234 ../src/ui-payee.c:1434 ../src/ui-pref.c:2346
-#: ../src/ui-split.c:912 ../src/ui-tag.c:681 ../src/ui-tag.c:805
+#: ../src/ui-split.c:937 ../src/ui-tag.c:681 ../src/ui-tag.c:805
 #: ../src/ui-transaction.c:1485 ../src/ui-txn-multi.c:454
 msgid "_Cancel"
 msgstr "_Batal"
@@ -1880,7 +1881,7 @@ msgstr "_Batal"
 #: ../src/ui-account.c:1042 ../src/ui-assign.c:934 ../src/ui-category.c:1724
 #: ../src/ui-currency.c:788 ../src/ui-currency.c:1158 ../src/ui-dialogs.c:387
 #: ../src/ui-hbfile.c:236 ../src/ui-payee.c:1236 ../src/ui-pref.c:2348
-#: ../src/ui-split.c:925 ../src/ui-tag.c:683 ../src/ui-transaction.c:1486
+#: ../src/ui-split.c:950 ../src/ui-tag.c:683 ../src/ui-transaction.c:1486
 #: ../src/ui-txn-multi.c:456
 msgid "_OK"
 msgstr "_OK"
@@ -3709,7 +3710,7 @@ msgstr ""
 #. widget = make_daterange(label, DATE_RANGE_CUSTOM_HIDDEN);
 #. data->CY_daterange_wal = widget;
 #. gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-#. 
+#.
 #. row++;
 #: ../src/ui-pref.c:2223
 msgid "Max _items:"
@@ -3742,40 +3743,52 @@ msgid ""
 "you may need to copy the '.bak' file to this new location."
 msgstr ""
 
-#: ../src/ui-split.c:840 ../src/ui-split.c:909 ../src/ui-transaction.c:1595
+#: ../src/ui-split.c:553
+msgid "Do you want to delete all split lines"
+msgstr ""
+
+#: ../src/ui-split.c:865 ../src/ui-split.c:934 ../src/ui-transaction.c:1595
 msgid "Transaction splits"
 msgstr ""
 
-#: ../src/ui-split.c:975
+#: ../src/ui-split.c:1000
 msgid "Delete all"
 msgstr ""
 
-#: ../src/ui-split.c:1028
+#: ../src/ui-split.c:1052
+msgid "Prefix with -/+ to force the sign"
+msgstr ""
+
+#: ../src/ui-split.c:1063
 msgid "Apply"
 msgstr ""
 
-#: ../src/ui-split.c:1032
+#: ../src/ui-split.c:1067
 msgid "Cancel"
 msgstr ""
 
-#: ../src/ui-split.c:1040
+#: ../src/ui-split.c:1075
 msgid "Transaction amount:"
 msgstr ""
 
-#: ../src/ui-split.c:1049
+#: ../src/ui-split.c:1084
 msgid "Unassigned:"
 msgstr ""
 
-#: ../src/ui-split.c:1064
+#: ../src/ui-split.c:1099
 msgid "Sum of splits:"
 msgstr ""
 
-#: ../src/ui-split.c:1076
-msgid "Warning: sum of splits and transaction amount don't match"
+#: ../src/ui-split.c:1111
+msgid "Number of splits limit is reached"
 msgstr ""
 
-#: ../src/ui-split.c:1084
+#: ../src/ui-split.c:1119
 msgid "Warning: sum of splits and transaction type don't match"
+msgstr ""
+
+#: ../src/ui-split.c:1127
+msgid "Warning: sum of splits and transaction amount don't match"
 msgstr ""
 
 #: ../src/ui-tag.c:678

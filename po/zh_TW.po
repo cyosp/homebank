@@ -12,10 +12,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: homebank\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-05 21:31+0200\n"
+"POT-Creation-Date: 2023-10-07 08:49+0200\n"
 "PO-Revision-Date: 2022-11-08 07:40+0000\n"
 "Last-Translator: Daniel Li <Unknown>\n"
 "Language-Team: Traditional Chinese <zh_TW@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -50,15 +51,18 @@ msgstr "HomeBank 是自由軟體可以協助您管理個人財務"
 msgid ""
 "It is designed to easy to use and be able to analyse your personal finance "
 "in detail using powerful filtering tools and beautiful graphs."
-msgstr "它的設計易於使用，並能夠使用強大的篩選工具和美麗的圖表詳細分析您的個人財務。"
+msgstr ""
+"它的設計易於使用，並能夠使用強大的篩選工具和美麗的圖表詳細分析您的個人財務。"
 
 #: ../data/homebank.appdata.xml.in.h:3
 msgid ""
 "If you are looking for a completely free and easy way to manage your "
 "personal accounting then HomeBank should be the software of choice."
-msgstr "如果您正在尋找一個完全免費而簡單的方法來管理您的個人財務，那麼HomeBank會是首選軟體。"
+msgstr ""
+"如果您正在尋找一個完全免費而簡單的方法來管理您的個人財務，那麼HomeBank會是首"
+"選軟體。"
 
-#: ../src/dsp-account.c:175 ../src/dsp-account.c:2843
+#: ../src/dsp-account.c:175 ../src/dsp-account.c:2840
 msgid "All transactions"
 msgstr "所有交易"
 
@@ -118,7 +122,7 @@ msgstr "已變更的交易:  %d"
 msgid "Automatic assignment result"
 msgstr "自動填入結果"
 
-#: ../src/dsp-account.c:715
+#: ../src/dsp-account.c:716
 msgid ""
 "Do you want to create an assignment with\n"
 "each of the selected transaction?"
@@ -126,20 +130,20 @@ msgstr ""
 "你是否要以選擇的範本\n"
 "建立一個自動填入"
 
-#: ../src/dsp-account.c:716 ../src/dsp-account.c:792
+#: ../src/dsp-account.c:717 ../src/dsp-account.c:789
 msgid "_Create"
 msgstr "建立(_C)"
 
-#: ../src/dsp-account.c:761
+#: ../src/dsp-account.c:759
 msgid "Create Assignment"
 msgstr ""
 
-#: ../src/dsp-account.c:762 ../src/dsp-account.c:837
+#: ../src/dsp-account.c:760 ../src/dsp-account.c:834
 #, c-format
 msgid "%d created with a prefilled icon"
 msgstr ""
 
-#: ../src/dsp-account.c:791
+#: ../src/dsp-account.c:788
 msgid ""
 "Do you want to create a template with\n"
 "each of the selected transaction?"
@@ -147,11 +151,11 @@ msgstr ""
 "你是否要以選擇的交易\n"
 "建立一個範本"
 
-#: ../src/dsp-account.c:836
+#: ../src/dsp-account.c:833
 msgid "Create Template"
 msgstr ""
 
-#: ../src/dsp-account.c:1743
+#: ../src/dsp-account.c:1740
 msgid ""
 "Do you want to delete\n"
 "each of the selected transaction?"
@@ -159,360 +163,360 @@ msgstr ""
 "你是否要刪除\n"
 "已選擇的交易"
 
-#: ../src/dsp-account.c:1744 ../src/ui-account.c:1514 ../src/ui-archive.c:880
+#: ../src/dsp-account.c:1741 ../src/ui-account.c:1514 ../src/ui-archive.c:880
 #: ../src/ui-assign.c:1509 ../src/ui-budget-tabview.c:2322
 #: ../src/ui-category.c:1480 ../src/ui-category.c:2025
 #: ../src/ui-currency.c:1572 ../src/ui-payee.c:1039 ../src/ui-payee.c:1565
-#: ../src/ui-tag.c:925
+#: ../src/ui-split.c:554 ../src/ui-tag.c:925
 msgid "_Delete"
 msgstr "刪除(_D)"
 
-#: ../src/dsp-account.c:1825
+#: ../src/dsp-account.c:1822
 msgid "Are you sure you want to change the status to None?"
 msgstr "您是否確定要變更狀態為無?"
 
-#: ../src/dsp-account.c:1826 ../src/dsp-account.c:1886
+#: ../src/dsp-account.c:1823 ../src/dsp-account.c:1883
 msgid "Some transaction in your selection are already Reconciled."
 msgstr "有些選擇的交易已經核銷"
 
-#: ../src/dsp-account.c:1827 ../src/ui-assist-start.c:277
+#: ../src/dsp-account.c:1824 ../src/ui-assist-start.c:277
 #: ../src/ui-dialogs.c:430
 msgid "_Change"
 msgstr "變更(_C)"
 
-#: ../src/dsp-account.c:1885
+#: ../src/dsp-account.c:1882
 msgid "Are you sure you want to toggle the status Reconciled?"
 msgstr "您是否要切換狀態為已核銷?"
 
-#: ../src/dsp-account.c:1887
+#: ../src/dsp-account.c:1884
 msgid "_Toggle"
 msgstr "切換 (_T)"
 
-#: ../src/dsp-account.c:2299
+#: ../src/dsp-account.c:2296
 #, c-format
 msgid "%d transactions"
 msgstr "%d 交易"
 
-#: ../src/dsp-account.c:2302
+#: ../src/dsp-account.c:2299
 #, c-format
 msgid "%d transactions, %d selected, avg: %s, sum: %s (%s - %s)"
 msgstr "共 %d 交易, 選擇了%d 筆, 平均: %s, 總合: %s (%s - %s)"
 
-#: ../src/dsp-account.c:2315
+#: ../src/dsp-account.c:2312
 msgid "Locked. Click to unlock"
 msgstr "已鎖定,擊點解除鎖定"
 
-#: ../src/dsp-account.c:2315
+#: ../src/dsp-account.c:2312
 msgid "Unlocked. Click to lock"
 msgstr "解除鎖定, 擊點鎖定"
 
-#: ../src/dsp-account.c:2594 ../src/dsp-account.c:2696
+#: ../src/dsp-account.c:2591 ../src/dsp-account.c:2693
 msgid "_Add..."
 msgstr "新增(_A)..."
 
-#: ../src/dsp-account.c:2596 ../src/dsp-account.c:2698
+#: ../src/dsp-account.c:2593 ../src/dsp-account.c:2695
 msgid "_Inherit..."
 msgstr "繼承 (_I)..."
 
-#: ../src/dsp-account.c:2598 ../src/dsp-account.c:2700
+#: ../src/dsp-account.c:2595 ../src/dsp-account.c:2697
 msgid "_Edit..."
 msgstr "編輯 (_E)..."
 
-#: ../src/dsp-account.c:2600 ../src/dsp-account.c:2714
+#: ../src/dsp-account.c:2597 ../src/dsp-account.c:2711
 msgid "_Multiple Edit..."
 msgstr "複合編輯(_M)..."
 
-#: ../src/dsp-account.c:2605 ../src/dsp-account.c:2705
+#: ../src/dsp-account.c:2602 ../src/dsp-account.c:2702
 msgid "_Status"
 msgstr "狀態(_S)"
 
-#: ../src/dsp-account.c:2607 ../src/dsp-account.c:2707
+#: ../src/dsp-account.c:2604 ../src/dsp-account.c:2704
 msgid "_None"
 msgstr "無(_N)"
 
-#: ../src/dsp-account.c:2609 ../src/dsp-account.c:2709
+#: ../src/dsp-account.c:2606 ../src/dsp-account.c:2706
 msgid "_Cleared"
 msgstr "已登帳(_C)"
 
-#: ../src/dsp-account.c:2611 ../src/dsp-account.c:2711
+#: ../src/dsp-account.c:2608 ../src/dsp-account.c:2708
 msgid "_Reconciled"
 msgstr "已核銷(_R)"
 
-#: ../src/dsp-account.c:2616
+#: ../src/dsp-account.c:2613
 msgid "View _Split"
 msgstr ""
 
-#: ../src/dsp-account.c:2618
+#: ../src/dsp-account.c:2615
 msgid "Copy raw amount"
 msgstr "複製總額"
 
-#: ../src/dsp-account.c:2620 ../src/dsp-account.c:2715
+#: ../src/dsp-account.c:2617 ../src/dsp-account.c:2712
 msgid "Create template..."
 msgstr "建立範本..."
 
-#: ../src/dsp-account.c:2622 ../src/dsp-account.c:2716
+#: ../src/dsp-account.c:2619 ../src/dsp-account.c:2713
 msgid "Create assignment..."
 msgstr "創建自動填入..."
 
-#: ../src/dsp-account.c:2624 ../src/dsp-account.c:2717
+#: ../src/dsp-account.c:2621 ../src/dsp-account.c:2714
 msgid "_Delete..."
 msgstr "刪除(_D)…"
 
-#: ../src/dsp-account.c:2629
+#: ../src/dsp-account.c:2626
 msgid "_Up"
 msgstr "向上(_U)"
 
-#: ../src/dsp-account.c:2631
+#: ../src/dsp-account.c:2628
 msgid "_Down"
 msgstr "向下(_D)"
 
-#: ../src/dsp-account.c:2671
+#: ../src/dsp-account.c:2668
 msgid "A_ccount"
 msgstr "帳戶(_C)"
 
-#: ../src/dsp-account.c:2673
+#: ../src/dsp-account.c:2670
 msgid "Export QIF..."
 msgstr "輸出 QIF..."
 
-#: ../src/dsp-account.c:2674
+#: ../src/dsp-account.c:2671
 msgid "Export CSV..."
 msgstr "匯出 CSV..."
 
-#: ../src/dsp-account.c:2676 ../src/hub-account.c:592
+#: ../src/dsp-account.c:2673 ../src/hub-account.c:592
 msgid "Print..."
 msgstr "列印..."
 
-#: ../src/dsp-account.c:2679
+#: ../src/dsp-account.c:2676 ../src/hub-account.c:638
 msgid "Browse Website"
 msgstr ""
 
-#: ../src/dsp-account.c:2681 ../src/dsp-mainwindow.c:696
+#: ../src/dsp-account.c:2678 ../src/dsp-mainwindow.c:696
 #: ../src/dsp-mainwindow.c:1885 ../src/ui-account.c:1865
 #: ../src/ui-archive.c:1268 ../src/ui-assign.c:1761 ../src/ui-budget.c:1148
 #: ../src/ui-budget-tabview.c:2782 ../src/ui-category.c:2413
 #: ../src/ui-currency.c:1712 ../src/ui-dialogs.c:194 ../src/ui-payee.c:1766
-#: ../src/ui-split.c:843 ../src/ui-tag.c:1058 ../src/ui-transaction.c:1491
+#: ../src/ui-split.c:868 ../src/ui-tag.c:1058 ../src/ui-transaction.c:1491
 msgid "_Close"
 msgstr "關閉 (_C)"
 
 #. #1818052 wish: copy/paste one/multiple transaction(s)
-#: ../src/dsp-account.c:2685 ../src/dsp-mainwindow.c:1890
+#: ../src/dsp-account.c:2682 ../src/dsp-mainwindow.c:1890
 msgid "_Edit"
 msgstr "編輯 (_E)"
 
-#: ../src/dsp-account.c:2687
+#: ../src/dsp-account.c:2684
 msgid "Copy"
 msgstr "複製"
 
-#: ../src/dsp-account.c:2689
+#: ../src/dsp-account.c:2686
 msgid "Paste"
 msgstr "貼上"
 
-#: ../src/dsp-account.c:2691
+#: ../src/dsp-account.c:2688
 msgid "Paste (today)"
 msgstr "貼上(今日)"
 
-#: ../src/dsp-account.c:2694
+#: ../src/dsp-account.c:2691
 msgid "Transacti_on"
 msgstr "交易(_O)"
 
-#: ../src/dsp-account.c:2722
+#: ../src/dsp-account.c:2719
 msgid "_Find"
 msgstr "尋找(_F)"
 
-#: ../src/dsp-account.c:2725 ../src/dsp-mainwindow.c:1939
+#: ../src/dsp-account.c:2722 ../src/dsp-mainwindow.c:1939
 msgid "_Tools"
 msgstr "工具(_T)"
 
-#: ../src/dsp-account.c:2727
+#: ../src/dsp-account.c:2724
 msgid "Mark duplicate..."
 msgstr "標記重複..."
 
-#: ../src/dsp-account.c:2728
+#: ../src/dsp-account.c:2725
 msgid "Check internal transfer"
 msgstr "檢查內部交易"
 
-#: ../src/dsp-account.c:2729
+#: ../src/dsp-account.c:2726
 msgid "Auto. assignments"
 msgstr "自動填入"
 
-#: ../src/dsp-account.c:2730
+#: ../src/dsp-account.c:2727
 msgid "_Filter..."
 msgstr "篩選(_F)…"
 
-#: ../src/dsp-account.c:2731
+#: ../src/dsp-account.c:2728
 msgid "Convert to Euro..."
 msgstr "轉換為歐元..."
 
-#: ../src/dsp-account.c:2745 ../src/dsp-mainwindow.c:1996
+#: ../src/dsp-account.c:2742 ../src/dsp-mainwindow.c:1996
 #: ../src/ui-account.c:1925 ../src/ui-archive.c:1340 ../src/ui-assign.c:1821
 #: ../src/ui-assist-import.c:1572 ../src/ui-category.c:2523
-#: ../src/ui-currency.c:1784 ../src/ui-payee.c:1875 ../src/ui-split.c:1024
+#: ../src/ui-currency.c:1784 ../src/ui-payee.c:1875 ../src/ui-split.c:1059
 #: ../src/ui-tag.c:1151
 msgid "Add"
 msgstr "新增"
 
-#: ../src/dsp-account.c:2745
+#: ../src/dsp-account.c:2742
 msgid "Add a new transaction"
 msgstr "加入新的交易"
 
-#: ../src/dsp-account.c:2747
+#: ../src/dsp-account.c:2744
 msgid "Inherit"
 msgstr "繼承"
 
-#: ../src/dsp-account.c:2747
+#: ../src/dsp-account.c:2744
 msgid "Inherit from the active transaction"
 msgstr "繼承現有的交易"
 
 #. widget = gtk_button_new_with_mnemonic(_("_Edit"));
-#: ../src/dsp-account.c:2749 ../src/ui-archive.c:1352 ../src/ui-assign.c:1832
+#: ../src/dsp-account.c:2746 ../src/ui-archive.c:1352 ../src/ui-assign.c:1832
 #: ../src/ui-category.c:2534 ../src/ui-currency.c:1795 ../src/ui-payee.c:1882
-#: ../src/ui-split.c:983 ../src/ui-tag.c:1158
+#: ../src/ui-split.c:1008 ../src/ui-tag.c:1158
 msgid "Edit"
 msgstr "編輯"
 
-#: ../src/dsp-account.c:2749
+#: ../src/dsp-account.c:2746
 msgid "Edit the active transaction"
 msgstr "編輯現有的交易"
 
 #. Cleared
-#: ../src/dsp-account.c:2754 ../src/list-account.c:811 ../src/ui-filter.c:1161
+#: ../src/dsp-account.c:2751 ../src/list-account.c:811 ../src/ui-filter.c:1161
 #: ../src/ui-widgets-data.c:232 ../src/ui-widgets-data.c:280
 msgid "Cleared"
 msgstr "已登帳"
 
-#: ../src/dsp-account.c:2754
+#: ../src/dsp-account.c:2751
 msgid "Toggle cleared for selected transaction(s)"
 msgstr "切換選擇的交易為已登帳"
 
 #. Reconciled
-#: ../src/dsp-account.c:2755 ../src/list-account.c:807 ../src/ui-filter.c:1166
+#: ../src/dsp-account.c:2752 ../src/list-account.c:807 ../src/ui-filter.c:1166
 #: ../src/ui-widgets-data.c:233 ../src/ui-widgets-data.c:282
 msgid "Reconciled"
 msgstr "已核銷"
 
-#: ../src/dsp-account.c:2755
+#: ../src/dsp-account.c:2752
 msgid "Toggle reconciled for selected transaction(s)"
 msgstr "切換選擇的交易為已核銷"
 
-#: ../src/dsp-account.c:2759
+#: ../src/dsp-account.c:2756
 msgid "Edit Multiple"
 msgstr "編輯多項"
 
-#: ../src/dsp-account.c:2759
+#: ../src/dsp-account.c:2756
 msgid "Edit multiple transaction"
 msgstr "編緝複合交易"
 
-#: ../src/dsp-account.c:2760
+#: ../src/dsp-account.c:2757
 msgid "Create template"
 msgstr "建立範本"
 
-#: ../src/dsp-account.c:2761 ../src/ui-account.c:1929 ../src/ui-archive.c:1344
+#: ../src/dsp-account.c:2758 ../src/ui-account.c:1929 ../src/ui-archive.c:1344
 #: ../src/ui-assign.c:1825 ../src/ui-assist-import.c:1576
 #: ../src/ui-category.c:2527 ../src/ui-currency.c:1788 ../src/ui-payee.c:1877
-#: ../src/ui-split.c:979 ../src/ui-tag.c:1153
+#: ../src/ui-split.c:1004 ../src/ui-tag.c:1153
 msgid "Delete"
 msgstr "刪除"
 
-#: ../src/dsp-account.c:2761
+#: ../src/dsp-account.c:2758
 msgid "Delete selected transaction(s)"
 msgstr "刪除選擇的交易"
 
-#: ../src/dsp-account.c:2767
+#: ../src/dsp-account.c:2764
 msgid "Up"
 msgstr "向上"
 
-#: ../src/dsp-account.c:2767
+#: ../src/dsp-account.c:2764
 msgid "Move transaction up"
 msgstr "向上移動交易"
 
-#: ../src/dsp-account.c:2768
+#: ../src/dsp-account.c:2765
 msgid "Down"
 msgstr "向下"
 
-#: ../src/dsp-account.c:2768
+#: ../src/dsp-account.c:2765
 msgid "Move transaction down"
 msgstr "向下移動交易"
 
-#: ../src/dsp-account.c:2775
+#: ../src/dsp-account.c:2772
 msgid "Reconciled changes is"
 msgstr ""
 
-#: ../src/dsp-account.c:2836
+#: ../src/dsp-account.c:2833
 msgid "(closed)"
 msgstr "(已關閉)"
 
-#: ../src/dsp-account.c:2843
+#: ../src/dsp-account.c:2840
 #, c-format
 msgid "%s - HomeBank"
 msgstr "%s - HomeBank"
 
 #. info bar for duplicate
-#: ../src/dsp-account.c:2870
+#: ../src/dsp-account.c:2867
 msgid "_Refresh"
 msgstr "重新整理(_R)"
 
-#: ../src/dsp-account.c:2897 ../src/rep-balance.c:1089 ../src/rep-budget.c:1728
-#: ../src/rep-stats.c:1968 ../src/rep-time.c:1441 ../src/rep-vehicle.c:1003
+#: ../src/dsp-account.c:2894 ../src/rep-balance.c:1089 ../src/rep-budget.c:1732
+#: ../src/rep-stats.c:1985 ../src/rep-time.c:1441 ../src/rep-vehicle.c:1003
 #: ../src/ui-pref.c:1379 ../src/ui-pref.c:1795
 msgid "_Range:"
 msgstr "範圍(_R)："
 
 #. #2008521 set more accurate tooltip
-#: ../src/dsp-account.c:2911
+#: ../src/dsp-account.c:2908
 #, c-format
 msgid "Toggle show %d days ahead"
 msgstr ""
 
-#: ../src/dsp-account.c:2916 ../src/rep-budget.c:1689 ../src/rep-stats.c:1890
+#: ../src/dsp-account.c:2913 ../src/rep-budget.c:1693 ../src/rep-stats.c:1907
 #: ../src/ui-account.c:1976 ../src/ui-assist-start.c:536
 msgid "_Type:"
 msgstr "類型(_T)："
 
-#: ../src/dsp-account.c:2923 ../src/ui-transaction.c:1752
+#: ../src/dsp-account.c:2920 ../src/ui-transaction.c:1752
 msgid "_Status:"
 msgstr "狀態(_S):"
 
-#: ../src/dsp-account.c:2930
+#: ../src/dsp-account.c:2927
 msgid "Open the list filter"
 msgstr "開啟篩選清單"
 
-#: ../src/dsp-account.c:2935 ../src/rep-balance.c:828 ../src/rep-budget.c:1398
-#: ../src/rep-stats.c:1576 ../src/rep-time.c:1114 ../src/rep-vehicle.c:786
+#: ../src/dsp-account.c:2932 ../src/rep-balance.c:828 ../src/rep-budget.c:1402
+#: ../src/rep-stats.c:1593 ../src/rep-time.c:1114 ../src/rep-vehicle.c:786
 msgid "Refresh results"
 msgstr "重新整理結果"
 
 #. widget = gtk_button_new_with_mnemonic (_("Reset _filters"));
-#: ../src/dsp-account.c:2941 ../src/ui-filter.c:1192 ../src/ui-pref.c:2320
+#: ../src/dsp-account.c:2938 ../src/ui-filter.c:1192 ../src/ui-pref.c:2320
 #: ../src/ui-pref.c:2344
 msgid "_Reset"
 msgstr "重新設定(_R)"
 
-#: ../src/dsp-account.c:2946 ../src/rep-balance.c:831 ../src/rep-budget.c:1441
-#: ../src/rep-stats.c:1619 ../src/rep-time.c:1157
+#: ../src/dsp-account.c:2943 ../src/rep-balance.c:831 ../src/rep-budget.c:1445
+#: ../src/rep-stats.c:1636 ../src/rep-time.c:1157
 msgid "Print"
 msgstr "列印"
 
 #. TRANSLATORS: this is for Euro specific users, a toggle to display in 'Minor' currency
-#: ../src/dsp-account.c:2953 ../src/rep-balance.c:1068 ../src/rep-budget.c:1701
-#: ../src/rep-stats.c:1933 ../src/rep-time.c:1420 ../src/rep-vehicle.c:990
+#: ../src/dsp-account.c:2950 ../src/rep-balance.c:1068 ../src/rep-budget.c:1705
+#: ../src/rep-stats.c:1950 ../src/rep-time.c:1420 ../src/rep-vehicle.c:990
 msgid "Euro _minor"
 msgstr "歐元次要(_m)"
 
 #. account name
-#: ../src/dsp-account.c:3012
+#: ../src/dsp-account.c:3009
 msgid "Reconciled:"
 msgstr "已核銷:"
 
-#: ../src/dsp-account.c:3019
+#: ../src/dsp-account.c:3016
 msgid "Cleared:"
 msgstr "已登帳"
 
-#: ../src/dsp-account.c:3026
+#: ../src/dsp-account.c:3023
 msgid "Today:"
 msgstr "今天："
 
-#: ../src/dsp-account.c:3033
+#: ../src/dsp-account.c:3030
 msgid "Future:"
 msgstr "未來："
 
@@ -639,8 +643,7 @@ msgid "The file has been modified since reading it."
 msgstr "讀取之後這個檔案已經被修改"
 
 #: ../src/dsp-mainwindow.c:1248
-msgid ""
-"If you save it, all the external changes could be lost. Save it anyway?"
+msgid "If you save it, all the external changes could be lost. Save it anyway?"
 msgstr "如果儲存它，將會失去所有外部作出的變更。仍要儲存它？"
 
 #: ../src/dsp-mainwindow.c:1249
@@ -939,13 +942,13 @@ msgstr "管理收款人"
 #. = = = = = = = = = = = = = = = = = = = =
 #: ../src/dsp-mainwindow.c:1988 ../src/hub-reptotal.c:556
 #: ../src/list-operation.c:972 ../src/list-operation.c:1813
-#: ../src/list-scheduled.c:651 ../src/rep-budget.c:69 ../src/rep-budget.c:1930
-#: ../src/rep-budget.c:2201 ../src/ui-archive.c:511 ../src/ui-assign.c:575
+#: ../src/list-scheduled.c:651 ../src/rep-budget.c:69 ../src/rep-budget.c:1934
+#: ../src/rep-budget.c:2205 ../src/ui-archive.c:511 ../src/ui-assign.c:575
 #: ../src/ui-assist-import.c:407 ../src/ui-budget.c:263
 #: ../src/ui-budget-tabview.c:1544 ../src/ui-category.c:1376
 #: ../src/ui-dialogs.c:277 ../src/ui-filter.c:831 ../src/ui-filter.c:836
 #: ../src/ui-filter.c:1264 ../src/ui-payee.c:961 ../src/ui-split.c:203
-#: ../src/ui-split.c:988 ../src/ui-widgets-data.c:26
+#: ../src/ui-split.c:1013 ../src/ui-widgets-data.c:26
 #: ../src/ui-widgets-data.c:43 ../src/ui-widgets-data.c:58
 #: ../src/ui-widgets-data.c:79
 msgid "Category"
@@ -965,7 +968,7 @@ msgstr "管理已排程/範本交易"
 
 #. column: Income
 #: ../src/dsp-mainwindow.c:1990 ../src/dsp-mainwindow.c:2004
-#: ../src/rep-budget.c:746 ../src/rep-budget.c:1930 ../src/rep-budget.c:2217
+#: ../src/rep-budget.c:746 ../src/rep-budget.c:1934 ../src/rep-budget.c:2221
 msgid "Budget"
 msgstr "預算"
 
@@ -1061,7 +1064,7 @@ msgstr "未來"
 msgid "Remind"
 msgstr "提醒"
 
-#: ../src/gtk-dateentry.c:677
+#: ../src/gtk-dateentry.c:704
 msgid "_Today"
 msgstr "今天(_T)"
 
@@ -1069,11 +1072,11 @@ msgstr "今天(_T)"
 msgid "(no memo)"
 msgstr "(無註解)"
 
-#: ../src/hb-assign.c:217 ../src/ui-assign.c:1427
+#: ../src/hb-assign.c:221 ../src/ui-assign.c:1427
 msgid "(copy)"
 msgstr ""
 
-#: ../src/hb-category.c:492 ../src/hb-report.c:524 ../src/ui-budget.c:113
+#: ../src/hb-category.c:492 ../src/hb-report.c:547 ../src/ui-budget.c:113
 #: ../src/ui-category.c:220 ../src/ui-category.c:763
 msgid "(no category)"
 msgstr "(沒有類別)"
@@ -1102,50 +1105,50 @@ msgstr "km/l"
 msgid "mi./l"
 msgstr "mi./l"
 
-#: ../src/hb-report.c:567 ../src/ui-payee.c:644
+#: ../src/hb-report.c:590 ../src/ui-payee.c:644
 msgid "(no payee)"
 msgstr "(沒有收款人)"
 
-#: ../src/hb-report.c:627 ../src/ui-tag.c:323
+#: ../src/hb-report.c:650 ../src/ui-tag.c:323
 msgid "(no tag)"
 msgstr ""
 
 #. TRANSLATORS: printf string for year of week W, ex. 2019-W52 for week 52 of 2019
-#: ../src/hb-report.c:654
+#: ../src/hb-report.c:677
 #, c-format
 msgid "w%02d"
 msgstr ""
 
 #. todo: will be innacurrate here if fiscal year start not 1/jan
 #. TRANSLATORS: printf string for year of quarter Q, ex. 2019-Q4 for quarter 4 of 2019
-#: ../src/hb-report.c:662
+#: ../src/hb-report.c:685
 #, c-format
 msgid "q%d"
 msgstr ""
 
 #. #2007712
 #. TRANSLATORS: printf string for half-year H, ex. 2019-H1 for 1st half-year of 2019
-#: ../src/hb-report.c:667
+#: ../src/hb-report.c:690
 #, c-format
 msgid "h%d"
 msgstr ""
 
 #. TRANSLATORS: printf string for year of week W, ex. 2019-W52 for week 52 of 2019
-#: ../src/hb-report.c:1428
+#: ../src/hb-report.c:1454
 #, c-format
 msgid "%d-w%02d"
 msgstr "%d年-第%02d週"
 
 #. todo: will be innacurrate here if fiscal year start not 1/jan
 #. TRANSLATORS: printf string for year of quarter Q, ex. 2019-Q4 for quarter 4 of 2019
-#: ../src/hb-report.c:1440
+#: ../src/hb-report.c:1466
 #, c-format
 msgid "%d-q%d"
 msgstr "%d-第%d季"
 
 #. #2007712
 #. TRANSLATORS: printf string for half-year H, ex. 2019-H1 for 1st half-year of 2019
-#: ../src/hb-report.c:1445
+#: ../src/hb-report.c:1471
 #, c-format
 msgid "%d-h%d"
 msgstr ""
@@ -1207,13 +1210,13 @@ msgstr ""
 msgid "Show all"
 msgstr "顯示全部"
 
-#: ../src/hub-account.c:627 ../src/rep-budget.c:1711 ../src/rep-stats.c:1943
+#: ../src/hub-account.c:627 ../src/rep-budget.c:1715 ../src/rep-stats.c:1960
 #: ../src/ui-budget.c:1235 ../src/ui-budget-tabview.c:2902
 #: ../src/ui-category.c:2552 ../src/ui-filter.c:856
 msgid "Expand all"
 msgstr "全部展開"
 
-#: ../src/hub-account.c:631 ../src/rep-budget.c:1715 ../src/rep-stats.c:1947
+#: ../src/hub-account.c:631 ../src/rep-budget.c:1719 ../src/rep-stats.c:1964
 #: ../src/ui-budget.c:1239 ../src/ui-budget-tabview.c:2906
 #: ../src/ui-category.c:2556 ../src/ui-filter.c:860
 msgid "Collapse all"
@@ -1257,7 +1260,7 @@ msgstr "最大發佈日期"
 #. column: Total
 #: ../src/hub-scheduled.c:581 ../src/hub-reptime.c:278 ../src/list-account.c:86
 #: ../src/list-account.c:240 ../src/list-report.c:90 ../src/list-report.c:479
-#: ../src/list-report.c:913 ../src/rep-stats.c:994 ../src/rep-stats.c:1122
+#: ../src/list-report.c:949 ../src/rep-stats.c:1014 ../src/rep-stats.c:1142
 #: ../src/rep-vehicle.c:1074 ../src/ui-widgets-data.c:51
 #: ../src/ui-widgets-data.c:72 ../src/ui-widgets-data.c:100
 msgid "Total"
@@ -1390,7 +1393,7 @@ msgstr "資訊"
 #: ../src/list-operation.c:957 ../src/list-operation.c:1781
 #: ../src/list-scheduled.c:673 ../src/ui-archive.c:515
 #: ../src/ui-assist-import.c:380 ../src/ui-pref.c:134 ../src/ui-split.c:223
-#: ../src/ui-split.c:992 ../src/ui-widgets-data.c:29
+#: ../src/ui-split.c:1017 ../src/ui-widgets-data.c:29
 msgid "Memo"
 msgstr "備註"
 
@@ -1398,11 +1401,12 @@ msgstr "備註"
 #. column: Amount
 #. amount
 #. header
+#. 5.7.1
 #: ../src/list-operation.c:961 ../src/list-operation.c:1804
 #: ../src/rep-time.c:1652 ../src/rep-time.c:1810 ../src/rep-vehicle.c:171
 #: ../src/rep-vehicle.c:1380 ../src/ui-archive.c:520
 #: ../src/ui-assist-import.c:384 ../src/ui-filter.c:977 ../src/ui-split.c:239
-#: ../src/ui-split.c:996
+#: ../src/ui-split.c:1022
 msgid "Amount"
 msgstr "金額"
 
@@ -1424,7 +1428,7 @@ msgstr "狀態"
 #: ../src/list-operation.c:1807 ../src/list-report.c:90
 #: ../src/list-report.c:467 ../src/list-scheduled.c:686
 #: ../src/rep-balance.c:1266 ../src/rep-balance.c:1477
-#: ../src/ui-budget-tabview.c:89 ../src/ui-filter.c:1118
+#: ../src/ui-budget-tabview.c:89 ../src/ui-filter.c:1118 ../src/ui-split.c:1023
 #: ../src/ui-transaction.c:53 ../src/ui-widgets-data.c:36
 #: ../src/ui-widgets-data.c:70 ../src/ui-widgets-data.c:261
 #: ../src/ui-widgets-data.c:270
@@ -1435,7 +1439,7 @@ msgstr "支出"
 #: ../src/list-operation.c:1810 ../src/list-report.c:90
 #: ../src/list-report.c:473 ../src/list-scheduled.c:698
 #: ../src/rep-balance.c:1268 ../src/rep-balance.c:1481
-#: ../src/ui-budget-tabview.c:90 ../src/ui-filter.c:1123
+#: ../src/ui-budget-tabview.c:90 ../src/ui-filter.c:1123 ../src/ui-split.c:1025
 #: ../src/ui-transaction.c:54 ../src/ui-widgets-data.c:37
 #: ../src/ui-widgets-data.c:71 ../src/ui-widgets-data.c:262
 #: ../src/ui-widgets-data.c:271
@@ -1444,11 +1448,11 @@ msgstr "收入"
 
 #. column: Result
 #: ../src/list-report.c:90 ../src/list-report.c:454 ../src/rep-budget.c:746
-#: ../src/rep-budget.c:1930 ../src/rep-budget.c:2232
+#: ../src/rep-budget.c:1934 ../src/rep-budget.c:2236
 msgid "Result"
 msgstr "結果"
 
-#: ../src/list-report.c:908
+#: ../src/list-report.c:943
 msgid "Average"
 msgstr "平均"
 
@@ -1478,12 +1482,12 @@ msgstr ""
 msgid "%d/%d under %s"
 msgstr "%d / %d 項低於 %s"
 
-#: ../src/rep-balance.c:808 ../src/rep-budget.c:1377 ../src/rep-stats.c:1514
+#: ../src/rep-balance.c:808 ../src/rep-budget.c:1381 ../src/rep-stats.c:1531
 #: ../src/rep-time.c:1082
 msgid "List"
 msgstr "清單"
 
-#: ../src/rep-balance.c:809 ../src/rep-budget.c:1378 ../src/rep-stats.c:1515
+#: ../src/rep-balance.c:809 ../src/rep-budget.c:1382 ../src/rep-stats.c:1532
 #: ../src/rep-time.c:1083
 msgid "View results as list"
 msgstr "以清單檢視結果"
@@ -1496,17 +1500,17 @@ msgstr "折線圖"
 msgid "View results as lines"
 msgstr "以折線圖檢視結果"
 
-#: ../src/rep-balance.c:822 ../src/rep-budget.c:1391 ../src/rep-stats.c:1546
+#: ../src/rep-balance.c:822 ../src/rep-budget.c:1395 ../src/rep-stats.c:1563
 #: ../src/rep-time.c:1102
 msgid "Detail"
 msgstr "明細"
 
-#: ../src/rep-balance.c:823 ../src/rep-budget.c:1392 ../src/rep-stats.c:1547
+#: ../src/rep-balance.c:823 ../src/rep-budget.c:1396 ../src/rep-stats.c:1564
 #: ../src/rep-time.c:1103
 msgid "Toggle detail"
 msgstr "切換顯示明細"
 
-#: ../src/rep-balance.c:828 ../src/rep-budget.c:1398 ../src/rep-stats.c:1576
+#: ../src/rep-balance.c:828 ../src/rep-budget.c:1402 ../src/rep-stats.c:1593
 #: ../src/rep-time.c:1114 ../src/rep-vehicle.c:786
 msgid "Refresh"
 msgstr "重新整理"
@@ -1515,12 +1519,12 @@ msgstr "重新整理"
 msgid "Balance report"
 msgstr "結餘報告"
 
-#: ../src/rep-balance.c:1042 ../src/rep-budget.c:1678 ../src/rep-stats.c:1866
+#: ../src/rep-balance.c:1042 ../src/rep-budget.c:1682 ../src/rep-stats.c:1883
 #: ../src/rep-time.c:1389 ../src/rep-vehicle.c:975
 msgid "Display"
 msgstr "顯示"
 
-#: ../src/rep-balance.c:1055 ../src/rep-stats.c:1899 ../src/rep-time.c:1407
+#: ../src/rep-balance.c:1055 ../src/rep-stats.c:1916 ../src/rep-time.c:1407
 msgid "Inter_val:"
 msgstr "間隔(_v):"
 
@@ -1528,23 +1532,23 @@ msgstr "間隔(_v):"
 msgid "Show empty line"
 msgstr "顯示空行"
 
-#: ../src/rep-balance.c:1073 ../src/rep-stats.c:1925 ../src/rep-time.c:1425
+#: ../src/rep-balance.c:1073 ../src/rep-stats.c:1942 ../src/rep-time.c:1425
 msgid "_Zoom X:"
 msgstr "縮放顯示(_Z)："
 
-#: ../src/rep-balance.c:1085 ../src/rep-budget.c:1724 ../src/rep-stats.c:1964
+#: ../src/rep-balance.c:1085 ../src/rep-budget.c:1728 ../src/rep-stats.c:1981
 #: ../src/rep-time.c:1437 ../src/rep-vehicle.c:999
 msgid "Date filter"
 msgstr "篩選日期"
 
-#: ../src/rep-balance.c:1095 ../src/rep-budget.c:1747 ../src/rep-stats.c:1974
+#: ../src/rep-balance.c:1095 ../src/rep-budget.c:1751 ../src/rep-stats.c:1991
 #: ../src/rep-time.c:1447 ../src/rep-vehicle.c:1009 ../src/ui-filter.c:950
 #: ../src/ui-filter.c:988 ../src/ui-transaction.c:186
 #: ../src/ui-transaction.c:187
 msgid "_From:"
 msgstr "從 (_F):"
 
-#: ../src/rep-balance.c:1101 ../src/rep-budget.c:1754 ../src/rep-stats.c:1980
+#: ../src/rep-balance.c:1101 ../src/rep-budget.c:1758 ../src/rep-stats.c:1997
 #: ../src/rep-time.c:1453 ../src/rep-vehicle.c:1015 ../src/ui-assign.c:1714
 #: ../src/ui-filter.c:957 ../src/ui-filter.c:995 ../src/ui-transaction.c:180
 #: ../src/ui-transaction.c:186 ../src/ui-transaction.c:187
@@ -1590,81 +1594,81 @@ msgstr ""
 msgid "Budget by month"
 msgstr ""
 
-#: ../src/rep-budget.c:936 ../src/rep-budget.c:1139
+#: ../src/rep-budget.c:936 ../src/rep-budget.c:1143
 msgid " over"
 msgstr " 超支"
 
-#: ../src/rep-budget.c:942 ../src/rep-budget.c:1145
+#: ../src/rep-budget.c:942 ../src/rep-budget.c:1149
 msgid " left"
 msgstr " 剩餘"
 
-#: ../src/rep-budget.c:945 ../src/rep-budget.c:1148
+#: ../src/rep-budget.c:945 ../src/rep-budget.c:1152
 msgid " under"
 msgstr " 低於"
 
-#: ../src/rep-budget.c:1383 ../src/rep-stats.c:1532
+#: ../src/rep-budget.c:1387 ../src/rep-stats.c:1549
 msgid "Stack"
 msgstr "堆疊圖"
 
-#: ../src/rep-budget.c:1384
+#: ../src/rep-budget.c:1388
 msgid "View results as stack bars"
 msgstr "以堆疊長條圖檢視結果"
 
 #. gtk_widget_set_halign (menu, GTK_ALIGN_END);
-#: ../src/rep-budget.c:1406 ../src/rep-stats.c:1584 ../src/rep-time.c:1122
+#: ../src/rep-budget.c:1410 ../src/rep-stats.c:1601 ../src/rep-time.c:1122
 msgid "_Result to clipboard"
 msgstr "結果到剪貼簿(_R)"
 
-#: ../src/rep-budget.c:1410 ../src/rep-stats.c:1588 ../src/rep-time.c:1126
+#: ../src/rep-budget.c:1414 ../src/rep-stats.c:1605 ../src/rep-time.c:1126
 msgid "_Result to CSV"
 msgstr "結果到CSV檔(_R)"
 
-#: ../src/rep-budget.c:1414 ../src/rep-stats.c:1592 ../src/rep-time.c:1130
+#: ../src/rep-budget.c:1418 ../src/rep-stats.c:1609 ../src/rep-time.c:1130
 msgid "_Detail to clipboard"
 msgstr "細項到剪貼簿(_D)"
 
-#: ../src/rep-budget.c:1419 ../src/rep-stats.c:1597 ../src/rep-time.c:1135
+#: ../src/rep-budget.c:1423 ../src/rep-stats.c:1614 ../src/rep-time.c:1135
 msgid "_Detail to CSV"
 msgstr "細項到CSV檔(_D)"
 
-#: ../src/rep-budget.c:1569
+#: ../src/rep-budget.c:1573
 msgid "No account is defined to be part of the budget."
 msgstr "此預算沒有設定帳戶"
 
-#: ../src/rep-budget.c:1570
+#: ../src/rep-budget.c:1574
 msgid "You should include some accounts from the account dialog."
 msgstr "您應該包含一些來自帳戶對話框的帳戶"
 
-#: ../src/rep-budget.c:1660
+#: ../src/rep-budget.c:1664
 msgid "Budget report"
 msgstr "預算報告"
 
-#: ../src/rep-budget.c:1682 ../src/rep-stats.c:1870
+#: ../src/rep-budget.c:1686 ../src/rep-stats.c:1887
 msgid "Mode:"
 msgstr "模式："
 
-#: ../src/rep-budget.c:1696
+#: ../src/rep-budget.c:1700
 msgid "Only out of budget"
 msgstr "只顯示超出預算"
 
-#: ../src/rep-budget.c:1796
+#: ../src/rep-budget.c:1800
 msgid "Result:"
 msgstr "結果:"
 
-#: ../src/rep-budget.c:1802
+#: ../src/rep-budget.c:1806
 msgid "Budget:"
 msgstr "預算："
 
-#: ../src/rep-budget.c:1808
+#: ../src/rep-budget.c:1812
 msgid "Spent:"
 msgstr "花費"
 
 #. column: Expense
-#: ../src/rep-budget.c:1930 ../src/rep-budget.c:2213
+#: ../src/rep-budget.c:1934 ../src/rep-budget.c:2217
 msgid "Spent"
 msgstr "已支出"
 
-#: ../src/rep-budget.c:1930 ../src/rep-budget.c:2224
+#: ../src/rep-budget.c:1934 ../src/rep-budget.c:2228
 msgid "Fulfilled"
 msgstr ""
 
@@ -1675,99 +1679,99 @@ msgstr ""
 msgid "%s by %s"
 msgstr "%s 依 %s"
 
-#: ../src/rep-stats.c:1019
+#: ../src/rep-stats.c:1039
 msgid "Too much columns to display"
 msgstr "太多欄無法顯示"
 
-#: ../src/rep-stats.c:1020
+#: ../src/rep-stats.c:1040
 msgid "Please select a wider interval and / or a narrower date range"
 msgstr ""
 
-#: ../src/rep-stats.c:1520 ../src/rep-time.c:1094
+#: ../src/rep-stats.c:1537 ../src/rep-time.c:1094
 msgid "Column"
 msgstr "欄"
 
-#: ../src/rep-stats.c:1521 ../src/rep-time.c:1095
+#: ../src/rep-stats.c:1538 ../src/rep-time.c:1095
 msgid "View results as column"
 msgstr "以柱狀圖檢視結果"
 
-#: ../src/rep-stats.c:1526
+#: ../src/rep-stats.c:1543
 msgid "Donut"
 msgstr "環圈圖"
 
-#: ../src/rep-stats.c:1527
+#: ../src/rep-stats.c:1544
 msgid "View results as donut"
 msgstr "以圓環圖檢視結果"
 
-#: ../src/rep-stats.c:1533
+#: ../src/rep-stats.c:1550
 msgid "View results as stack"
 msgstr "以堆疊圖檢視結果"
 
-#: ../src/rep-stats.c:1538
+#: ../src/rep-stats.c:1555
 msgid "Stack 100%"
 msgstr "堆疊100%"
 
-#: ../src/rep-stats.c:1539
+#: ../src/rep-stats.c:1556
 msgid "View results as stack 100%"
 msgstr "以堆疊100%檢視結果"
 
-#: ../src/rep-stats.c:1555
+#: ../src/rep-stats.c:1572
 msgid "Legend"
 msgstr "圖表"
 
-#: ../src/rep-stats.c:1556
+#: ../src/rep-stats.c:1573
 msgid "Toggle legend"
 msgstr "切換顯示圖例"
 
-#: ../src/rep-stats.c:1564
+#: ../src/rep-stats.c:1581
 msgid "Rate"
 msgstr "匯率"
 
-#: ../src/rep-stats.c:1565
+#: ../src/rep-stats.c:1582
 msgid "Toggle rate"
 msgstr "切換顯示百分比"
 
-#: ../src/rep-stats.c:1573 ../src/rep-time.c:1110
+#: ../src/rep-stats.c:1590 ../src/rep-time.c:1110
 msgid "Filter"
 msgstr "篩選"
 
-#: ../src/rep-stats.c:1573 ../src/rep-time.c:1110 ../src/ui-filter.c:1184
+#: ../src/rep-stats.c:1590 ../src/rep-time.c:1110 ../src/ui-filter.c:1184
 msgid "Edit filter"
 msgstr "編輯篩選條件"
 
-#: ../src/rep-stats.c:1847
+#: ../src/rep-stats.c:1864
 msgid "Statistics Report"
 msgstr "統計報告"
 
-#: ../src/rep-stats.c:1877 ../src/rep-time.c:1393
+#: ../src/rep-stats.c:1894 ../src/rep-time.c:1393
 msgid "_View by:"
 msgstr "檢視(_V)："
 
-#: ../src/rep-stats.c:1885
+#: ../src/rep-stats.c:1902
 msgid "_Balance mode"
 msgstr ""
 
-#: ../src/rep-stats.c:1910
+#: ../src/rep-stats.c:1927
 msgid "_Forecast"
 msgstr ""
 
-#: ../src/rep-stats.c:1915
+#: ../src/rep-stats.c:1932
 msgid "Sort by _amount"
 msgstr "依金額排序(_a)"
 
-#: ../src/rep-stats.c:1920
+#: ../src/rep-stats.c:1937
 msgid "Compare Exp. & Inc."
 msgstr "比較支出與收入"
 
-#: ../src/rep-stats.c:2008
+#: ../src/rep-stats.c:2025
 msgid "Total:"
 msgstr "總計:"
 
-#: ../src/rep-stats.c:2014 ../src/ui-budget.c:1272
+#: ../src/rep-stats.c:2031 ../src/ui-budget.c:1272
 msgid "Income:"
 msgstr "收入："
 
-#: ../src/rep-stats.c:2021 ../src/ui-budget.c:1265
+#: ../src/rep-stats.c:2038 ../src/ui-budget.c:1265
 msgid "Expense:"
 msgstr "支出："
 
@@ -1792,7 +1796,7 @@ msgstr ""
 msgid "Time slice"
 msgstr "時段"
 
-#. 
+#.
 #. LST_CAR_DATE,
 #. LST_CAR_MEMO,
 #. LST_CAR_METER,
@@ -1801,10 +1805,10 @@ msgstr "時段"
 #. LST_CAR_AMOUNT,
 #. LST_CAR_DIST,
 #. LST_CAR_100KM
-#. 
-#. 
+#.
+#.
 #. column: Memo
-#. 
+#.
 #. column = gtk_tree_view_column_new();
 #. gtk_tree_view_column_set_title(column, _("Memo"));
 #. gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
@@ -1812,7 +1816,7 @@ msgstr "時段"
 #. gtk_tree_view_column_pack_start(column, renderer, TRUE);
 #. gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_MEMO);
 #. //gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
-#. 
+#.
 #. column: Meter
 #: ../src/rep-vehicle.c:168 ../src/rep-vehicle.c:1368
 msgid "Meter"
@@ -1896,7 +1900,7 @@ msgstr "顯示"
 #: ../src/ui-dialogs.c:752 ../src/ui-dialogs.c:829 ../src/ui-dialogs.c:957
 #: ../src/ui-dialogs.c:1125 ../src/ui-filter.c:1196 ../src/ui-hbfile.c:234
 #: ../src/ui-payee.c:1234 ../src/ui-payee.c:1434 ../src/ui-pref.c:2346
-#: ../src/ui-split.c:912 ../src/ui-tag.c:681 ../src/ui-tag.c:805
+#: ../src/ui-split.c:937 ../src/ui-tag.c:681 ../src/ui-tag.c:805
 #: ../src/ui-transaction.c:1485 ../src/ui-txn-multi.c:454
 msgid "_Cancel"
 msgstr "取消(_C)"
@@ -1904,7 +1908,7 @@ msgstr "取消(_C)"
 #: ../src/ui-account.c:1042 ../src/ui-assign.c:934 ../src/ui-category.c:1724
 #: ../src/ui-currency.c:788 ../src/ui-currency.c:1158 ../src/ui-dialogs.c:387
 #: ../src/ui-hbfile.c:236 ../src/ui-payee.c:1236 ../src/ui-pref.c:2348
-#: ../src/ui-split.c:925 ../src/ui-tag.c:683 ../src/ui-transaction.c:1486
+#: ../src/ui-split.c:950 ../src/ui-tag.c:683 ../src/ui-transaction.c:1486
 #: ../src/ui-txn-multi.c:456
 msgid "_OK"
 msgstr "確定(_O)"
@@ -3783,7 +3787,7 @@ msgstr "主視窗報告"
 #. widget = make_daterange(label, DATE_RANGE_CUSTOM_HIDDEN);
 #. data->CY_daterange_wal = widget;
 #. gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-#. 
+#.
 #. row++;
 #: ../src/ui-pref.c:2223
 msgid "Max _items:"
@@ -3823,41 +3827,56 @@ msgstr ""
 "備份路徑已經改變\n"
 "你需要複製'.bak'檔到新位置"
 
-#: ../src/ui-split.c:840 ../src/ui-split.c:909 ../src/ui-transaction.c:1595
+#: ../src/ui-split.c:553
+#, fuzzy
+msgid "Do you want to delete all split lines"
+msgstr ""
+"你是否要刪除\n"
+"已選擇的交易"
+
+#: ../src/ui-split.c:865 ../src/ui-split.c:934 ../src/ui-transaction.c:1595
 msgid "Transaction splits"
 msgstr "分割交易"
 
-#: ../src/ui-split.c:975
+#: ../src/ui-split.c:1000
 msgid "Delete all"
 msgstr "全部刪除"
 
-#: ../src/ui-split.c:1028
+#: ../src/ui-split.c:1052
+msgid "Prefix with -/+ to force the sign"
+msgstr ""
+
+#: ../src/ui-split.c:1063
 msgid "Apply"
 msgstr "套用"
 
-#: ../src/ui-split.c:1032
+#: ../src/ui-split.c:1067
 msgid "Cancel"
 msgstr "取消"
 
-#: ../src/ui-split.c:1040
+#: ../src/ui-split.c:1075
 msgid "Transaction amount:"
 msgstr "交易金額:"
 
-#: ../src/ui-split.c:1049
+#: ../src/ui-split.c:1084
 msgid "Unassigned:"
 msgstr "未指定:"
 
-#: ../src/ui-split.c:1064
+#: ../src/ui-split.c:1099
 msgid "Sum of splits:"
 msgstr "分割的總和:"
 
-#: ../src/ui-split.c:1076
-msgid "Warning: sum of splits and transaction amount don't match"
-msgstr "警告:分割的總和與交易金額不一致"
+#: ../src/ui-split.c:1111
+msgid "Number of splits limit is reached"
+msgstr ""
 
-#: ../src/ui-split.c:1084
+#: ../src/ui-split.c:1119
 msgid "Warning: sum of splits and transaction type don't match"
 msgstr "警告:分割的總和與交易類型不一致"
+
+#: ../src/ui-split.c:1127
+msgid "Warning: sum of splits and transaction amount don't match"
+msgstr "警告:分割的總和與交易金額不一致"
 
 #: ../src/ui-tag.c:678
 msgid "Edit Tag"

@@ -40,6 +40,7 @@ gdouble hb_amount_base(gdouble value, guint32 kcur);
 gdouble hb_amount_to_euro(gdouble amount);
 gboolean hb_amount_type_match(gdouble amount, gint type);
 gboolean hb_amount_equal(gdouble val1, gdouble val2);
+gint hb_amount_compare(gdouble val1, gdouble val2);
 
 
 gdouble hb_rate(gdouble value, gdouble total);

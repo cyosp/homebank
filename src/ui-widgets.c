@@ -854,7 +854,7 @@ hbtk_monthyear_spin_input (GtkSpinButton *spin_button,
       //month = strtol (str[0], &endh, 10);
 	  for (i = 0; i < 12; i++)
 		{
-		  tmp1 = g_ascii_strup (CYA_ABMONTHS[i+1], -1);
+		  tmp1 = g_ascii_strup (_(CYA_ABMONTHS[i+1]), -1);
 		  tmp2 = g_ascii_strup (str[0], -1);
 		  if (strstr (tmp1, tmp2) == tmp1)
 		  {
@@ -907,7 +907,7 @@ hbtk_monthyear_spin_output (GtkSpinButton *spin_button)
 
   //g_print(" output: %d => m:%d y:%d\n", (gint)gtk_adjustment_get_value (adjustment), month, year);
 
-  buf = g_strdup_printf ("%s %04d", CYA_ABMONTHS[month+1], year+1900);
+  buf = g_strdup_printf ("%s %04d", _(CYA_ABMONTHS[month+1]), year+1900);
 
   //g_signal_handlers_block_by_func(spin_button, time_spin_input, NULL);
 

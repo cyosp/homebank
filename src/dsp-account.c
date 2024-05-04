@@ -631,6 +631,10 @@ guint flags;
 		{
 		flags = LST_TXN_EXP_PMT | LST_TXN_EXP_CAT | LST_TXN_EXP_TAG;
 
+			//#2037468
+			if( data->showall )
+				flags |= LST_TXN_EXP_ACC;
+
 			if( hasstatus )
 				flags |= LST_TXN_EXP_CLR;
 			node = list_txn_to_string(GTK_TREE_VIEW(data->LV_ope), FALSE, hassplit, flags);
@@ -703,12 +707,9 @@ gint result, count;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-
 	count = gtk_tree_selection_count_selected_rows(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_ope)));
-
 	if( count > 0 )
 	{
-
 		result = ui_dialog_msg_confirm_alert(
 				GTK_WINDOW(data->window),
 				NULL,
@@ -716,13 +717,6 @@ gint result, count;
 				_("_Create"),
 				FALSE
 			);
-
-	/*
-		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-			_("%d archives will be created"),
-			GLOBALS->changes_count
-			);
-	*/
 
 		if(result == GTK_RESPONSE_OK)
 		{
@@ -741,15 +735,19 @@ gint result, count;
 
 				DB( g_print(" create assignment %s %.2f\n", ope->memo, ope->amount) );
 
-				//TODO: migrate to hb-assign
 				item = da_asg_malloc();
-
 				da_asg_init_from_transaction(item, ope);
 				
-				da_asg_append(item);
-
-				GLOBALS->changes_count++;
-
+				//5.7.1 free if fail
+				if( da_asg_append(item) == TRUE )
+				{
+					GLOBALS->changes_count++;
+				}
+				else
+				{
+					da_asg_free(item);
+					count--;
+				}
 				list = g_list_next(list);
 			}
 
@@ -762,7 +760,6 @@ gint result, count;
 				_("%d created with a prefilled icon"),
 				count
 				);
-
 		}
 	}
 }

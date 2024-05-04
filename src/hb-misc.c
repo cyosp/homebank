@@ -106,6 +106,21 @@ gboolean retval = TRUE;
 }
 
 
+gint hb_amount_compare(gdouble val1, gdouble val2)
+{
+gint retval = 0;
+gdouble tmpval = val1 - val2;
+
+	if( tmpval < 0 )
+		retval = -1;
+	else
+	if( tmpval > 0 )
+		retval = 1;
+
+	return retval;
+}
+
+
 /* TODO: frac should be from currency */
 gboolean hb_amount_equal(gdouble val1, gdouble val2)
 {

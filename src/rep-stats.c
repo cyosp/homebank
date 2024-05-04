@@ -814,6 +814,7 @@ static void repstats_compute(GtkWidget *widget, gpointer user_data)
 struct repstats_data *data;
 DataTable *dt;
 gint tmpsrc, tmptype, tmpintvl;
+gdouble totexp, totinc;
 gboolean tmpaccbal, tmpforecast;
 guint i, n_inserted;
 GtkTreeModel *model;
@@ -841,11 +842,16 @@ GtkTreeIter  iter, parent, *tmpparent;
 
 	//#2030334 get the forecat max date
 	guint32 jmaxdateforecast = data->filter->maxdate;
-	if( tmpforecast == TRUE )
-		jmaxdateforecast = filter_get_maxdate_forecast(data->filter);
 
-	DB( hb_print_date(jmaxdateforecast, "maxforecast:") );
+	//#2036228 don't force for custom range
+	gint range = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_range));
+	if( range != FLT_RANGE_MISC_CUSTOM )
+	{
+		if( tmpforecast == TRUE )
+			jmaxdateforecast = filter_get_maxdate_forecast(data->filter);
 
+		DB( hb_print_date(jmaxdateforecast, "maxforecast:") );
+	}
 
 	//TODO: not necessary until date range change
 	//free previous txn
@@ -867,7 +873,8 @@ GtkTreeIter  iter, parent, *tmpparent;
 //TODO: add if mode==0
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_report));
 	n_inserted = 0;
-	//totexp = totinc = 0.0;
+
+	totexp = totinc = 0.0;
 
 	dt = report_compute(tmpsrc, tmpintvl, data->filter, data->txn_queue, FALSE, tmpaccbal);
 	if(dt)
@@ -943,6 +950,7 @@ GtkTreeIter  iter, parent, *tmpparent;
 			if( tmpsrc == REPORT_SRC_CATEGORY )
 			{
 			Category *tmpcat = da_cat_get(reskey);
+			
 				if( tmpcat != NULL && tmpcat->parent != 0 )
 				{
 					//if( lst_report_get_top_level (GTK_TREE_MODEL(model), tmpcat->parent, &parent) == TRUE )
@@ -955,6 +963,18 @@ GtkTreeIter  iter, parent, *tmpparent;
 						DB( g_print(" !! no parent %d found for %d %s\n", tmpcat->parent, tmpcat->key, tmpcat->fullname) );
 					}
 				}
+				//only sum for catégory, not subcat				
+				if( tmpcat->parent == 0 )
+				{
+					totexp += dr->rowexp;
+					totinc += dr->rowinc;				
+				}
+			}
+			//if not category, sum
+			else
+			{
+				totexp += dr->rowexp;
+				totinc += dr->rowinc;
 			}
 
 	    	gtk_tree_store_insert_with_values (GTK_TREE_STORE(model), &iter, tmpparent, -1,
@@ -992,9 +1012,9 @@ GtkTreeIter  iter, parent, *tmpparent;
 		    LST_REPORT_POS, LST_REPORT_POS_TOTAL,
 		    LST_REPORT_KEY, -1,
 			LST_REPORT_NAME, _("Total"),
-			LST_REPORT_EXPENSE, data->total_expense,
-			LST_REPORT_INCOME , data->total_income,
-			LST_REPORT_TOTAL, data->total_expense + data->total_income,
+			LST_REPORT_EXPENSE, totexp,
+			LST_REPORT_INCOME , totinc,
+			LST_REPORT_TOTAL, totexp + totinc,
 			-1);
 	}
 	#endif
@@ -1011,7 +1031,7 @@ GtkTreeIter  iter, parent, *tmpparent;
 	//check limit
 	i = report_interval_count(tmpintvl, data->filter->mindate, data->filter->maxdate);
 
-	if( i > 365*4 )
+	if( i > LST_REP_COLID_MAX )
 	{
 		//lst_rep_time_renewcol(GTK_TREE_VIEW(data->LV_report2), 0, data->filter->mindate, tmpintvl);
 
@@ -1044,7 +1064,7 @@ GtkTreeIter  iter, parent, *tmpparent;
 		g_object_ref(model); // Make sure the model stays with us after the tree view unrefs it
 		gtk_tree_view_set_model(GTK_TREE_VIEW(data->LV_report2), NULL); // Detach model from view
 
-		lst_rep_time_renewcol(GTK_TREE_VIEW(data->LV_report2), dt, dt->nbcols, data->filter->mindate, tmpintvl, tmpaccbal ? FALSE : TRUE);
+		lst_rep_time_renewcol(GTK_TREE_VIEW(data->LV_report2), model, dt, tmpaccbal ? FALSE : TRUE);
 
 
 		// update column 0 title
@@ -1129,9 +1149,6 @@ GtkTreeIter  iter, parent, *tmpparent;
 
 		gtk_tree_view_expand_all(GTK_TREE_VIEW(data->LV_report2));
 		gtk_tree_view_columns_autosize (GTK_TREE_VIEW(data->LV_report2));
-
-		gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), LST_REPORT2_POS, GTK_SORT_DESCENDING);
-
 
 		// test liststore
 		//liststore_benchmark();

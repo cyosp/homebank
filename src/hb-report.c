@@ -33,6 +33,11 @@
 #define DB3(x);
 //#define DB3(x) (x);
 
+//date debug
+#define DBD(x);
+//#define DBD(x) (x);
+
+
 
 /* our global datas */
 extern struct HomeBank *GLOBALS;
@@ -184,12 +189,12 @@ guint i;
 	//dt->nbrows = nb of items
 	//dt->nbcols = nb of cols
 
-	DB2( g_print(" src:%d\n intvl:%d\n maxk:%d\n rows:%d\n cols:%d\n", src, intvl, dt->nbkeys, dt->nbrows, dt->nbcols) );
+	DB1( g_print(" src:%d\n intvl:%d\n maxk:%d\n rows:%d\n cols:%d\n", src, intvl, dt->nbkeys, dt->nbrows, dt->nbcols) );
 
-	DB2( g_print(" alloc %d keyindex\n", dt->nbkeys) );
+	DB1( g_print(" alloc %d keyindex\n", dt->nbkeys) );
 	dt->keyindex = g_malloc0(dt->nbkeys * sizeof(gpointer));
 
-	DB2( g_print(" alloc %d rows\n", dt->nbrows) );
+	DB1( g_print(" alloc %d rows\n", dt->nbrows) );
 	dt->rows = g_malloc0(dt->nbrows * sizeof(gpointer));
 	for(i=0;i<dt->nbrows;i++)
 	{
@@ -200,10 +205,10 @@ guint i;
 		dt->rows[i] = dr;
 	}
 
-	DB2( g_print(" alloc total row\n") );
+	DB1( g_print(" alloc total row\n") );
 	dt->totrow = da_datarow_malloc(dt->nbcols);
 
-	DB2( g_print(" alloc %d cols\n", dt->nbcols) );
+	DB1( g_print(" alloc %d cols\n", dt->nbcols) );
 	dt->cols = g_malloc0(dt->nbcols * sizeof(gpointer));
 	for(i=0;i<dt->nbcols;i++)
 	{
@@ -212,7 +217,7 @@ guint i;
 	}
 
 	//ordered list to insert cat before subcat
-	DB2( g_print(" alloc %d keylist\n", dt->nbrows) );
+	DB1( g_print(" alloc %d keylist\n", dt->nbrows) );
 	dt->keylist = g_malloc0( dt->nbrows * sizeof(guint32) );
 
 	return dt;
@@ -233,6 +238,30 @@ GDateWeekday wday;
 }
 
 
+// slide the date to start quarter
+static void _hb_date_clamp_quarter_start(GDate *date)
+{
+guint quarternum = ((g_date_get_month(date)-1)/3)+1;
+
+	DBD( g_print("  init=%02d/%d > Q%d\n", g_date_get_month(date), g_date_get_year(date), quarternum) );
+	g_date_set_day(date, 1);
+	g_date_set_month(date, ((quarternum-1)*3)+1);
+	DBD( g_print("  start=%02d/%d\n", g_date_get_month(date), g_date_get_year(date)) );
+}
+
+
+// slide the date to start halfyear
+static void _hb_date_clamp_halfyear_start(GDate *date)
+{
+guint halfyearnum = ((g_date_get_month(date)-1)/6)+1;
+
+	DBD( g_print("  init=%02d/%d > H%d\n", g_date_get_month(date), g_date_get_year(date), halfyearnum) );
+	g_date_set_day(date, 1);
+	g_date_set_month(date, ((halfyearnum-1)*6)+1);
+	DBD( g_print("  start=%02d/%d\n", g_date_get_month(date), g_date_get_year(date)) );
+}
+
+
 static guint _date_in_week(guint32 from, guint32 opedate, guint days)
 {
 GDate *date1, *date2;
@@ -241,14 +270,14 @@ gint pos;
 	date1 = g_date_new_julian(from);
 	date2 = g_date_new_julian(opedate);
 
-	DB3( g_print(" from=%d %02d-%02d-%04d ", 
+	DBD( g_print(" from=%d %02d-%02d-%04d ", 
 		g_date_get_weekday(date1), g_date_get_day(date1), g_date_get_month(date1), g_date_get_year(date1)) );
 
 	//#1915643 week iso 8601
 	_hb_date_clamp_iso8601(date1);
 	pos = (opedate - g_date_get_julian(date1)) / days;
 
-	DB3( g_print(" shifted=%d %02d-%02d-%04d pos=%d\n", 
+	DBD( g_print(" shifted=%d %02d-%02d-%04d pos=%d\n", 
 		g_date_get_weekday(date1), g_date_get_day(date1), g_date_get_month(date1), g_date_get_year(date1), pos) );
 
 
@@ -285,7 +314,7 @@ static guint DateInMonth(guint32 from, guint32 opedate)
 GDate *date1, *date2;
 guint pos;
 
-	DB3( g_print("DateInMonth %d ,%d\n", from, opedate) );
+	DBD( g_print("DateInMonth %d ,%d\n", from, opedate) );
 
 	//todo
 	// this return sometimes -1, -2 which is wrong
@@ -295,7 +324,7 @@ guint pos;
 
 	pos = ((g_date_get_year(date2) - g_date_get_year(date1)) * 12) + g_date_get_month(date2) - g_date_get_month(date1);
 
-	DB3( g_print(" from=%d-%d ope=%d-%d => %d\n", g_date_get_month(date1), g_date_get_year(date1), g_date_get_month(date2), g_date_get_year(date2), pos) );
+	DBD( g_print(" from=%d-%d ope=%d-%d => %d\n", g_date_get_month(date1), g_date_get_year(date1), g_date_get_month(date2), g_date_get_year(date2), pos) );
 
 	g_date_free(date2);
 	g_date_free(date1);
@@ -314,20 +343,17 @@ guint pos;
 static guint DateInQuarter(guint32 from, guint32 opedate)
 {
 GDate *date1, *date2;
-guint quarter, pos;
+guint pos;
 
 	date1 = g_date_new_julian(from);
 	date2 = g_date_new_julian(opedate);
 
-	//#1758532 shift to first quarter day of 'from date' 
-	quarter = ((g_date_get_month(date1)-1)/3)+1;
-	DB3( g_print("-- from=%02d/%d :: Q%d\n", g_date_get_month(date1), g_date_get_year(date1), quarter) );
-	g_date_set_day(date1, 1);
-	g_date_set_month(date1, ((quarter-1)*3)+1);
-
+	//#1758532 slide quarter start
+	_hb_date_clamp_quarter_start(date1);
+	
 	pos = (((g_date_get_year(date2) - g_date_get_year(date1)) * 12) + g_date_get_month(date2) - g_date_get_month(date1))/3;
 
-	DB3( g_print("-- from=%02d/%d ope=%02d/%d => pos=%d\n", g_date_get_month(date1), g_date_get_year(date1), g_date_get_month(date2), g_date_get_year(date2), pos) );
+	DBD( g_print("-- from=%02d/%d ope=%02d/%d => pos=%d\n", g_date_get_month(date1), g_date_get_year(date1), g_date_get_month(date2), g_date_get_year(date2), pos) );
 
 	g_date_free(date2);
 	g_date_free(date1);
@@ -339,20 +365,17 @@ guint quarter, pos;
 static guint DateInHalfYear(guint32 from, guint32 opedate)
 {
 GDate *date1, *date2;
-guint hyear, pos;
+guint pos;
 
 	date1 = g_date_new_julian(from);
 	date2 = g_date_new_julian(opedate);
 
-	// shift to first half year of 'from date'
-	hyear = ((g_date_get_month(date1)-1)/6)+1;
-	DB3( g_print("-- from=%02d/%d :: Q%d\n", g_date_get_month(date1), g_date_get_year(date1), hyear) );
-	g_date_set_day(date1, 1);
-	g_date_set_month(date1, ((hyear-1)*6)+1);
-	
+	//#2034618 slide halfyear start
+	_hb_date_clamp_halfyear_start(date1);
+
 	pos = (((g_date_get_year(date2) - g_date_get_year(date1)) * 12) + g_date_get_month(date2) - g_date_get_month(date1))/6;
 
-	DB3( g_print(" from=%d-%d ope=%d-%d => %d\n", g_date_get_month(date1), g_date_get_year(date1), g_date_get_month(date2), g_date_get_year(date2), pos) );
+	DBD( g_print(" from=%d-%d ope=%d-%d => %d\n", g_date_get_month(date1), g_date_get_year(date1), g_date_get_month(date2), g_date_get_year(date2), pos) );
 
 	g_date_free(date2);
 	g_date_free(date1);
@@ -378,7 +401,7 @@ guint year_from, year_ope, pos;
 
 	pos = year_ope - year_from;
 
-	DB3( g_print(" from=%d ope=%d => %d\n", year_from, year_ope, pos) );
+	DBD( g_print(" from=%d ope=%d => %d\n", year_from, year_ope, pos) );
 
 	return(pos);
 }
@@ -434,7 +457,7 @@ guint32 jdate;
 
 static void datatable_set_keylist(DataTable *dt, guint32 idx, guint32 key)
 {
-	if( idx <= dt->nbrows )
+	if( idx < dt->nbrows )
 		dt->keylist[idx] = key;
 	else
 		g_warning("datatable invalid set keylist %d of %d", idx , dt->nbrows);
@@ -442,7 +465,7 @@ static void datatable_set_keylist(DataTable *dt, guint32 idx, guint32 key)
 
 static void datatable_set_keyindex(DataTable *dt, guint32 key, guint32 idx)
 {
-	if( key <= dt->nbkeys )
+	if( key < dt->nbkeys )
 		dt->keyindex[key] = idx;
 	else
 		g_warning("datatable invalid set keyindex %d of %d", key , dt->nbkeys);
@@ -525,7 +548,7 @@ guint idx = 0;
 			//dt->keyindex[cat->key] = idx;
 			datatable_set_keyindex(dt, cat->key, idx);
 			
-			DB1( g_print(" +cat k:%d, idx:%d %s'%s'\n", cat->key, idx, cat->parent==0 ? "" : " +", dr->label) );
+			DB2( g_print(" +cat k:%d, idx:%d %s'%s'\n", cat->key, idx, cat->parent==0 ? "" : " +", dr->label) );
 		}
 		l = g_list_next(l);
 		idx++;
@@ -565,7 +588,7 @@ guint idx = 0;
 		{
 			dr->pos   = idx;
 			dr->label = g_strdup( (pay->key == 0) ? _("(no payee)") : pay->name );
-			DB1( g_print(" +pay k:%d, idx:%d '%s'\n", pay->key, idx, dr->label) );
+			DB2( g_print(" +pay k:%d, idx:%d '%s'\n", pay->key, idx, dr->label) );
 			//store transpose
 			//dt->keyindex[pay->key] = idx;
 			datatable_set_keyindex(dt, pay->key, idx);
@@ -595,7 +618,7 @@ guint idx = 0;
 
 			dr->pos   = idx;
 			dr->label = g_strdup( acc->name );
-			DB1( g_print(" +acc k:%d, idx:%d '%s'\n", acc->key, idx, dr->label) );
+			DB2( g_print(" +acc k:%d, idx:%d '%s'\n", acc->key, idx, dr->label) );
 			//store transpose
 			dt->keyindex[acc->key] = idx;
 			//datatable_set_keyindex(dt, acc->key, idx);
@@ -625,7 +648,7 @@ guint idx = 0;
 		{
 			dr->pos   = idx;
 			dr->label = g_strdup( (tag->key == 0) ? _("(no tag)") : tag->name );
-			DB1( g_print(" +tag k:%d, idx:%d '%s'\n", tag->key, idx, dr->label) );
+			DB2( g_print(" +tag k:%d, idx:%d '%s'\n", tag->key, idx, dr->label) );
 			//store transpose
 			//dt->keyindex[tag->key] = idx;
 			datatable_set_keyindex(dt, tag->key, idx);
@@ -716,19 +739,19 @@ GDateYear prevyear = 0;
 			case REPORT_SRC_NONE:
 				//technical label for sum
 				name = "total";
-				DB1( g_print(" +none k:%d, idx:%d '%s'\n", idx, idx, name) );
+				DB2( g_print(" +none k:%d, idx:%d '%s'\n", idx, idx, name) );
 				break;
 			case REPORT_SRC_MONTH:
 				intvl = REPORT_INTVL_MONTH;
 				jdate = report_interval_snprint_name(buffer, sizeof(buffer)-1, intvl, jfrom, idx);
 				name = buffer;
-				DB1( g_print(" +month k:%d, idx:%d '%s'\n", idx, idx, name) );
+				DB2( g_print(" +month k:%d, idx:%d '%s'\n", idx, idx, name) );
 				break;
 			case REPORT_SRC_YEAR:
 				intvl = REPORT_INTVL_YEAR;
 				jdate = report_interval_snprint_name(buffer, sizeof(buffer)-1, intvl, jfrom, idx);
 				name = buffer;
-				DB1( g_print(" +year k:%d, idx:%d '%s'\n", idx, idx, name) );
+				DB2( g_print(" +year k:%d, idx:%d '%s'\n", idx, idx, name) );
 				break;
 		}
 
@@ -831,14 +854,14 @@ static void datatable_add(DataTable *dt, guint32 key, guint32 col, gdouble amoun
 {
 DataRow *dr;
 
-	DB3( g_print("   add to k:%d c:%d %.2f\n", key, col, amount) );
+	DB3( g_print("   add to k:%d c:%d %.2f, macxol=%d\n", key, col, amount, dt->nbcols) );
 
 	//row = dt->keyindex[key];
 	dr = report_data_get_row(dt, key); 
 
 	if( dr )
 	{
-		if( col <= dt->nbcols )
+		if( col < dt->nbcols )
 		{
 			if( hb_amount_equal(amount, 0.0) == FALSE )
 			{
@@ -990,6 +1013,7 @@ gdouble trn_amount;
 	trn_amount = hb_amount_base(trn_amount, txn->kcur);
 
 	col = report_interval_get_pos(intvl, flt->mindate, txn);
+	//DB2( g_print("  col=%d (max is %d)\n", col, dt->nbcols) );
 
 	switch( src )
 	{
@@ -1117,6 +1141,7 @@ GDate *post_date;
 
 			txn->date = curdate = arc->nextdate;
 
+			//if arc->nexdate is prior flt->mindate, it will be filtered out
 			if( (filter_txn_match(flt, txn) == 1) )
 			{
 				while(curdate <= maxpostdate)
@@ -1234,7 +1259,7 @@ DataCol *report_data_get_col(DataTable *dt, guint32 idx)
 {
 DataCol *retval = NULL;
 
-	if( idx <= dt->nbcols )
+	if( idx < dt->nbcols )
 	{
 		retval = dt->cols[idx];
 	}
@@ -1252,13 +1277,13 @@ DataRow *report_data_get_row(DataTable *dt, guint32 key)
 DataRow *retval = NULL;
 guint32 idx;
 
-	if( key <= dt->nbkeys )
+	if( key < dt->nbkeys )
 	{
 		//we should transpose here
 		idx = dt->keyindex[key];
-		if( idx <= dt->nbrows )
+		if( idx < dt->nbrows )
 		{
-			DB1( g_print(" get row=%d for key=%d\n", idx, key) ); 
+			DB3( g_print(" get row=%d for key=%d\n", idx, key) ); 
 			retval = dt->rows[idx];
 		}
 		else
@@ -1274,7 +1299,7 @@ guint32 idx;
 //gtk-chart/list-report
 gdouble da_datarow_get_cell_sum(DataRow *dr, guint32 index)
 {
-	if( index <= dr->nbcols )
+	if( index < dr->nbcols )
 	{
 		return (dr->colexp[index] + dr->colinc[index]);
 	}
@@ -1373,39 +1398,40 @@ gint nbintvl = 0;
 	switch(intvl)
 	{
 		case REPORT_INTVL_DAY:
-			nbintvl = 1 + (jto - jfrom);
+			nbintvl = (jto - jfrom);
 			break;
 		case REPORT_INTVL_WEEK:
 			//#2000292 weeknum iso 8601 as well
 			_hb_date_clamp_iso8601(date1);
-			nbintvl = 1 + (g_date_days_between(date1, date2) / 7);
+			nbintvl = (g_date_days_between(date1, date2) / 7);
 			break;
 		//#2000290
 		case REPORT_INTVL_FORTNIGHT:
 			_hb_date_clamp_iso8601(date1);
-			nbintvl = 1 + (g_date_days_between(date1, date2) / 14);		
+			nbintvl = (g_date_days_between(date1, date2) / 14);		
 			break;
 		case REPORT_INTVL_MONTH:
-			nbintvl = 1 + ((g_date_get_year(date2) - g_date_get_year(date1)) * 12) + g_date_get_month(date2) - g_date_get_month(date1);
+			nbintvl = ((g_date_get_year(date2) - g_date_get_year(date1)) * 12) + g_date_get_month(date2) - g_date_get_month(date1);
 			break;
 		case REPORT_INTVL_QUARTER:
-			nbintvl = 1 + (((g_date_get_year(date2) - g_date_get_year(date1)) * 12) + g_date_get_month(date2) - g_date_get_month(date1))/3;
+			//#1758532 slide quarter start
+			_hb_date_clamp_quarter_start(date1);
+			nbintvl = (((g_date_get_year(date2) - g_date_get_year(date1)) * 12) + g_date_get_month(date2) - g_date_get_month(date1))/3;
 			break;
 		case REPORT_INTVL_HALFYEAR:
-			nbintvl = 1 + (((g_date_get_year(date2) - g_date_get_year(date1)) * 12) + g_date_get_month(date2) - g_date_get_month(date1))/6;
+			//#2034618 slide halfyear start
+			_hb_date_clamp_halfyear_start(date1);
+			nbintvl = (((g_date_get_year(date2) - g_date_get_year(date1)) * 12) + g_date_get_month(date2) - g_date_get_month(date1))/6;
 			break;
 		case REPORT_INTVL_YEAR:
-			nbintvl = 1 + g_date_get_year(date2) - g_date_get_year(date1);
-			break;
-		default: //REPORT_INTVL_NONE
-			nbintvl = 1;
+			nbintvl = g_date_get_year(date2) - g_date_get_year(date1);
 			break;
 	}
 
 	g_date_free(date2);
 	g_date_free(date1);
 	
-	return nbintvl;
+	return 1 + nbintvl;
 }
 
 

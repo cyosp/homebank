@@ -145,7 +145,7 @@ void da_splits_append(GPtrArray *splits, Split *item)
 		return;
 	}
 
-	if(splits->len <= TXN_MAX_SPLIT)
+	if(splits->len < TXN_MAX_SPLIT)
 		g_ptr_array_add (splits, item);	
 }
 
