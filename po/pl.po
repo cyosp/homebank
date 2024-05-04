@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: homebank\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-19 08:55+0100\n"
-"PO-Revision-Date: 2023-02-24 17:21+0000\n"
+"PO-Revision-Date: 2023-04-03 18:37+0000\n"
 "Last-Translator: scb <Unknown>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2023-03-19 17:16+0000\n"
-"X-Generator: Launchpad (build 997ba17554f0ee82f56d9282fce82d3e09a43780)\n"
+"X-Launchpad-Export-Date: 2023-05-18 13:56+0000\n"
+"X-Generator: Launchpad (build 333bbdc825b25f14e50a980a2dbe4dc39f3d34d9)\n"
 "Language: pl\n"
 
 #: ../data/homebank.desktop.in.in.h:1 ../src/dsp-mainwindow.c:702
@@ -2590,7 +2590,7 @@ msgstr "Sie"
 
 #: ../src/ui-budget-tabview.c:82
 msgid "Sept"
-msgstr ""
+msgstr "Wrz"
 
 #: ../src/ui-budget-tabview.c:83 ../src/ui-widgets-data.c:328
 msgid "Oct"
@@ -4247,15 +4247,3 @@ msgstr "Prowizja / opłata bankowa"
 #: ../src/ui-widgets.c:1348
 msgid "Direct Debit"
 msgstr "Polecenie Zapłaty"
-
-#~ msgid "Toggle show future transaction"
-#~ msgstr "Pokaż/ukryj przyszłe transakcje"
-
-#~ msgid "Monthly Average"
-#~ msgstr "Średnia miesięczna"
-
-#~ msgid "Budget (table view)"
-#~ msgstr "Budżet (tabela)"
-
-#~ msgid "Annual Total"
-#~ msgstr "Suma roczna"

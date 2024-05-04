@@ -47,7 +47,6 @@ struct repbalance_data
 	GList		*ope_list;
 	Filter		*filter;
 
-	guint32		jbasedate;
 	gdouble		minimum;
 
 	gboolean	detail;

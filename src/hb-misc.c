@@ -39,14 +39,25 @@ extern struct Preferences *PREFS;
 
 static const double fac[9] = { 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000 };
 
-double hb_amount_round(const double x, unsigned int digits)
+double hb_amount_round(const double d, unsigned int digits)
 {
+double out;
+
 	//fixed 5.6 MIN, not MAX... + #1977796
 	digits = MIN(digits, 8);
 
-	//#1977796
-	//return floor((x * fac[digits]) + 0.5) / fac[digits];
-	return round((x * fac[digits])) / fac[digits];
+	//initial formula
+		//out = floor((d * fac[digits]) + 0.5) / fac[digits];
+	//#1977796 fix rounding -0.5 : +0.5... 
+		//out = round(d * fac[digits]) / fac[digits];
+	//#2018206 fix rounding -0.00...
+	out = ((long) (d < 0 ? d * fac[digits] - 0.5 : d * fac[digits] + 0.5)) / fac[digits];
+	//works also in case
+	//out = round((long) (d * fac[digits])) / fac[digits];
+
+	//g_print(" in:%17g out:%17g\n", d, out);
+
+	return out;
 }
 
 
@@ -92,6 +103,18 @@ gboolean retval = TRUE;
 		retval = FALSE;
 
 	return retval;
+}
+
+
+/* TODO: frac should be from currency */
+gboolean hb_amount_equal(gdouble val1, gdouble val2)
+{
+gdouble tmpval1, tmpval2;
+	
+	tmpval1 = hb_amount_round(val1, 2);
+	tmpval2 = hb_amount_round(val2, 2);
+
+	return tmpval1 == tmpval2;
 }
 
 
@@ -524,16 +547,43 @@ gsize str_len;
 }
 
 
-
-//TODO: rename this it remove not replace
-void hb_string_replace_char(gchar c, gchar *str)
+void hb_string_replace_char(gchar oc, gchar nc, gchar *str)
 {
+gsize len;
 gchar *s = str;
 gchar *d = str;
 
 	if(str)
 	{
-		while( *s )
+		len = strlen (str);
+		while( *s && len > 0 )
+		{
+			if( *s != oc )
+			{
+				*d++ = *s++;
+			}
+			else
+			{
+				*d++ = nc;
+				s++;
+			}
+			len--;
+		}
+		*d = 0;
+	}
+}
+
+
+void hb_string_remove_char(gchar c, gchar *str)
+{
+gsize len;
+gchar *s = str;
+gchar *d = str;
+
+	if(str)
+	{
+		len = strlen (str);
+		while( *s && len > 0 )
 		{
 			if( *s != c )
 			{

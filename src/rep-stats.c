@@ -742,7 +742,7 @@ static void repstats_compute(GtkWidget *widget, gpointer user_data)
 struct repstats_data *data;
 DataTable *dt;
 gint tmpsrc, tmptype, tmpintvl;
-gdouble totexp, totinc, total_total;
+gdouble totexp, totinc, ratetotal;
 guint n_result, n_cols;
 guint i, n_inserted;
 GtkTreeModel *model;
@@ -751,6 +751,10 @@ GtkTreeIter  iter;
 	DB( g_print("\n[repdist] compute\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	//#2019876 return is invalid date range
+	if( data->filter->maxdate < data->filter->mindate )
+		return;
 
 	//tmpsrc  = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_src));
 	tmpsrc  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_src));
@@ -764,7 +768,6 @@ GtkTreeIter  iter;
 	
 	DB( g_print(" for=%d,kind=%d\n", tmpsrc, tmptype) );
 	DB( g_print(" nb-txn=%d\n", g_queue_get_length (data->txn_queue) ) );
-
 
 	//todo: remove this later on
 	n_result = report_items_count(tmpsrc, data->filter->mindate, data->filter->maxdate);
@@ -782,7 +785,9 @@ GtkTreeIter  iter;
 	{
 		data->total_expense = dt->totexp;
 		data->total_income  = dt->totinc;
-		total_total = dt->totexp + dt->totinc;
+		//total_total = dt->totexp + dt->totinc;
+		//#2018145 rate total must remains ABS to get accurate %
+		ratetotal   = ABS(dt->totexp) + ABS(dt->totinc);
 
 		DB( g_printf(" total exp %9.2f\n", dt->totexp) );
 		DB( g_printf(" total inc %9.2f\n", dt->totinc) );
@@ -832,7 +837,7 @@ GtkTreeIter  iter;
 				//#1988489 total must be computed with sign
 				LST_REPDIST_EXPRATE, hb_rate(dr->expense[0], data->total_expense),
 				LST_REPDIST_INCRATE, hb_rate(dr->income[1] , data->total_income),
-				LST_REPDIST_TOTRATE, hb_rate(drtotal, total_total),
+				LST_REPDIST_TOTRATE, hb_rate(drtotal, ratetotal),
 				-1);
 
 			DB( g_printf("\n insert %2d, '%s', %9.2f  %9.2f  %9.2f\n", i, dr->label, 
@@ -841,7 +846,7 @@ GtkTreeIter  iter;
 			DB( g_printf(" rates  %2d, '%s', %9.2f%% %9.2f%% %9.2f%%\n", i, dr->label, 
 				hb_rate(dr->expense[0], data->total_expense), 
 				hb_rate(dr->income[1] , data->total_income), 
-				hb_rate(drtotal, total_total)) );
+				hb_rate(drtotal, ratetotal)) );
 		}
 
 		/* update column 0 title */

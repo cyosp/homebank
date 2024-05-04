@@ -355,6 +355,18 @@ GList *lxxx, *list;
 	}
 	g_list_free(lxxx);
 
+	//#2018414 replace any space by -
+	DB( g_print(" - tags\n") );
+	lxxx = list = g_hash_table_get_values(GLOBALS->h_tag);
+	while (list != NULL)
+	{
+	Tag *item = list->data;
+
+		da_tag_consistency(item);
+		list = g_list_next(list);
+	}
+	g_list_free(lxxx);
+
 }
 
 

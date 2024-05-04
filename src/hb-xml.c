@@ -1173,7 +1173,13 @@ gboolean rc, dosanity;
 		if( ctx.data_version < 50600 ) 
 		{
 			homebank_upgrade_to_v14_12();
-		}		
+		}
+		if( ctx.data_version < 50604 ) 
+		{
+			//#2018414 tag name replace any space by -
+			dosanity = TRUE;
+		}
+			
 		// next ?
 
 

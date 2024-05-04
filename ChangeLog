@@ -1,4 +1,18 @@
 
+
+2023-05-18  Maxime Doyen
+
+ Made 5.6.4 release
+
+ * bugfix: #2012576 statistics Report using Balance Mode by time shows odd "total" column
+ * bugfix: #2012999 one transaction Imported from QFX file no longer matches 
+ * bugfix: #2017435 posting both sides of a scheduled internal transfer posts 2 occurrence
+ * bugfix: #2018145 rate calculation on total report values
+ * bugfix: #2018206 balance sometimes displays -0.00
+ * bugfix: #2018414 tags edit/import faultly enable space and may cause report crash
+ * bugfix: #2019876 balance report allow max < min date (crash) and ignore input with All dates range set
+
+
 2023-03-20  Maxime Doyen
 
  Made 5.6.3 release
@@ -14,11 +28,11 @@
  * bugfix: #2007712 report half-year column header is not translated
  * bugfix: #2000728 wayland: template window closes only on third attempt
  * bugfix: #1999699 wayland: click on schedule button select first item and don't open popover
- * wish  : #2007714	table budget dialog view improvements 
- * wish  : #2000290	Fortnight interval in Reports 
- * wish  : #1996505	Sum SELECTED scheduled transaction at main window
- * wish  : #1956060	sort by amount in statistics report to take sign into consideration
- * wish  : #1886123	Remind status transactions not calculated in reports despite include preference 
+ * wish  : #2007714 table budget dialog view improvements 
+ * wish  : #2000290 Fortnight interval in Reports 
+ * wish  : #1996505 Sum SELECTED scheduled transaction at main window
+ * wish  : #1956060 sort by amount in statistics report to take sign into consideration
+ * wish  : #1886123 Remind status transactions not calculated in reports despite include preference 
 
 
 2023-02-06  Maxime Doyen
@@ -107,7 +121,7 @@
  * wish  : #1886757 HomeBank Report Account balances for each month
  * wish  : #1875801 shows split detail in the report detail list
  * wish  : #1869352 option to add scheduled txn until x months
- * wish  : #1826360 archive payee/category to lighten the lists
+ * wish  : #1826360 hide useless payee/category to lighten autocomplete/lists
  * wish  : #1710085 assignment based on amount
  * wish  : #1673260 internal transfer with different currency
  * wish  : #1530170 more date range option and redesign

@@ -75,13 +75,13 @@
 
 #define HOMEBANK_MAJOR	5
 #define HOMEBANK_MINOR	6
-#define HOMEBANK_MICRO	3
+#define HOMEBANK_MICRO	4
 
-#define HB_VERSION		"5.6.3"
+#define HB_VERSION		"5.6.4"
 #define HB_VERSION_NUM	(HOMEBANK_MAJOR*10000) + (HOMEBANK_MINOR*100) + HOMEBANK_MICRO
 
 #define FILE_VERSION		1.4
-#define PREF_VERSION		563
+#define PREF_VERSION		564
 
 #if HB_UNSTABLE == FALSE
 	#define	PROGNAME		"HomeBank"
@@ -375,7 +375,7 @@ const gchar *homebank_app_get_help_dir (void);
 const gchar *homebank_app_get_datas_dir (void);
 guint32 homebank_app_date_get_julian(void);
 
-/* - - - - obsolete things - - - - */
+/* - - - - obsolete/future things - - - - */
 
 /*
 typedef struct _budget		Budget;

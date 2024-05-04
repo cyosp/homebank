@@ -478,6 +478,13 @@ Tag *tag;
 }
 
 
+void da_tag_consistency(Tag *item)
+{
+	//#2018414 replace any space by -
+	hb_string_replace_char(' ', '-', item->name);
+}
+
+
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 
@@ -573,6 +580,9 @@ gboolean retval = FALSE;
 	
 	stripname = g_strdup(newname);
 	g_strstrip(stripname);
+	
+	//#2018414 replace any space by -
+	hb_string_replace_char(' ', '-', stripname);
 
 	existitem = da_tag_get_by_name(stripname);
 
@@ -655,6 +665,9 @@ const gchar *encoding;
 				
 					DB( g_print("\n + strip\n") );
 					hb_string_strip_crlf(tmpstr);
+					
+					//#2018414 replace any space by -
+					hb_string_replace_char(' ', '-', tmpstr);
 
 					DB( g_print(" add tag:'%s' ?\n", tmpstr) );
 					tag = da_tag_append_if_new(tmpstr);

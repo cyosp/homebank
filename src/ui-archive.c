@@ -255,10 +255,22 @@ gchar *text = NULL;
 	gtk_tree_model_get(model, iter, LST_DEFARC_DATAS, &arc, -1);
 	if(arc)
 	{
-	Payee *pay = da_pay_get(arc->kpay);
+		//#2017436 display xfer dst account as payee
+		if(arc->flags & OF_INTXFER)
+		{
+		Account *acc = da_acc_get(arc->kxferacc);
 
-		if(pay != NULL)
-			text = pay->name;
+			//5.6 use acc strings for 5.3 add > < for internal xfer
+			if( acc )
+				text = ( arc->flags & OF_INCOME ) ? acc->xferincname : acc->xferexpname;
+		
+		}
+		else
+		{
+		Payee *pay = da_pay_get(arc->kpay);
+			
+			text = (pay != NULL) ? pay->name : NULL;
+		}
 	}
 	g_object_set(renderer, "text", text, NULL);
 }

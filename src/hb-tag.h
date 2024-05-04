@@ -49,6 +49,7 @@ Tag *da_tag_append_if_new(gchar *rawname);
 guint32		da_tag_get_max_key(void);
 Tag		*da_tag_get_by_name(gchar *name);
 Tag		*da_tag_get(guint32 key);
+void da_tag_consistency(Tag *item);
 
 guint tags_count(guint32 *tags);
 guint32 *tags_clone(guint32 *tags);

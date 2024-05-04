@@ -9,8 +9,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2023-03-19 17:16+0000\n"
-"X-Generator: Launchpad (build 997ba17554f0ee82f56d9282fce82d3e09a43780)\n"
+"X-Launchpad-Export-Date: 2023-05-18 13:56+0000\n"
+"X-Generator: Launchpad (build 333bbdc825b25f14e50a980a2dbe4dc39f3d34d9)\n"
 
 #: ../data/homebank.desktop.in.in.h:1 ../src/dsp-mainwindow.c:702
 msgid "HomeBank"
@@ -4194,15 +4194,3 @@ msgstr "费用"
 #: ../src/ui-widgets.c:1348
 msgid "Direct Debit"
 msgstr "直接记账"
-
-#~ msgid "Annual Total"
-#~ msgstr "年度总计"
-
-#~ msgid "Monthly Average"
-#~ msgstr "月均"
-
-#~ msgid "Budget (table view)"
-#~ msgstr "预算（表视图）"
-
-#~ msgid "Toggle show future transaction"
-#~ msgstr "显示未来交易"

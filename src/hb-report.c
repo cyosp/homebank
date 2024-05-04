@@ -31,6 +31,7 @@
 #define DB(x);
 #endif
 
+
 /* our global datas */
 extern struct HomeBank *GLOBALS;
 extern struct Preferences *PREFS;
@@ -825,13 +826,13 @@ guint row, col;
 		{
 		DataRow *dr = dt->rows[row];
 
-			for(col=1;col<dt->nbcols;col++)
+			//#2012576 nbcols-2 to not scratch avg and total columns
+			for(col=1;col<dt->nbcols-2;col++)
 			{
 				dr->income[col]  += dr->income[col-1];
 				dr->expense[col] += dr->expense[col-1];		
 			
 				dt->totrow->income[col] += dr->income[col-1];
-
 				dt->totrow->expense[col] += dr->expense[col-1];
 			}
 		}

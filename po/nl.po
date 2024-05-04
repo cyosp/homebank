@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: 3.2alpha1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-19 08:55+0100\n"
-"PO-Revision-Date: 2023-02-03 12:28+0000\n"
-"Last-Translator: Ismael <Unknown>\n"
+"PO-Revision-Date: 2023-03-27 13:10+0000\n"
+"Last-Translator: Gregory Dk <Unknown>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2023-03-19 17:16+0000\n"
-"X-Generator: Launchpad (build 997ba17554f0ee82f56d9282fce82d3e09a43780)\n"
+"X-Launchpad-Export-Date: 2023-05-18 13:56+0000\n"
+"X-Generator: Launchpad (build 333bbdc825b25f14e50a980a2dbe4dc39f3d34d9)\n"
 "Language: nl\n"
 
 #: ../data/homebank.desktop.in.in.h:1 ../src/dsp-mainwindow.c:702
@@ -463,7 +463,7 @@ msgstr "_Bereik:"
 #: ../src/dsp-account.c:2842
 #, c-format
 msgid "Toggle show %d days ahead"
-msgstr ""
+msgstr "%d dagen vooruit tonen aan/uit"
 
 #: ../src/dsp-account.c:2847 ../src/rep-budget.c:1326 ../src/rep-stats.c:1674
 #: ../src/ui-account.c:1915 ../src/ui-assist-start.c:536
@@ -1143,7 +1143,7 @@ msgstr "%d-k%d"
 #: ../src/hb-report.c:1047
 #, c-format
 msgid "%d-h%d"
-msgstr ""
+msgstr "%d-h%d"
 
 #: ../src/homebank.c:70
 msgid "Output version information and exit"
@@ -1210,7 +1210,7 @@ msgstr "Per instelling"
 #: ../src/hub-scheduled.c:350
 #, c-format
 msgid "sum: %s (%s + %s)"
-msgstr ""
+msgstr "som: %s (%s + %s)"
 
 #: ../src/hub-scheduled.c:394
 msgid "No transaction to add"
@@ -2624,6 +2624,8 @@ msgid ""
 "Annual\n"
 "Total"
 msgstr ""
+"Jaarlijks\n"
+"Totaal"
 
 #. gtk_tree_view_column_set_title(col, _("Monthly Average"));
 #: ../src/ui-budget-tabview.c:1589
@@ -2631,6 +2633,8 @@ msgid ""
 "Monthly\n"
 "Average"
 msgstr ""
+"Maandelijks\n"
+"Gemiddeld"
 
 #: ../src/ui-budget-tabview.c:1602
 msgid "Monthly"
@@ -3958,7 +3962,7 @@ msgstr "Week"
 
 #: ../src/ui-widgets-data.c:88
 msgid "Fortnight"
-msgstr ""
+msgstr "Twee weken"
 
 #: ../src/ui-widgets-data.c:90
 msgid "Quarter"
@@ -4277,15 +4281,3 @@ msgstr "Bankkosten"
 #: ../src/ui-widgets.c:1348
 msgid "Direct Debit"
 msgstr "Automatische incasso"
-
-#~ msgid "Annual Total"
-#~ msgstr "Jaartotaal"
-
-#~ msgid "Monthly Average"
-#~ msgstr "Gemiddelde per maand"
-
-#~ msgid "Budget (table view)"
-#~ msgstr "Budget (tabelweergave)"
-
-#~ msgid "Toggle show future transaction"
-#~ msgstr "Toekomstige transacties aan/uit tonen"

@@ -1,25 +1,25 @@
 # Hungarian translation for homebank
 # Copyright (c) 2007 Rosetta Contributors and Canonical Ltd 2007
 # This file is distributed under the same license as the homebank package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2007.
 #
 # Translators:
-# Balázs Úr <ur.balazs@fsf.hu>, 2019
-# Balázs Meskó <meskobalazs@gmail.com>, 2019
 #
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2007.
+# Balázs Úr <ur.balazs@fsf.hu>, 2019.
+# Balázs Meskó <meskobalazs@gmail.com>, 2019, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: homebank\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2023-03-19 08:55+0100\n"
-"PO-Revision-Date: 2022-12-30 16:37+0000\n"
+"PO-Revision-Date: 2023-04-04 10:42+0000\n"
 "Last-Translator: Balázs Meskó <Unknown>\n"
-"Language-Team: Hungarian (https://www.transifex.com/fsf-hu/teams/77907/hu/)\n"
+"Language-Team: hu_HU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2023-03-19 17:16+0000\n"
-"X-Generator: Launchpad (build 997ba17554f0ee82f56d9282fce82d3e09a43780)\n"
+"X-Launchpad-Export-Date: 2023-05-18 13:56+0000\n"
+"X-Generator: Launchpad (build 333bbdc825b25f14e50a980a2dbe4dc39f3d34d9)\n"
 "Language: hu\n"
 
 #: ../data/homebank.desktop.in.in.h:1 ../src/dsp-mainwindow.c:702
@@ -134,12 +134,12 @@ msgstr "_Létrehozás"
 
 #: ../src/dsp-account.c:728
 msgid "Create Assignment"
-msgstr ""
+msgstr "Hozzárendelés létrehozása"
 
 #: ../src/dsp-account.c:729 ../src/dsp-account.c:804
 #, c-format
 msgid "%d created and prefixed with **PREFILLED**"
-msgstr ""
+msgstr "%d létrehozva ezzel az előtaggal: **PREFILLED**"
 
 #: ../src/dsp-account.c:758
 msgid ""
@@ -151,7 +151,7 @@ msgstr ""
 
 #: ../src/dsp-account.c:803
 msgid "Create Template"
-msgstr ""
+msgstr "Sablon létrehozása"
 
 #: ../src/dsp-account.c:1681
 msgid ""
@@ -468,7 +468,7 @@ msgstr "_Tartomány:"
 #: ../src/dsp-account.c:2842
 #, c-format
 msgid "Toggle show %d days ahead"
-msgstr ""
+msgstr "Következő %d nap megjelenítése be/ki"
 
 #: ../src/dsp-account.c:2847 ../src/rep-budget.c:1326 ../src/rep-stats.c:1674
 #: ../src/ui-account.c:1915 ../src/ui-assist-start.c:536
@@ -1133,7 +1133,7 @@ msgstr "(nincs partner)"
 #: ../src/hb-report.c:1019
 #, c-format
 msgid "%d-w%02d"
-msgstr ""
+msgstr "%d-h%02d"
 
 #. g_snprintf(buffer, 63, "%d-%02d", g_date_get_year(date), g_date_get_month(date));
 #. todo: will be innacurrate here if fiscal year start not 1/jan
@@ -1148,7 +1148,7 @@ msgstr "%dQ%d"
 #: ../src/hb-report.c:1047
 #, c-format
 msgid "%d-h%d"
-msgstr ""
+msgstr "%d-h%d"
 
 #: ../src/homebank.c:70
 msgid "Output version information and exit"
@@ -1215,7 +1215,7 @@ msgstr "Intézmény szerint"
 #: ../src/hub-scheduled.c:350
 #, c-format
 msgid "sum: %s (%s + %s)"
-msgstr ""
+msgstr "összeg: %s (%s + %s)"
 
 #: ../src/hub-scheduled.c:394
 msgid "No transaction to add"
@@ -1294,11 +1294,11 @@ msgstr "utoljára egyeztetett"
 
 #: ../src/list-account.c:550
 msgid "until overdraft"
-msgstr ""
+msgstr "folyószámlahitelig"
 
 #: ../src/list-account.c:566
 msgid "before maximum"
-msgstr ""
+msgstr "maximum előtt"
 
 #: ../src/list-account.c:677
 msgid "Accounts"
@@ -1320,7 +1320,7 @@ msgstr "- hiányzó kategória -"
 
 #: ../src/list-operation.c:1675
 msgid "Match"
-msgstr ""
+msgstr "Találat"
 
 #. header
 #: ../src/list-operation.c:1710 ../src/ui-filter.c:1155 ../src/ui-filter.c:1285
@@ -1597,15 +1597,15 @@ msgstr "Eredmények megjelenítése fánkdiagramként"
 
 #: ../src/rep-stats.c:1339
 msgid "View results as stack"
-msgstr ""
+msgstr "Eredmények megjelenítése halmozott oszlopdiagramként"
 
 #: ../src/rep-stats.c:1344
 msgid "Stack 100%"
-msgstr ""
+msgstr "100%-ra halmozott oszlopdiagram"
 
 #: ../src/rep-stats.c:1345
 msgid "View results as stack 100%"
-msgstr ""
+msgstr "Eredmények megjelenítése 100%-ra halmozott oszlopdiagramként"
 
 #: ../src/rep-stats.c:1361
 msgid "Legend"
@@ -1621,7 +1621,7 @@ msgstr "Kamat"
 
 #: ../src/rep-stats.c:1371
 msgid "Toggle rate"
-msgstr "Arány be/ki"
+msgstr "Kamat be/ki"
 
 #: ../src/rep-stats.c:1379 ../src/rep-time.c:1056
 msgid "Filter"
@@ -1641,15 +1641,15 @@ msgstr "Mód:"
 
 #: ../src/rep-stats.c:1683
 msgid "_Balance mode"
-msgstr ""
+msgstr "_Egyenleg módja"
 
 #: ../src/rep-stats.c:1698
 msgid "Sort by _amount"
-msgstr "Rendezés _összeg szerint"
+msgstr "Rendezés össze_g szerint"
 
 #: ../src/rep-stats.c:1703
 msgid "Compare Exp. & Inc."
-msgstr "Összehasonlítás Kiadás és Bevétel"
+msgstr "Kiadás és bevétel összehasonlítása"
 
 #: ../src/rep-stats.c:1814
 msgid "Total:"
@@ -1928,7 +1928,7 @@ msgstr "kihagyás a számlaössze_sítőből"
 
 #: ../src/ui-account.c:2032
 msgid "outflow into summary"
-msgstr ""
+msgstr "kiadások az összesítőbe"
 
 #: ../src/ui-account.c:2037
 msgid "exclude from the _budget"
@@ -2620,14 +2620,14 @@ msgstr "Összegzések"
 msgid ""
 "Annual\n"
 "Total"
-msgstr ""
+msgstr "Éves összeg"
 
 #. gtk_tree_view_column_set_title(col, _("Monthly Average"));
 #: ../src/ui-budget-tabview.c:1589
 msgid ""
 "Monthly\n"
 "Average"
-msgstr ""
+msgstr "Havi átlag"
 
 #: ../src/ui-budget-tabview.c:1602
 msgid "Monthly"
@@ -2705,13 +2705,13 @@ msgstr "Bemenet törlése"
 #. TRANSLATORS: 'txn' is abbrevation for transaction
 #: ../src/ui-category.c:1338 ../src/ui-payee.c:901
 msgid "# txn"
-msgstr ""
+msgstr "# tx"
 
 #. TRANSLATORS: 'cfg' is abbrevation for configuration
 #. TRANSLATORS: 'txn' is abbrevation for configuration
 #: ../src/ui-category.c:1352 ../src/ui-payee.c:916
 msgid "# cfg"
-msgstr ""
+msgstr "# kfg"
 
 #: ../src/ui-category.c:1478
 msgid "Delete unused categories"
@@ -2739,7 +2739,7 @@ msgstr "_Bevétel"
 
 #: ../src/ui-category.c:1761
 msgid "Propagate to _children"
-msgstr ""
+msgstr "Kiterjesztés a gye_rmekekre"
 
 #: ../src/ui-category.c:1815
 #, c-format
@@ -3013,7 +3013,7 @@ msgstr "Állapot oszlop hozzáadása"
 
 #: ../src/ui-dialogs.c:874
 msgid "Detail split lines"
-msgstr ""
+msgstr "Osztott sorok részletezése"
 
 #. 123456789012345678901234567890123456789012345678901234567890
 #: ../src/ui-dialogs.c:884
@@ -3022,7 +3022,7 @@ msgid ""
 "from 'All transaction', or you selected an option."
 msgstr ""
 "A fájl nem a HomeBank CSV formátumában lesz, mert az „Összes tranzakció”\n"
-"exportálását kérte, vagy kiválasztott egy beállítást"
+"exportálását kérte, vagy kiválasztott egy beállítást."
 
 #: ../src/ui-dialogs.c:954
 msgid "Export as PDF"
@@ -3051,16 +3051,16 @@ msgstr "Ú_j létrehozása"
 
 #: ../src/ui-dialogs.c:1127
 msgid "Use _Selection"
-msgstr ""
+msgstr "_Kijelölés használata"
 
 #: ../src/ui-dialogs.c:1155
 msgid "Source transfer"
-msgstr ""
+msgstr "Forrás átvezetése"
 
 #. target listview
 #: ../src/ui-dialogs.c:1172
 msgid "Target association suggested"
-msgstr ""
+msgstr "Célkapcsolat javasolva"
 
 #: ../src/ui-dialogs.c:1177
 msgid ""
@@ -3424,7 +3424,7 @@ msgstr "_Részletek megjelenítése"
 
 #: ../src/ui-pref.c:1427
 msgid "Include _transfer"
-msgstr ""
+msgstr "Á_tvezetés belevétele"
 
 #: ../src/ui-pref.c:1437
 msgid "Budget options"
@@ -3544,11 +3544,11 @@ msgstr "Emlékeztető beleszámítása az egyenlegbe"
 
 #: ../src/ui-pref.c:1766
 msgid "Lock reconciled for any changes"
-msgstr ""
+msgstr "Az egyeztetettek minden változásának zárolása"
 
 #: ../src/ui-pref.c:1777
 msgid "Transaction dialog"
-msgstr "Tranzakciós párbeszéd"
+msgstr "Tranzakciós párbeszédablak"
 
 #: ../src/ui-pref.c:1781
 msgid "_Keep the last date when multiple add"
@@ -3877,7 +3877,7 @@ msgstr ""
 
 #: ../src/ui-transaction.c:1584
 msgid "No rate available to auto fill"
-msgstr ""
+msgstr "Nincs elérhető kamat az automatikus kitöltéshez"
 
 #: ../src/ui-transaction.c:1616
 msgid "T_o:"
@@ -3948,7 +3948,7 @@ msgstr "Hét"
 
 #: ../src/ui-widgets-data.c:88
 msgid "Fortnight"
-msgstr ""
+msgstr "Két hét"
 
 #: ../src/ui-widgets-data.c:90
 msgid "Quarter"
@@ -4088,7 +4088,7 @@ msgstr "Elmúlt 12 hónapban"
 
 #: ../src/ui-widgets-data.c:171
 msgid "30 Days Around"
-msgstr ""
+msgstr "30 napos környezet"
 
 #: ../src/ui-widgets-data.c:172
 msgid "All Date"
@@ -4267,15 +4267,3 @@ msgstr "Számlakezelési díj"
 #: ../src/ui-widgets.c:1348
 msgid "Direct Debit"
 msgstr "Direkt kifizetés"
-
-#~ msgid "Toggle show future transaction"
-#~ msgstr "Jövőbeli tranzakciók láthatósága be/ki"
-
-#~ msgid "Annual Total"
-#~ msgstr "Éves összegzés"
-
-#~ msgid "Monthly Average"
-#~ msgstr "Havi átlag"
-
-#~ msgid "Budget (table view)"
-#~ msgstr "Költségvetés (táblázatos nézet)"
