@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -588,9 +588,6 @@ Currency *cur;
 	{
 		DB( g_print(" found cur='%s'\n", cur->iso_code) );
 
-		cur->rate   = rate;
-		cur->mdate  = date;		
-
 		//#2002650 test if there is a change
 		if( rate != cur->rate )
 		{
@@ -603,6 +600,10 @@ Currency *cur;
 			DB( g_print(" rate was identical\n") );
 		}
 		#endif
+
+		cur->rate   = rate;
+		cur->mdate  = date;		
+
 	}
 
 	return retval;

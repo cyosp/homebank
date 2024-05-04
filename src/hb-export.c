@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -96,7 +96,10 @@ gint count, i;
 		g_ascii_formatd (amountbuf, sizeof (amountbuf), "%.2f", txn->amount);
 		g_string_append_printf (elt, "T%s\n", amountbuf);
 
-		sbuf = transaction_get_status_string(txn);
+		//#2051307 to prevent ? v to be exported as qif
+		sbuf = "";
+		if( txn->status == TXN_STATUS_CLEARED || txn->status == TXN_STATUS_RECONCILED)
+			transaction_get_status_string(txn);
 
 		g_string_append_printf (elt, "C%s\n", sbuf);
 
@@ -281,6 +284,7 @@ static void hb_pdf_draw_help_rect(cairo_t *cr, gint32 xcol, double x, double y, 
 
 typedef struct
 {
+	gboolean	statement;
 	gdouble	font_size;
 
 	gchar	*tabtext;
@@ -306,11 +310,11 @@ typedef struct
 static gint 
 hb_print_listview_get_idx_for_pagecol(PrintData *data, gint width, gint pagecol)
 {
-gint col, currw, numbreak;
+gint col, availw, numbreak;
 
 	//DB( g_print(" get col for pagerow %d\n", pagecol) );
 
-	currw = width;
+	availw = width;
 	numbreak = 1;
 	for(col=0 ; col < data->num_columns ; col++)
 	{
@@ -318,13 +322,13 @@ gint col, currw, numbreak;
 		if( numbreak >= pagecol )
 			break;
 
-		currw -= data->col_width[col];
+		availw -= data->col_width[col];
 		// new page column ?
-		if( currw < data->col_width[col] )
+		if( availw < data->col_width[col+1] )
 		{
 			//DB( g_print(" ++ --break--\n") );
 			numbreak++;
-			currw = width;
+			availw = width;
 		}
 	}
 
@@ -355,6 +359,8 @@ gchar **columns;
 PangoLayout *layout;
 PangoFontDescription *desc;
 gint text_width, text_height, line_height;
+
+	DB( g_print("\n-- begin print --\n") );
 
 	width  = gtk_print_context_get_width (context);
 	height = gtk_print_context_get_height (context);
@@ -400,6 +406,9 @@ gint text_width, text_height, line_height;
 	pango_layout_set_font_description (layout, desc);
 	pango_font_description_free (desc);
 
+	DB( g_print(" - compute column width - \n") );
+
+
 	i = 0;
 	count = 0;
 	while (data->lines[i] != NULL)
@@ -438,33 +447,55 @@ gint text_width, text_height, line_height;
 
 
 	data->num_lines = count;
-	DB( g_print(" num_lines: %d\n", data->num_lines) );
-
 	data->lines_per_page = floor (height / line_height);
-	DB( g_print(" lines_per_page: %d\n", data->lines_per_page) );
-	
 	data->numpagerow = (data->num_lines - 1) / data->lines_per_page + 1;
-	DB( g_print(" numpagerow: %d\n", data->numpagerow) );
 
+	DB( g_print(" num_lines: %d\n", data->num_lines) );
+	DB( g_print(" lines_per_page: %d\n", data->lines_per_page) );
+	DB( g_print(" numpagerow: %d\n", data->numpagerow) );
 	DB( g_print(" num_colums: %d\n", data->num_columns) );
 
-	//todo: detect/remove empty columns
+	DB( g_print(" width: %f\n", width) );
 
-	gint currw = width;
+	//todo: clamp columns for statement 
+	// (account) date info payee memo amount clr balance
+	//taken from 5.7.2
+	if( data->statement == TRUE )
+	{	
+	gdouble tmp = width - data->col_width[0] - data->col_width[4] - data->col_width[5] - data->col_width[6];
+
+		DB( g_print("\n - statement on - \n") );
+
+		DB( g_print(" substract: %d %d %d %d\n",  data->col_width[0] , data->col_width[4] , data->col_width[5] , data->col_width[6]) );
+		DB( g_print(" tmp %f\n", tmp) );
+		
+		data->col_width[1] = tmp / 4;	//info
+		data->col_width[2] = tmp / 4;	//payee
+		data->col_width[3] = 2*tmp / 4;	//memo
+	}
+
+
+	DB( g_print("\n - compute numpagecol - \n") );
+
 	data->numpagecol = 1;
+
+	gint availw = width;
 	for(i=0;i<data->num_columns;i++)
 	{
-		currw -= data->col_width[i];
-		DB( g_print(" colw[%d]=%d, currw=%d\n", i, data->col_width[i], currw) );
+		availw -= data->col_width[i];
+		DB( g_print(" colw[%d]=%d, availw=%d\n", i, data->col_width[i], availw) );
 
 		// new page column ?
-		if( currw < data->col_width[i] ) 
+		if( availw < data->col_width[i+1] ) 
 		{
 			DB( g_print(" --break--\n") );
 			data->numpagecol++;
-			currw = width;
+			availw = width;
 		}
 	}
+
+
+	DB( g_print("\n - assign column alignment - \n") );
 
 	//column 0 is left by default
 	data->col_align[0] = 1;
@@ -511,6 +542,10 @@ gint j, x;
 			//DB( g_print(" print r%d:c%d '%s'\n", i, j, columns[j]) );
 			pango_layout_set_text (layout, columns[j], -1);
 			
+			//5.7.4 add
+			pango_layout_set_width(layout, (data->col_width[j] - HB_PRINT_SPACING) * PANGO_SCALE);
+			pango_layout_set_ellipsize (layout, PANGO_ELLIPSIZE_END);
+			
 			//do align: 0=right, 1=left
 			if( data->col_align[j] == 0 )
 			{
@@ -532,8 +567,8 @@ gint j, x;
 
 
 
-//print is done from left to righ
-//page 1&2 will be the first colum to fit, then page 3&4 the other columns
+//print is done from left to right
+//page 1&2 will be the first column to fit, then page 3&4 the other columns
 static void
 hb_print_listview_draw_page (GtkPrintOperation *operation, GtkPrintContext *context, gint page_nr, gpointer user_data)
 {
@@ -678,8 +713,9 @@ double tmpval;
 }
 
 
+//note: statement is hardcoded for account print only
 void
-hb_print_listview(GtkWindow *parent, gchar *tabtext, gint8 *leftcols, gchar *title, gchar *filepath)
+hb_print_listview(GtkWindow *parent, gchar *tabtext, gint8 *leftcols, gchar *title, gchar *filepath, gboolean statement)
 {
 GtkPrintOperation *operation;
 GtkPrintSettings *settings;
@@ -687,12 +723,15 @@ PrintData *data;
 GError *error = NULL;
 
 	data = g_new0 (PrintData, 1);
+	
+	data->statement = statement;
+	
 	data->font_size = 12.0;
 	data->tabtext   = tabtext;
 	data->title     = title;
 	data->leftcols  = leftcols;
 
-	DB( g_print("tabtext debug:\n%s\n------\n", tabtext) );
+	DB( g_print("tabtext debug:\n%s\n", tabtext) );
 
 	operation = gtk_print_operation_new ();
 
@@ -731,6 +770,5 @@ GError *error = NULL;
 	}
 
 }
-
 
 

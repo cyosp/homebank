@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -49,6 +49,63 @@ extern struct Preferences *PREFS;
 
 
 /* = = = = = = = = = = = = = = = = = = = = */
+
+gchar *dialog_get_name(gchar *title, gchar *origname, GtkWindow *parentwindow)
+{
+GtkWidget *dialog, *content, *mainvbox, *getwidget;
+gchar *retval = NULL;
+
+	dialog = gtk_dialog_new_with_buttons (title,
+					    GTK_WINDOW (parentwindow),
+					    0,
+					    _("_Cancel"),
+					    GTK_RESPONSE_REJECT,
+					    _("_OK"),
+					    GTK_RESPONSE_ACCEPT,
+					    NULL);
+
+	content = gtk_dialog_get_content_area(GTK_DIALOG (dialog));
+
+	mainvbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	hb_widget_set_margin(GTK_WIDGET(mainvbox), SPACING_LARGE);
+	gtk_box_pack_start (GTK_BOX (content), mainvbox, TRUE, TRUE, 0);
+
+	getwidget = gtk_entry_new();
+	gtk_entry_set_width_chars(GTK_ENTRY(getwidget), 24);
+	gtk_box_pack_start (GTK_BOX (mainvbox), getwidget, FALSE, FALSE, 0);
+	gtk_widget_show_all(mainvbox);
+
+	if(origname != NULL)
+		gtk_entry_set_text(GTK_ENTRY(getwidget), origname);
+	gtk_widget_grab_focus (getwidget);
+
+	gtk_entry_set_activates_default (GTK_ENTRY(getwidget), TRUE);
+
+	gtk_dialog_set_default_response(GTK_DIALOG( dialog ), GTK_RESPONSE_ACCEPT);
+
+	//wait for the user
+	gint result = gtk_dialog_run (GTK_DIALOG (dialog));
+
+	if(result == GTK_RESPONSE_ACCEPT)
+	{
+	const gchar *name;
+
+		name = gtk_entry_get_text(GTK_ENTRY(getwidget));
+
+		/* ignore if entry is empty */
+		if (name && *name)
+		{
+			retval = g_strdup(name);
+		}
+    }
+
+	// cleanup and destroy
+	gtk_window_destroy (GTK_WINDOW(dialog));
+
+
+	return retval;
+}
+
 
 
 static void my_ui_dialog_add_action_class(GtkDialog *dialog, gint response_id, gchar *class_name)

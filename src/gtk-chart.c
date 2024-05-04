@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -1757,6 +1757,8 @@ gboolean valid = FALSE;
 		{
 			//subtract the LST_REPORT_POS_TOTAL line not to be drawed
 			chart->nb_items--;
+			//5.8 fix leak
+			g_free(label);
 			goto next;
 		}
 

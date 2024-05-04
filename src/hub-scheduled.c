@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -240,12 +240,14 @@ GList *selection, *list;
 		gtk_tree_model_get_iter(model, &iter, list->data);
 		gtk_tree_model_get(model, &iter, LST_DSPUPC_DATAS, &arc, -1);
 
+		DB( g_print(" %s %f\n", arc->memo, arc->amount) );
+
 		if( (arc != NULL) && (arc->flags & OF_AUTO) )
 		{
 			GLOBALS->changes_count++;
 			scheduled_date_advance(arc);
-
-			ui_hub_scheduled_populate(GLOBALS->mainwindow, NULL);
+			DB( g_print(" >skipping\n") );
+			//ui_hub_scheduled_populate(GLOBALS->mainwindow, NULL);
 		}
 		
 		list = g_list_next(list);
@@ -253,7 +255,7 @@ GList *selection, *list;
 
 	g_list_foreach(selection, (GFunc)gtk_tree_path_free, NULL);
 	g_list_free(selection);
-
+	ui_hub_scheduled_populate(GLOBALS->mainwindow, NULL);
 	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
 }
 
@@ -272,7 +274,7 @@ gint count;
 
 	//filter = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_sched_filter));
 
-	// sensitive agaisnt selection
+	// sensitive against selection
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_upc));
 	count = gtk_tree_selection_count_selected_rows(selection);
 
@@ -293,8 +295,6 @@ gint count;
 		gtk_widget_set_sensitive(GTK_WIDGET(data->BT_sched_editpost), FALSE);
 	}
 
-	DB( g_print(" update list info\n") );
-
 	//#1996505 add sum of selected
 	if( count > 1 )
 	{
@@ -305,6 +305,8 @@ gint count;
 	gchar buf2[64];
 	gchar buf3[64];
 	gdouble sumexp, suminc;
+
+		DB( g_print(" update list info\n") );
 
 		sumexp = suminc = 0.0;
 		//model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_upc));
@@ -379,6 +381,8 @@ gint count;
 
 static void ui_hub_scheduled_selection_cb(GtkTreeSelection *treeselection, gpointer user_data)
 {
+	DB( g_print("\n[hub-scheduled] selection\n") );
+
 	ui_hub_scheduled_update(GTK_WIDGET(gtk_tree_selection_get_tree_view (treeselection)), GINT_TO_POINTER(UF_SENSITIVE));
 }
 
@@ -429,6 +433,7 @@ void ui_hub_scheduled_populate(GtkWidget *widget, gpointer user_data)
 struct hbfile_data *data;
 GtkTreeModel *model;
 GtkTreeIter  iter;
+GtkTreeSelection *selection;
 GList *list;
 gdouble totexp = 0;
 gdouble totinc = 0;
@@ -442,8 +447,17 @@ GDate *date;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_upc));
+
+	g_signal_handlers_block_by_func (G_OBJECT (selection), G_CALLBACK (ui_hub_scheduled_selection_cb), NULL);
+
+
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_upc));
 	gtk_list_store_clear (GTK_LIST_STORE(model));
+
+	//5.7.4 add
+	g_object_ref(model); /* Make sure the model stays with us after the tree view unrefs it */
+	gtk_tree_view_set_model(GTK_TREE_VIEW(data->LV_upc), NULL); /* Detach model from view */
 
 	homebank_app_date_get_julian();
 
@@ -583,6 +597,11 @@ next:
 		      LST_DSPUPC_INCOME, totinc,
 		  -1);
 	}
+
+	//added 5.7.4
+	gtk_tree_view_set_model(GTK_TREE_VIEW(data->LV_upc), model); /* Re-attach model to view */
+	g_object_unref(model);
+	g_signal_handlers_unblock_by_func (G_OBJECT (selection), G_CALLBACK (ui_hub_scheduled_selection_cb), NULL);
 
 	ui_hub_scheduled_update(widget, NULL);
 }

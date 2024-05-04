@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -30,7 +30,9 @@ struct _tag
 
 	/* unsaved datas */
 	//gboolean	flt_select;
-	guint		usage_count;
+	guint16		nb_use_txn;
+	guint16		nb_use_all;
+	//guint		usage_count;
 };
 
 
@@ -56,6 +58,8 @@ guint32 *tags_clone(guint32 *tags);
 guint32 *tags_parse(const gchar *tagstring);
 gchar *tags_tostring(guint32 *tags);
 
+gint tags_delete_unused(void);
+void tags_fill_usage(void);
 void tag_move(guint32 key1, guint32 key2);
 gboolean tag_rename(Tag *item, const gchar *newname);
 

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -90,6 +90,7 @@ GtkWidget *make_entry_numeric(GtkWidget *label, gint min, gint max);
 GtkWidget *make_amount(GtkWidget *label);
 GtkWidget *make_exchange_rate(GtkWidget *label);
 GtkWidget *make_numeric(GtkWidget *label, gdouble min, gdouble max);
+GtkWidget *make_scrolled_window(GtkPolicyType hscrollbar_policy, GtkPolicyType vscrollbar_policy);
 GtkWidget *make_scale(GtkWidget *label);
 GtkWidget *make_long(GtkWidget *label);
 

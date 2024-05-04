@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -162,11 +162,9 @@ GtkWidget *box, *menubutton, *image, *scrollwin, *treeview;
 	//GtkWidget *template = ui_popover_tpl_create(data);
 
 	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, SPACING_MEDIUM);
-	scrollwin = gtk_scrolled_window_new(NULL,NULL);
+	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start(GTK_BOX(box), scrollwin, TRUE, TRUE, 0);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	treeview = ui_tag_listview_new(FALSE);
+	treeview = ui_tag_listview_new(FALSE, TRUE);
 	//data.LV_tag = treeview;
 	gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scrollwin), treeview);
 	gtk_widget_show_all(box);
@@ -199,12 +197,13 @@ GtkWidget *box, *menubutton, *image, *scrollwin, *treeview;
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-void ui_tag_listview_toggle_to_filter(GtkTreeView *treeview, Filter *filter)
+guint ui_tag_listview_toggle_to_filter(GtkTreeView *treeview, Filter *filter)
 {
 GtkTreeModel *model;
 GtkTreeIter	iter;
 gboolean valid;
 gboolean toggled;
+guint change = 0;
 
 	DB( g_print("(ui_tag_listview) toggle_to_filter\n") );
 
@@ -221,13 +220,14 @@ gboolean toggled;
 			-1);
 
 		DB( g_print(" get tag k:%3d = %d (%s)\n", tagitem->key, toggled, tagitem->name) );
-		da_flt_status_tag_set(filter, tagitem->key, toggled);
+		change += da_flt_status_tag_set(filter, tagitem->key, toggled);
 		
 		//tagitem->flt_select = toggled;
 
 		/* Make iter point to the next row in the list store */
 		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
 	}
+	return change;
 }
 
 
@@ -295,17 +295,77 @@ gint qselect = hb_clicklabel_to_int(uri);
 static gint
 ui_tag_listview_compare_func (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer userdata)
 {
-gint retval = 0;
+gint sortcol = GPOINTER_TO_INT(userdata);
 Tag *entry1, *entry2;
-//gchar *name1, *name2;
+gint retval = 0;
 
     gtk_tree_model_get(model, a, LST_DEFTAG_DATAS, &entry1, -1);
     gtk_tree_model_get(model, b, LST_DEFTAG_DATAS, &entry2, -1);
 
-	retval = hb_string_utf8_compare(entry1->name, entry2->name);
-
+    switch (sortcol)
+    {
+		case LST_DEFTAG_SORT_NAME:
+			retval = hb_string_utf8_compare(entry1->name, entry2->name);
+			break;
+		case LST_DEFTAG_SORT_USETXN:
+			retval = entry1->nb_use_all - entry2->nb_use_all;
+			break;
+		case LST_DEFTAG_SORT_USECFG:
+			retval = (entry1->nb_use_all - entry1->nb_use_txn) - (entry2->nb_use_all - entry2->nb_use_txn);
+			break;
+		default:
+			g_return_val_if_reached(0);
+	}
+		
     return retval;
 }
+
+
+static void
+ui_tag_listview_count_txn_cell_data_function (GtkTreeViewColumn *col,
+				GtkCellRenderer *renderer,
+				GtkTreeModel *model,
+				GtkTreeIter *iter,
+				gpointer user_data)
+{
+Tag *entry;
+gchar buffer[256];
+
+	gtk_tree_model_get(model, iter, LST_DEFTAG_DATAS, &entry, -1);
+	if(entry->nb_use_txn > 0)
+	{
+		g_snprintf(buffer, 256-1, "%d", entry->nb_use_txn);
+		g_object_set(renderer, "text", buffer, NULL);
+	}
+	else
+		g_object_set(renderer, "text", "", NULL);
+}
+
+
+static void
+ui_tag_listview_count_cfg_cell_data_function (GtkTreeViewColumn *col,
+				GtkCellRenderer *renderer,
+				GtkTreeModel *model,
+				GtkTreeIter *iter,
+				gpointer user_data)
+{
+Tag *entry;
+gchar buffer[256];
+guint use;
+
+	gtk_tree_model_get(model, iter, LST_DEFTAG_DATAS, &entry, -1);
+	use = entry->nb_use_all - entry->nb_use_txn;
+	if(use > 0)
+	{
+		g_snprintf(buffer, 256-1, "%d", use);
+		g_object_set(renderer, "text", buffer, NULL);
+	}
+	else
+		g_object_set(renderer, "text", "", NULL);
+}
+
+
+
 
 
 static void
@@ -449,7 +509,7 @@ GList *ltag, *list;
 
 
 GtkWidget *
-ui_tag_listview_new(gboolean withtoggle)
+ui_tag_listview_new(gboolean withtoggle, gboolean withcount)
 {
 GtkListStore *store;
 GtkWidget *treeview;
@@ -496,6 +556,41 @@ GtkTreeViewColumn	*column;
 		g_object_set_data(G_OBJECT(treeview), "togrdr_data", renderer);
 	}
 
+	// column: usage
+	if( withcount == TRUE )
+	{
+		renderer = gtk_cell_renderer_text_new ();
+		g_object_set(renderer, "xalign", 0.5, NULL);
+		
+		column = gtk_tree_view_column_new();
+		//TRANSLATORS: 'txn' is abbrevation for transaction
+		gtk_tree_view_column_set_title(column, _("# txn"));
+		gtk_tree_view_column_pack_start(column, renderer, TRUE);
+		gtk_tree_view_column_set_cell_data_func(column, renderer, ui_tag_listview_count_txn_cell_data_function, GINT_TO_POINTER(LST_DEFTAG_DATAS), NULL);
+		gtk_tree_view_column_set_alignment (column, 0.5);
+		gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
+		gtk_tree_view_column_set_sort_column_id (column, LST_DEFTAG_SORT_USETXN);
+		gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+		//by default hide this column
+		gtk_tree_view_column_set_visible(column, FALSE);
+
+		renderer = gtk_cell_renderer_text_new ();
+		g_object_set(renderer, "xalign", 0.5, NULL);
+		
+		column = gtk_tree_view_column_new();
+		//TRANSLATORS: 'txn' is abbrevation for configuration
+		gtk_tree_view_column_set_title(column, _("# cfg"));
+		gtk_tree_view_column_pack_start(column, renderer, TRUE);
+		gtk_tree_view_column_set_cell_data_func(column, renderer, ui_tag_listview_count_cfg_cell_data_function, GINT_TO_POINTER(LST_DEFTAG_DATAS), NULL);
+		gtk_tree_view_column_set_alignment (column, 0.5);
+		gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
+		gtk_tree_view_column_set_sort_column_id (column, LST_DEFTAG_SORT_USECFG);
+		gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+		//by default hide this column
+		gtk_tree_view_column_set_visible(column, FALSE);
+	}
+
+
 	// column 2: name
 	column = gtk_tree_view_column_new();
 	gtk_tree_view_column_set_title(column, _("Tag"));
@@ -509,15 +604,22 @@ GtkTreeViewColumn	*column;
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_tag_listview_name_cell_data_function, GINT_TO_POINTER(LST_DEFTAG_DATAS), NULL);
 
+	gtk_tree_view_column_set_sort_column_id (column, LST_DEFTAG_SORT_NAME);
 	gtk_tree_view_column_set_resizable(column, TRUE);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
 	// treeviewattribute
 	//gtk_tree_view_set_headers_visible (GTK_TREE_VIEW(treeview), FALSE);
 	gtk_tree_view_set_reorderable (GTK_TREE_VIEW(treeview), TRUE);
-	
-	gtk_tree_sortable_set_default_sort_func(GTK_TREE_SORTABLE(store), ui_tag_listview_compare_func, NULL, NULL);
-	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID, GTK_SORT_ASCENDING);
+
+
+	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_DEFTAG_SORT_NAME, ui_tag_listview_compare_func, GINT_TO_POINTER(LST_DEFTAG_SORT_NAME), NULL);
+	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_DEFTAG_SORT_USETXN, ui_tag_listview_compare_func, GINT_TO_POINTER(LST_DEFTAG_SORT_USETXN), NULL);
+	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_DEFTAG_SORT_USECFG, ui_tag_listview_compare_func, GINT_TO_POINTER(LST_DEFTAG_SORT_USECFG), NULL);
+
+
+	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), LST_DEFTAG_SORT_NAME, GTK_SORT_ASCENDING);
+
 
 	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(treeview), FALSE);
 
@@ -560,6 +662,48 @@ gchar *result = g_new0 (gchar, length+1);
 
   g_free (result);
 }
+
+
+static void
+ui_tag_manage_dialog_delete_unused( GtkWidget *widget, gpointer user_data)
+{
+struct ui_tag_manage_dialog_data *data = user_data;
+gboolean result;
+
+	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(GTK_WIDGET(widget), GTK_TYPE_WINDOW)), "inst_data");
+
+	DB( g_print("(ui_tag_manage_dialog) delete unused - data %p\n", data) );
+
+	result = ui_dialog_msg_confirm_alert(
+			GTK_WINDOW(data->dialog),
+			_("Delete unused tag"),
+			_("Are you sure you want to\npermanently delete unused tag?"),
+			_("_Delete"),
+			TRUE
+		);
+
+	if( result == GTK_RESPONSE_OK )
+	{
+	GtkTreeModel *model;	
+
+		//#1996275 fill usage before delete !
+		if( data->usagefilled == FALSE )
+		{
+			tags_fill_usage();
+			data->usagefilled = TRUE;
+		}
+
+		model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_tag));
+		gtk_list_store_clear (GTK_LIST_STORE(model));
+		
+		//#1917075
+		data->change += tags_delete_unused();
+	
+		//ui_tag_manage_dialog_refilter(data);
+		ui_tag_listview_populate(data->LV_tag, 0);
+	}
+}
+
 
 
 static void
@@ -611,6 +755,39 @@ gchar *filename = NULL;
 }
 
 
+static void
+ui_tag_manage_dialog_cb_show_usage (GtkToggleButton *button, gpointer user_data)
+{
+struct ui_tag_manage_dialog_data *data;
+gboolean showusage;
+GtkTreeViewColumn *column;
+
+	DB( g_print("(ui_tag_manage_dialog) show usage\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(GTK_WIDGET(button), GTK_TYPE_WINDOW)), "inst_data");
+
+	if( data->usagefilled == FALSE )
+	{
+		tags_fill_usage();
+		data->usagefilled = TRUE;
+	}
+
+	showusage = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->BT_showusage));
+
+	column = hbtk_treeview_get_column_by_id(GTK_TREE_VIEW(data->LV_tag), LST_DEFTAG_SORT_USETXN);
+	if(column != NULL)
+	{
+		gtk_tree_view_column_set_visible(column, showusage);
+	}
+	column = hbtk_treeview_get_column_by_id(GTK_TREE_VIEW(data->LV_tag), LST_DEFTAG_SORT_USECFG);
+	if(column != NULL)
+	{
+		gtk_tree_view_column_set_visible(column, showusage);
+	}
+
+}
+
+
 
 /**
  * ui_tag_manage_dialog_add:
@@ -620,6 +797,7 @@ static void
 ui_tag_manage_dialog_add(GtkWidget *widget, gpointer user_data)
 {
 struct ui_tag_manage_dialog_data *data;
+gboolean isadded;
 Tag *item;
 gchar *name;
 
@@ -630,20 +808,28 @@ gchar *name;
 
 	item = da_tag_malloc ();
 	item->name = g_strdup(name);
-
 	g_strstrip(item->name);
 	
+	isadded = FALSE;
 	if( strlen(item->name) > 0 )
 	{
-		if( da_tag_append(item) )
+		isadded = da_tag_append(item);
+		if( isadded == TRUE )
 		{
 			ui_tag_listview_add(GTK_TREE_VIEW(data->LV_tag), item);
 			data->change++;
 		}
 	}
-	else
+
+	//#2051349 warn user and free lack
+	if( isadded == FALSE )
+	{
+		DB( g_print(" existing item\n") );
 		da_tag_free (item);
-		
+		ui_dialog_msg_infoerror (GTK_WINDOW(data->dialog), GTK_MESSAGE_ERROR,
+			_("Error"),
+			_("Duplicate tag name. Try another name.") );
+	}
 	gtk_entry_set_text(GTK_ENTRY(data->ST_name), "");
 }
 
@@ -861,8 +1047,10 @@ GtkTreeIter iter;
 				newtag = da_tag_get(dsttagkey);
 
 				//#1771720: update count
-				newtag->usage_count += srctag->usage_count;
-				srctag->usage_count = 0;
+				newtag->nb_use_all += srctag->nb_use_all;
+				newtag->nb_use_txn += srctag->nb_use_txn;
+				srctag->nb_use_all = 0;
+				srctag->nb_use_txn = 0;
 
 				// add the new tag to listview
 				if(newtag)
@@ -914,7 +1102,7 @@ gint result;
 		title = g_strdup_printf (
 			_("Are you sure you want to permanently delete '%s'?"), item->name);
 
-		if( item->usage_count > 0 )
+		if( item->nb_use_all > 0 )
 		{
 			secondtext = _("This tag is used.\n"
 			    "That tag will be deleted from any transaction using it.");
@@ -1008,6 +1196,8 @@ static void ui_tag_manage_setup(struct ui_tag_manage_dialog_data *data)
 
 	DB( g_print(" connect widgets signals\n") );
 
+	g_signal_connect (G_OBJECT (data->BT_showusage) , "toggled", G_CALLBACK (ui_tag_manage_dialog_cb_show_usage), NULL);
+
 	g_object_bind_property (data->BT_add, "active", data->RE_addreveal, "reveal-child", G_BINDING_BIDIRECTIONAL);
 
 	g_signal_connect (G_OBJECT (data->ST_name), "activate", G_CALLBACK (ui_tag_manage_dialog_add), NULL);
@@ -1072,7 +1262,7 @@ gint w, h, dw, dh, row;
 	//set a nice dialog size
 	gtk_window_get_size(GTK_WINDOW(GLOBALS->mainwindow), &w, &h);
 	dh = (h*1.33/PHI);
-	//ratio 3:2
+	//ratio 2:3
 	dw = (dh * 2) / 3;
 	DB( g_print(" main w=%d h=%d => diag w=%d h=%d\n", w, h, dw, dh) );
 	gtk_window_set_default_size (GTK_WINDOW(dialog), dw, dh);
@@ -1101,6 +1291,11 @@ gint w, h, dw, dh, row;
 	//test headerbar
 	//content = gtk_dialog_get_header_bar(GTK_DIALOG (dialog));
 
+	widget = make_image_toggle_button(ICONNAME_HB_BUTTON_USAGE, _("Show Usage") );
+	data->BT_showusage = widget;
+	gtk_box_pack_start(GTK_BOX (bbox), widget, FALSE, FALSE, 0);	
+
+
 	menu = gtk_menu_new ();
 	gtk_widget_set_halign (menu, GTK_ALIGN_END);
 
@@ -1112,12 +1307,12 @@ gint w, h, dw, dh, row;
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
 	g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (ui_tag_manage_dialog_save_csv), data);
 	
-	//menuitem = gtk_separator_menu_item_new();
-	//gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
+	menuitem = gtk_separator_menu_item_new();
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
 	
-	//menuitem = gtk_menu_item_new_with_mnemonic (_("_Delete unused"));
-	//gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
-	//g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (ui_pay_manage_dialog_delete_unused), data);
+	menuitem = gtk_menu_item_new_with_mnemonic (_("_Delete unused"));
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
+	g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (ui_tag_manage_dialog_delete_unused), data);
 	
 	gtk_widget_show_all (menu);
 
@@ -1133,14 +1328,12 @@ gint w, h, dw, dh, row;
 	box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_grid_attach (GTK_GRID (table), box, 0, row, 2, 1);
 	
-	scrollwin = gtk_scrolled_window_new(NULL,NULL);
+	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start(GTK_BOX(box), scrollwin, TRUE, TRUE, 0);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scrollwin), HB_MINHEIGHT_LIST);
 	gtk_widget_set_hexpand (scrollwin, TRUE);
 	gtk_widget_set_vexpand (scrollwin, TRUE);
-	treeview = ui_tag_listview_new(FALSE);
+	treeview = ui_tag_listview_new(FALSE, TRUE);
 	data->LV_tag = treeview;
 	gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scrollwin), treeview);
 

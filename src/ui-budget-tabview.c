@@ -2840,11 +2840,9 @@ gint gridrow;
 	gtk_grid_attach (GTK_GRID (grid), vbox, 0, gridrow, 1, 1);
 
 	// Scrolled Window will permit to display budgets with a lot of active categories
-	scrollwin = gtk_scrolled_window_new(NULL, NULL);
+	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_widget_set_hexpand (scrollwin, TRUE);
 	gtk_widget_set_vexpand (scrollwin, TRUE);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
 
 	treeview = ui_bud_tabview_view_new ((gpointer) data);

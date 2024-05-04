@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -191,7 +191,7 @@ gchar *version;
   };
 */
 
-	static const gchar *copyright = "Copyright \xc2\xa9 1995-2023 - Maxime DOYEN";
+	static const gchar *copyright = "Copyright \xc2\xa9 1995-2024 - Maxime DOYEN";
 
 
 
@@ -703,6 +703,7 @@ gchar *pathfilename;
 
 	table = gtk_grid_new ();
 	gtk_grid_set_column_spacing (GTK_GRID (table), SPACING_MEDIUM);
+	hb_widget_set_margin(table, SPACING_MEDIUM);
 	gtk_box_pack_start (GTK_BOX (content_area), table, FALSE, FALSE, 0);
 
 	//get our icon
@@ -730,6 +731,7 @@ gchar *pathfilename;
 	mainvbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, SPACING_MEDIUM);
 	gtk_box_pack_start (GTK_BOX (content_area), mainvbox, FALSE, FALSE, 0);
 	gtk_widget_set_halign (mainvbox, GTK_ALIGN_CENTER);
+	hb_widget_set_margin(mainvbox, SPACING_LARGE);
 
 	//label = make_label (_("What do you want to do:"), 0, 0);
 	//gimp_label_set_attributes(GTK_LABEL(label), PANGO_ATTR_WEIGHT, PANGO_WEIGHT_BOLD, -1);

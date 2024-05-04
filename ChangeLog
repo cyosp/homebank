@@ -1,11 +1,38 @@
 
 
+2024-02-06  Maxime Doyen
+
+ Made 5.7.4 release
+
+ * change: migrating to GTK4 preparation (GtkScrolledWindow)
+ * change: statistic report default type is now Total
+ * wish  : #2037200 add a used feature for tags like for payee/categories
+ * wish  : #2044850 revert 5.7.2 print single account (statement) fit to the page width
+ * wish  : #2051419 management dialogs to shows hidden items by default 
+ * bugfix: template deletion was possible despite used into an account
+ * bugfix: dateentry was faultly trigger double parse/eval/update sequence
+ * bugfix: filter for report was faultly show always show items
+ * bugfix: update currency was not counting change to enable save
+ * bugfix: input a mindate > maxdate from the filter was possible with no warning
+ * bugfix: #2051440	export CSV not including memo field from split transactions
+ * bugfix: #2051349	add an existing category/payee/tag from manage dialog do not warn user
+ * bugfix: #2051307	export CSV not including remind status
+ * bugfix: #2050848	skip multiple Scheduled do not refresh as expected
+ * bugfix: #2048236	transfer are not included in forecast, balance mode
+ * bugfix: #2047647	cross-currency transfer do not propose target transaction
+ * bugfix: #2046157	info icon for transfers is not displayed
+ * bugfix: #2046032	date filter shows wrong date
+ * bugfix: #2043523	exclude zero-sum categories from Top Spending 
+
+
 2023-12-08  Maxime Doyen
 
  Made 5.7.3 release
 
  * change: budget report added sign on categories like in manage dialog
  * change: budget report only display fulfilled for budegt category
+ * wish  : #2042699 chart drill down shows the cat total when drawing subcat
+ * wish  : #2042683 assigment rule dialog to be wider and/or size saved
  * bugfix: forecast was sometimes faultly done for excluded/closed account
  * bugfix: date range 'last 12 months' start was not set to 1st day of -12 months
  * bugfix: #2045299 'install for me only' end with error message when creating optional desktop shortcut
@@ -16,14 +43,13 @@
  * bugfix: #2043223 budget report fulfilled column badly rounded display 99% vs 100%
  * bugfix: #2042676 accound dialog exclude from any report do not refresh the graph after close
  * bugfix: #2020181 mate: only french flag for payment icons 
- * wish  : #2042699 chart drill down shows the cat total when drawing subat
- * wish  : #2042683 assigment rule dialog to be wider and/or size saved
 
 
 2023-11-12  Maxime Doyen
 
  Made 5.7.2 release
 
+ * wish  : #2042692	count and show number of selected transactions when suppressing them
  * bugfix: crash was possible when no file loaded and change to main chart
  * bugfix: #2043152	lock icon for transaction sometime disapear due to column resize
  * bugfix: #2042771	currency don't update due to wrong api url since 5.7
@@ -32,11 +58,10 @@
  * bugfix: #2042484	category popoverlist shows subcat income standalone its expense parent
  * bugfix: #2042463	manage categories add subcategory fail after a search
  * bugfix: #2042035	assign edit cancel faultly persist the rule search
- * bugfix: #2040494	App crashes when exporting a report after I delete a category that contained data
+ * bugfix: #2040494	app crashes when exporting a report after I delete a category that contained data
  * bugfix: #2040010	ISO 8601 date format not respected when exporting to clipboard or CSV
  * bugfix: #2039995	budget by time do not filter txn type exp/inc
  * bugfix: #2039493	statistics report crash when opened with a too wide date range 
- * wish  : #2042692	count and show number of selected transactions when suppressing them
 
 
 2023-10-08  Maxime Doyen
@@ -47,6 +72,8 @@
  * new   : dateentry only rely on token and date order detection, glib failover
  * change: split dialog: add info+tooltip icon next to the amount input
  * change: split dialog: amount input is named according transaction type
+ * wish  : #2038601 "Schedule" and "Template" linked togglebuttons are not mutually exclusive
+ * wish  : #2034625	statistics Reportsorting by expense or income when using the Time Mode
  * bugfix: dateentry d, dm, md was sometimes wrong
  * bugfix: dateentry 2 year digits fix with 40/60 windowing
  * bugfix: #2037597 top 10 Spending Category chart legend labels sometimes ellipsized
@@ -62,8 +89,6 @@
  * bugfix: #2034764 statistics Report Total Row not reflecting displayed amounts
  * bugfix: #2034647 trend time Report Title does not match Interval
  * bugfix: #2034618	statistics report sometimes crashes with half year interval 
- * wish  : #2038601 "Schedule" and "Template" linked togglebuttons are not mutually exclusive
- * wish  : #2034625	statistics Reportsorting by expense or income when using the Time Mode
 
 
 2023-09-06  Maxime Doyen

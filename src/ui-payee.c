@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -333,10 +333,8 @@ GtkEntryCompletion *completion;
 
 
 	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, SPACING_MEDIUM);
-	scrollwin = gtk_scrolled_window_new(NULL,NULL);
+	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start(GTK_BOX(box), scrollwin, TRUE, TRUE, 0);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	//gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scrollwin), HB_MINHEIGHT_LIST);
 	treeview = gtk_tree_view_new_with_model (GTK_TREE_MODEL(store));
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
@@ -410,12 +408,13 @@ GtkCellRenderer *renderer;
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-void ui_pay_listview_toggle_to_filter(GtkTreeView *treeview, Filter *filter)
+guint ui_pay_listview_toggle_to_filter(GtkTreeView *treeview, Filter *filter)
 {
 GtkTreeModel *model;
 GtkTreeIter	iter;
 gboolean valid;
 gboolean toggled;
+guint change = 0;
 
 	DB( g_print("(ui_pay_listview) toggle_to_filter\n") );
 
@@ -432,13 +431,14 @@ gboolean toggled;
 			-1);
 
 		DB( g_print(" payee k:%3d = %d (%s)\n", payitem->key, toggled, payitem->name) );
-		da_flt_status_pay_set(filter, payitem->key, toggled);
+		change += da_flt_status_pay_set(filter, payitem->key, toggled);
 		
 		//payitem->flt_select = toggled;
 
 		/* Make iter point to the next row in the list store */
 		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
 	}
+	return change;
 }
 
 
@@ -906,7 +906,7 @@ GtkTreeViewColumn	*column;
 		gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
 		gtk_tree_view_column_set_sort_column_id (column, LST_DEFPAY_SORT_USETXN);
 		gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
-		//by degfault hide this column
+		//by default hide this column
 		gtk_tree_view_column_set_visible(column, FALSE);
 
 		renderer = gtk_cell_renderer_text_new ();
@@ -921,7 +921,7 @@ GtkTreeViewColumn	*column;
 		gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
 		gtk_tree_view_column_set_sort_column_id (column, LST_DEFPAY_SORT_USECFG);
 		gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
-		//by degfault hide this column
+		//by default hide this column
 		gtk_tree_view_column_set_visible(column, FALSE);
 	}
 
@@ -1172,6 +1172,7 @@ static void
 ui_pay_manage_dialog_add(GtkWidget *widget, gpointer user_data)
 {
 struct ui_pay_manage_dialog_data *data;
+gboolean isadded;
 Payee *item;
 gchar *name;
 
@@ -1182,19 +1183,28 @@ gchar *name;
 
 	item = da_pay_malloc ();
 	item->name = g_strdup(name);
-
 	g_strstrip(item->name);
 	
+	isadded = FALSE;
 	if( strlen(item->name) > 0 )
 	{
-		if( da_pay_append(item) )
+		isadded = da_pay_append(item); 
+		if( isadded == TRUE )
 		{
 			ui_pay_listview_add(GTK_TREE_VIEW(data->LV_pay), item);
 			data->change++;
 		}
 	}
-	else
+
+	//#2051349 warn user and free lack
+	if( isadded == FALSE )
+	{
+		DB( g_print(" existing item\n") );
 		da_pay_free (item);
+		ui_dialog_msg_infoerror (GTK_WINDOW(data->dialog), GTK_MESSAGE_ERROR,
+			_("Error"),
+			_("Duplicate payee name. Try another name.") );
+	}
 		
 	gtk_entry_set_text(GTK_ENTRY(data->ST_name), "");
 }
@@ -1266,10 +1276,8 @@ guint32 key;
 		widget = gtk_text_view_new ();
 		//#1697171 add wrap
 		gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(widget), GTK_WRAP_WORD);
-		scrollwin = gtk_scrolled_window_new (NULL, NULL);
+		scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 		gtk_widget_set_size_request (scrollwin, -1, 24);
-		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-		gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
 		gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), widget);
 		gtk_widget_set_hexpand (scrollwin, TRUE);
 		gtk_widget_set_vexpand (scrollwin, TRUE);
@@ -1699,9 +1707,12 @@ static void ui_pay_manage_setup(struct ui_pay_manage_dialog_data *data)
 	data->change = 0;
 	data->usagefilled = FALSE;
 
+	//#2051419 show hidden by default
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->BT_showhidden), TRUE);
+
 	DB( g_print(" populate\n") );
 	
-	ui_pay_listview_populate(data->LV_pay, NULL, FALSE);
+	ui_pay_manage_dialog_refilter(data);
 
 	//DB( g_print(" set widgets default\n") );
 

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -68,8 +68,9 @@ struct repvehicle_data *data;
 	data->filter->maxdate = gtk_date_entry_get_date(GTK_DATE_ENTRY(data->PO_maxdate));
 
 	// set min/max date for both widget
-	gtk_date_entry_set_maxdate(GTK_DATE_ENTRY(data->PO_mindate), data->filter->maxdate);
-	gtk_date_entry_set_mindate(GTK_DATE_ENTRY(data->PO_maxdate), data->filter->mindate);
+	//5.8 check for error
+		gtk_date_entry_set_error(GTK_DATE_ENTRY(data->PO_mindate), ( data->filter->mindate > data->filter->maxdate ) ? TRUE : FALSE);
+		gtk_date_entry_set_error(GTK_DATE_ENTRY(data->PO_maxdate), ( data->filter->maxdate < data->filter->mindate ) ? TRUE : FALSE);
 
 	g_signal_handler_block(data->CY_range, data->handler_id[HID_REPVEHICLE_RANGE]);
 	hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_range), FLT_RANGE_MISC_CUSTOM);
@@ -81,14 +82,14 @@ struct repvehicle_data *data;
 }
 
 
-static void repvehicle_action_refresh(GtkToolButton *toolbutton, gpointer user_data)
+static void repvehicle_action_refresh(GtkWidget *toolbutton, gpointer user_data)
 {
 struct repvehicle_data *data = user_data;
 
 	repvehicle_compute(data->window, NULL);
 }
 
-static void repvehicle_action_export(GtkToolButton *toolbutton, gpointer user_data)
+static void repvehicle_action_export(GtkWidget *toolbutton, gpointer user_data)
 {
 struct repvehicle_data *data = user_data;
 
@@ -111,6 +112,12 @@ gint range;
 	if(range != FLT_RANGE_MISC_CUSTOM)
 	{
 		filter_preset_daterange_set(data->filter, range, 0);
+
+		//#2046032 set min/max date for both widget
+		//5.8 check for error
+		gtk_date_entry_set_error(GTK_DATE_ENTRY(data->PO_mindate), ( data->filter->mindate > data->filter->maxdate ) ? TRUE : FALSE);
+		gtk_date_entry_set_error(GTK_DATE_ENTRY(data->PO_maxdate), ( data->filter->maxdate < data->filter->mindate ) ? TRUE : FALSE);
+
 
 		g_signal_handler_block(data->PO_mindate, data->handler_id[HID_REPVEHICLE_MINDATE]);
 		g_signal_handler_block(data->PO_maxdate, data->handler_id[HID_REPVEHICLE_MAXDATE]);
@@ -782,13 +789,11 @@ repvehicle_toolbar_create(struct repvehicle_data *data)
 GtkWidget *toolbar, *button;
 
 	toolbar = gtk_toolbar_new();
-
 	button = hbtk_toolbar_add_toolbutton(GTK_TOOLBAR(toolbar), ICONNAME_HB_REFRESH, _("Refresh"), _("Refresh results"));
 	data->BT_refresh = button;
-
 	button = hbtk_toolbar_add_toolbutton(GTK_TOOLBAR(toolbar), ICONNAME_HB_FILE_EXPORT, _("Export"), _("Export as CSV"));
 	data->BT_export = button;
-	
+
 	return toolbar;
 }
 
@@ -1083,9 +1088,7 @@ gint row, col;
 	
 
 	//detail
-	scrollwin = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
 	treeview = list_vehicle_create();
 	data->LV_report = treeview;

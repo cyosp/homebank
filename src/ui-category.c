@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -459,10 +459,8 @@ GtkEntryCompletion *completion;
 
 
 	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, SPACING_MEDIUM);
-	scrollwin = gtk_scrolled_window_new(NULL,NULL);
+	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start(GTK_BOX(box), scrollwin, TRUE, TRUE, 0);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	//gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scrollwin), HB_MINHEIGHT_LIST);
 	treeview = gtk_tree_view_new_with_model (GTK_TREE_MODEL(store));
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
@@ -539,13 +537,13 @@ GtkCellRenderer *renderer;
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 
-void
+guint
 ui_cat_listview_toggle_to_filter(GtkTreeView *treeview, Filter *filter)
 {
 GtkTreeModel *model;
 //GtkTreeSelection *selection;
 GtkTreeIter	iter, child;
-gint n_child;
+guint n_child, change = 0;
 gboolean valid;
 gboolean toggled;
 
@@ -564,7 +562,7 @@ gboolean toggled;
 			-1);
 
 		DB( g_print("    cat k:%3d = %d (%s)\n", catitem->key, toggled, catitem->name) );
-		da_flt_status_cat_set(filter, catitem->key, toggled);
+		change += da_flt_status_cat_set(filter, catitem->key, toggled);
 
 		//catitem->flt_select = toggled;
 
@@ -578,7 +576,7 @@ gboolean toggled;
 				-1);
 
 			DB( g_print(" subcat k:%3d = %d (%s)\n", catitem->key, toggled, catitem->name) );
-			da_flt_status_cat_set(filter, catitem->key, toggled);
+			change += da_flt_status_cat_set(filter, catitem->key, toggled);
 
 			//catitem->flt_select = toggled;
 
@@ -589,6 +587,7 @@ gboolean toggled;
 		/* Make iter point to the next row in the list store */
 		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
 	}
+	return change;
 }
 
 
@@ -1573,10 +1572,9 @@ static void
 ui_cat_manage_dialog_add(GtkWidget *widget, gpointer user_data)
 {
 struct ui_cat_manage_dialog_data *data;
-gboolean subcat = GPOINTER_TO_INT(user_data);
+gboolean isadded, subcat = GPOINTER_TO_INT(user_data);
 const gchar *name;
 //GtkTreeModel *model;
-GtkTreeIter  parent_iter;
 GtkWidget *tmpwidget;
 Category *item, *paritem;
 gint type;
@@ -1590,56 +1588,64 @@ gint type;
 	name = gtk_entry_get_text(GTK_ENTRY(tmpwidget));
 	//model  = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_cat));
 
-	/* ignore if item is empty */
-	if (name && *name)
+	item = da_cat_malloc();
+	item->name = g_strdup(name);
+	g_strstrip(item->name);
+
+	isadded = FALSE;
+	if( strlen(item->name) > 0 )
 	{
-		data->change++;
-
-		item = da_cat_malloc();
-		item->name = g_strdup(name);
-
-		g_strstrip(item->name);
-
-		if( strlen(item->name) > 0 )
+		/* if cat use new id */
+		if(subcat == FALSE)
 		{
-			/* if cat use new id */
-			if(subcat == FALSE)
-			{
-				type = hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_type));
-				if(type == 1)
-					item->flags |= GF_INCOME;
+			type = hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_type));
+			if(type == 1)
+				item->flags |= GF_INCOME;
 
-				if( da_cat_append(item) )
-				{
-					DB( g_print(" => add cat: %p %d, %s type=%d\n", item, subcat, item->name, type) );
-					ui_cat_listview_add(GTK_TREE_VIEW(data->LV_cat), item, NULL);
-				}
+			isadded = da_cat_append(item);
+			if( isadded == TRUE )
+			{
+				DB( g_print(" => add cat: %p %d, %s type=%d\n", item, subcat, item->name, type) );
+				ui_cat_listview_add(GTK_TREE_VIEW(data->LV_cat), item, NULL);
+				data->change++;
 			}
-			/* if subcat use parent id & gf_income */
-			else
+		}
+		/* if subcat use parent id & gf_income */
+		else
+		{
+		GtkTreeIter parent_iter;
+
+			paritem = ui_cat_listview_get_selected_parent(GTK_TREE_VIEW(data->LV_cat), &parent_iter);
+			if(paritem)
 			{
-				paritem = ui_cat_listview_get_selected_parent(GTK_TREE_VIEW(data->LV_cat), &parent_iter);
-				if(paritem)
+				DB( g_print(" => selitem parent: %d, %s\n", paritem->key, paritem->name) );
+
+				item->parent = paritem->key;
+				item->flags |= (paritem->flags & GF_INCOME);
+				item->flags |= GF_SUB;
+
+				isadded = da_cat_append(item);
+				if( isadded == TRUE )
 				{
-					DB( g_print(" => selitem parent: %d, %s\n", paritem->key, paritem->name) );
-
-					item->parent = paritem->key;
-					item->flags |= (paritem->flags & GF_INCOME);
-					item->flags |= GF_SUB;
-
-					if(da_cat_append(item))
-					{
-						DB( g_print(" => add subcat: %p %d, %s\n", item, subcat, item->name) );
-						ui_cat_listview_add(GTK_TREE_VIEW(data->LV_cat), item, &parent_iter);
-					}
+					DB( g_print(" => add subcat: %p %d, %s\n", item, subcat, item->name) );
+					ui_cat_listview_add(GTK_TREE_VIEW(data->LV_cat), item, &parent_iter);
+					data->change++;
 				}
 			}
 		}
-		else
-			da_cat_free(item);
-
-		gtk_entry_set_text(GTK_ENTRY(tmpwidget),"");
 	}
+
+	//#2051349 warn user and free lack
+	if( isadded == FALSE )
+	{
+		DB( g_print(" existing item\n") );
+		da_cat_free(item);
+		ui_dialog_msg_infoerror(GTK_WINDOW(data->dialog), GTK_MESSAGE_ERROR,
+			_("Error"),
+			_("Duplicate category name. Try another name.") );
+	}
+
+	gtk_entry_set_text(GTK_ENTRY(tmpwidget),"");
 }
 
 
@@ -2292,6 +2298,9 @@ ui_cat_manage_dialog_setup(struct ui_cat_manage_dialog_data *data)
 	data->change = 0;
 	data->usagefilled = FALSE;
 
+	//#2051419 show hidden by default
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->BT_showhidden), TRUE);
+
 	DB( g_print(" populate\n") );
 	
 	//debug
@@ -2462,9 +2471,7 @@ gint w, h, dw, dh, row;
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_grid_attach (GTK_GRID (table), vbox, 0, row, 2, 1);
 	
-	scrollwin = gtk_scrolled_window_new(NULL,NULL);
-    gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scrollwin), HB_MINHEIGHT_LIST);
  	treeview = ui_cat_listview_new(FALSE, TRUE);
 	data->LV_cat = treeview;

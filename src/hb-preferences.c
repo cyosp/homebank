@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -271,8 +271,8 @@ gint i;
 	PREFS->txn_memoacp = TRUE;
 	PREFS->txn_memoacp_days = 365;
 	//#1887212
-	PREFS->txn_xfer_daygap = 2;
-	PREFS->txn_xfer_syncstat = FALSE;
+	PREFS->xfer_daygap = 2;
+	PREFS->xfer_syncstat = FALSE;
 
 	PREFS->toolbar_style = 4;	//text beside icons
 	PREFS->grid_lines = GTK_TREE_VIEW_GRID_LINES_NONE;
@@ -751,8 +751,8 @@ GError *error = NULL;
 				homebank_pref_get_boolean(keyfile, group, "LockReconciled", &PREFS->lockreconciled);
 				homebank_pref_get_boolean(keyfile, group, "TxnMemoAcp", &PREFS->txn_memoacp);
 				homebank_pref_get_short  (keyfile, group, "TxnMemoAcpDays", &PREFS->txn_memoacp_days);
-				homebank_pref_get_short  (keyfile, group, "TxnXferDayGap", &PREFS->txn_xfer_daygap);
-				homebank_pref_get_boolean(keyfile, group, "TxnXferSyncStatus", &PREFS->txn_xfer_syncstat);
+				homebank_pref_get_short  (keyfile, group, "TxnXferDayGap", &PREFS->xfer_daygap);
+				homebank_pref_get_boolean(keyfile, group, "TxnXferSyncStatus", &PREFS->xfer_syncstat);
 				
 
 				if( g_key_file_has_key(keyfile, group, "ColumnsOpe", NULL) )
@@ -889,7 +889,6 @@ GError *error = NULL;
 					//leak
 					g_free(src);
 				}
-
 
 				homebank_pref_get_short(keyfile, group, "FiscYearDay", &PREFS->fisc_year_day);
 				homebank_pref_get_short(keyfile, group, "FiscYearMonth", &PREFS->fisc_year_month);
@@ -1231,8 +1230,8 @@ GError *error = NULL;
 		g_key_file_set_boolean (keyfile, group, "LockReconciled", PREFS->lockreconciled);
 		g_key_file_set_boolean (keyfile, group, "TxnMemoAcp", PREFS->txn_memoacp);
 		g_key_file_set_integer (keyfile, group, "TxnMemoAcpDays" , PREFS->txn_memoacp_days);
-		g_key_file_set_integer (keyfile, group, "TxnXferDayGap" , PREFS->txn_xfer_daygap);
-		g_key_file_set_boolean (keyfile, group, "TxnXferSyncStatus", PREFS->txn_xfer_syncstat);
+		g_key_file_set_integer (keyfile, group, "TxnXferDayGap" , PREFS->xfer_daygap);
+		g_key_file_set_boolean (keyfile, group, "TxnXferSyncStatus", PREFS->xfer_syncstat);
 
 		//register colums
 		g_key_file_set_integer_list(keyfile, group, "ColumnsOpe", PREFS->lst_ope_columns, NUM_LST_DSPOPE);

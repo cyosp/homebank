@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -1181,11 +1181,12 @@ GDate *post_date;
 		if(scheduled_is_postable(arc) == TRUE)
 		{
 		Account *acc;
-		Transaction *txn;
+		Transaction *txn, *child;
 
 			DB2( g_print(" is postable\n") );
 
 			nbinsert = 0;
+			child = NULL;
 			txn = da_transaction_malloc();
 			da_transaction_init_from_template(txn, arc);
 			
@@ -1200,6 +1201,12 @@ GDate *post_date;
 
 			txn->date = curdate = arc->nextdate;
 
+			//#2048236 also add child xfer txn to computing
+			if( txn->flags & OF_INTXFER )
+			{
+				child = transaction_xfer_child_new_from_txn(txn);
+			} 
+
 			//if arc->nexdate is prior flt->mindate, it will be filtered out
 			if( (filter_txn_match(flt, txn) == 1) )
 			{
@@ -1209,6 +1216,13 @@ GDate *post_date;
 					DB3( hb_print_date(curdate, "curdate=") );
 
 					datatable_data_add_txn(dt, src, intvl, txn, flt);
+
+					//#2048236 also add child xfer txn to computing
+					if( child != NULL )
+					{
+						child->date = curdate;
+						datatable_data_add_txn(dt, src, intvl, child, flt);
+					}
 
 					//mark column as forecast
 					guint idx = report_interval_get_pos(intvl, flt->mindate, txn);
@@ -1225,6 +1239,8 @@ GDate *post_date;
 			}
 
 			da_transaction_free (txn);
+			da_transaction_free (child);
+			
 		}
 nextarc:
 		list = g_list_next(list);

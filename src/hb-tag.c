@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -352,6 +352,107 @@ guint count = 0;
 	}
 
 	g_free(tmp);
+}
+
+
+gint
+tags_delete_unused(void)
+{
+GList *ltag, *list;
+gint count = 0;
+
+	ltag = list = g_hash_table_get_values(GLOBALS->h_tag);
+	while (list != NULL)
+	{
+	Tag *entry = list->data;
+
+		if(entry->nb_use_all <= 0 && entry->key > 0)
+		{
+			da_tag_delete (entry->key);
+			count++;
+		}
+		list = g_list_next(list);
+	}
+	g_list_free(ltag);
+	return count;
+}
+
+
+static void
+_tags_fill_usage(guint32 *tags, gboolean txn)
+{
+guint count = 0;
+
+	if(tags != NULL)
+	{
+		while(*tags != 0 && count < 32)
+		{
+		Tag *tag = da_tag_get(*tags);
+
+			tag->nb_use_all++;
+			if( txn == TRUE )
+				tag->nb_use_txn++;
+			tags++;
+			count++;
+		}
+	}
+}
+
+
+void
+tags_fill_usage(void)
+{
+GList *ltag;
+GList *lst_acc, *lnk_acc;
+GList *lnk_txn;
+GList *list;
+
+	DB( g_print("[tags] fill usage\n") );
+
+
+	ltag = list = g_hash_table_get_values(GLOBALS->h_tag);
+	while (list != NULL)
+	{
+	Tag *entry = list->data;
+		entry->nb_use_all = 0;
+		entry->nb_use_txn = 0;
+		list = g_list_next(list);
+	}
+	g_list_free(ltag);
+
+
+	lst_acc = g_hash_table_get_values(GLOBALS->h_acc);
+	lnk_acc = g_list_first(lst_acc);
+	while (lnk_acc != NULL)
+	{
+	Account *acc = lnk_acc->data;
+
+		lnk_txn = g_queue_peek_head_link(acc->txn_queue);
+		while (lnk_txn != NULL)
+		{
+		Transaction *txn = lnk_txn->data;
+
+			_tags_fill_usage(txn->tags, TRUE);
+			lnk_txn = g_list_next(lnk_txn);
+		}
+
+		lnk_acc = g_list_next(lnk_acc);
+	}
+	g_list_free(lst_acc);
+
+
+	list = g_list_first(GLOBALS->arc_list);
+	while (list != NULL)
+	{
+	Archive *entry = list->data;
+
+		_tags_fill_usage(entry->tags, FALSE);
+		list = g_list_next(list);
+	}
+
+	//future assign
+
+
 }
 
 

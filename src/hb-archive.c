@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -416,6 +416,28 @@ Archive *da_archive_init_from_transaction(Archive *arc, Transaction *txn, gboole
 /* = = = = = = = = = = = = = = = = = = = = */
 
 
+gboolean
+template_is_account_used(Archive *arc)
+{
+GList *lacc, *list;
+gboolean retval = FALSE;
+
+	lacc = list = g_hash_table_get_values(GLOBALS->h_acc);
+	while (list != NULL)
+	{
+	Account *acc = list->data;
+
+		if( acc->karc == arc->key )
+			retval = TRUE;
+
+		list = g_list_next(list);
+	}
+	g_list_free(lacc);
+	
+	return retval;
+}
+
+
 static void _sched_nextdate_weekend_adjust(GDate *tmpdate)
 {
 GDateWeekday wday;
@@ -433,11 +455,11 @@ static guint32 _sched_date_get_next_post(GDate *tmpdate, Archive *arc, guint32 n
 {
 guint32 nextpostdate = nextdate;
 
-	//DB( g_print("\n[scheduled] date_get_next_post\n") );
+	DB( g_print("\n[scheduled] date_get_next_post\n") );
 
 	g_date_set_julian(tmpdate, nextpostdate);
 
-	//DB( g_print("in : %2d-%2d-%4d\n", g_date_get_day(tmpdate), g_date_get_month (tmpdate), g_date_get_year(tmpdate) ) );
+	DB( g_print("in : %2d-%2d-%4d\n", g_date_get_day(tmpdate), g_date_get_month (tmpdate), g_date_get_year(tmpdate) ) );
 
 	switch(arc->unit)
 	{
@@ -455,7 +477,7 @@ guint32 nextpostdate = nextdate;
 			break;
 	}
 
-	//DB( g_print("out: %2d-%2d-%4d\n", g_date_get_day(tmpdate), g_date_get_month (tmpdate), g_date_get_year(tmpdate) ) );
+	DB( g_print("out: %2d-%2d-%4d\n", g_date_get_day(tmpdate), g_date_get_month (tmpdate), g_date_get_year(tmpdate) ) );
 
 	//#1906953 add ignore weekend
 	if( arc->weekend == ARC_WEEKEND_SKIP )

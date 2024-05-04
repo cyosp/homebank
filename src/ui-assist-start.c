@@ -1,5 +1,5 @@
 /*	HomeBank -- Free, easy, personal accounting for everyone.
- *	Copyright (C) 1995-2023 Maxime DOYEN
+ *	Copyright (C) 1995-2024 Maxime DOYEN
  *
  *	This file is part of HomeBank.
  *
@@ -284,10 +284,8 @@ GtkWidget *scrollwin;
 	gtk_widget_set_margin_top(widget, SPACING_LARGE);
 	gtk_box_pack_start (GTK_BOX (mainbox), widget, FALSE, FALSE, 0);
 
-	scrollwin = gtk_scrolled_window_new(NULL,NULL);
+	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start (GTK_BOX (mainbox), scrollwin, TRUE, TRUE, 0);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scrollwin), 0.75*HB_MINHEIGHT_LIST);
 	widget = make_label(NULL, 0.0, 0.0);
 	data->LB_cur_others = widget;
@@ -442,9 +440,7 @@ GtkWidget *scrollwin;
 	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
 
 
-	scrollwin = gtk_scrolled_window_new(NULL,NULL);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scrollwin), 0.75*HB_MINHEIGHT_LIST);
 	gtk_box_pack_start (GTK_BOX (mainbox), scrollwin, TRUE, TRUE, 0);
 	widget = make_label(NULL, 0.0, 0.5);

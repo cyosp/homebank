@@ -1,5 +1,5 @@
 /*	HomeBank -- Free, easy, personal accounting for everyone.
- *	Copyright (C) 1995-2023 Maxime DOYEN
+ *	Copyright (C) 1995-2024 Maxime DOYEN
  *
  *	This file is part of HomeBank.
  *
@@ -171,6 +171,7 @@ struct register_panel_data *data = user_data;
 gchar *title, *name, *filepath;
 GString *node;
 guint flags;
+gboolean statement = FALSE;
 
 	title = (data->showall == FALSE) ? data->acc->name : _("All transactions");
 	name  = g_strdup_printf("hb-%s.pdf", title);
@@ -191,11 +192,13 @@ guint flags;
 	{
 		flags |= LST_TXN_EXP_BAL;
 		//{ 0, 1, 2, 3, -1 };
+		//2044850 revert fitwidth for statement
+		statement = TRUE;
 	}
 	
 	node = list_txn_to_string(GTK_TREE_VIEW(data->LV_ope), TRUE, FALSE, flags);
 	
-	hb_print_listview(GTK_WINDOW(data->window), node->str, leftcols, title, filepath);
+	hb_print_listview(GTK_WINDOW(data->window), node->str, leftcols, title, filepath, statement);
 
 	g_string_free(node, TRUE);
 	g_free(filepath);
@@ -1478,7 +1481,7 @@ gboolean saverecondate = FALSE;
 	
 	//#492755 removed 4.3 let the child transfer unchanged
 	//#2019193 option the sync xfer status
-	if( PREFS->txn_xfer_syncstat == TRUE )
+	if( PREFS->xfer_syncstat == TRUE )
 	{
 		if( txn->flags & OF_INTXFER )
 		{

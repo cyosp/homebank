@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -33,7 +33,7 @@ enum
 	NUM_LST_REPORT
 };
 
-#define LST_REPORT_POS_TOTAL G_MAXINT
+#define LST_REPORT_POS_TOTAL	G_MAXINT
 
 
 // --- time stuff ---
