@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -1037,8 +1037,8 @@ GdkRGBA rgba;
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_show_confirm), PREFS->txn_showconfirm);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_memoacp), PREFS->txn_memoacp);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_memoacp_days), PREFS->txn_memoacp_days);
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_xfer_daygap), PREFS->txn_xfer_daygap);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_xfer_syncstat), PREFS->txn_xfer_syncstat);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_xfer_daygap), PREFS->xfer_daygap);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_xfer_syncstat), PREFS->xfer_syncstat);
 
 	// display format
 	gtk_entry_set_text(GTK_ENTRY(data->ST_datefmt), PREFS->date_format);
@@ -1175,8 +1175,8 @@ const gchar *datfmt;
 	PREFS->txn_showconfirm = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_show_confirm));
 	PREFS->txn_memoacp = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_memoacp));
 	PREFS->txn_memoacp_days = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_memoacp_days));
-	PREFS->txn_xfer_daygap = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_xfer_daygap));
-	PREFS->txn_xfer_syncstat = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_xfer_syncstat));
+	PREFS->xfer_daygap = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_xfer_daygap));
+	PREFS->xfer_syncstat = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_xfer_syncstat));
 
 	// display format
 	//1903437 don't allow empty/invalid entry

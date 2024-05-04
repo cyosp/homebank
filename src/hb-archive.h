@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -133,6 +133,7 @@ Archive *da_archive_init_from_transaction(Archive *arc, Transaction *txn, gboole
 
 GList *da_archive_glist_sorted(gint column);
 
+gboolean template_is_account_used(Archive *arc);
 
 void scheduled_nextdate_weekend_adjust(Archive *arc);
 guint32 scheduled_date_get_next_post(GDate *tmpdate, Archive *arc, guint32 nextdate);

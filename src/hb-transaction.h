@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -161,6 +161,7 @@ gchar *transaction_get_status_string(Transaction *txn);
 gboolean transaction_is_balanceable(Transaction *ope);
 gboolean transaction_acc_move(Transaction *txn, guint32 okacc, guint32 nkacc);
 
+Transaction *transaction_xfer_child_new_from_txn(Transaction *txn);
 Transaction *transaction_xfer_child_strong_get(Transaction *src);
 void transaction_xfer_search_or_add_child(GtkWindow *parent, Transaction *ope, guint32 kdstacc);
 void transaction_xfer_change_to_normal(Transaction *ope);

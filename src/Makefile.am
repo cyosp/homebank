@@ -70,6 +70,7 @@ homebank_SOURCES =  \
 	hb-xml.h \
 	homebank.c \
 	homebank.h \
+	icon-names.h \
 	hub-account.c \
 	hub-account.h \
 	hub-reptime.c \

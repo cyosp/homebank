@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -24,6 +24,7 @@
 #define HB_RESPONSE_SELECTION	1
 #define HB_RESPONSE_CREATE_NEW	2
 
+gchar *dialog_get_name(gchar *title, gchar *origname, GtkWindow *parentwindow);
 
 gint ui_dialog_msg_confirm_alert(GtkWindow *parent, gchar *title, gchar *secondtext, gchar *actionverb, gboolean destructive);
 

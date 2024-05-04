@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -361,7 +361,6 @@ gpointer key, value;
 }
 
 
-
 //this func should only recompute balance of acc groups
 void ui_hub_account_compute(GtkWidget *widget, gpointer user_data)
 {
@@ -443,7 +442,7 @@ GString *node;
 	//g_print ("Action %s activated\n", g_action_get_name (G_ACTION (action)));
 
 	node = lst_accview_to_string(GTK_TREE_VIEW(data->LV_acc), TRUE);
-	hb_print_listview(GTK_WINDOW(data->window), node->str, NULL, _("Your accounts"), NULL);
+	hb_print_listview(GTK_WINDOW(data->window), node->str, NULL, _("Your accounts"), NULL, FALSE);
 
 	g_string_free(node, TRUE);
 }
@@ -565,9 +564,7 @@ GtkWidget *hub, *label, *widget, *scrollwin, *treeview, *tbar, *bbox, *image;
 	hub = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	hb_widget_set_margins(GTK_WIDGET(hub), 0, SPACING_SMALL, SPACING_SMALL, SPACING_SMALL);
 
-	scrollwin = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start (GTK_BOX (hub), scrollwin, TRUE, TRUE, 0);
 	treeview = (GtkWidget *)lst_accview_new();
 	data->LV_acc = treeview;

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -83,6 +83,20 @@ typedef struct _GDateParseTokens GDateParseTokens;
 
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+
+#if MYDEBUG == 1
+static void
+_hb_dbg_date(gchar *title, GDate *date)
+{
+gchar buffer1[128];
+	g_date_strftime (buffer1, 128-1, "%a %d-%m-%Y", date);
+	g_print(" %s: [%s]\n", title != NULL ? title:"==>", buffer1);
+}
+#endif
+
+
+
 
 //https://en.wikipedia.org/wiki/Date_format_by_country
 
@@ -284,15 +298,13 @@ update_text(GtkDateEntry *self)
 GtkDateEntryPrivate *priv = self->priv;
 gchar label[127];
 
-	DB( g_print("\n[dateentry] beg update text\n") );
+	DB( g_print("\n[dateentry] '%s' update text\n", (gchar *)gtk_widget_get_name(GTK_WIDGET(self))) );
 
 	//%x : The preferred date representation for the current locale without the time.
 	//5.7 added %a to display abbreviated weekday
 	g_date_strftime (label, 127 - 1, "%a %x", priv->date);
 	gtk_entry_set_text (GTK_ENTRY (priv->entry), label);
 	DB( g_print(" = %s\n", label) );
-	
-	DB( g_print("\n[dateentry] end update text\n") );
 }
 
 
@@ -301,15 +313,17 @@ eval_date(GtkDateEntry *self)
 {
 GtkDateEntryPrivate *priv = self->priv;
 
-	DB( g_print("\n[dateentry] beg eval date\n") );
+	DB( g_print("\n[dateentry] '%s' eval date\n", (gchar *)gtk_widget_get_name(GTK_WIDGET(self))) );
 
-	DB( g_print(" pre %02d %02d %04d\n", g_date_get_day(priv->date), g_date_get_month(priv->date), g_date_get_year(priv->date)) );
+	DB( _hb_dbg_date("min", &priv->mindate) );
+	DB( _hb_dbg_date("max", &priv->maxdate) );
+
+	DB( _hb_dbg_date("in ", priv->date) );
 
 	g_date_clamp(priv->date, &priv->mindate, &priv->maxdate);
-	//DB( g_print(" min %02d %02d %04d\n", g_date_get_day(&priv->mindate), g_date_get_month(&priv->mindate), g_date_get_year(&priv->mindate)) );
-	//DB( g_print(" max %02d %02d %04d\n", g_date_get_day(&priv->maxdate), g_date_get_month(&priv->maxdate), g_date_get_year(&priv->maxdate)) );
 
-	DB( g_print(" post %02d %02d %04d\n", g_date_get_day(priv->date), g_date_get_month(priv->date), g_date_get_year(priv->date)) );
+	DB( _hb_dbg_date("out", priv->date) );
+
 
 	update_text(self);
 	
@@ -321,7 +335,6 @@ GtkDateEntryPrivate *priv = self->priv;
 
 	priv->lastdate = g_date_get_julian(priv->date);
 
-	DB( g_print("\n[dateentry] end eval date\n") );
 }
 
 
@@ -331,7 +344,7 @@ parse_date(GtkDateEntry *self)
 GtkDateEntryPrivate *priv = self->priv;
 const gchar *str;
 
-	DB( g_print("\n[dateentry] parse date\n") );
+	DB( g_print("\n[dateentry] '%s' parse date\n", (gchar *)gtk_widget_get_name(GTK_WIDGET(self))) );
 
 	str = gtk_entry_get_text (GTK_ENTRY (priv->entry));
 	DB( g_print(" inputstr='%s'\n", str) );
@@ -356,7 +369,7 @@ const gchar *str;
 		gtk_style_context_remove_class (gtk_widget_get_style_context (GTK_WIDGET(priv->entry)), GTK_STYLE_CLASS_WARNING);
 	}
 
-	DB( g_print(" date is d:%02d m:%02d y:%04d\n", g_date_get_day(priv->date), g_date_get_month(priv->date), g_date_get_year(priv->date)) );
+	DB( _hb_dbg_date(NULL, priv->date) );
 
 	eval_date(self);
 }
@@ -528,10 +541,11 @@ gtk_date_entry_cb_entry_activate(GtkWidget *gtkentry, gpointer user_data)
 {
 GtkDateEntry *dateentry = user_data;
 
-	DB( g_print("\n[dateentry] entry_activate\n") );
+	DB( g_print("\n[dateentry] '%s' entry_activate\n", (gchar *)gtk_widget_get_name(GTK_WIDGET(dateentry))) );
 
 	parse_date(dateentry);
-	eval_date(dateentry);
+	//5.8 done in parse_date
+	//eval_date(dateentry);
 }
 
 
@@ -543,7 +557,8 @@ GtkDateEntry *dateentry = user_data;
 	DB( g_print("\n[dateentry] entry focus-out-event %d\n", gtk_widget_is_focus(GTK_WIDGET(dateentry))) );
 
 	parse_date(dateentry);
-	eval_date(dateentry);
+	//5.8 done in parse_date
+	//eval_date(dateentry);
 	return FALSE;
 }
 
@@ -713,7 +728,7 @@ GtkWidget *vbox;
 	g_date_set_time_t(&priv->nowdate, time(NULL));
 	g_date_set_dmy(&priv->mindate,  1,  1, 1900);	//693596
 	g_date_set_dmy(&priv->maxdate, 31, 12, 2200);	//803533
-	update_text(dateentry);
+	//update_text(dateentry);
 
 
 	g_signal_connect (priv->entry, "key-press-event",
@@ -774,53 +789,24 @@ GtkDateEntry *dateentry;
 }
 
 
-/*
-**
-*/
-void 
-gtk_date_entry_set_mindate(GtkDateEntry *dateentry, guint32 julian_days)
+void
+gtk_date_entry_set_error(GtkDateEntry *dateentry, gboolean error)
 {
 GtkDateEntryPrivate *priv = dateentry->priv;
-	
-	DB( g_print("\n[dateentry] set mindate\n") );
 
-	g_return_if_fail (GTK_IS_DATE_ENTRY (dateentry));
-
-	if(g_date_valid_julian(julian_days))
-	{
-		g_date_set_julian (&priv->mindate, julian_days);
-	}
+	if( error == TRUE )
+		gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(priv->entry)), GTK_STYLE_CLASS_ERROR);
+	else
+		gtk_style_context_remove_class (gtk_widget_get_style_context (GTK_WIDGET(priv->entry)), GTK_STYLE_CLASS_ERROR);
 }
 
 
-/*
-**
-*/
-void 
-gtk_date_entry_set_maxdate(GtkDateEntry *dateentry, guint32 julian_days)
-{
-GtkDateEntryPrivate *priv = dateentry->priv;
-	
-	DB( g_print("\n[dateentry] set maxdate\n") );
-
-	g_return_if_fail (GTK_IS_DATE_ENTRY (dateentry));
-
-	if(g_date_valid_julian(julian_days))
-	{
-		g_date_set_julian (&priv->maxdate, julian_days);
-	}
-}
-
-
-/*
-**
-*/
 void
 gtk_date_entry_set_date(GtkDateEntry *dateentry, guint32 julian_days)
 {
 GtkDateEntryPrivate *priv = dateentry->priv;
 
-	DB( g_print("\n[dateentry] set date\n") );
+	DB( g_print("\n[dateentry] '%s' set date\n", (gchar *)gtk_widget_get_name(GTK_WIDGET(dateentry))) );
 
 	g_return_if_fail (GTK_IS_DATE_ENTRY (dateentry));
 
@@ -832,6 +818,7 @@ GtkDateEntryPrivate *priv = dateentry->priv;
 	{
 		g_date_set_time_t(priv->date, time(NULL));
 	}
+	DB( _hb_dbg_date(NULL, priv->date) );
 	eval_date(dateentry);
 }
 
@@ -844,9 +831,11 @@ gtk_date_entry_get_date(GtkDateEntry *dateentry)
 {
 GtkDateEntryPrivate *priv = dateentry->priv;
 	
-	DB( g_print("\n[dateentry] get date\n") );
+	DB( g_print("\n[dateentry] '%s' get date\n", (gchar *)gtk_widget_get_name(GTK_WIDGET(dateentry))) );
 
 	g_return_val_if_fail (GTK_IS_DATE_ENTRY (dateentry), 0);
+
+	DB( _hb_dbg_date(NULL, priv->date) );
 
 	return(g_date_get_julian(priv->date));
 }
@@ -857,7 +846,7 @@ gtk_date_entry_get_weekday(GtkDateEntry *dateentry)
 {
 GtkDateEntryPrivate *priv = dateentry->priv;
 	
-	DB( g_print("\n[dateentry] get weekday\n") );
+	DB( g_print("\n[dateentry] '%s' get weekday\n", (gchar *)gtk_widget_get_name(GTK_WIDGET(dateentry))) );
 
 	g_return_val_if_fail (GTK_IS_DATE_ENTRY (dateentry), 0);
 

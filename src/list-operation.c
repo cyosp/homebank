@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -883,8 +883,9 @@ char strbuf[G_ASCII_DTOSTR_BUF_SIZE];
 	//memo
 	//g_string_append (node, (memo != NULL) ? memo : "" );
 	g_string_append_c (node, sep );
-	DB( g_print(" mem: '%s'\n", ope->memo) );
-	list_txn_to_string_csv_text(node, sep, ope->memo);
+	//#2051440 include split memo :D
+	DB( g_print(" mem: '%s'\n", memo) );
+	list_txn_to_string_csv_text(node, sep, memo);
 
 	//amount
 	//#793719
@@ -902,6 +903,7 @@ char strbuf[G_ASCII_DTOSTR_BUF_SIZE];
 	//status
 	if( flags & LST_TXN_EXP_CLR )
 	{
+		DB( g_print("clr = %s\n", transaction_get_status_string(ope)) );
 		g_string_append_c (node, sep );
 		g_string_append (node, transaction_get_status_string(ope) );
 	}
@@ -952,6 +954,8 @@ GString *node;
 Transaction *ope;
 gdouble amount, samount;
 gchar sep;
+
+	DB( g_print("\n[list_txn] to string\n") );
 
 	//adding account, status, split, balance break csv reimport
 	//date payment info payee memo amount category tags
@@ -1021,6 +1025,10 @@ gchar sep;
 
 	g_string_append (node, "\n" );
 
+
+	DB( g_print(" head: '%s'", node->str) );
+
+
 	// each txn
 	//total = 0.0;
 	model = gtk_tree_view_get_model(treeview);
@@ -1053,9 +1061,14 @@ gchar sep;
 			{
 			guint i, nbsplit = da_splits_length(ope->splits);
 
+				DB( g_print(" split detail\n") );
+
 				for(i=0;i<nbsplit;i++)
 				{
 				Split *split = da_splits_get(ope->splits, i);
+
+					DB( g_print(" split %d\n", i) );
+
 					list_txn_to_string_line(node, sep, ope, split->kcat, split->memo, split->amount, flags);
 					//total += split->amount;
 				}

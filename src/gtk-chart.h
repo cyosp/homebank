@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -52,6 +52,7 @@ typedef gchar (* GtkChartPrintDoubleFunc) (gdouble value, gboolean minor);
 /* default zoomx for charts */
 #define GTK_CHART_BARW 			41	//24
 
+//TODO: #2038623 maybe go lower to 3 pixels for lines
 #define GTK_CHART_MINBARW 		 8	//4
 #define GTK_CHART_MAXBARW 		41	//128
 #define GTK_CHART_SPANBARW		GTK_CHART_MAXBARW+1

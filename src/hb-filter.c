@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -49,9 +49,6 @@ static void da_flt_clean(Filter *flt)
 {
 	if(flt != NULL)
 	{
-		g_free(flt->tag);
-		flt->tag = NULL;
-		
 		g_free(flt->memo);
 		flt->memo = NULL;
 
@@ -149,7 +146,6 @@ void da_flt_copy(Filter *src, Filter *dst)
 	dst->name = g_strdup(src->name);
 	dst->info = g_strdup(src->info);
 	dst->memo = g_strdup(src->memo);
-	dst->tag  = g_strdup(src->tag);
 	
 	dst->gbacc = g_array_copy(src->gbacc);
 	dst->gbpay = g_array_copy(src->gbpay);
@@ -184,45 +180,55 @@ guint i;
 #endif
 
 
-static void da_flt_item_set(GArray *array, guint32 key, gboolean status)
+static guint da_flt_item_set(GArray *array, guint32 key, gboolean status)
 {
+guint change = 0;
+
 	if(key < array->len)
 	{
 	gchar *sel = &g_array_index(array, gchar, key);
+		
+		change += (*sel != status) ? 1 : 0;
 		*sel = status;
-		DB( g_print(" modified existing [%d]=>%d\n", key, status) );
+		DB( g_print(" >update [%d]=>%d\n", key, status) );
+	}
+	else
+	if( status == TRUE )
+	{
+		DB( g_print(" >insert [%d]=>%d\n", key, status) );
+		g_array_insert_vals(array, key, &status, 1);
+		change++;
 	}
 	else
 	{
-		DB( g_print(" insert new val [%d]=>%d\n", key, status) );
-		g_array_insert_vals(array, key, &status, 1);
+		DB( g_print(" >nop: status off\n") );
 	}
+	return change;
 }
 
-void da_flt_status_tag_set(Filter *flt, guint32 ktag, gboolean status)
+guint da_flt_status_tag_set(Filter *flt, guint32 ktag, gboolean status)
 {
-	da_flt_item_set(flt->gbtag, ktag, status);
 	DB( g_print(" set tag %d to %d\n", ktag, status) );
+	return da_flt_item_set(flt->gbtag, ktag, status);
 }
 
-void da_flt_status_cat_set(Filter *flt, guint32 kcat, gboolean status)
+guint da_flt_status_cat_set(Filter *flt, guint32 kcat, gboolean status)
 {
-	da_flt_item_set(flt->gbcat, kcat, status);
 	DB( g_print(" set cat %d\n", kcat) );
+	return da_flt_item_set(flt->gbcat, kcat, status);
 }
 
-void da_flt_status_pay_set(Filter *flt, guint32 kpay, gboolean status)
+guint da_flt_status_pay_set(Filter *flt, guint32 kpay, gboolean status)
 {
-	da_flt_item_set(flt->gbpay, kpay, status);
 	DB( g_print(" set pay %d\n", kpay) );
+	return da_flt_item_set(flt->gbpay, kpay, status);
 }
 
-void da_flt_status_acc_set(Filter *flt, guint32 kacc, gboolean status)
+guint da_flt_status_acc_set(Filter *flt, guint32 kacc, gboolean status)
 {
-	da_flt_item_set(flt->gbacc, kacc, status);
 	DB( g_print(" set acc %d\n", kacc) );
+	return da_flt_item_set(flt->gbacc, kacc, status);
 }
-
 
 gboolean da_flt_status_tag_get(Filter *flt, guint32 ktag)
 {
@@ -272,8 +278,6 @@ gboolean da_flt_status_acc_get(Filter *flt, guint32 kacc)
 	DBOOB( g_warning("filter get acc out of bounds %d of %d", kacc, flt->gbacc->len) );
 	return FALSE;
 }
-
-
 
 
 /* TODO: check this : user in rep_time only */
@@ -355,6 +359,7 @@ gint i;
 	da_flt_init(flt);
 
 	//unsaved
+	flt->nbchanges = 0;
 	flt->nbdaysfuture = 0;
 	flt->type   = FLT_TYPE_ALL;
 	flt->status = FLT_STATUS_ALL;
@@ -362,31 +367,6 @@ gint i;
 	flt->forcevoid = PREFS->showvoid;
 
 	*flt->last_tab = '\0';
-}
-
-
-/* TODO: check this : used in rep_time only */
-
-void filter_set_tag_by_id(Filter *flt, guint32 key)
-{
-Tag *tag;
-
-	g_return_if_fail( flt != NULL );
-
-	DB( g_print("\n[filter] set tag by id\n") );
-	
-	if(flt->tag)
-	{
-		g_free(flt->tag);
-		flt->tag = NULL;
-	}
-
-	//todo change this
-	tag = da_tag_get(key);
-	if(tag)
-	{
-		flt->tag = g_strdup(tag->name);
-	}
 }
 
 
@@ -857,32 +837,38 @@ void filter_preset_status_set(Filter *flt, gint status)
 
 gchar *filter_daterange_text_get(Filter *flt)
 {
-gchar buffer1[128];
-gchar buffer2[128];
-gchar buffer3[128];
-GDate *date;
 gchar *retval = NULL;
 
 	g_return_val_if_fail( flt != NULL, NULL );
 
 	DB( g_print("\n[filter] daterange text get\n") );
-	
-	date = g_date_new_julian(flt->mindate);
-	g_date_strftime (buffer1, 128-1, PREFS->date_format, date);
-	
-	g_date_set_julian(date, flt->maxdate);
-	g_date_strftime (buffer2, 128-1, PREFS->date_format, date);
-	
-	if( flt->nbdaysfuture > 0 )
+
+	if( flt->mindate <= flt->maxdate )
 	{
-		g_date_set_julian(date, flt->maxdate + flt->nbdaysfuture);
-		g_date_strftime (buffer3, 128-1, PREFS->date_format, date);
-		retval = g_strdup_printf("%s — <s>%s</s> %s", buffer1, buffer2, buffer3);
+	gchar buffer1[128];
+	gchar buffer2[128];
+	gchar buffer3[128];
+	GDate *date;
+
+		date = g_date_new_julian(flt->mindate);
+		g_date_strftime (buffer1, 128-1, PREFS->date_format, date);
+		
+		g_date_set_julian(date, flt->maxdate);
+		g_date_strftime (buffer2, 128-1, PREFS->date_format, date);
+		
+		if( flt->nbdaysfuture > 0 )
+		{
+			g_date_set_julian(date, flt->maxdate + flt->nbdaysfuture);
+			g_date_strftime (buffer3, 128-1, PREFS->date_format, date);
+			retval = g_strdup_printf("%s — <s>%s</s> %s", buffer1, buffer2, buffer3);
+		}
+		else
+			retval = g_strdup_printf("%s — %s", buffer1, buffer2);
+		
+		g_date_free(date);
 	}
 	else
-		retval = g_strdup_printf("%s — %s", buffer1, buffer2);
-	
-	g_date_free(date);
+		retval = g_strdup(_("Invalid date range!"));
 
 	//return g_strdup_printf(_("<i>from</i> %s <i>to</i> %s — "), buffer1, buffer2);
 	return retval;

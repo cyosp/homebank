@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal ruleing for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -1775,10 +1775,7 @@ gint w, h, dw, dh;
 	gtk_box_pack_start (GTK_BOX (content), vbox, TRUE, TRUE, 0);
 	
 	// listview
-	scrollwin = gtk_scrolled_window_new(NULL,NULL);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	treeview = ui_asg_listview_new(FALSE);
 	data->LV_rul = treeview;
 	gtk_widget_set_size_request(treeview, HB_MINWIDTH_LIST, -1);

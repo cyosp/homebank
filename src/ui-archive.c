@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -867,6 +867,19 @@ gint result;
 		
 		gtk_tree_model_get(model, &iter, LST_DEFARC_DATAS, &item, -1);
 
+		//5.7.4 check if template is used
+		if( !(item->flags & OF_AUTO) )
+		{
+			if( template_is_account_used(item) == TRUE )
+			{
+				ui_dialog_msg_infoerror(GTK_WINDOW(data->dialog), GTK_MESSAGE_INFO,
+					_("Template delete"),
+					_("This template is used as an account template and cannot be deleted.")
+				);
+				return;	
+			}		
+		}
+
 		//#1940103 as memo can be null, use (no memo) instead
 		title = g_strdup_printf (
 			_("Are you sure you want to permanently delete '%s'?"), item->memo != NULL ? item->memo : _("(no memo)") );
@@ -1315,11 +1328,9 @@ gint w, h, dw, dh;
 	gtk_box_pack_start (GTK_BOX (content), vbox, TRUE, TRUE, 0);
 	
 	// listview
-	scrollwin = gtk_scrolled_window_new(NULL,NULL);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
+	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	//#1970509 enable hscrollbar
 	//gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	treeview = (GtkWidget *)ui_arc_listview_new();
 	data->LV_arc = treeview;
 	gtk_widget_set_size_request(treeview, HB_MINWIDTH_LIST, -1);

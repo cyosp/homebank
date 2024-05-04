@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -43,6 +43,16 @@ enum
 	LST_BUDGET_STATUS,
 	NUM_LST_BUDGET
 };
+
+#define LST_BUDGET_POS_UNBUDGETED	G_MAXINT-2
+
+
+typedef enum
+{
+	REP_BUD_MODE_TOTAL,
+	REP_BUD_MODE_TIME
+} HbRepBudMode;
+
 
 struct repbudget_data
 {
@@ -95,13 +105,6 @@ struct repbudget_data
 	GtkWidget	*LV_detail;
 
 	gulong		handler_id[MAX_REPBUDGET_HID];
-};
-
-
-enum
-{
-	BUDG_CATEGORY,
-	BUDG_SUBCATEGORY,
 };
 
 

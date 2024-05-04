@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -259,7 +259,7 @@ gboolean tmpaccbal, valid;
 			reskey = dt->keylist[i];
 			dr = report_data_get_row(dt, reskey);
 
-			DB( g_printf(" eval %d: %d '%s' %.2f\n", i, reskey, dr->label, dr->rowexp + dr->rowinc ) );
+			DB( g_printf(" eval %d: %d '%s' %.2f %.2f = %.2f\n", i, reskey, dr->label, dr->rowexp, dr->rowinc, (dr->rowexp + dr->rowinc) ) );
 
 			//if( tmptype == REPORT_TYPE_EXPENSE && !dr->expense[0] ) continue;
 			//if( tmptype == REPORT_TYPE_INCOME && !dr->income[1] ) continue;
@@ -273,10 +273,13 @@ gboolean tmpaccbal, valid;
 			//	continue;
 
 			//#2031245
-			if( tmpaccbal == TRUE )
+			/*if( tmpaccbal == TRUE )
 				value = dr->rowexp + dr->rowinc;
 			else
-				value = dr->rowexp; 
+				value = dr->rowexp;*/
+			
+			//#2043523 always net value
+			value = dr->rowexp + dr->rowinc;
 			
 			// manage the toplevel for category
 			tmpparent = NULL;
@@ -522,9 +525,7 @@ GtkWidget *label, *widget, *image;
 	data->GR_hubtot = hub;
 
 #if SHOW_TREE_VIEW == 1
-	GtkWidget *scrollwin = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	GtkWidget *scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start (GTK_BOX(hub), scrollwin, TRUE, TRUE, 0);
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), data->LV_hubtot);
 	gtk_tree_view_set_grid_lines (GTK_TREE_VIEW (data->LV_hubtot), GTK_TREE_VIEW_GRID_LINES_BOTH);

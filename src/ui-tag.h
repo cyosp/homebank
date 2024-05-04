@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -29,10 +29,17 @@ enum
 };
 
 
+#define LST_DEFTAG_SORT_USETXN	 2
+#define LST_DEFTAG_SORT_USECFG	 3
+#define LST_DEFTAG_SORT_NAME	 4
+
+
 struct ui_tag_manage_dialog_data
 {
 	GtkWidget	*dialog;
 	gboolean	mapped_done;
+
+	GtkWidget	*BT_showusage;
 
 	GtkWidget	*RE_addreveal;
 	GtkWidget	*ST_name;
@@ -43,6 +50,7 @@ struct ui_tag_manage_dialog_data
 	GtkWidget	*BT_merge;
 	GtkWidget	*BT_delete;
 
+	gboolean	usagefilled;
 	gint		change;
 };
 
@@ -65,14 +73,14 @@ ui_tag_popover_list(GtkWidget *entry);
 
 /* = = = = = = = = = = */
 
-void ui_tag_listview_toggle_to_filter(GtkTreeView *treeview, Filter *filter);
+guint ui_tag_listview_toggle_to_filter(GtkTreeView *treeview, Filter *filter);
 void ui_tag_listview_quick_select(GtkTreeView *treeview, const gchar *uri);
 
 void ui_tag_listview_add(GtkTreeView *treeview, Tag *item);
 guint32 ui_tag_listview_get_selected_key(GtkTreeView *treeview);
 void ui_tag_listview_remove_selected(GtkTreeView *treeview);
 void ui_tag_listview_populate(GtkWidget *view, gint insert_type);
-GtkWidget *ui_tag_listview_new(gboolean withtoggle);
+GtkWidget *ui_tag_listview_new(gboolean withtoggle, gboolean withcount);
 
 GtkWidget *ui_tag_manage_dialog (void);
 

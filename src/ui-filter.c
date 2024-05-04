@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -333,7 +333,7 @@ GtkWidget *child;
 GValue gvalue = G_VALUE_INIT;
 
 
-	DB( g_print("(ui_flt_manage) update\n") );
+	DB( g_print("\n[ui_flt_manage] update\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -393,18 +393,18 @@ GValue gvalue = G_VALUE_INIT;
 }
 
 
-static void ui_flt_manage_get_option(struct ui_flt_manage_data *data, gint index)
+static void
+ui_flt_manage_get_option(struct ui_flt_manage_data *data, gint index)
 {
-gint enabled;
+gint newoption = gtk_switch_get_active(GTK_SWITCH(data->SW_enabled[index]));
 
 	//option should be set: 0=off, 1=include, 2=exclude
-	enabled = gtk_switch_get_active(GTK_SWITCH(data->SW_enabled[index]));
-	if( enabled == 1 )
+	if( newoption == 1 )
 	{
 		if( hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_matchmode[index])) == 1)
-			enabled++;
+			newoption++;
 	}
-	data->filter->option[index] = enabled;
+	data->filter->option[index] = newoption;
 }
 
 
@@ -414,9 +414,9 @@ Filter *flt = data->filter;
 gint i;
 gchar *txt;
 
-	DB( g_print("(ui_flt_manage) get\n") );
+	DB( g_print("\n[ui_flt_manage] get\n") );
 
-	if(flt !=NULL)
+	if(flt != NULL)
 	{
 		ui_flt_manage_get_option(data, FLT_GRP_DATE);
 		ui_flt_manage_get_option(data, FLT_GRP_TYPE);
@@ -517,7 +517,6 @@ gchar *txt;
 	// active tab
 		g_strlcpy(flt->last_tab, gtk_stack_get_visible_child_name(GTK_STACK(data->stack)), 8);
 		DB( g_print(" page is '%s'\n", flt->last_tab) );
-		
 
 	}
 }
@@ -540,7 +539,7 @@ static void ui_flt_manage_set(struct ui_flt_manage_data *data)
 {
 Filter *flt = data->filter;
 
-	DB( g_print("(ui_flt_manage) set\n") );
+	DB( g_print("\n[ui_flt_manage] set\n") );
 
 	if(flt != NULL)
 	{
@@ -603,7 +602,7 @@ Filter *flt = data->filter;
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_minamount), flt->minamount);
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_maxamount), flt->maxamount);
 
-		//text
+	//text
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_exact), flt->exact);
 		gtk_entry_set_text(GTK_ENTRY(data->ST_info), (flt->info != NULL) ? flt->info : "");
 		gtk_entry_set_text(GTK_ENTRY(data->ST_memo), (flt->memo != NULL) ? flt->memo : "");
@@ -631,7 +630,7 @@ Filter *flt = data->filter;
 static void ui_flt_manage_setup(struct ui_flt_manage_data *data)
 {
 
-	DB( g_print("(ui_flt_manage) setup\n") );
+	DB( g_print("\n[ui_flt_manage] setup\n") );
 
 	if(data->show_account == TRUE && data->LV_acc != NULL)
 	{
@@ -674,8 +673,6 @@ ui_flt_page_paymode_activate_link (GtkWidget   *label,
 struct ui_flt_manage_data *data;
 gint i;
 	
-	DB( g_print("(ui_flt_hub_account) activate_link\n") );
-
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(label, GTK_TYPE_WINDOW)), "inst_data");
 	
 	for(i=0;i<NUM_PAYMODE_MAX;i++)
@@ -773,10 +770,8 @@ GtkWidget *vbox, *treebox, *scrollwin;
 	treebox = ui_flt_page_widget_toolbar(data);
 	gtk_box_pack_start (GTK_BOX (vbox), treebox, FALSE, FALSE, 0);
 
- 	scrollwin = gtk_scrolled_window_new(NULL, NULL);
+ 	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	//gtk_widget_set_size_request (scrollwin, HB_MINWIDTH_LIST, HB_MINHEIGHT_LIST);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
 	gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
 	gtk_tree_view_set_grid_lines(GTK_TREE_VIEW(treeview), GTK_TREE_VIEW_GRID_LINES_NONE);
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
@@ -910,7 +905,7 @@ GtkWidget *treeview;
 	grid = ui_flt_page_misc_header(_("Tag"), FLT_GRP_TAG, data);
 	gtk_box_pack_start (GTK_BOX (part), grid, FALSE, FALSE, 0);
 
-	treeview = ui_tag_listview_new(TRUE);
+	treeview = ui_tag_listview_new(TRUE, FALSE);
 	grid = ui_flt_page_list_generic(_("Tag"), treeview, &tmp);
 	gtk_box_pack_start (GTK_BOX (part), grid, TRUE, TRUE, 0);
 
@@ -1181,7 +1176,7 @@ gint w, h, dw, dh;
 
 	data->filter = filter;
 
-	dialog = gtk_dialog_new_with_buttons (_("Edit filter"),
+	data->dialog = dialog = gtk_dialog_new_with_buttons (_("Edit filter"),
 			GTK_WINDOW (parentwindow),
 			0,	//no flags
 			NULL, //no buttons
@@ -1190,7 +1185,7 @@ gint w, h, dw, dh;
 	if(!txnmode)
 	{
 		widget = gtk_dialog_add_button(GTK_DIALOG(dialog), _("_Reset"),	55);
-		gtk_widget_set_margin_end(widget, SPACING_MEDIUM);
+		gtk_widget_set_margin_end(widget, SPACING_LARGE);
 	}
 
 	gtk_dialog_add_button(GTK_DIALOG(dialog), _("_Cancel"),	GTK_RESPONSE_REJECT);
@@ -1206,7 +1201,7 @@ gint w, h, dw, dh;
 
 	//store our window private data
 	g_object_set_data(G_OBJECT(dialog), "inst_data", (gpointer)data);
-	DB( g_print("(ui_flt_manage) window=%p, inst_data=%p\n", dialog, data) );
+	DB( g_print("\n[ui_flt_manage] window=%p, inst_data=%p\n", dialog, data) );
 
     g_signal_connect (dialog, "destroy",
 			G_CALLBACK (gtk_widget_destroyed), &dialog);
@@ -1280,6 +1275,7 @@ gint w, h, dw, dh;
 
 	// force display
 	grid = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	data->GR_force = grid;
 	hb_widget_set_margin(grid, SPACING_LARGE);
 	gtk_widget_set_valign(grid, GTK_ALIGN_END);
 	gtk_box_pack_start (GTK_BOX (mainbox), grid, FALSE, TRUE, 0);
@@ -1302,9 +1298,6 @@ gint w, h, dw, dh;
 	widget = gtk_check_button_new_with_mnemonic (_("Edited"));
 	data->CM_forcechg = widget;
 	gtk_box_pack_start (GTK_BOX (grid), widget, FALSE, FALSE, 0);
-
-	
-
 
 	
 	//setup, init and show window

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -82,6 +82,52 @@ void gtk_window_destroy (GtkWindow* window)
 { gtk_widget_destroy(GTK_WIDGET(window)); }
 
 #endif
+
+
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+/* GTK3 obsolete */
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+GtkWidget *
+hbtk_toolbar_add_toolbutton(GtkToolbar *toolbar, gchar *icon_name, gchar *label, gchar *tooltip_text)
+{
+GtkWidget *button = gtk_widget_new(GTK_TYPE_TOOL_BUTTON,
+		"icon-name", icon_name,
+        "label", label,
+	    NULL);
+	if(tooltip_text != NULL)
+		gtk_widget_set_tooltip_text(button, tooltip_text);
+
+
+	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(button), -1);
+
+	return button;
+}
+
+
+GtkWidget *
+hbtk_menubar_add_menu(GtkWidget *menubar, gchar *label, GtkWidget **menuitem_ptr)
+{
+GtkWidget *menu, *menuitem;
+
+	menu = gtk_menu_new();
+	menuitem = gtk_menu_item_new_with_mnemonic(label);
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(menuitem), menu);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menuitem);
+	if(menuitem_ptr)
+		*menuitem_ptr = menuitem;
+	return menu;
+}
+
+
+GtkWidget *
+hbtk_menu_add_menuitem(GtkWidget *menu, gchar *label)
+{
+GtkWidget *menuitem = gtk_menu_item_new_with_mnemonic(label);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
+	return menuitem;
+}
+
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
@@ -476,6 +522,7 @@ GtkWidget *search;
 
 	search = gtk_search_entry_new();
 	gtk_entry_set_placeholder_text(GTK_ENTRY(search), _("Search...") );
+	gtk_entry_set_width_chars(GTK_ENTRY(search), 24);
 
 	return search;
 }
@@ -495,47 +542,6 @@ GtkWidget *entry;
 		gtk_label_set_mnemonic_widget (GTK_LABEL(label), entry);
 
 	return entry;
-}
-
-
-GtkWidget *
-hbtk_menubar_add_menu(GtkWidget *menubar, gchar *label, GtkWidget **menuitem_ptr)
-{
-GtkWidget *menu, *menuitem;
-
-	menu = gtk_menu_new();
-	menuitem = gtk_menu_item_new_with_mnemonic(label);
-	gtk_menu_item_set_submenu(GTK_MENU_ITEM(menuitem), menu);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menubar), menuitem);
-	if(menuitem_ptr)
-		*menuitem_ptr = menuitem;
-	return menu;
-}
-
-
-GtkWidget *
-hbtk_menu_add_menuitem(GtkWidget *menu, gchar *label)
-{
-GtkWidget *menuitem = gtk_menu_item_new_with_mnemonic(label);
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
-	return menuitem;
-}
-
-
-GtkWidget *
-hbtk_toolbar_add_toolbutton(GtkToolbar *toolbar, gchar *icon_name, gchar *label, gchar *tooltip_text)
-{
-GtkWidget *button = gtk_widget_new(GTK_TYPE_TOOL_BUTTON,
-		"icon-name", icon_name,
-        "label", label,
-	    NULL);
-	if(tooltip_text != NULL)
-		gtk_widget_set_tooltip_text(button, tooltip_text);
-
-
-	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(button), -1);
-
-	return button;
 }
 
 
@@ -803,6 +809,20 @@ GtkAdjustment *adj;
 
 	return spinner;
 }
+
+
+GtkWidget *
+make_scrolled_window(GtkPolicyType hscrollbar_policy, GtkPolicyType vscrollbar_policy)
+{
+GtkWidget *scrollwin;
+
+	scrollwin = gtk_scrolled_window_new(NULL,NULL);
+    gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), hscrollbar_policy, vscrollbar_policy);
+	
+	return scrollwin;
+}
+
 
 /*
 **
@@ -1557,7 +1577,8 @@ GList *renderers, *list;
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-/*
+/* OFX <TRNTYPE> transactiontype
+
 id  ofx  			english                           french
  ---------------------------------------------------------------------
  0	--------      	(none)                            (aucun) 

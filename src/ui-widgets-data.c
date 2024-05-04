@@ -1,5 +1,5 @@
 /*	HomeBank -- Free, easy, personal accounting for everyone.
- *	Copyright (C) 1995-2023 Maxime DOYEN
+ *	Copyright (C) 1995-2024 Maxime DOYEN
  *
  *	This file is part of HomeBank.
  *
@@ -25,9 +25,11 @@
 
 gchar *CHART_CATEGORY = N_("Category");
 
-gchar *CYA_ASG_FIELD[] = { 
-	N_("Memo"), 
-	N_("Payee"), 
+
+gchar *CYA_TXN_TYPE[] = { 
+	N_("Expense"),
+	N_("Income"),
+	N_("Transfer"),
 	NULL
 };
 
@@ -39,9 +41,9 @@ gchar *CYA_CAT_TYPE[] = {
 };
 
 
-gchar *CYA_CATSUBCAT[] = { 
-	N_("Category"), 
-	N_("Subcategory"), 
+gchar *CYA_ASG_FIELD[] = { 
+	N_("Memo"), 
+	N_("Payee"), 
 	NULL
 };
 

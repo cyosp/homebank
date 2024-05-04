@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -149,26 +149,21 @@ struct _filter
 	guint32  	key;
 	//gushort 	flags;
 	gshort		option[FLT_GRP_MAX];
+
 	gint		range;
 	guint32		mindate, maxdate;
 	//gint		rawtype, rawstatus;
 
-	gint		type;		//register combobox type
-	gint		status;
 	gboolean	typ_exp, typ_inc, typ_xfr;	//5.6
 	gboolean	sta_non, sta_clr, sta_rec;	//5.6
-
 	gboolean	paymode[NUM_PAYMODE_MAX];
-
 	gdouble		minamount, maxamount;
 
 	gboolean	exact;
-
 	//pointer here
 	gchar		*name;
 	gchar		*info;
 	gchar		*memo;
-	gchar		*tag;
 
 	GArray		*gbacc;
 	GArray		*gbpay;
@@ -176,6 +171,9 @@ struct _filter
 	GArray		*gbtag;
 
 	/* unsaved datas */
+	gint		type;		//register combobox type
+	gint		status;
+	gint		nbchanges;
 	gint		nbdaysfuture;
 	gboolean	forceadd;
 	gboolean	forcechg;
@@ -203,10 +201,10 @@ Filter		*da_flt_get_by_imp_name(gchar *name);
 Filter		*da_flt_get(guint32 key);
 void da_flt_consistency(Filter *item);
 
-void da_flt_status_acc_set(Filter *flt, guint32 kacc, gboolean status);
-void da_flt_status_pay_set(Filter *flt, guint32 kpay, gboolean status);
-void da_flt_status_cat_set(Filter *flt, guint32 kcat, gboolean status);
-void da_flt_status_tag_set(Filter *flt, guint32 ktag, gboolean status);
+guint da_flt_status_acc_set(Filter *flt, guint32 kacc, gboolean status);
+guint da_flt_status_pay_set(Filter *flt, guint32 kpay, gboolean status);
+guint da_flt_status_cat_set(Filter *flt, guint32 kcat, gboolean status);
+guint da_flt_status_tag_set(Filter *flt, guint32 ktag, gboolean status);
 gboolean da_flt_status_acc_get(Filter *flt, guint32 kacc);
 gboolean da_flt_status_pay_get(Filter *flt, guint32 kpay);
 gboolean da_flt_status_cat_get(Filter *flt, guint32 kcat);

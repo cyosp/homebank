@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -70,7 +70,7 @@ extern HbKvData CYA_REPORT_INTVL[];
 
 
 /* action functions -------------------- */
-static void repbalance_action_viewlist(GtkToolButton *toolbutton, gpointer user_data)
+static void repbalance_action_viewlist(GtkWidget *toolbutton, gpointer user_data)
 {
 struct repbalance_data *data = user_data;
 
@@ -78,7 +78,7 @@ struct repbalance_data *data = user_data;
 	repbalance_sensitive(data->window, NULL);
 }
 
-/*static void repbalance_action_mode_changed(GtkToolButton *toolbutton, gpointer user_data)
+/*static void repbalance_action_mode_changed(GtkWidget *toolbutton, gpointer user_data)
 {
 struct repbalance_data *data = user_data;
 
@@ -87,7 +87,7 @@ struct repbalance_data *data = user_data;
 }
 */
 
-static void repbalance_action_viewline(GtkToolButton *toolbutton, gpointer user_data)
+static void repbalance_action_viewline(GtkWidget *toolbutton, gpointer user_data)
 {
 struct repbalance_data *data = user_data;
 
@@ -96,7 +96,7 @@ struct repbalance_data *data = user_data;
 }
 
 
-static void repbalance_action_print(GtkToolButton *toolbutton, gpointer user_data)
+static void repbalance_action_print(GtkWidget *toolbutton, gpointer user_data)
 {
 struct repbalance_data *data = user_data;
 gint tmpintvl, page;
@@ -115,7 +115,7 @@ gchar *title, *name;
 	
 		node = lst_repbal_to_string(GTK_TREE_VIEW(data->LV_report), title, TRUE);
 
-		hb_print_listview(GTK_WINDOW(data->window), node->str, NULL, title, name);
+		hb_print_listview(GTK_WINDOW(data->window), node->str, NULL, title, name, FALSE);
 
 		g_string_free(node, TRUE);
 		g_free(title);
@@ -128,7 +128,7 @@ gchar *title, *name;
 }
 
 
-/* ======================== */
+/* = = = = = = = = = = = = = = = = */
 
 
 static gchar *
@@ -155,8 +155,9 @@ struct repbalance_data *data;
 	data->filter->maxdate = gtk_date_entry_get_date(GTK_DATE_ENTRY(data->PO_maxdate));
 
 	// set min/max date for both widget
-	gtk_date_entry_set_maxdate(GTK_DATE_ENTRY(data->PO_mindate), data->filter->maxdate);
-	gtk_date_entry_set_mindate(GTK_DATE_ENTRY(data->PO_maxdate), data->filter->mindate);
+	//5.8 check for error
+		gtk_date_entry_set_error(GTK_DATE_ENTRY(data->PO_mindate), ( data->filter->mindate > data->filter->maxdate ) ? TRUE : FALSE);
+		gtk_date_entry_set_error(GTK_DATE_ENTRY(data->PO_maxdate), ( data->filter->maxdate < data->filter->mindate ) ? TRUE : FALSE);
 	
 	g_signal_handler_block(data->CY_range, data->handler_id[HID_REPBALANCE_RANGE]);
 	hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_range), FLT_RANGE_MISC_CUSTOM);
@@ -203,6 +204,11 @@ gint range;
 	if(range != FLT_RANGE_MISC_CUSTOM)
 	{
 		filter_preset_daterange_set(data->filter, range, 0);
+
+		//#2046032 set min/max date for both widget
+		//5.8 check for error
+		gtk_date_entry_set_error(GTK_DATE_ENTRY(data->PO_mindate), ( data->filter->mindate > data->filter->maxdate ) ? TRUE : FALSE);
+		gtk_date_entry_set_error(GTK_DATE_ENTRY(data->PO_maxdate), ( data->filter->maxdate < data->filter->mindate ) ? TRUE : FALSE);
 
 		repbalance_update_quickdate(widget, NULL);
 
@@ -290,7 +296,7 @@ gchar   buf[128];
 
 	hb_strfmon(buf, 127, data->minimum, data->usrkcur, minor);
 
-	////TRANSLATORS: count of transaction in balancedrawn / count of total transaction under abalancedrawn amount threshold
+	////TRANSLATORS: count of transaction in overdrawn / count of total transaction under overdrawn amount threshold
 	info = g_strdup_printf(_("%d/%d under %s"), data->nbovrdraft, data->nbope, buf);
 	gtk_label_set_text(GTK_LABEL(data->TX_info), info);
 	g_free(info);
@@ -317,7 +323,7 @@ GtkTreeIter  iter, child;
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_detail));
 	gtk_tree_store_clear (GTK_TREE_STORE(model));
 
-	if(data->detail)
+	if(data->detail && data->ope_list)
 	{
 		g_object_ref(model); /* Make sure the model stays with us after the tree view unrefs it */
 		gtk_tree_view_set_model(GTK_TREE_VIEW(data->LV_detail), NULL); /* Detach model from view */
@@ -570,6 +576,19 @@ gint usrnbacc;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
+	// clear everything
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_report));
+	gtk_list_store_clear (GTK_LIST_STORE(model));
+	gtk_chart_set_datas_none(GTK_CHART(data->RE_chart));
+	//TODO: use a Queue here
+	g_list_free(data->ope_list);
+	data->ope_list = NULL;
+	//reset our data
+	data->nbope = 0;
+	data->nbovrdraft = 0;
+	data->firstbalance = 0.0;
+	repbalance_update_info(widget, user_data);
+
 	//#2019876 return is invalid date range
 	if( data->filter->maxdate < data->filter->mindate )
 		return;
@@ -578,14 +597,8 @@ gint usrnbacc;
 	maxkacc = da_acc_get_max_key();
 	data->tmp_acckeys = g_malloc0((maxkacc+2) * sizeof(guint32));
 
-	//reset our data
-	data->nbope = 0;
-	data->nbovrdraft = 0;
-	data->firstbalance = 0.0;
+
 	
-	//TODO: use a Queue here
-	g_list_free(data->ope_list);
-	data->ope_list = NULL;
 
 	//grab user selection
 	tmpintvl  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_intvl));
@@ -594,10 +607,6 @@ gint usrnbacc;
 
 	DB( g_print(" usr: nbacc:%d, kcur:%d, empty:%d\n\n", usrnbacc, data->usrkcur, showempty) );
 
-	// clear everything
-	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_report));
-	gtk_list_store_clear (GTK_LIST_STORE(model));
-	gtk_chart_set_datas_none(GTK_CHART(data->RE_chart));
 	
 	if( (usrnbacc == 0) )
 		goto end;
@@ -889,8 +898,6 @@ static void repbalance_window_setup(struct repbalance_data *data, guint32 accnum
 	data->handler_id[HID_REPBALANCE_RANGE] = g_signal_connect (data->CY_range, "changed", G_CALLBACK (repbalance_range_change), NULL);
 
 
-	//hbtk_radio_button_connect (GTK_CONTAINER(data->RA_mode), "toggled", G_CALLBACK (repbalance_action_mode_changed), (gpointer)data);
-
 	// acc treeview
 	g_signal_connect (data->BT_all, "activate-link", G_CALLBACK (repbalance_cb_acc_activate_link), NULL);
 	g_signal_connect (data->BT_non, "activate-link", G_CALLBACK (repbalance_cb_acc_activate_link), NULL);
@@ -1042,14 +1049,6 @@ gint row;
 	label = make_label_group(_("Display"));
 	gtk_grid_attach (GTK_GRID (table), label, 0, row, 3, 1);
 
-	/*row++;
-	label = make_label_widget(_("Mode:"));
-	gtk_grid_attach (GTK_GRID (table), label, 1, row, 1, 1);
-	widget = hbtk_radio_button_new(GTK_ORIENTATION_HORIZONTAL, CYA_REPORT_MODE, TRUE);
-	data->RA_mode = widget;
-	gtk_grid_attach (GTK_GRID (table), widget, 2, row, 1, 1);
-	*/
-
 	//5.5
 	row++;
 	label = make_label_widget(_("Inter_val:"));
@@ -1134,10 +1133,8 @@ gint row;
 
 
 	row++;
- 	scrollwin = gtk_scrolled_window_new(NULL,NULL);
+ 	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
  	data->SW_acc = scrollwin;
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
 	gtk_widget_set_margin_bottom (scrollwin, SPACING_LARGE);
 	treeview = ui_acc_listview_new(TRUE);
 	data->LV_acc = treeview;
@@ -1185,9 +1182,7 @@ gint row;
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, NULL);
 
-	scrollwin = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
 	treeview = lst_repbal_create();
 	data->LV_report = treeview;
@@ -1196,11 +1191,9 @@ gint row;
 	gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
 
 	//detail
-	scrollwin = gtk_scrolled_window_new (NULL, NULL);
+	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	data->GR_detail = scrollwin;
 	//gtk_scrolled_window_set_placement(GTK_SCROLLED_WINDOW (scrollwin), GTK_CORNER_TOP_RIGHT);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	treeview = create_list_transaction(LIST_TXN_TYPE_DETAIL, PREFS->lst_det_columns);
 	data->LV_detail = treeview;
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);

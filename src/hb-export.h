@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -45,7 +45,7 @@ void hb_export_qif_account_single(gchar *filename, Account *acc);
 
 void hb_export_pdf_listview(GtkTreeView *treeview, gchar *filepath, gchar *accname);
 
-void hb_print_listview(GtkWindow *parent, gchar *tabtext, gint8 *leftcols, gchar *title, gchar *filepath);
+void hb_print_listview(GtkWindow *parent, gchar *tabtext, gint8 *leftcols, gchar *title, gchar *filepat, gboolean statement);
 
 #endif
 

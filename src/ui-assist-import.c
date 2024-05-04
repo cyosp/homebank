@@ -1,5 +1,5 @@
 /*	HomeBank -- Free, easy, personal accounting for everyone.
- *	Copyright (C) 1995-2023 Maxime DOYEN
+ *	Copyright (C) 1995-2024 Maxime DOYEN
  *
  *	This file is part of HomeBank.
  *
@@ -1554,9 +1554,7 @@ GtkWidget *widget, *label, *scrollwin, *treeview, *tbar;
 	gtk_box_pack_start (GTK_BOX (mainbox), vbox, TRUE, TRUE, 0);
 
 	//list
-	scrollwin = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_widget_set_hexpand(scrollwin, TRUE);
 	gtk_widget_set_vexpand(scrollwin, TRUE);
 	treeview = list_file_new();
@@ -1856,9 +1854,7 @@ gint row;
 		gtk_box_pack_start (GTK_BOX (box), label, FALSE, FALSE, 0);
 
 	row++;
-	scrollwin = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	treeview = list_txn_import_create();
 	txndata->LV_gentxn = treeview;
 	gtk_widget_set_hexpand(scrollwin, TRUE);
@@ -1881,9 +1877,7 @@ gint row;
 	gtk_expander_set_child (GTK_EXPANDER(expander), group);
 
 		row = 0;
-		scrollwin = gtk_scrolled_window_new (NULL, NULL);
-		gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-		gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+		scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 		gtk_widget_set_hexpand(scrollwin, TRUE);
 		treeview = create_list_transaction(LIST_TXN_TYPE_OTHER, PREFS->lst_impope_columns);
 		txndata->LV_duptxn = treeview;
@@ -1966,10 +1960,8 @@ gint row = 0;
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
 	
-	scrollwin = gtk_scrolled_window_new (NULL, NULL);
+	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_NONE);
-	//gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_widget_set_hexpand(scrollwin, TRUE);
 	gtk_widget_set_vexpand(scrollwin, TRUE);
 	widget = gtk_label_new (NULL);

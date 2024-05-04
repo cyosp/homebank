@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -1191,12 +1191,10 @@ gint crow, row;
 
 
 	row++;
-	scrollwin = gtk_scrolled_window_new(NULL,NULL);
+	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_grid_attach (GTK_GRID (group_grid), scrollwin, 1, row, 4, 1);
 
 	gtk_widget_set_vexpand (scrollwin, TRUE);
-    gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 
 	//test treefilter
 	data->model = ui_cur_select_model_create();
@@ -1780,10 +1778,8 @@ gint crow, row, w, h, dw, dh;
 
 	label = gtk_text_view_new();
 	data->TB_log = label;
-    scrollwin = gtk_scrolled_window_new (NULL, NULL);
+    scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     gtk_widget_set_size_request (scrollwin, -1, 128);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), label);
 	//gtk_widget_set_hexpand (scrollwin, TRUE);
 	//gtk_widget_set_vexpand (scrollwin, TRUE);
@@ -1795,10 +1791,8 @@ gint crow, row, w, h, dw, dh;
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_grid_attach (GTK_GRID (group_grid), vbox, 0, row, 2, 1);
 	
-	scrollwin = gtk_scrolled_window_new(NULL,NULL);
+	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start(GTK_BOX(vbox), scrollwin, TRUE, TRUE, 0);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scrollwin), HB_MINHEIGHT_LIST);
 	treeview = ui_cur_listview_new(FALSE);
  	data->LV_cur = treeview;

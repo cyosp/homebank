@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -56,23 +56,419 @@ static void repbudget_update_detail(GtkWidget *widget, gpointer user_data);
 static void repbudget_detail(GtkWidget *widget, gpointer user_data);
 static gchar *repbudget_compute_title(gint mode);
 
-static GtkWidget *lst_repbud_create(void);
-static GString *lst_repbud_to_string(GtkTreeView *treeview, gchar *title, gboolean clipboard);
-
 
 extern gchar *CYA_REPORT_MODE[];
 extern gchar *CYA_KIND[];
 
 
+/* = = = = = = = = = = = = = = = = */
+
+
+static void lst_repbud_to_string_line(GString *node, const gchar *format, GtkTreeModel *model, GtkTreeIter *iter)
+{
+guint32 key;
+gchar *name, *status;
+gdouble spent, budget, result;
+gint fulfilled;
+
+	gtk_tree_model_get (model, iter,
+		LST_BUDGET_KEY, &key,
+		//LST_BUDGET_NAME, &name,
+		LST_BUDGET_SPENT, &spent,
+		LST_BUDGET_BUDGET, &budget,
+		LST_BUDGET_FULFILLED, &fulfilled,
+		LST_BUDGET_RESULT, &result,
+	    LST_BUDGET_STATUS, &status,
+		-1);
+
+	name = NULL;
+	//#2033298 we get fullname for export
+	{
+	Category *catitem = da_cat_get(key);
+		if( catitem != NULL )
+		{
+			name = g_strdup(catitem->fullname);
+		}
+	}
+
+	g_string_append_printf(node, format, name, spent, budget, fulfilled, result, status);
+
+	//leak
+	g_free(name);
+	g_free(status);
+}
+
+
+static GString *lst_repbud_to_string(GtkTreeView *treeview, gchar *title, gboolean clipboard)
+{
+GString *node;
+GtkTreeModel *model;
+GtkTreeIter	iter, child;
+gboolean valid;
+const gchar *format;
+
+	node = g_string_new(NULL);
+
+	// header
+	format = (clipboard == TRUE) ? "%s\t%s\t%s\t%s\t%s\t\n" : "%s;%s;%s;%s;%s;\n";
+	g_string_append_printf(node, format, (title == NULL) ? _("Category") : title, _("Spent"), _("Budget"), _("Fulfilled"), _("Result"));
+
+	// lines
+	format = (clipboard == TRUE) ? "%s\t%.2f\t%.2f\t%d %%\t%.2f\t%s\n" : "%s;%.2f;%.2f;%d %%;%.2f;%s\n";
+
+	model = gtk_tree_view_get_model(treeview);
+	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
+	while (valid)
+	{
+		lst_repbud_to_string_line(node, format, model, &iter);
+		// children ?
+		valid = gtk_tree_model_iter_children (GTK_TREE_MODEL(model), &child, &iter);
+		while (valid)
+		{
+			lst_repbud_to_string_line(node, format, model, &child);		
+			valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &child);
+		}
+		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
+	}
+
+	//DB( g_print("text is:\n%s", node->str) );
+
+	return node;
+}
+
+
+/*
+**
+** The function should return:
+** a negative integer if the first value comes before the second,
+** 0 if they are equal,
+** or a positive integer if the first value comes after the second.
+*/
+static gint budget_listview_compare_func (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer userdata)
+{
+gint sortcol = GPOINTER_TO_INT(userdata);
+gint retval = 0;
+gint tmpmode, sort_column_id;
+GtkSortType sort_order;
+
+	gtk_tree_sortable_get_sort_column_id(GTK_TREE_SORTABLE(model), &sort_column_id, &sort_order);
+	tmpmode = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(model), "mode-data"));
+
+	//DB( g_print(" budget compare column=%d order=%s tmpmode=%d\n", sortcol, sort_order == GTK_SORT_ASCENDING ? "ASC" : "DESC" , tmpmode) );
+
+	switch( sortcol )
+	{
+		case LST_BUDGET_NAME:
+		{
+			if( tmpmode == 1 )
+			{
+			gint pos1, pos2;
+
+				gtk_tree_model_get(model, a, LST_BUDGET_POS, &pos1, -1);
+				gtk_tree_model_get(model, b, LST_BUDGET_POS, &pos2, -1);
+				//DB( g_print(" retval = %d - %d\n", pos1, pos2) );
+				retval = pos1 - pos2;
+			}
+			else
+			{
+			gchar *entry1, *entry2;
+					
+				gtk_tree_model_get(model, a, LST_BUDGET_NAME, &entry1, -1);
+				gtk_tree_model_get(model, b, LST_BUDGET_NAME, &entry2, -1);
+				retval = hb_string_utf8_compare(entry1, entry2);
+				//leak
+				g_free(entry2);
+				g_free(entry1);
+			}
+		}
+		break;
+
+		default:
+		{
+		gdouble val1, val2;
+
+			gtk_tree_model_get(model, a, sort_column_id, &val1, -1);
+			gtk_tree_model_get(model, b, sort_column_id, &val2, -1);
+			//DB( g_print(" retval = %.2f - %2f\n", val1, val2) );
+			retval = (gint)(val1 - val2);
+		}
+		break;
+	}
+
+	//DB( g_print(" retval = %d\n", retval) );
+    return retval;
+}
+
+
+static void 
+lst_repbud_cell_data_function_name (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
+{
+gint tmpmode;
+
+	tmpmode = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(model), "mode-data"));
+
+	if( tmpmode == REP_BUD_MODE_TOTAL )
+	{
+	Category *item;
+	guint32 key;
+	gchar *markup = NULL;
+
+		gtk_tree_model_get(model, iter, 
+			LST_BUDGET_KEY, &key,
+			-1);
+
+		item = da_cat_get(key);
+		if(item)
+		{
+			markup = item->typename;
+		}
+
+		g_object_set(renderer, "markup", markup, NULL);
+	}
+	else
+	{
+	gchar *name;
+	
+		gtk_tree_model_get(model, iter, 
+			LST_BUDGET_NAME, &name,
+			-1);	
+
+		g_object_set(renderer, "text", name, NULL);
+		g_free(name);
+	}
+
+}
+
+
+static void lst_repbud_cell_data_function_amount (GtkTreeViewColumn *col,
+                           GtkCellRenderer   *renderer,
+                           GtkTreeModel      *model,
+                           GtkTreeIter       *iter,
+                           gpointer           user_data)
+   {
+gdouble  value;
+gchar *color;
+gchar buf[G_ASCII_DTOSTR_BUF_SIZE];
+gint column_id = GPOINTER_TO_INT(user_data);
+
+	gtk_tree_model_get(model, iter, column_id, &value, -1);
+
+	if( value )
+	{
+		hb_strfmon(buf, G_ASCII_DTOSTR_BUF_SIZE-1, value, GLOBALS->kcur, GLOBALS->minor);
+
+		if( column_id == LST_BUDGET_RESULT)
+			color = get_minimum_color_amount (value, 0.0);
+		else
+			color = get_normal_color_amount(value);
+
+		g_object_set(renderer,
+			"foreground",  color,
+			"text", buf,
+			NULL);
+	}
+	else
+	{
+		g_object_set(renderer, "text", "", NULL);
+	}
+}
+
+
+
+static void lst_repbud_cell_data_function_result (GtkTreeViewColumn *col,
+                           GtkCellRenderer   *renderer,
+                           GtkTreeModel      *model,
+                           GtkTreeIter       *iter,
+                           gpointer           user_data)
+   {
+gdouble  value;
+gchar *color;
+gchar *status;
+gint column_id = GPOINTER_TO_INT(user_data);
+
+	gtk_tree_model_get(model, iter, 
+		column_id, &value,
+		LST_BUDGET_STATUS, &status,
+		-1);
+
+	if( value )
+	{
+		color = get_minimum_color_amount (value, 0.0);
+		g_object_set(renderer,
+			"foreground",  color,
+			"text", status,
+			NULL);
+	}
+	else
+	{
+		g_object_set(renderer, "text", "", NULL);
+	}
+	
+	//leak
+	g_free(status);
+}
+
+
+static void lst_repbud_cell_data_function_fulfilled (GtkTreeViewColumn *col,
+                           GtkCellRenderer   *renderer,
+                           GtkTreeModel      *model,
+                           GtkTreeIter       *iter,
+                           gpointer           user_data)
+{
+gdouble budget;
+gint rawrate;
+gchar buf[16];
+
+	gtk_tree_model_get(model, iter,
+		LST_BUDGET_BUDGET, &budget, 
+		LST_BUDGET_FULFILLED, &rawrate,
+		-1);
+
+	if( hb_amount_equal(budget, 0.0) == FALSE )
+	{
+		g_snprintf(buf, sizeof(buf), "%d %%", rawrate);
+		g_object_set(renderer, "text", buf, NULL);
+	}
+	else
+		g_object_set(renderer, "text", "", NULL);
+
+}
+
+
+static GtkTreeViewColumn *lst_repbud_column_create_amount(gchar *name, gint id)
+{
+GtkTreeViewColumn  *column;
+GtkCellRenderer    *renderer;
+
+	column = gtk_tree_view_column_new();
+	gtk_tree_view_column_set_title(column, name);
+	renderer = gtk_cell_renderer_text_new ();
+	g_object_set(renderer, "xalign", 1.0, NULL);
+	gtk_tree_view_column_pack_start(column, renderer, TRUE);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_repbud_cell_data_function_amount, GINT_TO_POINTER(id), NULL);
+	//#2004631 date and column title alignement
+	gtk_tree_view_column_set_alignment (column, 1.0);
+	gtk_tree_view_column_set_sort_column_id (column, id);
+	return column;
+}
+
+
+/*
+** create our statistic list
+*/
+static GtkWidget *lst_repbud_create(void)
+{
+GtkTreeStore *store;
+GtkWidget *view;
+GtkCellRenderer    *renderer;
+GtkTreeViewColumn  *column;
+
+	DB( g_print("\n[repbudget] create list\n") );
+
+	/* create list store */
+	store = gtk_tree_store_new(
+	  	NUM_LST_BUDGET,
+		G_TYPE_INT,		//pos
+		G_TYPE_INT,		//key
+		G_TYPE_STRING,	//name
+		G_TYPE_DOUBLE,	//spent
+		G_TYPE_DOUBLE,	//budget
+		G_TYPE_INT,		//fulfilled
+		G_TYPE_DOUBLE,	//result
+		G_TYPE_STRING	//status
+		);
+
+	//treeview
+	view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	g_object_unref(store);
+
+	gtk_tree_view_set_grid_lines (GTK_TREE_VIEW (view), PREFS->grid_lines);
+
+	/* column: Name */
+	renderer = gtk_cell_renderer_text_new ();
+
+	g_object_set(renderer, 
+		"ellipsize", PANGO_ELLIPSIZE_END,
+	    "ellipsize-set", TRUE,
+		//taken from nemo, not exactly a resize to content, but good compromise
+	    "width-chars", 40,
+	    NULL);
+
+	column = gtk_tree_view_column_new();
+	gtk_tree_view_column_set_title(column, _("Category"));
+	gtk_tree_view_column_pack_start(column, renderer, TRUE);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_repbud_cell_data_function_name, GINT_TO_POINTER(LST_BUDGET_NAME), NULL);
+	//gtk_tree_view_column_add_attribute(column, renderer, "text", LST_BUDGET_NAME);
+	gtk_tree_view_column_set_sort_column_id (column, LST_BUDGET_NAME);
+	gtk_tree_view_column_set_resizable(column, TRUE);
+	//#2004631 date and column title alignement
+	//gtk_tree_view_column_set_alignment (column, 0.5);
+	gtk_tree_view_column_set_min_width (column, HB_MINWIDTH_COLUMN);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
+
+	/* column: Expense */
+	column = lst_repbud_column_create_amount(_("Spent"), LST_BUDGET_SPENT);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
+
+	/* column: Income */
+	column = lst_repbud_column_create_amount(_("Budget"), LST_BUDGET_BUDGET);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
+
+	/* column: Fulfilled */
+	renderer = gtk_cell_renderer_text_new ();
+	g_object_set(renderer, "xalign", 1.0, NULL);
+	column = gtk_tree_view_column_new();
+	gtk_tree_view_column_set_title(column, _("Fulfilled"));
+	gtk_tree_view_column_set_sort_column_id (column, LST_BUDGET_FULFILLED);
+	gtk_tree_view_column_set_alignment (column, 1.0);
+	gtk_tree_view_column_pack_start(column, renderer, TRUE);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_repbud_cell_data_function_fulfilled, GINT_TO_POINTER(LST_BUDGET_FULFILLED), NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
+
+	/* column: Result */
+	column = lst_repbud_column_create_amount(_("Result"), LST_BUDGET_RESULT);
+	//right part
+	renderer = gtk_cell_renderer_text_new ();
+	//g_object_set(renderer, "xalign", 0.0, NULL);
+	gtk_tree_view_column_pack_start(column, renderer, TRUE);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_repbud_cell_data_function_result, GINT_TO_POINTER(LST_BUDGET_RESULT), NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
+
+	/* column last: empty */
+	column = gtk_tree_view_column_new();
+	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
+
+	/* sort */
+	//gtk_tree_sortable_set_default_sort_func(GTK_TREE_SORTABLE(store), budget_listview_compare_func, NULL, NULL);
+	//gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID, GTK_SORT_ASCENDING);
+
+	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), LST_BUDGET_NAME, GTK_SORT_ASCENDING);
+
+	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_BUDGET_NAME  , budget_listview_compare_func, GINT_TO_POINTER(LST_BUDGET_NAME), NULL);
+	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_BUDGET_SPENT , budget_listview_compare_func, GINT_TO_POINTER(LST_BUDGET_SPENT), NULL);
+	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_BUDGET_BUDGET, budget_listview_compare_func, GINT_TO_POINTER(LST_BUDGET_BUDGET), NULL);
+	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_BUDGET_FULFILLED, budget_listview_compare_func, GINT_TO_POINTER(LST_BUDGET_FULFILLED), NULL);
+	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_BUDGET_RESULT, budget_listview_compare_func, GINT_TO_POINTER(LST_BUDGET_RESULT), NULL);
+
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(view), FALSE);
+
+	return(view);
+}
+
+
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+
+
 static gchar *budget_mode_label(gint mode)
 {
-gchar *retval = (mode == 1) ? _("Month") : _("Category");
+gchar *retval = (mode == REP_BUD_MODE_TIME) ? _("Month") : _("Category");
 	return (gchar *)retval;
 }
 
 
 /* action functions -------------------- */
-static void repbudget_action_viewlist(GtkToolButton *toolbutton, gpointer user_data)
+static void repbudget_action_viewlist(GtkWidget *toolbutton, gpointer user_data)
 {
 struct repbudget_data *data = user_data;
 
@@ -80,7 +476,7 @@ struct repbudget_data *data = user_data;
 	repbudget_sensitive(data->window, NULL);
 }
 
-static void repbudget_action_viewstack(GtkToolButton *toolbutton, gpointer user_data)
+static void repbudget_action_viewstack(GtkWidget *toolbutton, gpointer user_data)
 {
 struct repbudget_data *data = user_data;
 
@@ -91,7 +487,7 @@ struct repbudget_data *data = user_data;
 	repbudget_sensitive(data->window, NULL);
 }
 
-static void repbudget_action_print(GtkToolButton *toolbutton, gpointer user_data)
+static void repbudget_action_print(GtkWidget *toolbutton, gpointer user_data)
 {
 struct repbudget_data *data = user_data;
 gint tmpmode, page;
@@ -111,7 +507,7 @@ gchar *name, *coltitle, *title;
 		coltitle = budget_mode_label(tmpmode);
 		node = lst_repbud_to_string(GTK_TREE_VIEW(data->LV_report), coltitle, TRUE);
 		gint8 leftcols[4] = { 0, 5, -1 };
-		hb_print_listview(GTK_WINDOW(data->window), node->str, leftcols, title, name);
+		hb_print_listview(GTK_WINDOW(data->window), node->str, leftcols, title, name, FALSE);
 		g_string_free(node, TRUE);
 		g_free(title);
 	}
@@ -226,7 +622,7 @@ repbudget_compute_title(gint mode)
 {
 gchar *title;
 
-	if(	mode == 0 )
+	if(	mode == REP_BUD_MODE_TOTAL )
 		title = g_strdup(_("Budget by category"));
 	else
 		title = g_strdup(_("Budget by month"));
@@ -276,14 +672,6 @@ gint range;
 	if(range != FLT_RANGE_MISC_CUSTOM)
 	{
 		filter_preset_daterange_set(data->filter, range, 0);
-
-		//g_signal_handler_block(data->PO_mindate, data->handler_id[HID_REPBUDGET_MINDATE]);
-		//g_signal_handler_block(data->PO_maxdate, data->handler_id[HID_REPBUDGET_MAXDATE]);
-	
-		//gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_mindate), data->filter->mindate);
-		//gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_maxdate), data->filter->maxdate);
-		//g_signal_handler_unblock(data->PO_mindate, data->handler_id[HID_REPBUDGET_MINDATE]);
-		//g_signal_handler_unblock(data->PO_maxdate, data->handler_id[HID_REPBUDGET_MAXDATE]);
 
 		//5.7
 		g_signal_handler_block(data->SB_mindate, data->handler_id[HID_REPBUDGET_MINMONTHYEAR]);
@@ -413,7 +801,7 @@ struct repbudget_data *data;
 			{
 				gtk_tree_model_get(model, &iter, LST_BUDGET_KEY, &key, -1);
 
-				//DB( g_print(" - active is %d\n", pos) );
+				//DB( g_print(" active is %d\n", key) );
 
 				repbudget_detail(GTK_WIDGET(gtk_tree_selection_get_tree_view (treeselection)), GINT_TO_POINTER(key));
 			}
@@ -571,7 +959,10 @@ GtkTreeIter  iter, child;
 
 	DB( g_print("\n[repbudget] detail\n") );
 
-	if(data->detail)
+	DB( g_print(" active: %d\n", active) );
+
+
+	if(data->detail && data->txn_queue)
 	{
 		/* clear and detach our model */
 		model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_detail));
@@ -602,8 +993,8 @@ GtkTreeIter  iter, child;
 			if( tmptype == 2 && !(ope->flags & GF_INCOME) )
 				goto txnnext;					
 
-			//month
-			if( tmpmode == 1 )
+			//time: month
+			if( tmpmode == REP_BUD_MODE_TIME )
 			{
 				pos = report_interval_get_pos(REPORT_INTVL_MONTH, data->filter->mindate, ope);
 				if( pos == active )
@@ -1260,13 +1651,16 @@ gdouble *tmp_spent, *tmp_budget;
 	tmptype    = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_type));
 	tmponlyout = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_onlyout));
 
+	DB( g_print(" mode:%d type:%d only:%d\n", tmpmode, tmptype, tmponlyout) );
+
 	mindate = data->filter->mindate;
 	maxdate = data->filter->maxdate;
 	if(maxdate < mindate) return;
 
 	//TODO: not necessary until date range change
 	//free previous txn
-	g_queue_free (data->txn_queue);
+	if(data->txn_queue != NULL)
+		g_queue_free (data->txn_queue);
 	data->txn_queue = hbfile_transaction_get_partial_budget(data->filter->mindate, data->filter->maxdate);
 
 	nbkeycat = da_cat_get_max_key();
@@ -1274,7 +1668,7 @@ gdouble *tmp_spent, *tmp_budget;
 	DB( g_print(" date: min=%d max=%d nbcat=%d nbmonth=%d\n", mindate, maxdate, nbkeycat, nbmonth) );
 
 	// allocate some memory
-	n_result = (tmpmode == 1) ? nbmonth : nbkeycat;
+	n_result = (tmpmode == REP_BUD_MODE_TIME) ? nbmonth : nbkeycat;
 	tmp_spent  = g_malloc0((n_result+1) * sizeof(gdouble));
 	tmp_budget = g_malloc0((n_result+1) * sizeof(gdouble));
 
@@ -1297,7 +1691,7 @@ gdouble *tmp_spent, *tmp_budget;
 
 		// compute budget for each category
 		g_object_set_data(G_OBJECT(model), "mode-data", GINT_TO_POINTER(tmpmode));
-		if( tmpmode == 1 )
+		if( tmpmode == REP_BUD_MODE_TIME )
 		{
 			budget_compute_month(data, model, tmp_spent, tmp_budget, startmonth, nbmonth, tmptype, tmponlyout);
 		}
@@ -1646,7 +2040,8 @@ struct WinGeometry *wg;
 
 	DB( g_print("\n[repbudget] start dispose\n") );
 
-	g_queue_free (data->txn_queue);
+	if(data->txn_queue != NULL)
+		g_queue_free (data->txn_queue);
 
 	da_flt_free(data->filter);
 	
@@ -1880,19 +2275,15 @@ gint row;
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, NULL);
 
-	scrollwin = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	treeview = lst_repbud_create();
 	data->LV_report = treeview;
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
     gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
 
 	//detail
-	scrollwin = gtk_scrolled_window_new (NULL, NULL);
+	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	data->GR_detail = scrollwin;
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	treeview = create_list_transaction(LIST_TXN_TYPE_DETAIL, PREFS->lst_det_columns);
 	data->LV_detail = treeview;
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
@@ -1936,396 +2327,4 @@ gint row;
 }
 
 
-/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
-
-static void lst_repbud_to_string_line(GString *node, const gchar *format, GtkTreeModel *model, GtkTreeIter *iter)
-{
-guint32 key;
-gchar *name, *status;
-gdouble spent, budget, result;
-gint fulfilled;
-
-	gtk_tree_model_get (model, iter,
-		LST_BUDGET_KEY, &key,
-		//LST_BUDGET_NAME, &name,
-		LST_BUDGET_SPENT, &spent,
-		LST_BUDGET_BUDGET, &budget,
-		LST_BUDGET_FULFILLED, &fulfilled,
-		LST_BUDGET_RESULT, &result,
-	    LST_BUDGET_STATUS, &status,
-		-1);
-
-	name = NULL;
-	//#2033298 we get fullname for export
-	{
-	Category *catitem = da_cat_get(key);
-		if( catitem != NULL )
-		{
-			name = g_strdup(catitem->fullname);
-		}
-	}
-
-	g_string_append_printf(node, format, name, spent, budget, fulfilled, result, status);
-
-	//leak
-	g_free(name);
-	g_free(status);
-}
-
-
-static GString *lst_repbud_to_string(GtkTreeView *treeview, gchar *title, gboolean clipboard)
-{
-GString *node;
-GtkTreeModel *model;
-GtkTreeIter	iter, child;
-gboolean valid;
-const gchar *format;
-
-	node = g_string_new(NULL);
-
-	// header
-	format = (clipboard == TRUE) ? "%s\t%s\t%s\t%s\t%s\t\n" : "%s;%s;%s;%s;%s;\n";
-	g_string_append_printf(node, format, (title == NULL) ? _("Category") : title, _("Spent"), _("Budget"), _("Fulfilled"), _("Result"));
-
-	// lines
-	format = (clipboard == TRUE) ? "%s\t%.2f\t%.2f\t%d %%\t%.2f\t%s\n" : "%s;%.2f;%.2f;%d %%;%.2f;%s\n";
-
-	model = gtk_tree_view_get_model(treeview);
-	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
-	while (valid)
-	{
-		lst_repbud_to_string_line(node, format, model, &iter);
-		// children ?
-		valid = gtk_tree_model_iter_children (GTK_TREE_MODEL(model), &child, &iter);
-		while (valid)
-		{
-			lst_repbud_to_string_line(node, format, model, &child);		
-			valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &child);
-		}
-		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
-	}
-
-	//DB( g_print("text is:\n%s", node->str) );
-
-	return node;
-}
-
-
-/*
-**
-** The function should return:
-** a negative integer if the first value comes before the second,
-** 0 if they are equal,
-** or a positive integer if the first value comes after the second.
-*/
-static gint budget_listview_compare_func (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer userdata)
-{
-gint sortcol = GPOINTER_TO_INT(userdata);
-gint retval = 0;
-gint tmpmode, sort_column_id;
-GtkSortType sort_order;
-
-	gtk_tree_sortable_get_sort_column_id(GTK_TREE_SORTABLE(model), &sort_column_id, &sort_order);
-	tmpmode = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(model), "mode-data"));
-
-	//DB( g_print(" budget compare column=%d order=%s tmpmode=%d\n", sortcol, sort_order == GTK_SORT_ASCENDING ? "ASC" : "DESC" , tmpmode) );
-
-	switch( sortcol )
-	{
-		case LST_BUDGET_NAME:
-		{
-			if( tmpmode == 1 )
-			{
-			gint pos1, pos2;
-
-				gtk_tree_model_get(model, a, LST_BUDGET_POS, &pos1, -1);
-				gtk_tree_model_get(model, b, LST_BUDGET_POS, &pos2, -1);
-				//DB( g_print(" retval = %d - %d\n", pos1, pos2) );
-				retval = pos1 - pos2;
-			}
-			else
-			{
-			gchar *entry1, *entry2;
-					
-				gtk_tree_model_get(model, a, LST_BUDGET_NAME, &entry1, -1);
-				gtk_tree_model_get(model, b, LST_BUDGET_NAME, &entry2, -1);
-				retval = hb_string_utf8_compare(entry1, entry2);
-				//leak
-				g_free(entry2);
-				g_free(entry1);
-			}
-		}
-		break;
-
-		default:
-		{
-		gdouble val1, val2;
-
-			gtk_tree_model_get(model, a, sort_column_id, &val1, -1);
-			gtk_tree_model_get(model, b, sort_column_id, &val2, -1);
-			//DB( g_print(" retval = %.2f - %2f\n", val1, val2) );
-			retval = (gint)(val1 - val2);
-		}
-		break;
-	}
-
-	//DB( g_print(" retval = %d\n", retval) );
-    return retval;
-}
-
-
-static void 
-lst_repbud_cell_data_function_name (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
-{
-gint tmpmode;
-
-	tmpmode = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(model), "mode-data"));
-
-	if( tmpmode != 1 )
-	{
-	Category *item;
-	guint32 key;
-	gchar *markup = NULL;
-
-		gtk_tree_model_get(model, iter, 
-			LST_BUDGET_KEY, &key,
-			-1);
-
-		item = da_cat_get(key);
-		if(item)
-		{
-			markup = item->typename;
-		}
-
-		g_object_set(renderer, "markup", markup, NULL);
-	}
-	else
-	{
-	gchar *name;
-	
-		gtk_tree_model_get(model, iter, 
-			LST_BUDGET_NAME, &name,
-			-1);	
-
-		g_object_set(renderer, "text", name, NULL);
-		g_free(name);
-	}
-
-}
-
-
-static void lst_repbud_cell_data_function_amount (GtkTreeViewColumn *col,
-                           GtkCellRenderer   *renderer,
-                           GtkTreeModel      *model,
-                           GtkTreeIter       *iter,
-                           gpointer           user_data)
-   {
-gdouble  value;
-gchar *color;
-gchar buf[G_ASCII_DTOSTR_BUF_SIZE];
-gint column_id = GPOINTER_TO_INT(user_data);
-
-	gtk_tree_model_get(model, iter, column_id, &value, -1);
-
-	if( value )
-	{
-		hb_strfmon(buf, G_ASCII_DTOSTR_BUF_SIZE-1, value, GLOBALS->kcur, GLOBALS->minor);
-
-		if( column_id == LST_BUDGET_RESULT)
-			color = get_minimum_color_amount (value, 0.0);
-		else
-			color = get_normal_color_amount(value);
-
-		g_object_set(renderer,
-			"foreground",  color,
-			"text", buf,
-			NULL);
-	}
-	else
-	{
-		g_object_set(renderer, "text", "", NULL);
-	}
-}
-
-
-
-static void lst_repbud_cell_data_function_result (GtkTreeViewColumn *col,
-                           GtkCellRenderer   *renderer,
-                           GtkTreeModel      *model,
-                           GtkTreeIter       *iter,
-                           gpointer           user_data)
-   {
-gdouble  value;
-gchar *color;
-gchar *status;
-gint column_id = GPOINTER_TO_INT(user_data);
-
-	gtk_tree_model_get(model, iter, 
-		column_id, &value,
-		LST_BUDGET_STATUS, &status,
-		-1);
-
-	if( value )
-	{
-		color = get_minimum_color_amount (value, 0.0);
-		g_object_set(renderer,
-			"foreground",  color,
-			"text", status,
-			NULL);
-	}
-	else
-	{
-		g_object_set(renderer, "text", "", NULL);
-	}
-	
-	//leak
-	g_free(status);
-}
-
-
-static void lst_repbud_cell_data_function_fulfilled (GtkTreeViewColumn *col,
-                           GtkCellRenderer   *renderer,
-                           GtkTreeModel      *model,
-                           GtkTreeIter       *iter,
-                           gpointer           user_data)
-{
-gdouble budget;
-gint rawrate;
-gchar buf[16];
-
-	gtk_tree_model_get(model, iter,
-		LST_BUDGET_BUDGET, &budget, 
-		LST_BUDGET_FULFILLED, &rawrate,
-		-1);
-
-	if( hb_amount_equal(budget, 0.0) == FALSE )
-	{
-		g_snprintf(buf, sizeof(buf), "%d %%", rawrate);
-		g_object_set(renderer, "text", buf, NULL);
-	}
-	else
-		g_object_set(renderer, "text", "", NULL);
-
-}
-
-
-static GtkTreeViewColumn *lst_repbud_column_create_amount(gchar *name, gint id)
-{
-GtkTreeViewColumn  *column;
-GtkCellRenderer    *renderer;
-
-	column = gtk_tree_view_column_new();
-	gtk_tree_view_column_set_title(column, name);
-	renderer = gtk_cell_renderer_text_new ();
-	g_object_set(renderer, "xalign", 1.0, NULL);
-	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_repbud_cell_data_function_amount, GINT_TO_POINTER(id), NULL);
-	//#2004631 date and column title alignement
-	gtk_tree_view_column_set_alignment (column, 1.0);
-	gtk_tree_view_column_set_sort_column_id (column, id);
-	return column;
-}
-
-
-/*
-** create our statistic list
-*/
-static GtkWidget *lst_repbud_create(void)
-{
-GtkTreeStore *store;
-GtkWidget *view;
-GtkCellRenderer    *renderer;
-GtkTreeViewColumn  *column;
-
-	DB( g_print("\n[repbudget] create list\n") );
-
-	/* create list store */
-	store = gtk_tree_store_new(
-	  	NUM_LST_BUDGET,
-		G_TYPE_INT,		//pos
-		G_TYPE_INT,		//key
-		G_TYPE_STRING,	//name
-		G_TYPE_DOUBLE,	//spent
-		G_TYPE_DOUBLE,	//budget
-		G_TYPE_INT,		//fulfilled
-		G_TYPE_DOUBLE,	//result
-		G_TYPE_STRING	//status
-		);
-
-	//treeview
-	view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
-	g_object_unref(store);
-
-	gtk_tree_view_set_grid_lines (GTK_TREE_VIEW (view), PREFS->grid_lines);
-
-	/* column: Name */
-	renderer = gtk_cell_renderer_text_new ();
-
-	g_object_set(renderer, 
-		"ellipsize", PANGO_ELLIPSIZE_END,
-	    "ellipsize-set", TRUE,
-		//taken from nemo, not exactly a resize to content, but good compromise
-	    "width-chars", 40,
-	    NULL);
-
-	column = gtk_tree_view_column_new();
-	gtk_tree_view_column_set_title(column, _("Category"));
-	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_repbud_cell_data_function_name, GINT_TO_POINTER(LST_BUDGET_NAME), NULL);
-	//gtk_tree_view_column_add_attribute(column, renderer, "text", LST_BUDGET_NAME);
-	gtk_tree_view_column_set_sort_column_id (column, LST_BUDGET_NAME);
-	gtk_tree_view_column_set_resizable(column, TRUE);
-	//#2004631 date and column title alignement
-	//gtk_tree_view_column_set_alignment (column, 0.5);
-	gtk_tree_view_column_set_min_width (column, HB_MINWIDTH_COLUMN);
-	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
-
-	/* column: Expense */
-	column = lst_repbud_column_create_amount(_("Spent"), LST_BUDGET_SPENT);
-	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
-
-	/* column: Income */
-	column = lst_repbud_column_create_amount(_("Budget"), LST_BUDGET_BUDGET);
-	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
-
-	/* column: Fulfilled */
-	renderer = gtk_cell_renderer_text_new ();
-	g_object_set(renderer, "xalign", 1.0, NULL);
-	column = gtk_tree_view_column_new();
-	gtk_tree_view_column_set_title(column, _("Fulfilled"));
-	gtk_tree_view_column_set_sort_column_id (column, LST_BUDGET_FULFILLED);
-	gtk_tree_view_column_set_alignment (column, 1.0);
-	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_repbud_cell_data_function_fulfilled, GINT_TO_POINTER(LST_BUDGET_FULFILLED), NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
-
-	/* column: Result */
-	column = lst_repbud_column_create_amount(_("Result"), LST_BUDGET_RESULT);
-	//right part
-	renderer = gtk_cell_renderer_text_new ();
-	//g_object_set(renderer, "xalign", 0.0, NULL);
-	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_repbud_cell_data_function_result, GINT_TO_POINTER(LST_BUDGET_RESULT), NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
-
-	/* column last: empty */
-	column = gtk_tree_view_column_new();
-	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
-
-	/* sort */
-	//gtk_tree_sortable_set_default_sort_func(GTK_TREE_SORTABLE(store), budget_listview_compare_func, NULL, NULL);
-	//gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID, GTK_SORT_ASCENDING);
-
-	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), LST_BUDGET_NAME, GTK_SORT_ASCENDING);
-
-	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_BUDGET_NAME  , budget_listview_compare_func, GINT_TO_POINTER(LST_BUDGET_NAME), NULL);
-	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_BUDGET_SPENT , budget_listview_compare_func, GINT_TO_POINTER(LST_BUDGET_SPENT), NULL);
-	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_BUDGET_BUDGET, budget_listview_compare_func, GINT_TO_POINTER(LST_BUDGET_BUDGET), NULL);
-	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_BUDGET_FULFILLED, budget_listview_compare_func, GINT_TO_POINTER(LST_BUDGET_FULFILLED), NULL);
-	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_BUDGET_RESULT, budget_listview_compare_func, GINT_TO_POINTER(LST_BUDGET_RESULT), NULL);
-
-	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(view), FALSE);
-
-	return(view);
-}
 

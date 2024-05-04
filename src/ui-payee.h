@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -78,7 +78,7 @@ GtkWidget *ui_pay_entry_popover_new(GtkWidget *label);
 
 /* = = = = = = = = = = */
 
-void ui_pay_listview_toggle_to_filter(GtkTreeView *treeview, Filter *filter);
+guint ui_pay_listview_toggle_to_filter(GtkTreeView *treeview, Filter *filter);
 void ui_pay_listview_quick_select(GtkTreeView *treeview, const gchar *uri);
 
 void ui_pay_listview_add(GtkTreeView *treeview, Payee *item);

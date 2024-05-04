@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -47,17 +47,8 @@ extern struct Preferences *PREFS;
 //extern HbKvData CYA_TXN_STATUS[];
 extern HbKivData CYA_TXN_STATUSIMG[];
 
-// test
 
-gchar *CYA_TXN_TYPE[] = { 
-	N_("Expense"),
-	N_("Income"),
-	N_("Transfer"),
-	NULL
-};
-
-
-extern gchar *CYA_WEEKDAY[];
+extern gchar *CYA_TXN_TYPE[];
 
 
 static void ui_popover_tpl_populate(struct deftransaction_data *data, GList *srclist);
@@ -185,7 +176,7 @@ gchar *lbfrom, *lbto;
 
 		lbfrom = ( amount <= 0.0 ) ? _("_From:") : _("_To:");
 		lbto   = ( amount <= 0.0 ) ? _("_To:")   : _("_From:");
-		
+
 		//#1673260 show target amount if != kcur
 		if(srcacc != NULL && dstacc != NULL)
 		{
@@ -366,25 +357,6 @@ gchar *cheque_str;
 
 }
 
-//5.7 removed
-/*
-static void deftransaction_cb_date_changed(GtkWidget *widget, gpointer user_data)
-{
-struct deftransaction_data *data;
-GDateWeekday weekday;
-
-	DB( g_print("\n[ui-transaction] date changed\n") );
-
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-
-	weekday = gtk_date_entry_get_weekday(GTK_DATE_ENTRY(data->PO_date));
-
-	DB( g_print(" wd=%d %s\n", weekday, CYA_WEEKDAY[weekday]) );
-
-	gtk_label_set_label(GTK_LABEL(data->LB_wday), _(CYA_WEEKDAY[weekday]));
-
-}
-*/
 
 static void deftransaction_cb_accfrom_changed(GtkWidget *widget, gpointer user_data)
 {
@@ -506,8 +478,6 @@ gint type;
 
 	deftransaction_cb_amount_focusout(widget, NULL, user_data);
 	
-	DB( g_print("[ui-transaction] end type change\n") );
-
 	deftransaction_update(widget, user_data);
 	
 }
@@ -603,7 +573,6 @@ gchar *tagstr;
 	
 	paymode_combo_box_set_active(GTK_COMBO_BOX(data->NU_mode), entry->paymode);
 
-	DB( g_print("[ui-transaction] end set\n") );
 }
 
 
@@ -807,6 +776,7 @@ gint type, active;
 
 	//entry->status = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_status));
 	entry->status = hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_status));
+	DB( g_print(" status: '%d'\n", entry->status) );
 
 	// consistency checks
 
@@ -997,6 +967,7 @@ Account *acc;
 		//if( new_txn->paymode == PAYMODE_INTXFER )
 		if( new_txn->flags & OF_INTXFER )
 		{
+			// change to an internal xfer
 			if( !(old_txn->flags & OF_INTXFER) )
 			{
 				// this call can popup a user dialog to choose
@@ -1070,8 +1041,6 @@ Account *acc;
 	deftransaction_dispose(dialog, NULL);
 	gtk_window_destroy (GTK_WINDOW(dialog));
 
-	DB( g_print("[ui-transaction] end external edit (from out)\n") );
-	
 	return result;
 }
 
@@ -1099,9 +1068,6 @@ struct deftransaction_data *data;
 
 	DB( g_print(" - call warnsign\n") );
 	deftransaction_update_warnsign(widget, NULL);
-
-	
-	DB( g_print("[ui-transaction] end set transaction (from out)\n") );
 
 }
 
@@ -1140,8 +1106,6 @@ static void deftransaction_setup(struct deftransaction_data *data)
 
 	//DB( g_print(" connect widgets signals\n") );
 
-
-	DB( g_print("[ui-transaction] end setup\n") );
 }
 
 
@@ -1306,10 +1270,8 @@ GtkWidget *box, *widget, *scrollwin, *treeview;
 	gtk_box_pack_start (GTK_BOX(box), widget, FALSE, FALSE, 0);
 
 
-	scrollwin = gtk_scrolled_window_new(NULL,NULL);
+	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start (GTK_BOX(box), scrollwin, TRUE, TRUE, 0);
-    gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
 	store = gtk_list_store_new(NUM_LST_DSPTPL, 
 		G_TYPE_POINTER,
@@ -1542,7 +1504,7 @@ gint row;
 	widget = hbtk_radio_button_new(GTK_ORIENTATION_HORIZONTAL, CYA_TXN_TYPE, TRUE);
 	data->RA_type = widget;
 	gtk_widget_set_halign (widget, GTK_ALIGN_CENTER);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 0, row, 3, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 0, row, 5, 1);
 	gtk_widget_set_margin_bottom(widget, SPACING_MEDIUM);
 	
 	data->showtemplate = FALSE;
@@ -1551,7 +1513,7 @@ gint row;
 		data->showtemplate = TRUE;
 		widget = deftransaction_create_template(data);
 		gtk_widget_set_halign (widget, GTK_ALIGN_END);
-		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+		gtk_grid_attach (GTK_GRID (group_grid), widget, 4, row, 1, 1);
 		gtk_widget_set_margin_bottom(widget, SPACING_MEDIUM);
 	}
 
@@ -1562,7 +1524,7 @@ gint row;
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
 	data->GR_date = hbox;
 	//gtk_widget_set_hexpand(hbox, FALSE);
-	gtk_grid_attach (GTK_GRID (group_grid), hbox, 1, row, 2, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), hbox, 1, row, 4, 1);
 
 		widget = gtk_date_entry_new(label);
 		data->PO_date = widget;
@@ -1586,7 +1548,7 @@ gint row;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 	//gtk_widget_set_hexpand(hbox, FALSE);
-	gtk_grid_attach (GTK_GRID (group_grid), hbox, 1, row, 2, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), hbox, 1, row, 4, 1);
 
 		widget = make_amount(label);
 		data->ST_amount = widget;
@@ -1603,11 +1565,12 @@ gint row;
 		gtk_widget_set_margin_start(label, SPACING_SMALL);
 		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
+
 	//#1673260
 	row++;
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
 	//gtk_widget_set_hexpand(hbox, FALSE);
-	gtk_grid_attach (GTK_GRID (group_grid), hbox, 1, row, 2, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), hbox, 2, row, 3, 1);
 
 		widget = make_amount(label);
 		data->ST_xferamt = widget;
@@ -1638,7 +1601,7 @@ gint row;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
 	widget = ui_acc_entry_popover_new(label);
 	data->PO_acc = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 4, 1);
 
 	gtk_widget_set_margin_top(label, SPACING_MEDIUM);
 	gtk_widget_set_margin_top(widget, SPACING_MEDIUM);
@@ -1654,10 +1617,10 @@ gint row;
 	row++;
 	label = make_label_widget(_("T_o:"));
 	data->LB_accto = label;
-	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = ui_acc_entry_popover_new(label);
 	data->PO_accto = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 3, 1);
 
 
 	row++;
@@ -1666,10 +1629,10 @@ gint row;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
 	widget = make_paymode(label);
 	data->NU_mode = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
 	widget = gtk_check_button_new_with_mnemonic(_("Book _2"));
 	data->CM_cheque = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 3, row, 2, 1);
 
 	
 	row++;
@@ -1678,7 +1641,7 @@ gint row;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
 	widget = make_string(label);
 	data->ST_info = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
 
 
 	/*row++;
@@ -1708,7 +1671,7 @@ gint row;
 
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	gtk_widget_set_hexpand(hbox, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), hbox, 1, row, 2, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), hbox, 1, row, 4, 1);
 
 		widget = ui_pay_entry_popover_new(label);
 		data->PO_pay = widget;
@@ -1728,7 +1691,7 @@ gint row;
 
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	gtk_widget_set_hexpand(hbox, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), hbox, 1, row, 2, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), hbox, 1, row, 4, 1);
 
 		//widget = ui_cat_comboboxentry_new(label);
 		widget = ui_cat_entry_popover_new(label);
@@ -1756,7 +1719,7 @@ gint row;
 	widget = hbtk_radio_button_new_with_data (CYA_TXN_STATUSIMG, TRUE);
 	gtk_widget_set_halign(widget, GTK_ALIGN_START);
 	data->RA_status = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 4, 1);
 
 	gtk_widget_set_margin_top(label, SPACING_MEDIUM);
 	gtk_widget_set_margin_top(widget, SPACING_MEDIUM);
@@ -1767,7 +1730,7 @@ gint row;
 	widget = make_memo_entry(label);
 	data->ST_memo = widget;
 	gtk_widget_set_hexpand(widget, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 4, 1);
 
 	row++;
 	label = make_label_widget(_("_Tags:"));
@@ -1775,7 +1738,7 @@ gint row;
 
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(hbox)), GTK_STYLE_CLASS_LINKED);
-	gtk_grid_attach (GTK_GRID (group_grid), hbox, 1, row, 2, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), hbox, 1, row, 4, 1);
 
 		widget = make_string(label);
 		data->ST_tags = widget;
@@ -1793,13 +1756,13 @@ gint row;
 	gtk_info_bar_set_message_type (GTK_INFO_BAR (bar), GTK_MESSAGE_WARNING);
 	label = gtk_label_new (_("Warning: amount and category sign don't match"));
 	gtk_box_pack_start (GTK_BOX (gtk_info_bar_get_content_area (GTK_INFO_BAR (bar))), label, TRUE, TRUE, 0);
-	gtk_grid_attach (GTK_GRID (group_grid), bar, 1, row, 2, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), bar, 1, row, 4, 1);
 
 	//#1831975 visual add confirmation
 	row++;
 	label = gtk_label_new(NULL);
 	data->LB_msgadded = label;
-	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 3, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 4, 1);
 
 	//setup, init and show window
 	deftransaction_setup(data);

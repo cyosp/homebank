@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -79,6 +79,7 @@ struct Preferences
 	//interface
 	gshort		toolbar_style;
 	gshort		grid_lines;
+
 	gboolean	gtk_override;
 	gshort		gtk_fontsize;
 	gboolean	gtk_darktheme;
@@ -109,10 +110,14 @@ struct Preferences
 	//-- dialog
 	gboolean	heritdate;
 	gboolean	txn_memoacp;
-	gshort		txn_xfer_daygap;
-	gboolean	txn_xfer_syncstat;
 	gshort		txn_memoacp_days;
 	gboolean	txn_showconfirm;
+
+	//txn xfer
+	gboolean	xfer_showdialog;
+	gshort		xfer_daygap;
+	gboolean	xfer_syncstat;
+
 
 	//import/export
 	gint		dtex_datefmt;

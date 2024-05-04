@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -547,42 +547,59 @@ guint nbsplit;
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 /* new transfer functions */
 
-static void transaction_xfer_create_child(Transaction *ope)
+
+Transaction *transaction_xfer_child_new_from_txn(Transaction *stxn)
+{
+Transaction *child;
+Account *acc;
+
+	child = da_transaction_clone(stxn);
+
+	//#1673260 deal with multi currency amount
+	if( !(stxn->flags & OF_ADVXFER) )
+	{
+		child->amount = -stxn->amount;
+		//TODO:maybe
+		//child->xferamount = 0;
+	}
+	else
+	{
+		child->amount = stxn->xferamount;
+		child->xferamount = stxn->amount;
+	}
+
+	da_transaction_set_flag(child);	// set income/xpense
+
+	//#1268026 #1690555
+	if( (child->status == TXN_STATUS_CLEARED) || (child->status == TXN_STATUS_RECONCILED) )
+		child->status = TXN_STATUS_NONE;
+	//child->flags &= ~(OF_VALID);	// delete reconcile state
+
+	child->kacc = child->kxferacc;
+	child->kxferacc = stxn->kacc;
+
+	acc = da_acc_get( child->kacc );
+	if( acc != NULL )
+		child->kcur = acc->kcur;
+
+	return child;
+}
+
+
+
+static void transaction_xfer_create_child(Transaction *stxn)
 {
 Transaction *child;
 Account *acc;
 
 	DB( g_print("\n[transaction] xfer_create_child\n") );
 
-	if( ope->kxferacc > 0 )
+	if( stxn->kxferacc > 0 )
 	{
-		child = da_transaction_clone(ope);
+		child = transaction_xfer_child_new_from_txn(stxn);
 
-		ope->flags |= (OF_CHANGED | OF_INTXFER);
+		stxn->flags |= (OF_CHANGED | OF_INTXFER);
 		child->flags |= (OF_ADDED | OF_INTXFER);
-
-		//#1673260 deal with multi currency amount
-		if( !(ope->flags & OF_ADVXFER) )
-		{
-			child->amount = -ope->amount;
-			//TODO:maybe
-			//child->xferamount = 0;
-		}
-		else
-		{
-			child->amount = ope->xferamount;
-			child->xferamount = ope->amount;
-		}
-
-		da_transaction_set_flag(child);	// set income/xpense
-
-		//#1268026 #1690555
-		if( (child->status == TXN_STATUS_CLEARED) || (child->status == TXN_STATUS_RECONCILED) )
-			child->status = TXN_STATUS_NONE;
-		//child->flags &= ~(OF_VALID);	// delete reconcile state
-
-		child->kacc = child->kxferacc;
-		child->kxferacc = ope->kacc;
 
 		/* update acc flags */
 		acc = da_acc_get( child->kacc );
@@ -594,11 +611,9 @@ Account *acc;
 			guint maxkey = da_transaction_get_max_kxfer();
 			DB( g_print(" + maxkey is %d\n", maxkey) );
 
-			ope->kxfer = maxkey+1;
+			stxn->kxfer  = maxkey+1;
 			child->kxfer = maxkey+1;
-			DB( g_print(" + strong link to %d\n", ope->kxfer) );
-
-			child->kcur = acc->kcur;
+			DB( g_print(" + strong link to %d\n", stxn->kxfer) );
 
 			DB( g_print(" + add transfer, %p to acc %d\n", child, acc->key) );
 			da_transaction_insert_sorted(child);
@@ -609,61 +624,76 @@ Account *acc;
 }
 
 
-static gint transaction_xfer_child_match_rate(Transaction *stxn, Transaction *ptxn, guint32 daygap)
-{
-gint rate = 0;
-
-	DB( g_print("\n[transaction] xfer_child_match_rate\n") );
-
-	//default rate is based on exact match field: cur+amount
-	rate = 2;
-	if( stxn->kpay == ptxn->kpay)
-		rate++;
-	if( stxn->kcat == ptxn->kcat)
-		rate++;
-	if( hb_string_compare(stxn->memo, ptxn->memo) == 0 )
-		rate++;
-	//TODO: maybe add info & tag here	
-
-	rate = (rate * 100) / 5;
-
-	DB( g_print(" return %d\n", rate) );
-
-	return rate;
-}
-
-
-//todo: add strong control and extend to payee, maybe memo ?
-// #1708974 enable different date
-static gboolean transaction_xfer_child_might(Transaction *stxn, Transaction *dtxn, guint32 daygap)
+//#1708974 enable different date
+//#1987975 only suggest opposite sign amount txn
+static gboolean transaction_xfer_child_might(Transaction *stxn, Transaction *dtxn, gushort *matchrate)
 {
 gboolean retval = FALSE;
+gint32 daygap = PREFS->xfer_daygap;
+gint rate = 100;
 
 	DB( g_print("\n[transaction] xfer_child_might\n") );
 
-	if(stxn == dtxn)
+	//paranoia check
+	if ( (stxn == dtxn) || (stxn->kacc == dtxn->kacc) )
 		return FALSE;
 
 	DB( g_print(" src: %d %d %d %f %d\n", stxn->kcur, stxn->date, stxn->kacc, stxn->amount, stxn->kxfer ) );
 	DB( g_print(" dst: %d %d %d %f %d\n", dtxn->kcur, dtxn->date, dtxn->kacc, dtxn->amount, dtxn->kxfer ) );
 
-	//disable for != currencies
-	if( stxn->kcur == dtxn->kcur &&
-	    //stxn->date == dtxn->date &&
-		//# 1708974 enable different date
-		(dtxn->date <= (stxn->date + daygap)) &&
-	    (dtxn->date >= (stxn->date - daygap)) &&
-	    //v5.1 make no sense: stxn->kxferacc == dtxn->kacc &&
-	    stxn->kacc != dtxn->kacc &&
-	    //#1987975 only suggest opposite sign amount txn
-		stxn->amount == -dtxn->amount &&
-		//ABS(stxn->amount) == ABS(dtxn->amount) &&
-	    dtxn->kxfer == 0)
-	{
-		retval = TRUE;
-	}
+	//keep only normal dtxn
+	if( dtxn->kxfer != 0 )
+		return FALSE;
 
-	DB( g_print(" return %d\n", retval) );
+	//#1708974 date allow +/- daygap
+	if(	(dtxn->date > (stxn->date + daygap)) && (dtxn->date > (stxn->date - daygap)) )
+		return FALSE;
+
+	daygap = (stxn->date - dtxn->date);
+	rate -= ABS(daygap);
+
+	if( stxn->kcur == dtxn->kcur )
+	{
+		//#1987975 only suggest opposite sign amount txn
+		if( stxn->amount == -dtxn->amount )
+		{
+			retval = TRUE;
+		}
+	}
+	//#2047647 cross currency target txn proposal, with 10% gap
+	else
+	{
+	Currency *dstcur;
+	gdouble rawamt, minamt, maxamt;
+
+		dstcur = da_cur_get(dtxn->kcur);
+		rawamt = -hb_amount_round((stxn->amount * dstcur->rate), dstcur->frac_digits);
+		minamt = rawamt * 0.9;
+		maxamt = rawamt * 1.1;
+
+		if( (dtxn->amount <= maxamt) && (dtxn->amount >= minamt) )
+		{
+			rate -= ABS(dtxn->amount - rawamt); 
+			DB( g_print(" gap = %f\n", ABS(dtxn->amount - rawamt) / rawamt) );		
+			retval = TRUE; 
+		}
+		DB( g_print(" cross might: raw %f / min %f max %f, dst %f, retval=%d\n", 
+			rawamt,	minamt, maxamt, dtxn->amount, retval) );
+	}
+	
+	//other rate
+	if( stxn->kpay != dtxn->kpay)
+		rate -= 1;
+	if( stxn->kcat != dtxn->kcat)
+		rate -= 1;
+	if( hb_string_compare(stxn->memo, dtxn->memo) != 0 )
+		rate -= 1;
+	//TODO: maybe add info & tag here	
+
+	rate = CLAMP(rate, 0, 100);
+	*matchrate = rate;
+
+	//DB( g_print(" return %d\n", retval) );
 	return retval;
 }
 
@@ -691,14 +721,12 @@ GList *list, *matchlist = NULL;
 			Transaction *item = list->data;
 	
 				// no need to go higher than src txn date - daygap
-				if(item->date < (ope->date - PREFS->txn_xfer_daygap))
+				if(item->date < (ope->date - PREFS->xfer_daygap))
 					break;
 		
-				if( transaction_xfer_child_might(ope, item, PREFS->txn_xfer_daygap) == TRUE )
+				if( transaction_xfer_child_might(ope, item, &item->matchrate) == TRUE )
 				{
-					// evaluate here a match rate based on several fields
-					item->matchrate = transaction_xfer_child_match_rate(ope, item, PREFS->txn_xfer_daygap);
-					DB( g_print(" - match %3d: %d %s %f %d=>%d\n", item->matchrate, item->date, item->memo, item->amount, item->kacc, item->kxferacc) );
+					//DB( g_print(" - match %3d: %d %s %f %d=>%d\n", item->matchrate, item->date, item->memo, item->amount, item->kacc, item->kxferacc) );
 					matchlist = g_list_append(matchlist, item);
 				}
 				list = g_list_previous(list);
@@ -811,22 +839,14 @@ void transaction_xfer_change_to_normal(Transaction *ope)
 
 
 //TODO: should be static but used in hb_import
-void transaction_xfer_change_to_child(Transaction *ope, Transaction *child)
+void transaction_xfer_change_to_child(Transaction *stxn, Transaction *child)
 {
 Account *dstacc;
 
 	DB( g_print("\n[transaction] xfer_change_to_child\n") );
 
-	//disable for != currencies
-	//5.6 we keep this as the usage of this func is only equal kcur !
-	if(ope->kcur != child->kcur)
-		return;
-
-	ope->flags |= (OF_CHANGED | OF_INTXFER);
-	child->flags |= (OF_ADDED | OF_INTXFER);
-
-	ope->kxferacc = child->kacc;
-	child->kxferacc = ope->kacc;
+	stxn->flags  |= (OF_CHANGED | OF_INTXFER);
+	child->flags |= (OF_CHANGED | OF_INTXFER);
 
 	/* update acc flags */
 	dstacc = da_acc_get( child->kacc);
@@ -835,9 +855,26 @@ Account *dstacc;
 
 	//strong link
 	guint maxkey = da_transaction_get_max_kxfer();
-	ope->kxfer = maxkey+1;
+	stxn->kxfer  = maxkey+1;
 	child->kxfer = maxkey+1;
 
+	stxn->kxferacc  = child->kacc;
+	child->kxferacc = stxn->kacc;
+
+	//#1673260 enable different currency
+	if(stxn->kcur == child->kcur)
+	{
+		DB( g_print(" sync amount (==kcur)\n") );
+		child->amount = -stxn->amount;
+	}
+	else
+	{
+		DB( g_print(" sync amount (!=kcur)\n") );
+		//we keep the original child amount
+		//child->amount     = stxn->xferamount;
+		child->xferamount = stxn->amount;
+		child->flags |= (OF_ADVXFER);
+	}
 }
 
 
@@ -866,21 +903,21 @@ Account *acc;
 	//child->date		= s_txn->date;
 
 	//#2019193 option the sync xfer status
-	if( PREFS->txn_xfer_syncstat == TRUE )
+	if( PREFS->xfer_syncstat == TRUE )
 	{
 		child->status = s_txn->status;
 		child->flags |= OF_CHANGED;
 	}	
 
-	//# 1673260 enable different currency
+	//#1673260 enable different currency
 	if( !(child->flags & OF_ADVXFER) )
 	{
-		DB( g_print(" sync amount (!=kcur)\n") );
+		DB( g_print(" sync amount (==kcur)\n") );
 		child->amount   = -s_txn->amount;
 	}
 	else
 	{
-		DB( g_print(" sync amount (==kcur)\n") );
+		DB( g_print(" sync amount (!=kcur)\n") );
 		child->amount = s_txn->xferamount;
 		child->xferamount = s_txn->amount;
 	}
@@ -1017,9 +1054,10 @@ gchar *retval = "";
 	else
 	if(txn->status == TXN_STATUS_RECONCILED)
 		retval = "R";
-	//else
-	//if(txn->status == TXN_STATUS_REMIND)
-	//	retval = "?";
+	else
+	//#2051307 5.7.4 allow remind 
+	if(txn->status == TXN_STATUS_REMIND)
+		retval = "?";
 	else
 	if(txn->status == TXN_STATUS_VOID)
 		retval = "v";

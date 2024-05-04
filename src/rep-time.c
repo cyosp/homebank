@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -77,7 +77,7 @@ extern HbKvData CYA_REPORT_INTVL[];
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 
-static void reptime_action_viewlist(GtkToolButton *toolbutton, gpointer user_data)
+static void reptime_action_viewlist(GtkWidget *toolbutton, gpointer user_data)
 {
 struct reptime_data *data = user_data;
 
@@ -87,7 +87,7 @@ struct reptime_data *data = user_data;
 }
 
 
-static void reptime_action_viewline(GtkToolButton *toolbutton, gpointer user_data)
+static void reptime_action_viewline(GtkWidget *toolbutton, gpointer user_data)
 {
 struct reptime_data *data = user_data;
 
@@ -98,7 +98,7 @@ struct reptime_data *data = user_data;
 }
 
 
-static void reptime_action_viewcolumn(GtkToolButton *toolbutton, gpointer user_data)
+static void reptime_action_viewcolumn(GtkWidget *toolbutton, gpointer user_data)
 {
 struct reptime_data *data = user_data;
 
@@ -110,7 +110,7 @@ struct reptime_data *data = user_data;
 }
 
 
-static void reptime_action_print(GtkToolButton *toolbutton, gpointer user_data)
+static void reptime_action_print(GtkWidget *toolbutton, gpointer user_data)
 {
 struct reptime_data *data = user_data;
 gint tmpsrc, tmpintvl, page;
@@ -131,7 +131,7 @@ gchar *coltitle, *title, *name;
 		coltitle = hbtk_get_label(CYA_REPORT_INTVL, tmpintvl);
 		node = lst_reptime_to_string(GTK_TREE_VIEW(data->LV_report), coltitle, TRUE);
 
-		hb_print_listview(GTK_WINDOW(data->window), node->str, NULL, title, name);
+		hb_print_listview(GTK_WINDOW(data->window), node->str, NULL, title, name, FALSE);
 
 		g_string_free(node, TRUE);
 	}
@@ -147,7 +147,7 @@ gchar *coltitle, *title, *name;
 
 //beta
 #if MYDEBUG
-static void reptime_action_filter(GtkToolButton *toolbutton, gpointer user_data)
+static void reptime_action_filter(GtkWidget *toolbutton, gpointer user_data)
 {
 struct reptime_data *data = user_data;
 
@@ -198,8 +198,9 @@ struct reptime_data *data;
 	data->filter->maxdate = gtk_date_entry_get_date(GTK_DATE_ENTRY(data->PO_maxdate));
 
 	// set min/max date for both widget
-	gtk_date_entry_set_maxdate(GTK_DATE_ENTRY(data->PO_mindate), data->filter->maxdate);
-	gtk_date_entry_set_mindate(GTK_DATE_ENTRY(data->PO_maxdate), data->filter->mindate);
+	//5.8 check for error
+		gtk_date_entry_set_error(GTK_DATE_ENTRY(data->PO_mindate), ( data->filter->mindate > data->filter->maxdate ) ? TRUE : FALSE);
+		gtk_date_entry_set_error(GTK_DATE_ENTRY(data->PO_maxdate), ( data->filter->maxdate < data->filter->mindate ) ? TRUE : FALSE);
 
 	g_signal_handler_block(data->CY_range, data->handler_id[HID_REPTIME_RANGE]);
 	hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_range), FLT_RANGE_MISC_CUSTOM);
@@ -245,6 +246,11 @@ gint range;
 	if(range != FLT_RANGE_MISC_CUSTOM)
 	{
 		filter_preset_daterange_set(data->filter, range, data->accnum);
+
+		//#2046032 set min/max date for both widget
+		//5.8 check for error
+		gtk_date_entry_set_error(GTK_DATE_ENTRY(data->PO_mindate), ( data->filter->mindate > data->filter->maxdate ) ? TRUE : FALSE);
+		gtk_date_entry_set_error(GTK_DATE_ENTRY(data->PO_maxdate), ( data->filter->maxdate < data->filter->mindate ) ? TRUE : FALSE);
 
 		reptime_update_quickdate(widget, NULL);
 
@@ -548,7 +554,7 @@ GtkTreeIter  iter, child;
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_detail));
 	gtk_tree_store_clear (GTK_TREE_STORE(model));
 
-	if(data->detail)
+	if(data->detail && data->txn_queue)
 	{
 		g_object_ref(model); /* Make sure the model stays with us after the tree view unrefs it */
 		gtk_tree_view_set_model(GTK_TREE_VIEW(data->LV_detail), NULL); /* Detach model from view */
@@ -660,6 +666,14 @@ gdouble *tmp_amount;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
+	//clear all
+	if(data->txn_queue != NULL)
+		g_queue_free (data->txn_queue);
+	data->txn_queue = NULL;
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_report));
+	gtk_list_store_clear (GTK_LIST_STORE(model));
+	gtk_chart_set_datas_none(GTK_CHART(data->RE_chart));
+
 	//#2019876 return is invalid date range
 	if( data->filter->maxdate < data->filter->mindate )
 		return;
@@ -685,7 +699,6 @@ gdouble *tmp_amount;
 
 	//TODO: not necessary until date range change
 	//free previous txn
-	g_queue_free (data->txn_queue);
 	data->txn_queue = hbfile_transaction_get_partial(data->filter->mindate, data->filter->maxdate);
 
 	n_result = report_interval_count(tmpintvl, from, to);
@@ -731,8 +744,6 @@ gdouble *tmp_amount;
 		}
 
 		/* clear and detach our model */
-		model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_report));
-		gtk_list_store_clear (GTK_LIST_STORE(model));
 		g_object_ref(model); /* Make sure the model stays with us after the tree view unrefs it */
 		gtk_tree_view_set_model(GTK_TREE_VIEW(data->LV_report), NULL); /* Detach model from view */
 
@@ -1299,7 +1310,8 @@ struct WinGeometry *wg;
 
 	DB( g_print("\n[reptime] window dispose\n") );
 
-	g_queue_free (data->txn_queue);
+	if(data->txn_queue != NULL)
+		g_queue_free (data->txn_queue);
 
 	da_flt_free(data->filter);
 
@@ -1492,10 +1504,8 @@ gint row;
 	gtk_notebook_set_show_border(GTK_NOTEBOOK(notebook), FALSE);	
 	gtk_grid_attach (GTK_GRID (table), notebook, 1, row, 2, 1);
 
-	 	scrollwin = gtk_scrolled_window_new(NULL,NULL);
+	 	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	 	data->SW_acc = scrollwin;
-		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-		gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
 		gtk_widget_set_margin_bottom (scrollwin, SPACING_LARGE);
 		treeview = ui_acc_listview_new(TRUE);
 		data->LV_acc = treeview;
@@ -1504,10 +1514,8 @@ gint row;
 		gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
 		gtk_notebook_append_page(GTK_NOTEBOOK(notebook), scrollwin, NULL);
 
-	 	scrollwin = gtk_scrolled_window_new(NULL,NULL);
+	 	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	 	//data->SW_acc = scrollwin;
-		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-		gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
 		gtk_widget_set_margin_bottom (scrollwin, SPACING_LARGE);
 		treeview = ui_cat_listview_new(TRUE, FALSE);
 		data->LV_cat = treeview;
@@ -1516,10 +1524,8 @@ gint row;
 		gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
 		gtk_notebook_append_page(GTK_NOTEBOOK(notebook), scrollwin, NULL);
 
-	 	scrollwin = gtk_scrolled_window_new(NULL,NULL);
+	 	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	 	//data->SW_acc = scrollwin;
-		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-		gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
 		gtk_widget_set_margin_bottom (scrollwin, SPACING_LARGE);
 		treeview = ui_pay_listview_new(TRUE, FALSE);
 		data->LV_pay = treeview;
@@ -1528,12 +1534,10 @@ gint row;
 		gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
 		gtk_notebook_append_page(GTK_NOTEBOOK(notebook), scrollwin, NULL);
 
-	 	scrollwin = gtk_scrolled_window_new(NULL,NULL);
+	 	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	 	//data->SW_acc = scrollwin;
-		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-		gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
 		gtk_widget_set_margin_bottom (scrollwin, SPACING_LARGE);
-		treeview = ui_tag_listview_new(TRUE);
+		treeview = ui_tag_listview_new(TRUE, FALSE);
 		data->LV_tag = treeview;
 		gtk_widget_set_vexpand (treeview, TRUE);
 		//gtk_widget_set_size_request(widget, HB_MINWIDTH_LIST, -1);
@@ -1576,21 +1580,17 @@ gint row;
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, NULL);
 
-		scrollwin = gtk_scrolled_window_new (NULL, NULL);
+		scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 		//gtk_scrolled_window_set_placement(GTK_SCROLLED_WINDOW (scrollwin), GTK_CORNER_TOP_RIGHT);
-		gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-		gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 		treeview = lst_reptime_create();
 		data->LV_report = treeview;
 		gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
 		gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
 
 		//detail
-		scrollwin = gtk_scrolled_window_new (NULL, NULL);
+		scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 		data->GR_detail = scrollwin;
 		//gtk_scrolled_window_set_placement(GTK_SCROLLED_WINDOW (scrollwin), GTK_CORNER_TOP_RIGHT);
-		gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-		gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 		treeview = create_list_transaction(LIST_TXN_TYPE_DETAIL, PREFS->lst_det_columns);
 		data->LV_detail = treeview;
 		gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);

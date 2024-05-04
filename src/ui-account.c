@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -21,6 +21,7 @@
 #include "hb-account.h"
 #include "ui-account.h"
 #include "ui-currency.h"
+#include "ui-dialogs.h"
 #include "ui-group.h"
 
 /****************************************************************************/
@@ -417,10 +418,8 @@ GtkEntryCompletion *completion;
 
 	//popover
 	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, SPACING_MEDIUM);
-	scrollwin = gtk_scrolled_window_new(NULL,NULL);
+	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start(GTK_BOX(box), scrollwin, TRUE, TRUE, 0);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	//gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scrollwin), HB_MINHEIGHT_LIST);
 	treeview = gtk_tree_view_new_with_model (GTK_TREE_MODEL(store));
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
@@ -491,11 +490,12 @@ GtkCellRenderer *renderer;
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-void ui_acc_listview_toggle_to_filter(GtkTreeView *treeview, Filter *filter)
+guint ui_acc_listview_toggle_to_filter(GtkTreeView *treeview, Filter *filter)
 {
 GtkTreeModel *model;
 GtkTreeIter iter;
 gboolean valid;
+guint change = 0;
 
 	DB( g_print("(ui_acc_listview) toggle_to_filter\n") );
 
@@ -512,11 +512,12 @@ gboolean valid;
 			-1);
 
 		DB( g_print(" acc k:%3d = %d (%s)\n", item->key, toggled, item->name) );
-		da_flt_status_acc_set(filter, item->key, toggled);
+		change += da_flt_status_acc_set(filter, item->key, toggled);
 	
 		/* Make iter point to the next row in the list store */
 		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
 	}
+	return change;
 }
 
 
@@ -1030,69 +1031,9 @@ gchar *needle;
 }
 
 
-static gchar *dialog_get_name(gchar *title, gchar *origname, GtkWindow *parentwindow)
-{
-GtkWidget *dialog, *content, *mainvbox, *getwidget;
-gchar *retval = NULL;
-
-	dialog = gtk_dialog_new_with_buttons (title,
-					    GTK_WINDOW (parentwindow),
-					    0,
-					    _("_Cancel"),
-					    GTK_RESPONSE_REJECT,
-					    _("_OK"),
-					    GTK_RESPONSE_ACCEPT,
-					    NULL);
-
-	content = gtk_dialog_get_content_area(GTK_DIALOG (dialog));
-
-	mainvbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	hb_widget_set_margin(GTK_WIDGET(mainvbox), SPACING_LARGE);
-	gtk_box_pack_start (GTK_BOX (content), mainvbox, TRUE, TRUE, 0);
-
-	getwidget = gtk_entry_new();
-	gtk_entry_set_width_chars(GTK_ENTRY(getwidget), 24);
-	gtk_box_pack_start (GTK_BOX (mainvbox), getwidget, FALSE, FALSE, 0);
-	gtk_widget_show_all(mainvbox);
-
-	if(origname != NULL)
-		gtk_entry_set_text(GTK_ENTRY(getwidget), origname);
-	gtk_widget_grab_focus (getwidget);
-
-	gtk_entry_set_activates_default (GTK_ENTRY(getwidget), TRUE);
-
-	gtk_dialog_set_default_response(GTK_DIALOG( dialog ), GTK_RESPONSE_ACCEPT);
-
-	//wait for the user
-	gint result = gtk_dialog_run (GTK_DIALOG (dialog));
-
-	if(result == GTK_RESPONSE_ACCEPT)
-	{
-	const gchar *name;
-
-		name = gtk_entry_get_text(GTK_ENTRY(getwidget));
-
-		/* ignore if entry is empty */
-		if (name && *name)
-		{
-			retval = g_strdup(name);
-		}
-    }
-
-	// cleanup and destroy
-	gtk_window_destroy (GTK_WINDOW(dialog));
-
-
-	return retval;
-}
-
-
-
-
-
 static void ui_acc_manage_getlast(struct ui_acc_manage_data *data)
 {
-gboolean bool;
+gboolean active;
 gdouble value;
 Account *item;
 
@@ -1131,25 +1072,25 @@ Account *item;
 			item->notes = g_strdup(notes);
 		
 		item->flags &= ~(AF_CLOSED);
-		bool = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_closed));
-		if(bool) item->flags |= AF_CLOSED;
+		active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_closed));
+		if(active) item->flags |= AF_CLOSED;
 
 		item->flags &= ~(AF_NOBUDGET);
-		bool = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_nobudget));
-		if(bool) item->flags |= AF_NOBUDGET;
+		active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_nobudget));
+		if(active) item->flags |= AF_NOBUDGET;
 
 		item->flags &= ~(AF_NOSUMMARY);
-		bool = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_nosummary));
-		if(bool) item->flags |= AF_NOSUMMARY;
+		active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_nosummary));
+		if(active) item->flags |= AF_NOSUMMARY;
 
 		item->flags &= ~(AF_NOREPORT);
-		bool = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_noreport));
-		if(bool) item->flags |= AF_NOREPORT;
+		active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_noreport));
+		if(active) item->flags |= AF_NOREPORT;
 
 		//#1896441 outflow summary
 		item->flags &= ~(AF_OUTFLOWSUM);
-		bool = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_outflowsum));
-		if(bool) item->flags |= AF_OUTFLOWSUM;
+		active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_outflowsum));
+		if(active) item->flags |= AF_OUTFLOWSUM;
 		
 		
 		gtk_spin_button_update(GTK_SPIN_BUTTON(data->ST_initial));
@@ -1538,7 +1479,7 @@ static void ui_acc_manage_rename(GtkWidget *widget, gpointer user_data)
 struct ui_acc_manage_data *data;
 Account *item;
 guint32 key;
-gboolean bool;
+gboolean valid;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 	DB( g_print("\n(ui_acc_manage_rename) data=%p\n", data) );
@@ -1564,8 +1505,8 @@ gboolean bool;
 			}
 			else
 			{
-				bool = account_rename(item, name);					
-				if(bool)
+				valid = account_rename(item, name);					
+				if(valid)
 				{
 					gtk_tree_view_columns_autosize (GTK_TREE_VIEW(data->LV_acc));
 					data->change++;
@@ -1585,7 +1526,7 @@ GtkTreeModel		 *model;
 GtkTreeIter			 iter;
 GtkTreePath			*path;
 Account 	*accitem;
-gboolean selected, bool;
+gboolean selected, active;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 	DB( g_print("\n(ui_acc_manage_toggled_nobudget) data=%p\n", data) );
@@ -1596,8 +1537,8 @@ gboolean selected, bool;
 	{
 		gtk_tree_model_get(model, &iter, LST_DEFACC_DATAS, &accitem, -1);
 		accitem->flags &= ~(AF_NOBUDGET);
-		bool = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_nobudget));
-		if(bool) accitem->flags |= AF_NOBUDGET;
+		active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_nobudget));
+		if(active) accitem->flags |= AF_NOBUDGET;
 
 		/* redraw the row to display/hide the icon */
 		path = gtk_tree_model_get_path(model, &iter);
@@ -1618,7 +1559,7 @@ GtkTreeModel		 *model;
 GtkTreeIter			 iter;
 GtkTreePath			*path;
 Account 	*accitem;
-gboolean selected, bool;
+gboolean selected, active;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 	DB( g_print("\n(ui_acc_manage_toggled_closed) data=%p\n", data) );
@@ -1629,8 +1570,8 @@ gboolean selected, bool;
 	{
 		gtk_tree_model_get(model, &iter, LST_DEFACC_DATAS, &accitem, -1);
 		accitem->flags &= ~(AF_CLOSED);
-		bool = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_closed));
-		if(bool) accitem->flags |= AF_CLOSED;
+		active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_closed));
+		if(active) accitem->flags |= AF_CLOSED;
 
 		/* redraw the row to display/hide the icon */
 		path = gtk_tree_model_get_path(model, &iter);
@@ -1907,9 +1848,7 @@ gint w, h, dw, dh, row;
 	gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 0);
 
 
- 	scrollwin = gtk_scrolled_window_new(NULL,NULL);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
+ 	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	treeview = ui_acc_listview_new(FALSE);
 	data->LV_acc = treeview;
 	gtk_widget_set_size_request(treeview, HB_MINWIDTH_LIST, -1);
@@ -2040,10 +1979,8 @@ gint w, h, dw, dh, row;
 	widget = gtk_text_view_new ();
 	//#1697171 add wrap
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(widget), GTK_WRAP_WORD);
-    scrollwin = gtk_scrolled_window_new (NULL, NULL);
+    scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_widget_set_size_request (scrollwin, -1, 48);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), widget);
 	gtk_widget_set_hexpand (scrollwin, TRUE);
 	gtk_widget_set_vexpand (scrollwin, TRUE);
@@ -2079,6 +2016,7 @@ gint w, h, dw, dh, row;
 /* test not working
 GValue gvalue = G_VALUE_INIT;
 
+	g_value_init (&gvalue, G_TYPE_BOOLEAN);
 	g_value_set_boolean (&gvalue, TRUE);
 	g_object_set_property(data->CY_template, "appears-as-list", &gvalue);
 */

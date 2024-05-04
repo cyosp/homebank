@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -25,6 +25,7 @@ enum {
 	HID_REPDIST_MINDATE,
 	HID_REPDIST_MAXDATE,
 	HID_REPDIST_RANGE,
+	HID_REPDIST_FORECAST,
 	HID_REPDIST_VIEW,
 	MAX_REPDIST_HID
 };

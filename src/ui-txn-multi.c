@@ -1,5 +1,5 @@
 /*	HomeBank -- Free, easy, personal accounting for everyone.
- *	Copyright (C) 1995-2023 Maxime DOYEN
+ *	Copyright (C) 1995-2024 Maxime DOYEN
  *
  *	This file is part of HomeBank.
  *
@@ -439,6 +439,7 @@ struct ui_multipleedit_dialog_data *data;
 GtkWidget *ui_multipleedit_dialog_new(GtkWindow *parent, GtkTreeView *treeview)
 {
 struct ui_multipleedit_dialog_data *data;
+struct WinGeometry *wg;
 GtkWidget *dialog, *content;
 GtkWidget *group_grid, *label, *widget, *toggle;
 gint row;
@@ -492,8 +493,9 @@ gint row;
 		gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
 		widget = gtk_date_entry_new(label);
 		data->PO_date = widget;
-		gtk_widget_set_hexpand (widget, FALSE);
-		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+		gtk_widget_set_halign (widget, GTK_ALIGN_START);
+		//gtk_widget_set_hexpand (widget, FALSE);
+		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 2, 1);
 
 		g_signal_connect (data->CM_date , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
 	}
@@ -510,8 +512,9 @@ gint row;
 		gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
 		widget = make_amount(label);
 		data->ST_amount = widget;
-		gtk_widget_set_hexpand (widget, FALSE);
-		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+		gtk_widget_set_halign (widget, GTK_ALIGN_START);
+		//gtk_widget_set_hexpand (widget, FALSE);
+		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 2, 1);
 		
 		g_signal_connect (data->CM_amount , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
 	}
@@ -527,7 +530,7 @@ gint row;
 	widget = ui_acc_entry_popover_new(label);
 	data->PO_acc = widget;
 	gtk_widget_set_hexpand (widget, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 2, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 4, 1);
 	
 	g_signal_connect (data->CM_acc , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
 
@@ -547,7 +550,8 @@ gint row;
 		widget = make_paymode_nointxfer (label);
 		data->NU_mode = widget;
 		//gtk_widget_set_hexpand (widget, TRUE);
-		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+		gtk_widget_set_halign (widget, GTK_ALIGN_START);
+		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 2, 1);
 
 		g_signal_connect (data->CM_mode , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
 
@@ -559,8 +563,8 @@ gint row;
 		gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
 		widget = make_string(label);
 		data->ST_info = widget;
-		//gtk_widget_set_hexpand (widget, TRUE);
-		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+		gtk_widget_set_hexpand (widget, TRUE);
+		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 2, 1);
 
 		g_signal_connect (data->CM_info , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
 	}
@@ -577,7 +581,7 @@ gint row;
 		widget = ui_pay_entry_popover_new(label);
 		data->PO_pay = widget;
 		gtk_widget_set_hexpand (widget, TRUE);
-		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 2, 1);
+		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 4, 1);
 
 		g_signal_connect (data->CM_pay  , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
 	}
@@ -594,7 +598,7 @@ gint row;
 		widget = ui_cat_entry_popover_new(label);
 		data->PO_cat = widget;
 		gtk_widget_set_hexpand (widget, TRUE);
-		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 2, 1);
+		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 4, 1);
 
 		g_signal_connect (data->CM_cat  , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
 	}
@@ -610,7 +614,7 @@ gint row;
 		widget = make_memo_entry(label);
 		data->ST_memo = widget;
 		gtk_widget_set_hexpand (widget, TRUE);
-		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 2, 1);
+		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 4, 1);
 
 		g_signal_connect (data->CM_memo , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
 	}
@@ -626,7 +630,7 @@ gint row;
 		widget = make_string(label);
 		data->ST_tags = widget;
 		gtk_widget_set_hexpand (widget, TRUE);
-		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 2, 1);
+		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 4, 1);
 
 		g_signal_connect (data->CM_tags , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
 	}
@@ -649,7 +653,7 @@ gint row;
 		widget = ui_acc_entry_popover_new(label);
 		data->PO_accto = widget;
 		gtk_widget_set_hexpand (widget, TRUE);
-		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 2, 1);
+		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 4, 1);
 
 		//ui_acc_comboboxentry_populate_except(GTK_COMBO_BOX(data->PO_accto), GLOBALS->h_acc, data->kacc, ACC_LST_INSERT_NORMAL);
 		ui_acc_entry_popover_populate_except(GTK_BOX(data->PO_accto), GLOBALS->h_acc, data->kacc, ACC_LST_INSERT_NORMAL);
@@ -665,6 +669,10 @@ gint row;
 	//ui_pay_comboboxentry_populate(GTK_COMBO_BOX(data->PO_pay), GLOBALS->h_pay);
 	//5.5 done in popover
 	//ui_cat_comboboxentry_populate(GTK_COMBO_BOX(data->PO_cat), GLOBALS->h_cat);
+
+	//5.8
+	wg = &PREFS->txn_wg;
+	gtk_window_set_default_size(GTK_WINDOW(dialog), wg->w, -1);
 
 	gtk_widget_show_all (dialog);
 

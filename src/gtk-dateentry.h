@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2023 Maxime DOYEN
+ *  Copyright (C) 1995-2024 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -84,10 +84,9 @@ GType		gtk_date_entry_get_type(void) G_GNUC_CONST;
 
 GtkWidget	*gtk_date_entry_new(GtkWidget *label);
 
+void 		gtk_date_entry_set_error(GtkDateEntry *dateentry, gboolean error);
 guint32		gtk_date_entry_get_date(GtkDateEntry * dateentry);
 void		gtk_date_entry_set_date(GtkDateEntry * dateentry, guint32 julian_days);
-void		gtk_date_entry_set_mindate(GtkDateEntry * dateentry, guint32 julian_days);
-void		gtk_date_entry_set_maxdate(GtkDateEntry * dateentry, guint32 julian_days);
 
 GDateWeekday gtk_date_entry_get_weekday(GtkDateEntry *dateentry);
 
