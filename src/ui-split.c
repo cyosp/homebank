@@ -256,6 +256,8 @@ GtkTreeViewColumn	*column;
 	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW(treeview), TRUE);
 	gtk_tree_view_set_reorderable (GTK_TREE_VIEW(treeview), TRUE);
 	
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(treeview), FALSE);
+
 	//gtk_tree_sortable_set_default_sort_func(GTK_TREE_SORTABLE(store), ui_acc_listview_compare_func, NULL, NULL);
 	//gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID, GTK_SORT_ASCENDING);
 

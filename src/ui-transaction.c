@@ -1342,6 +1342,8 @@ GtkWidget *box, *widget, *scrollwin, *treeview;
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW(treeview), FALSE);
 
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(treeview), FALSE);
+
 	widget = gtk_check_button_new_with_mnemonic(_("Show _scheduled"));
 	data->CM_showsched = widget;
 	gtk_box_pack_start (GTK_BOX(box), widget, FALSE, FALSE, 0);

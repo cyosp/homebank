@@ -1397,5 +1397,7 @@ GtkTreeViewColumn  *column;
 	column = gtk_tree_view_column_new();
 	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
 
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(view), FALSE);
+
 	return(view);
 }

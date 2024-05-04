@@ -859,6 +859,7 @@ gint len;
 	return newtxt;
 }
 
+//https://en.wikipedia.org/wiki/Date_format_by_country
 
 static gboolean
 hb_date_parser_get_nums(gchar *string, gint *n1, gint *n2, gint *n3)
@@ -1205,9 +1206,10 @@ GDate date;
 	g_date_set_julian (&date, julian);
 	switch(PREFS->dtex_datefmt)
 	{
+		//#2040010 change / to -		
 		case PRF_DATEFMT_MDY:
 		{
-			g_sprintf(outstr, "%02d/%02d/%04d",
+			g_sprintf(outstr, "%02d-%02d-%04d",
 				g_date_get_month(&date),
 				g_date_get_day(&date),
 				g_date_get_year(&date)
@@ -1216,7 +1218,7 @@ GDate date;
 		break;
 		case PRF_DATEFMT_DMY:
 		{
-			g_sprintf(outstr, "%02d/%02d/%04d",
+			g_sprintf(outstr, "%02d-%02d-%04d",
 				g_date_get_day(&date),
 				g_date_get_month(&date),
 				g_date_get_year(&date)
@@ -1224,7 +1226,7 @@ GDate date;
 		}
 		break;
 		default:
-			g_sprintf(outstr, "%04d/%02d/%02d",
+			g_sprintf(outstr, "%04d-%02d-%02d",
 				g_date_get_year(&date),
 				g_date_get_month(&date),
 				g_date_get_day(&date)

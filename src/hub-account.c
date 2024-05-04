@@ -501,10 +501,10 @@ GVariant *old_state, *new_state;
 
 static const GActionEntry actions[] = {
 //	name, function(), type, state, 
-	{ "groupby", ui_hub_account_activate_radio ,  "s", "'type'", NULL, {0,0,0} },
-	{ "showall", ui_hub_account_activate_toggle, NULL, "false" , NULL, {0,0,0} },
-	{ "clipboard", ui_hub_account_clipboard, NULL, NULL , NULL, {0,0,0} },
-	{ "print", ui_hub_account_print, NULL, NULL , NULL, {0,0,0} },
+	{ "groupby"		, ui_hub_account_activate_radio		,  "s", "'type'", NULL, {0,0,0} },
+	{ "showall"		, ui_hub_account_activate_toggle	, NULL, "false" , NULL, {0,0,0} },
+	{ "clipboard"	, ui_hub_account_clipboard			, NULL, NULL , NULL, {0,0,0} },
+	{ "print"		, ui_hub_account_print				, NULL, NULL , NULL, {0,0,0} },
 //  { "paste", activate_action, NULL, NULL,      NULL, {0,0,0} },
 };
 

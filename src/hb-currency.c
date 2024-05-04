@@ -713,10 +713,12 @@ gint i;
 	//g_string_append_printf(node, "https://api.frankfurter.app/latest?base=%s&symbols=", base->iso_code);
 
 	//2017410 + 5.7 base url from prefs
-	g_string_append_printf(node, "%s/latest?", PREFS->api_rate_url);
+	//g_string_append_printf(node, "%s/latest?", PREFS->api_rate_url);
+	//5.7.2 get full hostname from prefs
+	g_string_append_printf(node, "%s?", PREFS->api_rate_url);
 
 	//2017410 + 5.7 key from prefs
-	if( strlen(PREFS->api_rate_url) > 16 )
+	if( PREFS->api_rate_key != NULL && strlen(PREFS->api_rate_key) > 8 )
 		g_string_append_printf(node, "access_key=%s&", PREFS->api_rate_key);
 
 	//base currency
@@ -749,7 +751,7 @@ gint i;
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 
-gboolean currency_online_sync(GError **error)
+gboolean currency_online_sync(GError **error, GString *node)
 {
 SoupSession *session;
 SoupMessage *msg;
@@ -767,6 +769,11 @@ gboolean retval = TRUE;
 	//test API
 	retval = api_fixerio_parse(fixeriojson, error);
 	*/
+	if( node != NULL )
+	{
+		g_string_append(node, query);
+		g_string_append(node, "\n");
+	}
 
 	session = soup_session_new ();
 	msg = soup_message_new ("GET", query);
@@ -778,10 +785,15 @@ gboolean retval = TRUE;
 		body = soup_session_send_and_read (session, msg, NULL, error);
 		status = soup_message_get_status (msg);
 		DB( g_print("status_code: %d %d\n", status, SOUP_STATUS_IS_SUCCESSFUL(status) ) );
+		DB( g_print("reason: '%s'\n", soup_message_get_reason_phrase(msg)) );
+		DB( g_print("datas: '%s'\n", (gchar *)g_bytes_get_data(body, NULL)) );
 
-
-		DB( g_print("reason: %s\n", soup_message_get_reason_phrase(msg)) );
-		DB( g_print("datas: %s\n", (gchar *)g_bytes_get_data(body, NULL)) );
+		if( node != NULL )
+		{
+			g_string_append_printf(node, "status_code: %d\n", status);
+			g_string_append_printf(node, "reason: '%s'\n", soup_message_get_reason_phrase(msg));
+			g_string_append_printf(node, "datas: '%s'\n", (gchar *)g_bytes_get_data(body, NULL));
+		}
 
 		//if( SOUP_STATUS_IS_SUCCESSFUL(msg->status_code) == TRUE )
 		if( SOUP_STATUS_IS_SUCCESSFUL(status) == TRUE )

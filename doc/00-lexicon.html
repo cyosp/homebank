@@ -108,11 +108,13 @@
 
     <h3><a id="txntransfer" name="txntransfer"></a>Transfer</h3>
     <p>A transfer (more precisely internal transfer) is a money movement between <u>2 of your accounts</u>, in one or several Financial institution, as so, like you emit and receive the money there is no payee.<br>
-    <p>This is a special transfer for HomeBank, as it will link the source and destination transaction for further changes data to be synced.<br>So in exception of the Status and Date (and Amount the opposite sign), all the fields will be synced, whatever you make some changes from src or dst account.</p>
+    <p>This is a special transfer for HomeBank, as it will link the source and destination transaction for further changes of most data to be synced.<br>
+    In exception of the Status and Date (and Amount the opposite sign), all the fields will be synced, whatever you make some changes from src or dst account.<br>
+    The reason is that the money may arrive on the dst account a few days later, and when you reconcile you will do account separately.<br>
+    Since v5.7 there is a preference to sync also the status by default.</p>
     <p>When you change the type of a transaction to this one, HomeBank may propose some potential target transaction for you to select within <a href="dlg-xfer.html">this dialog</a>.</p>
     <p> <i class="warning"><img src="images/d-warn.png"/>&nbsp;transfer have some usage limitation:</i>
       <ul>
-        <li>currency of source/destination account must be the same</li>
         <li>split by category is not allowed</li>
         <li>import with CSV is not possible</li>
         <li>use with multiple selection edition is not possible</li>

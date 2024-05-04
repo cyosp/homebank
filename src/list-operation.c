@@ -769,42 +769,71 @@ gchar *text = NULL;
 
 
 //#1967708 encode csv string: add string delimiter ", and doubled if inside
-static void list_txn_to_string_csv_text(GString *node, gchar *sep, gchar *text)
+static void list_txn_to_string_csv_text(GString *node, gchar csep, gchar *text)
 {
+gchar sep[2];
+
+	sep[0] = csep;
+	sep[1] = 0;
+
+	DB( g_print("---- stt csv text ----\n") );
+
+	DB( g_print(" text: '%s' '%s' %ld\n", text, sep, strlen(sep)) );
+
 	if( text == NULL )
 	{
 		g_string_append (node, "");
+		DB( g_print(" >skipped null\n") );
 	}
 	else
 	{
-		//sep into string ?
-		if( g_strstr_len(text, -1, sep) == NULL )
+	size_t textlen = strlen(text);
+
+		if( textlen == 0 )
 		{
-			//no: put native text
-			g_string_append (node, text);
+			g_string_append (node, "");
+			DB( g_print(" >skipped empty\n") );
 		}
 		else
 		{
-			//yes: encode with string delimiter			
-			g_string_append_c (node, '"' );
-			// " not inside inside ?
-			if( g_strstr_len(text, -1, "\"") == NULL )
+			//sep into string ?
+			DB( g_print(" search '%s' in '%s' %ld\n", sep, text, textlen) );
+			if( g_strstr_len(text, textlen, sep) == NULL )
 			{
 				//no: put native text
 				g_string_append (node, text);
+				DB( g_print(" >not found\n") );
 			}
 			else
 			{
-			//yes: double the text delimiter
-			GString *dtext = g_string_new(text);
-			
-				g_string_replace(dtext, "\"", "\"\"", 0);
-				g_string_append (node, dtext->str);
-				g_string_free(dtext, TRUE);
+				DB( g_print(" >found, so add \"xxx\"\n") );
+				//yes: encode with string delimiter			
+				g_string_append_c (node, '"' );
+				// " not inside inside ?
+				if( g_strstr_len(text, textlen, "\"") == NULL )
+				{
+					//no: put native text
+					DB( g_print(" >no \" found put text\n") );
+					g_string_append (node, text);
+				}
+				else
+				{
+				//yes: double the text delimiter
+				GString *dtext = g_string_new(text);
+
+					DB( g_print(" >\" found double \" into text\n") );
+				
+					g_string_replace(dtext, "\"", "\"\"", 0);
+					g_string_append (node, dtext->str);
+					g_string_free(dtext, TRUE);
+				}
+				g_string_append_c (node, '"' );
 			}
-			g_string_append_c (node, '"' );
 		}
 	}
+
+	DB( g_print("---- end csv text ----\n") );
+
 }
 
 
@@ -814,6 +843,8 @@ Payee *payee;
 Category *category;
 gchar *tags;
 char strbuf[G_ASCII_DTOSTR_BUF_SIZE];
+
+	DB( g_print("----\n") );
 
 	//account
 	if( flags & LST_TXN_EXP_ACC )
@@ -839,18 +870,21 @@ char strbuf[G_ASCII_DTOSTR_BUF_SIZE];
 	//info
 	//g_string_append (node, (ope->info != NULL) ? ope->info : "" );
 	g_string_append_c (node, sep );
-	list_txn_to_string_csv_text(node, &sep, ope->info);
+	DB( g_print(" inf: '%s'\n", ope->info) );
+	list_txn_to_string_csv_text(node, sep, ope->info);
 
 	//payee	
 	payee = da_pay_get(ope->kpay);
 	//g_string_append (node, (payee->name != NULL) ? payee->name : "");
 	g_string_append_c (node, sep );
-	list_txn_to_string_csv_text(node, &sep, payee->name);
+	DB( g_print(" pay: '%s'\n", payee->name) );
+	list_txn_to_string_csv_text(node, sep, payee->name);
 
 	//memo
 	//g_string_append (node, (memo != NULL) ? memo : "" );
 	g_string_append_c (node, sep );
-	list_txn_to_string_csv_text(node, &sep, memo);
+	DB( g_print(" mem: '%s'\n", ope->memo) );
+	list_txn_to_string_csv_text(node, sep, ope->memo);
 
 	//amount
 	//#793719
@@ -878,7 +912,8 @@ char strbuf[G_ASCII_DTOSTR_BUF_SIZE];
 		category = da_cat_get(kcat);
 		//g_string_append (node, (category->fullname != NULL) ? category->fullname : "" );
 		g_string_append_c (node, sep );
-		list_txn_to_string_csv_text(node, &sep, category->fullname);
+		DB( g_print(" cat: '%s'\n", category->fullname) );
+		list_txn_to_string_csv_text(node, sep, category->fullname);
 	}
 
 	//tags
@@ -1784,6 +1819,8 @@ GtkTreeViewColumn *column, *col_acc = NULL, *col_status = NULL, *col_match = NUL
 	/* column status CLR */
 	column = gtk_tree_view_column_new();
 	gtk_tree_view_column_set_title(column, _("Status"));
+	//#2043152
+	gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
 
 	renderer = gtk_cell_renderer_pixbuf_new ();
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);

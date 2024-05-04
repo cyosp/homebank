@@ -43,6 +43,7 @@ struct ui_cur_manage_dialog_data
 	GtkWidget	*LV_cur;
 //	GtkWidget	*CY_curr;
 //	GtkWidget	*BT_curr;
+	GtkWidget	*TB_log;
 	
 	GtkWidget   *BB_update;
 	GtkWidget	*BT_add;
@@ -127,7 +128,7 @@ void ui_cur_listview_remove_selected(GtkTreeView *treeview);
 void ui_cur_listview_populate(GtkWidget *view);
 GtkWidget *ui_cur_listview_new(gboolean withtoggle);
 
-gint ui_cur_manage_dialog_update_currencies(GtkWindow *parent);
+gint ui_cur_manage_dialog_update_currencies(GtkWindow *parent, GString *node);
 
 GtkWidget *ui_cur_manage_dialog (void);
 

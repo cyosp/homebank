@@ -431,7 +431,7 @@ gint result;
 
 	result = ui_dialog_msg_confirm_alert(
 			GTK_WINDOW(data->window),
-			_("Are you sure you want to convert this account\nto Euro as Major currency?"),
+			_("Are you sure you want to convert this account to Euro as Major currency?"),
 			msg,
 			_("_Convert"),
 			FALSE
@@ -701,6 +701,7 @@ static void register_panel_make_assignment(GtkWidget *widget, gpointer user_data
 struct register_panel_data *data;
 GtkTreeModel *model;
 GList *selection, *list;
+gchar *title;
 gint result, count;
 
 	DB( g_print("\n[register] make assignment\n") );
@@ -710,14 +711,16 @@ gint result, count;
 	count = gtk_tree_selection_count_selected_rows(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_ope)));
 	if( count > 0 )
 	{
+		title = g_strdup_printf (_("Are you sure you want to create assignment from the %d selected transaction?"), count);
 		result = ui_dialog_msg_confirm_alert(
 				GTK_WINDOW(data->window),
+				title,
 				NULL,
-				_("Do you want to create an assignment with\neach of the selected transaction?"),
 				_("_Create"),
 				FALSE
 			);
 
+		g_free(title);
 		if(result == GTK_RESPONSE_OK)
 		{
 			model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_ope));
@@ -770,6 +773,7 @@ static void register_panel_make_archive(GtkWidget *widget, gpointer user_data)
 struct register_panel_data *data;
 GtkTreeModel *model;
 GList *selection, *list;
+gchar *title;
 gint result, count;
 
 	DB( g_print("\n[register] make archive\n") );
@@ -781,15 +785,16 @@ gint result, count;
 
 	if( count > 0 )
 	{
+		title = g_strdup_printf (_("Are you sure you want to create template from the %d selected transaction?"), count);
 
 		result = ui_dialog_msg_confirm_alert(
 				GTK_WINDOW(data->window),
+				title,
 				NULL,
-				_("Do you want to create a template with\neach of the selected transaction?"),
 				_("_Create"),
 				FALSE
 			);
-
+		g_free(title);
 	/*
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
 			_("%d archives will be created"),
@@ -1730,23 +1735,30 @@ gboolean result;
 		{
 		GtkTreeModel *model;
 		GList *selection, *list;
-		gint result;
+		gchar *title;
+		gint count, result;
 
 			DB( g_print(" delete\n") );
 
+			//#2042692
+			model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_ope));
+			selection = gtk_tree_selection_get_selected_rows(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_ope)), &model);
+			count = g_list_length(selection);
+
+			title = g_strdup_printf (_("Are you sure you want to delete the %d selected transaction?"), count);
+
 			result = ui_dialog_msg_confirm_alert(
 					GTK_WINDOW(data->window),
-					NULL,
-					_("Do you want to delete\neach of the selected transaction?"),
+					title,
+					_("If you delete a transaction, it will be permanently lost."),
 					_("_Delete"),
 					TRUE
 				);
 
+			g_free(title);
+
 			if(result == GTK_RESPONSE_OK)
 			{
-				model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_ope));
-				selection = gtk_tree_selection_get_selected_rows(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_ope)), &model);
-
 				//block selection change to avoid refresh and call to update
 				g_signal_handlers_block_by_func (G_OBJECT (gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_ope))), G_CALLBACK (register_panel_selection), NULL);
 				

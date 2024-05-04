@@ -329,6 +329,8 @@ void filter_reset(Filter *flt)
 {
 gint i;
 
+	g_return_if_fail( flt != NULL );
+
 	DB( g_print("\n[filter] default reset all %p\n", flt) );
 
 	for(i=0;i<FLT_GRP_MAX;i++)
@@ -369,6 +371,8 @@ void filter_set_tag_by_id(Filter *flt, guint32 key)
 {
 Tag *tag;
 
+	g_return_if_fail( flt != NULL );
+
 	DB( g_print("\n[filter] set tag by id\n") );
 	
 	if(flt->tag)
@@ -390,6 +394,8 @@ static void filter_set_date_bounds(Filter *flt, guint32 kacc)
 {
 GList *lst_acc, *lnk_acc;
 GList *lnk_txn;
+
+	g_return_if_fail( flt != NULL );
 
 	DB( g_print("\n[filter] set date bounds %p\n", flt) );
 
@@ -455,6 +461,8 @@ gboolean filter_preset_daterange_future_enable(Filter *flt, gint range)
 {
 gboolean retval = FALSE;
 
+	g_return_val_if_fail( flt != NULL, FALSE );
+
 	DB( g_print("\n[filter] range future enabled\n") );
 
 	DB( g_print(" fltrang=%d range=%d\n", flt->range, range) );
@@ -477,6 +485,7 @@ gboolean retval = FALSE;
 	}
 
 	//TODO: custom date
+
 	if( range == FLT_RANGE_MISC_ALLDATE )
 	{
 	GDate *date1, *date2;
@@ -486,7 +495,8 @@ gboolean retval = FALSE;
 		date1 = g_date_new_julian(GLOBALS->today);
 		date2 = g_date_new_julian(flt->maxdate);
 
-		if( date2 > date1 && (g_date_get_year(date2) == g_date_get_year(date1)
+		if( date2 > date1
+		 && (g_date_get_year(date2) == g_date_get_year(date1)
 		 && g_date_get_month(date2) == g_date_get_month(date1)) )
 		{
 			retval = TRUE;
@@ -502,13 +512,16 @@ gboolean retval = FALSE;
 }
 
 
-guint32 filter_get_maxdate_forecast(Filter *filter)
+//5.7 used only in rep_stats 
+guint32 filter_get_maxdate_forecast(Filter *flt)
 {
-guint32 retval = filter->maxdate;
+guint32 retval;
+
+	retval = flt->maxdate;
 
 	DB( g_print("\n[filter] get maxdate to forecast\n") );
 
-	if( filter_preset_daterange_future_enable(filter, filter->range) )
+	//if( filter_preset_daterange_future_enable(filter, filter->range) )
 	{
 	GDate *post_date = g_date_new();
 
@@ -526,22 +539,24 @@ guint32 retval = filter->maxdate;
 
 
 //used only in register
-void filter_preset_daterange_add_futuregap(Filter *filter, gint nbdays)
+void filter_preset_daterange_add_futuregap(Filter *flt, gint nbdays)
 {
+	g_return_if_fail( flt != NULL );
+
 	DB( g_print("\n[filter] range add future gap\n") );
 	
-	filter->nbdaysfuture = 0;
+	flt->nbdaysfuture = 0;
 	//#1840998 if future active and visible: we should always maxdate to today + nbdays
-	if( filter_preset_daterange_future_enable(filter, filter->range) )
+	if( filter_preset_daterange_future_enable(flt, flt->range) )
 	{
 	guint32 jforcedmax = GLOBALS->today + nbdays;
 
-		if( filter->maxdate < jforcedmax )
-			filter->nbdaysfuture = jforcedmax - filter->maxdate;
+		if( flt->maxdate < jforcedmax )
+			flt->nbdaysfuture = jforcedmax - flt->maxdate;
 		//else
 		//	filter->nbdaysfuture = nbdays;
 
-		DB( g_print(" today=%d, tmpmax=%d, nbdays=%d\n final=%d", GLOBALS->today, jforcedmax, nbdays, filter->nbdaysfuture) );
+		DB( g_print(" today=%d, tmpmax=%d, nbdays=%d\n final=%d", GLOBALS->today, jforcedmax, nbdays, flt->nbdaysfuture) );
 	}
 }
 
@@ -552,6 +567,8 @@ GDate *tmpdate;
 guint32 jtoday, jfiscal;
 guint16 month, year, yfiscal, qnum;
 GDateWeekday wday;
+
+	g_return_if_fail( flt != NULL );
 
 	DB( g_print("\n[filter] daterange set %p %d\n", flt, range) );
 
@@ -731,6 +748,8 @@ GDateWeekday wday;
 void filter_preset_type_set(Filter *flt, gint type, gint mode)
 {
 
+	g_return_if_fail( flt != NULL );
+
 	DB( g_print("\n[filter] preset type set\n") );
 
 	flt->option[FLT_GRP_TYPE] = FLT_OFF;
@@ -763,244 +782,10 @@ void filter_preset_type_set(Filter *flt, gint type, gint mode)
 /* = = = = = = = = = = = = = = = = */
 
 
-static void filter_group_import_keys(Filter *flt, gint group, gchar *text)
-{
-gchar **str_array;
-gint len, i;
-
-	DB( g_print(" import keys '%s'\n", text) );
-
-	str_array = g_strsplit (text, ",", -1);
-	len = g_strv_length( str_array );
-	for(i=0;i<len;i++)
-	{
-	guint32 key = atoi(str_array[i]);
-
-		
-		switch(group)
-		{
-			case FLT_GRP_ACCOUNT:
-				if( da_acc_get(i) )
-				{
-					da_flt_status_acc_set(flt, key, TRUE);
-					DB( g_print(" set acc='%d' to true\n", key) );
-				}
-				break;
-			case FLT_GRP_PAYEE:
-				if( da_pay_get(i) )
-				{
-					da_flt_status_pay_set(flt, key, TRUE);
-					DB( g_print(" set pay='%d' to true\n", key) );
-				}
-				break;
-			case FLT_GRP_CATEGORY:
-				if( da_cat_get(i) )
-				{
-					da_flt_status_cat_set(flt, key, TRUE);
-					DB( g_print(" set cat='%d' to true\n", key) );
-				}
-				break;
-			/*case FLT_GRP_TAG:
-				da_flt_status_tag_set(flt, key, TRUE);
-				break;*/
-		}
-	}
-	g_strfreev(str_array);
-}
-
-
-void filter_group_import(Filter *flt, gint group, const gchar *text)
-{
-gchar **str_array;
-gint len;
-
-
-	switch(group)
-	{
-		case FLT_GRP_DATE:
-			str_array = g_strsplit (text, "|", 4);
-			len = g_strv_length( str_array );
-
-			if(len == 2)
-			{
-				flt->option[group] = atoi(str_array[0]);
-				flt->range = atoi(str_array[1]);
-			}
-			if(len == 4 && flt->range == FLT_RANGE_MISC_CUSTOM)
-			{
-				flt->mindate = atoi(str_array[2]);
-				flt->maxdate = atoi(str_array[3]);
-			}
-			g_strfreev(str_array);
-			break;
-		
-		case FLT_GRP_ACCOUNT:
-			str_array = g_strsplit (text, "|", 2);
-			len = g_strv_length( str_array );
-
-			if(len == 2)
-			{
-				flt->option[group] = atoi(str_array[0]);
-				filter_group_import_keys(flt, FLT_GRP_ACCOUNT, str_array[1]);
-			}
-			g_strfreev(str_array);
-			break;
-
-		case FLT_GRP_PAYEE:
-			str_array = g_strsplit (text, "|", 2);
-			len = g_strv_length( str_array );
-
-			if(len == 2)
-			{
-				flt->option[group] = atoi(str_array[0]);
-				filter_group_import_keys(flt, FLT_GRP_PAYEE, str_array[1]);
-			}
-			g_strfreev(str_array);
-			break;
-
-		case FLT_GRP_CATEGORY:
-			str_array = g_strsplit (text, "|", 2);
-			len = g_strv_length( str_array );
-
-			if(len == 2)
-			{
-				flt->option[group] = atoi(str_array[0]);
-				filter_group_import_keys(flt, FLT_GRP_CATEGORY, str_array[1]);
-			}
-			g_strfreev(str_array);
-			break;
-
-			
-			
-	}
-}
-
-
-
-gchar *filter_group_export(Filter *flt, gint group)
-{
-gchar *retval = NULL;
-GString *node;
-guint i;
-
-	switch(group)
-	{
-		case FLT_GRP_DATE:
-			if(flt->option[group] > 0)
-			{
-				//TODO: maybe always keep 4 values here
-				if(flt->range == FLT_RANGE_MISC_CUSTOM)
-					retval = g_strdup_printf("%d|%d|%d|%d", flt->option[group], flt->range, flt->mindate, flt->maxdate);
-				else
-					retval = g_strdup_printf("%d|%d", flt->option[group], flt->range);
-			}
-			break;
-		case FLT_GRP_ACCOUNT:
-			if(flt->option[group] > 0)
-			{
-				node = g_string_sized_new(flt->gbacc->len);
-				g_string_append_printf(node, "%d|", flt->option[group]);
-				DB( g_printf("acc len:%d\n", flt->gbacc->len) );
-				for(i=0;i<flt->gbacc->len;i++)
-				{
-					if( da_acc_get(i) )
-						if( da_flt_status_acc_get(flt, i) == TRUE )
-							g_string_append_printf(node, "%d,", i);
-				}
-				g_string_erase(node, node->len-1, 1);
-				retval = node->str;
-				g_string_free(node, FALSE);
-				DB( g_printf(" '%s'\n", retval) );
-				node = NULL;
-			}
-			break;
-		case FLT_GRP_PAYEE:
-			if(flt->option[group] > 0)
-			{
-				node = g_string_sized_new(flt->gbpay->len);
-				g_string_append_printf(node, "%d|", flt->option[group]);
-				DB( g_printf("pay len:%d\n", flt->gbpay->len) );
-				for(i=0;i<flt->gbpay->len;i++)
-				{
-					if( da_pay_get(i) )
-						if( da_flt_status_pay_get(flt, i) == TRUE )
-							g_string_append_printf(node, "%d,", i);
-				}
-				g_string_erase(node, node->len-1, 1);
-				retval = node->str;
-				g_string_free(node, FALSE);
-				DB( g_printf(" '%s'\n", retval) );
-				node = NULL;
-			}
-			break;
-		case FLT_GRP_CATEGORY:
-			if(flt->option[group] > 0)
-			{
-				node = g_string_sized_new(flt->gbcat->len);
-				g_string_append_printf(node, "%d|", flt->option[group]);
-				DB( g_printf("cat len:%d\n", flt->gbcat->len) );
-				for(i=0;i<flt->gbcat->len;i++)
-				{
-					if( da_cat_get(i) )
-						if( da_flt_status_cat_get(flt, i) == TRUE )
-							g_string_append_printf(node, "%d,", i);
-				}
-				g_string_erase(node, node->len-1, 1);
-				retval = node->str;
-				g_string_free(node, FALSE);
-				DB( g_printf(" '%s'\n", retval) );
-				node = NULL;
-			}			break;
-		case FLT_GRP_TAG:
-			if(flt->option[group] > 0)
-			{
-		
-
-			}
-			break;
-		case FLT_GRP_TEXT:
-			if(flt->option[group] > 0)
-			{
-		
-
-			}
-			break;
-		case FLT_GRP_AMOUNT:
-			if(flt->option[group] > 0)
-			{
-		
-
-			}
-			break;
-		case FLT_GRP_PAYMODE:
-			if(flt->option[group] > 0)
-			{
-		
-
-			}
-			break;
-		case FLT_GRP_STATUS:
-			if(flt->option[group] > 0)
-			{
-		
-
-			}
-			break;
-		case FLT_GRP_TYPE:
-			if(flt->option[group] > 0)
-			{
-		
-
-			}
-			break;
-	}
-	return retval;
-}
-
-
-
 void filter_preset_status_set(Filter *flt, gint status)
 {
+
+	g_return_if_fail( flt != NULL );
 
 	DB( g_print("\n[filter] preset status set\n") );
 	
@@ -1073,6 +858,8 @@ gchar buffer2[128];
 gchar buffer3[128];
 GDate *date;
 gchar *retval = NULL;
+
+	g_return_val_if_fail( flt != NULL, NULL );
 
 	DB( g_print("\n[filter] daterange text get\n") );
 	
@@ -1167,6 +954,8 @@ static gboolean filter_txn_tag_match(Filter *flt, guint32 *tags)
 {
 guint count, i;
 gboolean retval = FALSE;
+
+	g_return_val_if_fail( flt != NULL, FALSE );
 
 	if(flt->gbtag == NULL)
 		return FALSE;
@@ -1337,6 +1126,8 @@ gint filter_acc_match(Filter *flt, Account *acc)
 {
 gboolean status;
 gint insert = 1;
+
+	g_return_val_if_fail( flt != NULL, 1 );
 
 /* account */
 	if(flt->option[FLT_GRP_ACCOUNT])

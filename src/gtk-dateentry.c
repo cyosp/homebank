@@ -84,6 +84,7 @@ typedef struct _GDateParseTokens GDateParseTokens;
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
+//https://en.wikipedia.org/wiki/Date_format_by_country
 
 static void
 hb_date_fill_parse_tokens (const gchar *str, GDateParseTokens *pt)

@@ -736,6 +736,8 @@ GtkTreeViewColumn *column;
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), LST_DSPUPC_NEXT, GTK_SORT_ASCENDING);
 
 	lst_sch_widget_columns_prefs_set(data);
+	
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(treeview), FALSE);
 
 	GtkWidget *popmenu = lst_sch_popmenu_new(GTK_TREE_VIEW(treeview));
 	data->menu = popmenu;

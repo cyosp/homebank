@@ -582,8 +582,21 @@ da_cat_debug_list(void)
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
+gboolean
+category_key_budget_active(guint32 key)
+{
+Category *catitem = da_cat_get(key);
+gboolean retval = FALSE;
 
-guint32 category_report_id(guint32 key, gboolean subcat)
+	if( catitem != NULL && catitem->flags & (GF_BUDGET|GF_FORCED) )
+		retval = TRUE;
+
+	return retval;
+}
+
+
+guint32
+category_report_id(guint32 key, gboolean subcat)
 {
 guint32 retval = 0;
 

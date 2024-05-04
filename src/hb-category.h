@@ -72,8 +72,10 @@ Category *da_cat_get_by_fullname(gchar *rawfullname);
 void da_cat_consistency(Category *item);
 void da_cat_anonymize(Category *item);
 
+
 GList *category_glist_sorted(gint column);
 
+gboolean category_key_budget_active(guint32 key);
 guint32 category_report_id(guint32 key, gboolean subcat);
 
 gint category_delete_unused(void);

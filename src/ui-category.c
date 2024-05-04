@@ -68,8 +68,8 @@ ui_cat_entry_popover_get_entry(GtkBox *box)
 }
 
 
-Category
-*ui_cat_entry_popover_get(GtkBox *box)
+Category *
+ui_cat_entry_popover_get(GtkBox *box)
 {
 GtkWidget *entry;
 gchar *name;
@@ -180,7 +180,6 @@ GtkWidget *entry;
 }
 
 
-
 static void 
 ui_cat_entry_popover_cb_row_activated(GtkTreeView *tree_view, GtkTreePath *path, GtkTreeViewColumn *column, gpointer user_data)
 {
@@ -224,7 +223,9 @@ gchar *string;
 	gchar type = category_get_type_char(entry);
 
 	#if MYDEBUG
-	string = g_markup_printf_escaped ("%d > [%d] %s [%c] %d %c", entry->key, entry->parent, name, type, entry->flags, (entry->flags & GF_MIXED) ?'m':' ' );
+	if(entry->flags & GF_MIXED) type = 'm';
+	string = g_markup_printf_escaped ("[%c] %d:%d '%s' 0x(%d)", 
+		type, entry->parent, entry->key, entry->fullname, entry->flags );
 	#else
 	if(entry->key == 0)
 		string = g_strdup(name);
@@ -343,6 +344,7 @@ ui_cat_entry_popover_compare_func (GtkTreeModel *model, GtkTreeIter  *a, GtkTree
 {
 gint retval = 0;
 Category *cat1, *cat2;
+Category *pcat1, *pcat2;
 guint type;
 
     gtk_tree_model_get(model, a, STO_CAT_DATA, &cat1, -1);
@@ -354,17 +356,20 @@ guint type;
 	if(cat2->key == 0)
 		return 1;
 
+	//#2042484 exp/inc sort should be done on lvl1 only
+	pcat1 = cat1->parent == 0 ? cat1 : da_cat_get(cat1->parent);
+	pcat2 = cat2->parent == 0 ? cat2 : da_cat_get(cat2->parent);
+
 	//#1882456
 	type = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(model), "type"));
-
 	switch(type)
 	{
 		case TXN_TYPE_INCOME:
 			// inc first
-			retval = (cat2->flags & GF_INCOME) - (cat1->flags & GF_INCOME);
+			retval = (pcat2->flags & GF_INCOME) - (pcat1->flags & GF_INCOME);
 			break;
 		default:
-			retval = (cat1->flags & GF_INCOME) - (cat2->flags & GF_INCOME);
+			retval = (pcat1->flags & GF_INCOME) - (pcat2->flags & GF_INCOME);
 	}
 
 	if( !retval )
@@ -515,6 +520,7 @@ GtkCellRenderer *renderer;
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(treeview), FALSE);
 	gtk_tree_view_set_activate_on_single_click(GTK_TREE_VIEW(treeview), TRUE);
 
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(treeview), FALSE);
 
 	//gtk_tree_selection_set_mode(gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview)), GTK_SELECTION_BROWSE);
 	
@@ -557,7 +563,8 @@ GtkCellRenderer *renderer;
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 
-void ui_cat_listview_toggle_to_filter(GtkTreeView *treeview, Filter *filter)
+void
+ui_cat_listview_toggle_to_filter(GtkTreeView *treeview, Filter *filter)
 {
 GtkTreeModel *model;
 //GtkTreeSelection *selection;
@@ -646,7 +653,8 @@ gint n_child;
 }
 
 
-void ui_cat_listview_quick_select(GtkTreeView *treeview, const gchar *uri)
+void
+ui_cat_listview_quick_select(GtkTreeView *treeview, const gchar *uri)
 {
 GtkTreeModel *model;
 GtkTreeIter	iter, child;
@@ -1020,7 +1028,8 @@ gint n_child;
 }
 
 
-static void ui_cat_listview_sort_force(GtkTreeSortable *sortable, gpointer user_data)
+static void
+ui_cat_listview_sort_force(GtkTreeSortable *sortable, gpointer user_data)
 {
 gint sort_column_id;
 GtkSortType order;
@@ -1156,7 +1165,8 @@ gboolean matchhidden = TRUE;
 }
 
 
-void ui_cat_listview_populate(GtkWidget *view, gint type, gchar *needle, gboolean showhidden)
+void
+ui_cat_listview_populate(GtkWidget *view, gint type, gchar *needle, gboolean showhidden)
 {
 GtkTreeModel *model;
 struct CatListContext ctx = { 0 };
@@ -1233,7 +1243,8 @@ GList *lcat, *list;
 }
 
 
-static gboolean ui_cat_listview_search_equal_func (GtkTreeModel *model,
+static gboolean
+ui_cat_listview_search_equal_func (GtkTreeModel *model,
                                gint column,
                                const gchar *key,
                                GtkTreeIter *iter,
@@ -1413,7 +1424,8 @@ GtkTreeViewColumn	*column;
  *	filter to entry to avoid seizure of ':' char
  *
  */
-static void ui_cat_manage_filter_text_handler (GtkEntry    *entry,
+static void
+ui_cat_manage_filter_text_handler (GtkEntry    *entry,
                           const gchar *text,
                           gint         length,
                           gint        *position,
@@ -1453,7 +1465,7 @@ gint type;
 gboolean showhidden;
 gchar *needle;
 
-	DB( g_print("(ui_cat_manage_dialog) refilter\n") );
+	DB( g_print("\n[ui-cat-manage] refilter\n") );
 
 	type = hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_type)) == 1 ? CAT_TYPE_INCOME : CAT_TYPE_EXPENSE;
 	needle = (gchar *)gtk_entry_get_text(GTK_ENTRY(data->ST_search));
@@ -1471,7 +1483,7 @@ gboolean result;
 
 	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(GTK_WIDGET(widget), GTK_TYPE_WINDOW)), "inst_data");
 
-	DB( g_print("(ui_cat_manage_dialog) delete unused - data %p\n", data) );
+	DB( g_print("\n[ui-cat-manage] delete unused\n") );
 
 	result = ui_dialog_msg_confirm_alert(
 			GTK_WINDOW(data->dialog),
@@ -1503,11 +1515,6 @@ gboolean result;
 }
 
 
-
-/**
- * ui_cat_manage_dialog_load_csv:
- *
- */
 static void
 ui_cat_manage_dialog_load_csv( GtkWidget *widget, gpointer user_data)
 {
@@ -1517,7 +1524,7 @@ gchar *error;
 
 	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(GTK_WIDGET(widget), GTK_TYPE_WINDOW)), "inst_data");
 
-	DB( g_print("(ui_cat_manage_dialog) load csv - data %p\n", data) );
+	DB( g_print("\n[ui-cat-manage] load csv\n") );
 
 	if( ui_file_chooser_csv(GTK_WINDOW(data->dialog), GTK_FILE_CHOOSER_ACTION_OPEN, &filename, NULL) == TRUE )
 	{
@@ -1537,10 +1544,7 @@ gchar *error;
 
 }
 
-/**
- * ui_cat_manage_dialog_save_csv:
- *
- */
+
 static void
 ui_cat_manage_dialog_save_csv( GtkWidget *widget, gpointer user_data)
 {
@@ -1548,7 +1552,7 @@ struct ui_cat_manage_dialog_data *data = user_data;
 gchar *filename = NULL;
 gchar *error;
 
-	DB( g_print("(defcategory) save csv\n") );
+	DB( g_print("\n[ui-cat-manage] save csv\n") );
 
 	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -1569,7 +1573,7 @@ struct ui_cat_manage_dialog_data *data;
 gboolean showusage;
 GtkTreeViewColumn *column;
 
-	DB( g_print("(ui_cat_manage_dialog) show usage\n") );
+	DB( g_print("\n[ui-cat-manage] show usage\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(GTK_WIDGET(button), GTK_TYPE_WINDOW)), "inst_data");
 
@@ -1600,6 +1604,8 @@ ui_cat_manage_dialog_cb_show_hidden (GtkToggleButton *button, gpointer user_data
 {
 struct ui_cat_manage_dialog_data *data;
 
+	DB( g_print("\n[ui-cat-manage] show hidden\n") );
+
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(GTK_WIDGET(button), GTK_TYPE_WINDOW)), "inst_data");
 	ui_cat_manage_dialog_refilter(data);
 }
@@ -1623,8 +1629,10 @@ GtkWidget *tmpwidget;
 Category *item, *paritem;
 gint type;
 
+	DB( g_print("\n[ui-cat-manage] add\n") );
+
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-	DB( g_print("\n(defcategory) add (data=%p) is subcat=%d\n", data, subcat) );
+	DB( g_print("(data=%p) is subcat=%d\n", data, subcat) );
 
 	tmpwidget = (subcat == FALSE ? data->ST_name1 : data->ST_name2);
 	name = gtk_entry_get_text(GTK_ENTRY(tmpwidget));
@@ -1683,17 +1691,21 @@ gint type;
 }
 
 
-static void ui_cat_manage_dialog_edit_entry_cb(GtkEditable *editable, gpointer user_data)
+static void
+ui_cat_manage_dialog_edit_entry_cb(GtkEditable *editable, gpointer user_data)
 {
 GtkDialog *window = user_data;
 const gchar *buffer;
+
+	DB( g_print("\n[ui-cat-manage] edit cb\n") );
 
 	buffer = gtk_entry_get_text(GTK_ENTRY(editable));
 	gtk_dialog_set_response_sensitive(GTK_DIALOG(window), GTK_RESPONSE_ACCEPT, strlen(buffer) > 0 ? TRUE : FALSE);
 }
 
 
-static void ui_cat_manage_dialog_edit(GtkWidget *widget, gpointer user_data)
+static void
+ui_cat_manage_dialog_edit(GtkWidget *widget, gpointer user_data)
 {
 struct ui_cat_manage_dialog_data *data;
 GtkWidget *dialog, *content_area, *grid;
@@ -1703,8 +1715,9 @@ GtkTreeModel *model;
 GtkTreeIter iter;
 gint row, n_child;
 
+	DB( g_print("\n[ui-cat-manage] edit\n") );
+
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-	DB( g_print("\n(defcategory) edit\n") );
 
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_cat));
 	//if true there is a selected node
@@ -1838,17 +1851,21 @@ gint row, n_child;
 }
 
 
-static void ui_cat_manage_dialog_merge_entry_cb(GtkEditable *editable, gpointer user_data)
+static void
+ui_cat_manage_dialog_merge_entry_cb(GtkEditable *editable, gpointer user_data)
 {
 GtkDialog *window = user_data;
 const gchar *buffer;
+
+	DB( g_print("\n[ui-cat-manage] merge cb\n") );
 
 	buffer = gtk_entry_get_text(GTK_ENTRY(editable));
 	gtk_dialog_set_response_sensitive(GTK_DIALOG(window), GTK_RESPONSE_OK, strlen(buffer) > 0 ? TRUE : FALSE);
 }
 
 
-static void ui_cat_manage_dialog_merge(GtkWidget *widget, gpointer user_data)
+static void
+ui_cat_manage_dialog_merge(GtkWidget *widget, gpointer user_data)
 {
 struct ui_cat_manage_dialog_data *data;
 GtkWidget *dialog, *content, *mainvbox;
@@ -1857,8 +1874,9 @@ GtkTreeSelection *selection;
 GtkTreeModel *model;
 GtkTreeIter iter;
 
+	DB( g_print("\n[ui-cat-manage] merge\n") );
+
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-	DB( g_print("(defcategory) merge\n") );
 
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_cat));
 	//if true there is a selected node
@@ -1994,17 +2012,19 @@ GtkTreeIter iter;
 /*
 ** delete the selected category to our treeview and temp GList
 */
-static void ui_cat_manage_dialog_delete(GtkWidget *widget, gpointer user_data)
+static void
+ui_cat_manage_dialog_delete(GtkWidget *widget, gpointer user_data)
 {
 struct ui_cat_manage_dialog_data *data;
 Category *item;
 gint result;
 
+	DB( g_print("\n[ui-cat-manage] delete\n") );
+
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-	DB( g_print("\n(defcategory) delete (data=%p)\n", data) );
 
 	item = ui_cat_listview_get_selected(GTK_TREE_VIEW(data->LV_cat));
-	if( item != NULL )
+	if( item != NULL && item->key != 0 )
 	{
 	gchar *title = NULL;
 	gchar *secondtext = NULL;
@@ -2040,25 +2060,28 @@ gint result;
 }
 
 
-
-static void ui_cat_manage_dialog_expand_all(GtkWidget *widget, gpointer user_data)
+static void
+ui_cat_manage_dialog_expand_all(GtkWidget *widget, gpointer user_data)
 {
 struct ui_cat_manage_dialog_data *data;
 
+	DB( g_print("\n[ui-cat-manage] expand all\n") );
+
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-	DB( g_print("\n(defcategory) expand all (data=%p)\n", data) );
 
 	gtk_tree_view_expand_all(GTK_TREE_VIEW(data->LV_cat));
 
 }
 
 
-static void ui_cat_manage_dialog_collapse_all(GtkWidget *widget, gpointer user_data)
+static void
+ui_cat_manage_dialog_collapse_all(GtkWidget *widget, gpointer user_data)
 {
 struct ui_cat_manage_dialog_data *data;
 
+	DB( g_print("\n[ui-cat-manage] collapse all\n") );
+
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-	DB( g_print("\n(defcategory) collapse all (data=%p)\n", data) );
 
 	gtk_tree_view_collapse_all(GTK_TREE_VIEW(data->LV_cat));
 
@@ -2066,7 +2089,8 @@ struct ui_cat_manage_dialog_data *data;
 
 
 //#1826360 wish: archive payee/category to lighten the lists
-static void ui_cat_manage_dialog_hide(GtkWidget *widget, gpointer user_data)
+static void
+ui_cat_manage_dialog_hide(GtkWidget *widget, gpointer user_data)
 {
 struct ui_cat_manage_dialog_data *data;
 GtkTreeSelection *selection;
@@ -2076,8 +2100,9 @@ Category *item;
 gboolean showhidden;
 gint n_child;
 
+	DB( g_print("\n[ui-cat-manage] hide\n") );
+
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-	DB( g_print("(ui_cat_manage_dialog) hide (data=%p)\n", data) );
 
 	showhidden = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->BT_showhidden));
 
@@ -2117,19 +2142,18 @@ gint n_child;
 }
 
 
-static void ui_cat_manage_dialog_update(GtkWidget *treeview, gpointer user_data)
+static void
+ui_cat_manage_dialog_update(GtkWidget *treeview, gpointer user_data)
 {
 struct ui_cat_manage_dialog_data *data;
-//gint count;
-gboolean selected, sensitive;
-GtkTreeSelection *selection;
-GtkTreeModel     *model;
-GtkTreeIter       iter;
+GtkTreeModel *model;
+GtkTreeIter iter;
 GtkTreePath *path;
-gchar *category;
+gchar *category = NULL;
+gboolean selected, sensitive;
 gboolean haschild = FALSE;
 
-	DB( g_print("ui_cat_manage_dialog_update()\n") );
+	DB( g_print("\n[ui-cat-manage] update\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(GTK_WIDGET(treeview), GTK_TYPE_WINDOW)), "inst_data");
 	//window = gtk_widget_get_ancestor(GTK_WIDGET(treeview), GTK_TYPE_WINDOW);
@@ -2137,27 +2161,7 @@ gboolean haschild = FALSE;
 
 	//if true there is a selected node
 	selected = gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_cat)), &model, &iter);
-
-	DB( g_print(" selected = %d\n", selected) );
-
-	if(selected)
-	{
-		//path 0 active ?
-		gtk_tree_model_get_iter_first(model, &iter);
-		if(gtk_tree_selection_iter_is_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_cat)), &iter))
-		{
-			DB( g_print(" 0 active = %d\n", 1) );
-			selected = FALSE;
-		}
-	}
-
-	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview));
-
-	//count = gtk_tree_selection_count_selected_rows(selection);
-	//DB( g_print(" => select count=%d\n", count) );
-
-	category = NULL;
-	if (gtk_tree_selection_get_selected(selection, &model, &iter))
+	if (selected)
 	{
 	gchar *tree_path_str;
 	Category *item;
@@ -2165,6 +2169,9 @@ gboolean haschild = FALSE;
 		gtk_tree_model_get(GTK_TREE_MODEL(model), &iter,
 			LST_DEFCAT_DATAS, &item,
 			-1);
+
+		if( item->key == 0 )
+			selected = FALSE;
 
 		haschild = gtk_tree_model_iter_has_child(GTK_TREE_MODEL(model), &iter);
 		DB( g_print(" => has child=%d\n", haschild) );
@@ -2181,7 +2188,7 @@ gboolean haschild = FALSE;
 			) );
 		g_free(tree_path_str);
 
-		//get parent if subcategory selectd
+		//get parent if subcategory selected
 		DB( g_print(" => get parent for title\n") );
 		if(gtk_tree_path_get_depth(path) != 1)
 			gtk_tree_path_up(path);
@@ -2202,8 +2209,9 @@ gboolean haschild = FALSE;
 		}
 
 		gtk_tree_path_free(path);
-
 	}
+
+	DB( g_print(" selected = %d\n", selected) );
 
 	gtk_label_set_text(GTK_LABEL(data->LA_category), category);
 
@@ -2215,13 +2223,12 @@ gboolean haschild = FALSE;
 
 	//avoid deleting top categories
 	sensitive = (haschild == TRUE) ? FALSE : sensitive;
-
 	gtk_widget_set_sensitive(data->BT_delete, sensitive);
 }
 
 
-
-static gboolean ui_cat_manage_dialog_cb_on_key_press(GtkWidget *source, GdkEventKey *event, gpointer user_data)
+static gboolean
+ui_cat_manage_dialog_cb_on_key_press(GtkWidget *source, GdkEventKey *event, gpointer user_data)
 {
 struct ui_cat_manage_dialog_data *data = user_data;
 
@@ -2243,15 +2250,16 @@ struct ui_cat_manage_dialog_data *data = user_data;
 }
 
 
-/*
-**
-*/
-static void ui_cat_manage_dialog_selection(GtkTreeSelection *treeselection, gpointer user_data)
+static void
+ui_cat_manage_dialog_selection(GtkTreeSelection *treeselection, gpointer user_data)
 {
+	DB( g_print("\n[ui-cat-manage] selection\n") );
+
 	ui_cat_manage_dialog_update(GTK_WIDGET(gtk_tree_selection_get_tree_view (treeselection)), NULL);
 }
 
-static void ui_cat_manage_dialog_onRowActivated (GtkTreeView        *treeview,
+static void
+ui_cat_manage_dialog_onRowActivated (GtkTreeView        *treeview,
                        GtkTreePath        *path,
                        GtkTreeViewColumn  *col,
                        gpointer            user_data)
@@ -2259,7 +2267,7 @@ static void ui_cat_manage_dialog_onRowActivated (GtkTreeView        *treeview,
 GtkTreeModel		 *model;
 GtkTreeIter			 iter;
 
-	DB( g_print("ui_cat_manage_dialog_onRowActivated()\n") );
+	DB( g_print("\n[ui-cat-manage] onRowActivated\n") );
 
 	//TODO: check if not none, should be done into edit
 	model = gtk_tree_view_get_model(treeview);
@@ -2271,11 +2279,12 @@ GtkTreeIter			 iter;
 }
 
 
-static gboolean ui_cat_manage_dialog_cleanup(struct ui_cat_manage_dialog_data *data, gint result)
+static gboolean
+ui_cat_manage_dialog_cleanup(struct ui_cat_manage_dialog_data *data, gint result)
 {
 gboolean doupdate = FALSE;
 
-	DB( g_print("(defcategory) cleanup\n") );
+	DB( g_print("\n[ui-cat-manage] cleanup\n") );
 
 	if(result == GTK_RESPONSE_ACCEPT)
 	{
@@ -2295,7 +2304,8 @@ gboolean doupdate = FALSE;
 }
 
 
-static void ui_cat_manage_type_changed_cb (GtkToggleButton *button, gpointer user_data)
+static void
+ui_cat_manage_type_changed_cb (GtkToggleButton *button, gpointer user_data)
 {
 	//ignore event triggered from inactive radiobutton
 	if( gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button)) == FALSE )
@@ -2311,20 +2321,17 @@ ui_cat_manage_search_changed_cb (GtkWidget *widget, gpointer user_data)
 {
 struct ui_cat_manage_dialog_data *data = user_data;
 
-	DB( g_printf("\n[ui_cat_manage_dialog] search_changed_cb\n") );
+	DB( g_printf("\n[ui-cat-manage] search_changed_cb\n") );
 
 	ui_cat_manage_dialog_refilter(data);
 }
 
 
-
-/*
-**
-*/
-static void ui_cat_manage_dialog_setup(struct ui_cat_manage_dialog_data *data)
+static void
+ui_cat_manage_dialog_setup(struct ui_cat_manage_dialog_data *data)
 {
 
-	DB( g_print("(defcategory) setup\n") );
+	DB( g_print("\n[ui-cat-manage] setup\n") );
 
 	DB( g_print(" init data\n") );
 
@@ -2386,7 +2393,7 @@ struct ui_cat_manage_dialog_data *data;
 	if( data->mapped_done == TRUE )
 		return FALSE;
 
-	DB( g_print("\n(defcategory) mapped\n") );
+	DB( g_print("\n[ui-cat-manage] mapped\n") );
 
 	ui_cat_manage_dialog_setup(data);
 	ui_cat_manage_dialog_update(data->LV_cat, NULL);
@@ -2403,6 +2410,8 @@ struct ui_cat_manage_dialog_data *data;
 GtkWidget *dialog, *content, *mainvbox, *bbox, *table, *hbox, *vbox, *label, *scrollwin, *treeview;
 GtkWidget *menu, *menuitem, *widget, *image, *tbar, *revealer;
 gint w, h, dw, dh, row;
+
+	DB( g_print("\n[ui-cat-manage] new\n") );
 
 	data = g_malloc0(sizeof(struct ui_cat_manage_dialog_data));
 	if(!data) return NULL;
@@ -2427,7 +2436,7 @@ gint w, h, dw, dh, row;
 	
 	//store our window private data
 	g_object_set_data(G_OBJECT(dialog), "inst_data", (gpointer)data);
-	DB( g_print("(defcategory) dialog=%p, inst_data=%p\n", dialog, data) );
+	DB( g_print(" dialog=%p, inst_data=%p\n", dialog, data) );
 
 
 	//dialog contents
@@ -2603,6 +2612,5 @@ gint w, h, dw, dh, row;
 
 	return NULL;
 }
-
 
 

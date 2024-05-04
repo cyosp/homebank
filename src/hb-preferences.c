@@ -369,7 +369,8 @@ gint i;
 	PREFS->dtex_doautoassign = FALSE;
 
 	PREFS->dtex_ucfirst = FALSE;
-	//PREFS->dtex_datefmt
+	//#2040010
+	PREFS->dtex_datefmt = PRF_DATEFMT_YMD;
 	PREFS->dtex_ofxname = 1;
 	PREFS->dtex_ofxmemo = 2;
 	PREFS->dtex_qifmemo = TRUE;
@@ -377,7 +378,7 @@ gint i;
 	PREFS->dtex_csvsep = PRF_DTEX_CSVSEP_SEMICOLON;
 
 	//currency api
-	PREFS->api_rate_url = g_strdup("https://api.exchangerate.host");
+	PREFS->api_rate_url = g_strdup("https://api.frankfurter.app/latest");
 	PREFS->api_rate_key = NULL;
 
 	//todo: add intelligence here
@@ -449,7 +450,7 @@ static void homebank_pref_get_boolean(
 	if( g_key_file_has_key(key_file, group_name, key, NULL) )
 	{
 		*storage = g_key_file_get_boolean(key_file, group_name, key, NULL);
-		DB( g_print(" stored boolean %d for %s at %x\n", *storage, key, *storage) );
+		DB( g_print(" > stored boolean %d for %s at %p\n", *storage, key, storage) );
 	}
 }
 
@@ -464,7 +465,7 @@ static void homebank_pref_get_integer(
 	if( g_key_file_has_key(key_file, group_name, key, NULL) )
 	{
 		*storage = g_key_file_get_integer(key_file, group_name, key, NULL);
-		DB( g_print(" stored integer %d for %s at %x\n", *storage, key, *storage) );
+		DB( g_print(" > stored integer %d for %s at %p\n", *storage, key, storage) );
 	}
 }
 
@@ -479,7 +480,7 @@ static void homebank_pref_get_guint32(
 	if( g_key_file_has_key(key_file, group_name, key, NULL) )
 	{
 		*storage = g_key_file_get_integer(key_file, group_name, key, NULL);
-		DB( g_print(" stored guint32 %d for %s at %x\n", *storage, key, *storage) );
+		DB( g_print(" > stored guint32 %d for %s at %p\n", *storage, key, storage) );
 	}
 }
 
@@ -494,7 +495,7 @@ static void homebank_pref_get_short(
 	if( g_key_file_has_key(key_file, group_name, key, NULL) )
 	{
 		*storage = (gshort)g_key_file_get_integer(key_file, group_name, key, NULL);
-		DB( g_print(" stored short %d for %s at %x\n", *storage, key, *storage) );
+		DB( g_print(" > stored short %d for %s at %p\n", *storage, key, storage) );
 	}
 }
 
@@ -506,12 +507,14 @@ static void homebank_pref_get_string(
 {
 gchar *string;
 
+	DB( g_print(" search %s in %s\n", key, group_name) );
+
 	if( g_key_file_has_key(key_file, group_name, key, NULL) )
 	{
 		/* free any previous string */
 		if( *storage != NULL )
 		{
-			//DB( g_print(" storage was not null, freeing\n") );
+			DB( g_print(" storage was not null, freeing\n") );
 
 			g_free(*storage);
 		}
@@ -525,7 +528,7 @@ gchar *string;
 			//leak
 			*storage = string;	//already a new allocated string
 
-			//DB( g_print(" store '%s' for %s at %x\n", string, key, *storage) );
+			DB( g_print(" > stored '%s' for %s at %p\n", *storage, key, *storage) );
 		}
 	}
 
@@ -1017,6 +1020,17 @@ GError *error = NULL;
 
 				homebank_pref_get_string(keyfile, group, "APIRateUrl", &PREFS->api_rate_url);
 				homebank_pref_get_string(keyfile, group, "APIRateKey", &PREFS->api_rate_key);
+
+				//5.7.2 fix wrong host set as defaut in 5.7
+				if(version < 572)
+				{
+					if( hb_string_ascii_compare("https://api.exchangerate.host", PREFS->api_rate_url) == 0 )
+					{
+						DB( g_print(" fix bad host in 5.7\n") );
+						g_free(PREFS->api_rate_url);
+						PREFS->api_rate_url = g_strdup("https://api.frankfurter.app/latest");
+					}
+				}
 
 			group = "Euro";
 

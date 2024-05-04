@@ -180,6 +180,9 @@ gboolean tmpaccbal, valid;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
+	if( data->hubtot_filter == NULL)
+		return;
+
 	tmpsrc = REPORT_SRC_CATEGORY;
 	//tmptype = REPORT_TYPE_EXPENSE;
 	tmpaccbal = FALSE;
@@ -446,6 +449,8 @@ void ui_hub_reptotal_setup(struct hbfile_data *data)
 GAction *action;
 GVariant *new_state;
 
+	DB( g_print("\n[hub-total] setup\n") );
+
 	data->hubtot_filter = da_flt_malloc();
 	filter_reset(data->hubtot_filter);
 	
@@ -479,6 +484,8 @@ GVariant *new_state;
 
 void ui_hub_reptotal_dispose(struct hbfile_data *data)
 {
+	DB( g_print("\n[hub-total] dispose\n") );
+
 	gtk_chart_set_datas_none(GTK_CHART(data->RE_hubtot_chart));
 	da_flt_free(data->hubtot_filter);
 	data->hubtot_filter = NULL;
