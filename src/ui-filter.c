@@ -1146,7 +1146,7 @@ gint row;
 
 static GtkWidget *ui_flt_page_status(struct ui_flt_manage_data *data)
 {
-GtkWidget *part, *grid, *label, *widget;
+GtkWidget *part, *grid, *widget;
 gint row;
 
 	part = gtk_box_new(GTK_ORIENTATION_VERTICAL, SPACING_LARGE);
@@ -1178,29 +1178,6 @@ gint row;
 	data->CM_starec = widget;
 	gtk_grid_attach (GTK_GRID (grid), widget, 0, row, 1, 1);
 
-	// force display
-	grid = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	gtk_box_pack_start (GTK_BOX (part), grid, FALSE, FALSE, 0);
-
-	label = make_label_group(_("Always show"));
-	gtk_box_pack_start (GTK_BOX (grid), label, FALSE, FALSE, 0);
-
-	widget = gtk_check_button_new_with_mnemonic (_("Remind"));
-	data->CM_forceremind = widget;
-	gtk_box_pack_start (GTK_BOX (grid), widget, FALSE, FALSE, 0);
-
-	widget = gtk_check_button_new_with_mnemonic (_("Void"));
-	data->CM_forcevoid = widget;
-	gtk_box_pack_start (GTK_BOX (grid), widget, FALSE, FALSE, 0);
-
-	widget = gtk_check_button_new_with_mnemonic (_("Added"));
-	data->CM_forceadd = widget;
-	gtk_box_pack_start (GTK_BOX (grid), widget, FALSE, FALSE, 0);
-
-	widget = gtk_check_button_new_with_mnemonic (_("Edited"));
-	data->CM_forcechg = widget;
-	gtk_box_pack_start (GTK_BOX (grid), widget, FALSE, FALSE, 0);
-
 	return part;
 }
 
@@ -1208,7 +1185,7 @@ gint row;
 gint ui_flt_manage_dialog_new(GtkWindow *parentwindow, Filter *filter, gboolean show_account, gboolean txnmode)
 {
 struct ui_flt_manage_data *data;
-GtkWidget *dialog, *content, *mainbox, *sidebar, *stack, *page, *widget;
+GtkWidget *dialog, *content, *mainbox, *sidebar, *stack, *grid, *page, *label, *widget;
 gint w, h, dw, dh;
 
 	data = g_malloc0(sizeof(struct ui_flt_manage_data));
@@ -1256,7 +1233,7 @@ gint w, h, dw, dh;
 
 
 	stack = gtk_stack_new ();
-	//gtk_stack_set_transition_type (GTK_STACK (stack), GTK_STACK_TRANSITION_TYPE_SLIDE_UP_DOWN);
+	gtk_stack_set_transition_type (GTK_STACK (stack), GTK_STACK_TRANSITION_TYPE_SLIDE_UP_DOWN);
 	//gtk_stack_set_transition_type (GTK_STACK (stack), GTK_STACK_TRANSITION_TYPE_CROSSFADE);
 	gtk_stack_sidebar_set_stack (GTK_STACK_SIDEBAR (sidebar), GTK_STACK (stack));
 	gtk_container_set_border_width(GTK_CONTAINER(stack), SPACING_LARGE);
@@ -1305,6 +1282,40 @@ gint w, h, dw, dh;
 
 	page = ui_flt_page_amounttext(data);
 	gtk_stack_add_titled (GTK_STACK (stack), page, FLT_PAGE_NAME_TXT, _("Amount/Text"));
+
+	//#xxxxxxx
+	widget = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
+	gtk_widget_set_margin_top(widget, SPACING_LARGE);
+	gtk_widget_set_margin_bottom(widget, SPACING_LARGE);
+	gtk_box_pack_start (GTK_BOX (mainbox), widget, FALSE, FALSE, 0);
+
+	// force display
+	grid = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+	hb_widget_set_margin(grid, SPACING_LARGE);
+	gtk_widget_set_valign(grid, GTK_ALIGN_END);
+	gtk_box_pack_start (GTK_BOX (mainbox), grid, FALSE, TRUE, 0);
+
+	label = make_label_group(_("Always show"));
+	gtk_box_pack_start (GTK_BOX (grid), label, FALSE, FALSE, 0);
+
+	widget = gtk_check_button_new_with_mnemonic (_("Remind"));
+	data->CM_forceremind = widget;
+	gtk_box_pack_start (GTK_BOX (grid), widget, FALSE, FALSE, 0);
+
+	widget = gtk_check_button_new_with_mnemonic (_("Void"));
+	data->CM_forcevoid = widget;
+	gtk_box_pack_start (GTK_BOX (grid), widget, FALSE, FALSE, 0);
+
+	widget = gtk_check_button_new_with_mnemonic (_("Added"));
+	data->CM_forceadd = widget;
+	gtk_box_pack_start (GTK_BOX (grid), widget, FALSE, FALSE, 0);
+
+	widget = gtk_check_button_new_with_mnemonic (_("Edited"));
+	data->CM_forcechg = widget;
+	gtk_box_pack_start (GTK_BOX (grid), widget, FALSE, FALSE, 0);
+
+	
+
 
 	
 	//setup, init and show window

@@ -53,6 +53,7 @@ guint da_splits_parse(GPtrArray *splits, gchar *cats, gchar *amounts, gchar *mem
 guint da_splits_tostring(GPtrArray *splits, gchar **cats, gchar **amounts, gchar **memos);
 
 guint da_splits_consistency (GPtrArray *splits);
+guint da_splits_anonymize (GPtrArray *splits);
 
 
 #endif

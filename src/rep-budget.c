@@ -430,11 +430,12 @@ GString *node;
 static void repbudget_export_detail_csv(GtkWidget *widget, gpointer user_data)
 {
 struct repbudget_data *data;
-gchar *filename = NULL;
+gchar *filepath = NULL;
 GString *node;
 GIOChannel *io;
 gchar *name;
 gint tmpfor;
+gboolean hassplit, hasstatus;
 
 	DB( g_print("\n[repbudget] export detail csv\n") );
 
@@ -443,24 +444,26 @@ gint tmpfor;
 
 	tmpfor  = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_for));
 	name = g_strdup_printf("hb-repbudget-detail_%s.csv", CYA_CATSUBCAT[tmpfor]);
+	filepath = g_build_filename(PREFS->path_export, name, NULL);
 
-	if( ui_file_chooser_csv(GTK_WINDOW(data->window), GTK_FILE_CHOOSER_ACTION_SAVE, &filename, name) == TRUE )
+	//#2019312
+	//if( ui_file_chooser_csv(GTK_WINDOW(data->window), GTK_FILE_CHOOSER_ACTION_SAVE, &filepath, name) == TRUE )
+	if( ui_dialog_export_csv(GTK_WINDOW(data->window), &filepath, &hassplit, &hasstatus, FALSE) == GTK_RESPONSE_ACCEPT )
 	{
-		DB( g_print(" + filename is %s\n", filename) );
+		DB( g_print(" + filename is %s\n", filepath) );
 
-		io = g_io_channel_new_file(filename, "w", NULL);
+		io = g_io_channel_new_file(filepath, "w", NULL);
 		if(io != NULL)
 		{
-			node = list_txn_to_string(GTK_TREE_VIEW(data->LV_detail), FALSE, FALSE, TRUE, FALSE);
+			node = list_txn_to_string(GTK_TREE_VIEW(data->LV_detail), FALSE, hassplit, hasstatus, FALSE);
 			g_io_channel_write_chars(io, node->str, -1, NULL, NULL);
 
 			g_io_channel_unref (io);
 			g_string_free(node, TRUE);
 		}
-
-		g_free( filename );
 	}
 
+	g_free( filepath );
 	g_free(name);
 }
 

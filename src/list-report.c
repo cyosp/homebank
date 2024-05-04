@@ -139,7 +139,7 @@ static void lst_rep_total_amount_cell_data_function (GtkTreeViewColumn *col,
 {
 gdouble  value;
 gchar *color;
-gint pos;
+gint pos, colid = GPOINTER_TO_INT(user_data);
 gint weight = PANGO_WEIGHT_NORMAL;
 gchar buf[G_ASCII_DTOSTR_BUF_SIZE];
 
@@ -148,7 +148,10 @@ gchar buf[G_ASCII_DTOSTR_BUF_SIZE];
 		GPOINTER_TO_INT(user_data), &value,
 		-1);
 
-	if( value )
+	//#2026184
+	value = hb_amount_round(value, 2);
+
+	if( (value != 0.0) || (colid == LST_REPDIST_TOTAL) )
 	{
 		hb_strfmon(buf, G_ASCII_DTOSTR_BUF_SIZE-1, value, GLOBALS->kcur, GLOBALS->minor);
 
@@ -163,7 +166,8 @@ gchar buf[G_ASCII_DTOSTR_BUF_SIZE];
 			"foreground",  color,
 			"weight", weight,
 			"text", buf,
-			NULL);	}
+			NULL);
+	}
 	else
 	{
 		g_object_set(renderer, "text", "", NULL);

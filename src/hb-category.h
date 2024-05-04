@@ -70,6 +70,7 @@ gchar *da_cat_get_name(Category *item);
 Category *da_cat_get_by_fullname(gchar *rawfullname);
 
 void da_cat_consistency(Category *item);
+void da_cat_anonymize(Category *item);
 
 GList *category_glist_sorted(gint column);
 

@@ -132,6 +132,7 @@ Account		*da_acc_get_by_imp_name(gchar *name);
 Account		*da_acc_get(guint32 key);
 guint32		da_acc_get_first_key(void);
 void da_acc_consistency(Account *item);
+void da_acc_anonymize(Account *item);
 
 GtkWindow *account_window(guint32 key);
 void account_transaction_sort(void);
