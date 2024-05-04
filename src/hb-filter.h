@@ -24,6 +24,15 @@
 /*
 ** filter options
 */
+
+enum
+{
+	FLT_OFF,
+	FLT_INCLUDE,
+	FLT_EXCLUDE
+};
+
+
 enum
 {
 	FLT_GRP_DATE,
@@ -77,6 +86,7 @@ enum
 	FLT_RANGE_LAST_60DAYS,
 	FLT_RANGE_LAST_90DAYS,
 	FLT_RANGE_LAST_12MONTHS,
+	FLT_RANGE_LAST_6MONTHS,
 
 	FLT_RANGE_THIS_DAY = 40,
 	FLT_RANGE_THIS_WEEK,
@@ -143,7 +153,8 @@ struct _filter
 	guint32		mindate, maxdate;
 	//gint		rawtype, rawstatus;
 
-	gint		type, status;
+	gint		type;		//register combobox type
+	gint		status;
 	gboolean	typ_exp, typ_inc, typ_xfr;	//5.6
 	gboolean	sta_non, sta_clr, sta_rec;	//5.6
 
@@ -209,8 +220,11 @@ void filter_status_cat_clear_except(Filter *flt, guint32 selkey);
 
 void filter_reset(Filter *flt);
 void filter_preset_daterange_set(Filter *flt, gint range, guint32 kacc);
-void filter_preset_type_set(Filter *flt, gint value);
-gboolean filter_preset_daterange_future_enable(gint range);
+void filter_preset_type_set(Filter *flt, gint type, gint mode);
+
+gboolean filter_preset_daterange_future_enable(Filter *flt, gint range);
+
+guint32 filter_get_maxdate_forecast(Filter *filter);
 void filter_preset_daterange_add_futuregap(Filter *filter, gint nbdays);
 
 void filter_set_tag_by_id(Filter *flt, guint32 key);

@@ -23,9 +23,11 @@
 
 enum {
 	LST_DEFARC_SORT_DATE = 1,
+	LST_DEFARC_SORT_INFO,
 	LST_DEFARC_SORT_MEMO,
 	LST_DEFARC_SORT_PAYEE,
 	LST_DEFARC_SORT_CATEGORY,
+	LST_DEFARC_SORT_CLR,
 	LST_DEFARC_SORT_AMOUNT,
 	LST_DEFARC_SORT_ACCOUNT
 };
@@ -51,7 +53,7 @@ struct ui_arc_manage_data
 	GtkWidget	*BT_typsch, *BT_typtpl;
 	GtkWidget	*ST_search;
 	GtkWidget	*LV_arc;
-	GtkWidget	*BT_add, *BT_edit, *BT_rem;
+	GtkWidget	*BT_add, *BT_rem, *BT_edit;
 
 	GtkWidget	*MB_schedule, *PO_schedule;
 	

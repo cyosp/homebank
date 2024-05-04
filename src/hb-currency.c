@@ -618,6 +618,13 @@ Currency *cur;
 /* DNS should be: https://frankfurter.app
  * see https://github.com/fixerAPI/fixer/issues/107
  */
+ 
+/*
+** 5.7 
+** https://api.exchangerate.host/latest?base=EUR&symbols=USD,CHF,AUD,CAD,JPY,CNY,GBP
+** http://data.fixer.io/api/latest?access_key=xxxx&base=EUR&symbols=USD,CHF,AUD,CAD,JPY,CNY,GBP
+*/ 
+
 
 /* old
 ** api.fixer.io deprecated since 30/04/2019
@@ -703,11 +710,18 @@ gint i;
 	base = da_cur_get (GLOBALS->kcur);
 
 	node = g_string_sized_new(512);
-	//todo: think about encapsulate the API call ourself
-	//todo: let the user choose http / https
-	g_string_append_printf(node, "https://api.frankfurter.app/latest?base=%s&symbols=", base->iso_code);
-	//g_string_append_printf(node, "https://frankfurter.app/latest?base=%s&symbols=", base->iso_code);
-	//g_string_append_printf(node, "https://api.fixer.io/latest?base=%s&symbols=", base->iso_code);
+	//g_string_append_printf(node, "https://api.frankfurter.app/latest?base=%s&symbols=", base->iso_code);
+
+	//2017410 + 5.7 base url from prefs
+	g_string_append_printf(node, "%s/latest?", PREFS->api_rate_url);
+
+	//2017410 + 5.7 key from prefs
+	if( strlen(PREFS->api_rate_url) > 16 )
+		g_string_append_printf(node, "access_key=%s&", PREFS->api_rate_key);
+
+	//base currency
+	g_string_append_printf(node, "base=%s&symbols=", base->iso_code);
+
 
 	list = g_hash_table_get_values(GLOBALS->h_cur);
 	i = g_list_length (list);

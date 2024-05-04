@@ -134,7 +134,7 @@ static void homebank_upgrade_to_v04(void)
 {
 	DB( g_print("\n[hb-xml] homebank_upgrade_to_v04\n") );
 
-	da_archive_glist_sorted(1);
+	da_archive_glist_sorted(HB_GLIST_SORT_NAME);
 }
 
 
@@ -557,6 +557,8 @@ gint i;
 		else if(!strcmp (attribute_names[i], "maximum" )) { entry->maximum = g_ascii_strtod(attribute_values[i], NULL); }
 		else if(!strcmp (attribute_names[i], "cheque1" )) { entry->cheque1 = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "cheque2" )) { entry->cheque2 = atoi(attribute_values[i]); }
+		//5.7
+		else if(!strcmp (attribute_names[i], "website" )) { if(strcmp(attribute_values[i],"(null)") && attribute_values[i] != NULL) entry->website = g_strdup(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "notes"   )) { if(strcmp(attribute_values[i],"(null)") && attribute_values[i] != NULL) entry->notes = g_strdup(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "tpl"     )) { entry->karc = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "grp"     )) { entry->kgrp = atoi(attribute_values[i]); }
@@ -1398,7 +1400,7 @@ GError *error = NULL;
 
 	node = g_string_sized_new(255);
 
-	lacc = list = account_glist_sorted(0);
+	lacc = list = account_glist_sorted(HB_GLIST_SORT_KEY);
 	while (list != NULL)
 	{
 	Account *item = list->data;
@@ -1421,6 +1423,7 @@ GError *error = NULL;
 		hb_xml_append_amt(node, "maximum", item->maximum);
 		hb_xml_append_int(node, "cheque1", item->cheque1);
 		hb_xml_append_int(node, "cheque2", item->cheque2);
+		hb_xml_append_txt(node, "website", item->website);
 		hb_xml_append_txt_crlf(node, "notes", item->notes);
 		hb_xml_append_int(node, "tpl", item->karc);
 		hb_xml_append_int(node, "grp", item->kgrp);
@@ -1458,7 +1461,7 @@ GError *error = NULL;
 
 	node = g_string_sized_new(255);
 
-	lpay = list = payee_glist_sorted(0);
+	lpay = list = payee_glist_sorted(HB_GLIST_SORT_KEY);
 	while (list != NULL)
 	{
 	Payee *item = list->data;
@@ -1507,7 +1510,7 @@ GError *error = NULL;
 
 	node = g_string_sized_new(255);
 
-	lcat = list = category_glist_sorted(0);
+	lcat = list = category_glist_sorted(HB_GLIST_SORT_KEY);
 	while (list != NULL)
 	{
 	Category *item = list->data;
@@ -1559,7 +1562,7 @@ gchar *tmpstr;
 gint retval = XML_OK;
 GError *error = NULL;
 
-	lgrp = list = group_glist_sorted(0);
+	lgrp = list = group_glist_sorted(HB_GLIST_SORT_KEY);
 	while (list != NULL)
 	{
 	Group *item = list->data;
@@ -1600,7 +1603,7 @@ gchar *tmpstr;
 gint retval = XML_OK;
 GError *error = NULL;
 
-	ltag = list = tag_glist_sorted(0);
+	ltag = list = tag_glist_sorted(HB_GLIST_SORT_KEY);
 	while (list != NULL)
 	{
 	Tag *item = list->data;
@@ -1645,6 +1648,9 @@ GError *error = NULL;
 	while (list != NULL)
 	{
 	Assign *item = list->data;
+
+		//#2018680
+		item->flags &= ~(ASGF_PREFILLED);	//delete flag
 
 		g_string_assign(node, "<asg");
 
@@ -1692,12 +1698,15 @@ GError *error = NULL;
 
 	node = g_string_sized_new(255);
 
-	list = da_archive_glist_sorted(0);
+	list = da_archive_glist_sorted(HB_GLIST_SORT_KEY);
 	while (list != NULL)
 	{
 	Archive *item = list->data;
 
 		tagstr = tags_tostring(item->tags);
+
+		//#2018680
+		item->flags &= ~(OF_PREFILLED);	//delete flag
 
 		g_string_assign(node, "<fav");
 

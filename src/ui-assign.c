@@ -157,6 +157,24 @@ gint retval = 0;
 }
 
 
+static void 
+ui_asg_listview_cell_data_func_icons (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
+{
+Assign *asgitem;
+gchar *iconname = NULL;
+
+	gtk_tree_model_get(model, iter, LST_DEFASG_DATAS, &asgitem, -1);
+
+	switch(GPOINTER_TO_INT(user_data))
+	{
+		case 1:
+			iconname = ( asgitem->flags & ASGF_PREFILLED  ) ? ICONNAME_HB_OPE_PREFILLED : NULL;
+			break;
+	}
+
+	g_object_set(renderer, "icon-name", iconname, NULL);
+}
+
 
 static void
 ui_asg_listview_cell_data_function_pos (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
@@ -503,8 +521,7 @@ GtkTreeViewColumn	*column;
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 	#endif
 
-
-	// column 1: toggle
+	// column: toggle
 	if( withtoggle == TRUE )
 	{
 		renderer = gtk_cell_renderer_toggle_new ();
@@ -518,6 +535,14 @@ GtkTreeViewColumn	*column;
 			    G_CALLBACK (ui_asg_listview_toggled_cb), store);
 
 	}
+
+	// column: icons
+	column = gtk_tree_view_column_new();
+	renderer = gtk_cell_renderer_pixbuf_new ();
+	//gtk_cell_renderer_set_fixed_size(renderer, GLOBALS->lst_pixbuf_maxwidth, -1);
+	gtk_tree_view_column_pack_start(column, renderer, TRUE);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_asg_listview_cell_data_func_icons, GINT_TO_POINTER(1), NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
 	// column: position
 	renderer = gtk_cell_renderer_text_new ();
@@ -933,8 +958,7 @@ gint crow, row;
 	content_grid = gtk_grid_new();
 	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
 	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
-	//gtk_container_set_border_width (GTK_CONTAINER(content_grid), SPACING_MEDIUM);
-	g_object_set(content_grid, "margin", SPACING_LARGE, NULL);
+	hb_widget_set_margin(GTK_WIDGET(content_grid), SPACING_LARGE);
 	gtk_box_pack_start(GTK_BOX(content), content_grid, TRUE, TRUE, 0);
 
 	// group :: Rule
@@ -1172,6 +1196,7 @@ GtkSortType sort_order;
 	//gtk_widget_set_sensitive(data->BT_mod, sensitive);
 	gtk_widget_set_sensitive(data->BT_rem, sensitive);
 	gtk_widget_set_sensitive(data->BT_edit, sensitive);
+	gtk_widget_set_sensitive(data->BT_dup, sensitive);
 
 	//#1999243/2000629 rewrite up/down/to button sensitivity
 	canup = candw = canto = selected;
@@ -1367,9 +1392,48 @@ GtkWidget *dialog;
 
 		// cleanup and destroy
 		//ui_asg_dialog_cleanup(dialog);
-		gtk_widget_destroy (dialog);
+		gtk_window_destroy (GTK_WINDOW(dialog));
 		
 		ui_asg_listview_sort_force(GTK_TREE_SORTABLE(model), NULL);
+	}
+}
+
+
+static void ui_asg_manage_dup(GtkWidget *widget, gpointer user_data)
+{
+struct ui_asg_manage_data *data;
+GtkTreeSelection *selection;
+GtkTreeModel *model;
+GtkTreeIter iter;
+Assign *item, *newitem;
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+	DB( g_print("\n[ui-asg-manage] dup (data=%p)\n", data) );
+
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_rul));
+	//if true there is a selected node
+	if (gtk_tree_selection_get_selected(selection, &model, &iter))
+	{
+		gtk_tree_model_get(model, &iter, LST_DEFASG_DATAS, &item, -1);
+
+		newitem = da_asg_duplicate(item);
+		if( newitem )
+		{
+			ui_asg_listview_add(GTK_TREE_VIEW(data->LV_rul), newitem);
+			ui_asg_listview_sort_force(GTK_TREE_SORTABLE(model), NULL);
+		}
+		else
+		{
+		gchar *newsearch = g_strdup_printf("%s %s", item->search, _("(copy)") );
+
+			ui_dialog_msg_infoerror(GTK_WINDOW(data->dialog), GTK_MESSAGE_ERROR,
+				_("Error"),
+				_("Cannot duplicate this Assignment,\n"
+				"'%s' already exists."),
+				newsearch
+			    );
+			g_free(newsearch);
+		}
 	}
 }
 
@@ -1410,7 +1474,7 @@ Assign *item;
 
 	// cleanup and destroy
 	//ui_asg_dialog_cleanup(dialog);
-	gtk_widget_destroy (dialog);
+	gtk_window_destroy (GTK_WINDOW(dialog));
 }
 
 
@@ -1579,6 +1643,8 @@ static void ui_asg_manage_setup(struct ui_asg_manage_data *data)
 	g_signal_connect (G_OBJECT (data->BT_rem), "clicked", G_CALLBACK (ui_asg_manage_delete), NULL);
 	
 	g_signal_connect (G_OBJECT (data->BT_edit), "clicked", G_CALLBACK (ui_asg_manage_edit), NULL);
+	g_signal_connect (G_OBJECT (data->BT_dup), "clicked", G_CALLBACK (ui_asg_manage_dup), NULL);
+
 	g_signal_connect (G_OBJECT (data->BT_up  ), "clicked", G_CALLBACK (ui_asg_manage_cb_move_updown), GUINT_TO_POINTER(GTK_DIR_UP));
 	g_signal_connect (G_OBJECT (data->BT_down), "clicked", G_CALLBACK (ui_asg_manage_cb_move_updown), GUINT_TO_POINTER(GTK_DIR_DOWN));
 	g_signal_connect (G_OBJECT (data->BT_move), "clicked", G_CALLBACK (ui_asg_manage_cb_move_to), NULL);
@@ -1682,7 +1748,6 @@ struct ui_asg_manage_data *data;
 GtkWidget *dialog, *content_area, *bbox, *hbox, *vbox, *tbar;
 GtkWidget *box, *treeview, *scrollwin;
 GtkWidget *widget, *content;
-GtkToolItem *toolitem;
 gint w, h, dw, dh;
 
 	DB( g_print("\n[ui-asg-manage] dialog\n") );
@@ -1716,7 +1781,7 @@ gint w, h, dw, dh;
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG (dialog));	 	// return a vbox
 
 	content = gtk_box_new(GTK_ORIENTATION_VERTICAL, SPACING_MEDIUM);
-	g_object_set(content, "margin", SPACING_LARGE, NULL);
+	hb_widget_set_margin(GTK_WIDGET(content), SPACING_LARGE);
 	gtk_box_pack_start (GTK_BOX (content_area), content, TRUE, TRUE, 0);
 	
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
@@ -1743,80 +1808,49 @@ gint w, h, dw, dh;
 	treeview = ui_asg_listview_new(FALSE);
 	data->LV_rul = treeview;
 	gtk_widget_set_size_request(treeview, HB_MINWIDTH_LIST, -1);
-	gtk_container_add(GTK_CONTAINER(scrollwin), treeview);
+	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
 	gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
 
-	tbar = gtk_toolbar_new();
-	gtk_toolbar_set_icon_size (GTK_TOOLBAR(tbar), GTK_ICON_SIZE_MENU);
-	gtk_toolbar_set_style(GTK_TOOLBAR(tbar), GTK_TOOLBAR_ICONS);
+	tbar = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
 	gtk_box_pack_start (GTK_BOX (vbox), tbar, FALSE, FALSE, 0);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	toolitem = gtk_tool_item_new();
-	gtk_container_add (GTK_CONTAINER(toolitem), bbox);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+	gtk_box_pack_start (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
 
 		widget = make_image_button(ICONNAME_LIST_ADD, _("Add"));
 		data->BT_add = widget;
-		gtk_container_add (GTK_CONTAINER(bbox), widget);
+		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
 
 		widget = make_image_button(ICONNAME_LIST_DELETE, _("Delete"));
 		data->BT_rem = widget;
-		gtk_container_add (GTK_CONTAINER(bbox), widget);
-
-	toolitem = gtk_separator_tool_item_new ();
-	//gtk_tool_item_set_expand (toolitem, TRUE);
-	gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(toolitem), FALSE);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	toolitem = gtk_tool_item_new();
-	gtk_container_add (GTK_CONTAINER(toolitem), bbox);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+	gtk_box_pack_start (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
 
-	//widget = gtk_button_new_with_mnemonic(_("_Edit"));
-	widget = make_image_button(ICONNAME_LIST_EDIT, _("Edit"));
-	data->BT_edit = widget;
-	gtk_container_add (GTK_CONTAINER(bbox), widget);
+		widget = make_image_button(ICONNAME_LIST_EDIT, _("Edit"));
+		data->BT_edit = widget;
+		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
 
-	toolitem = gtk_separator_tool_item_new ();
-	//gtk_tool_item_set_expand (toolitem, TRUE);
-	gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(toolitem), FALSE);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+		widget = make_image_button(ICONNAME_LIST_DUPLICATE, _("Duplicate"));
+		data->BT_dup = widget;
+		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	toolitem = gtk_tool_item_new();
-	gtk_container_add (GTK_CONTAINER(toolitem), bbox);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+	gtk_box_pack_start (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
 
-	widget = make_image_button(ICONNAME_LIST_MOVE_UP, _("Move up"));
-	data->BT_up = widget;
-	gtk_container_add (GTK_CONTAINER(bbox), widget);
+		widget = make_image_button(ICONNAME_LIST_MOVE_UP, _("Move up"));
+		data->BT_up = widget;
+		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
 
-	widget = make_image_button(ICONNAME_LIST_MOVE_DOWN, _("Move down"));
-	data->BT_down = widget;
-	gtk_container_add (GTK_CONTAINER(bbox), widget);
+		widget = make_image_button(ICONNAME_LIST_MOVE_DOWN, _("Move down"));
+		data->BT_down = widget;
+		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
 
-
-
-	widget = ui_asg_popover_move_after_new(data);
-	data->BT_move = widget;
-	gtk_container_add (GTK_CONTAINER(bbox), widget);
-
-/*
-	toolitem = gtk_separator_tool_item_new ();
-	gtk_tool_item_set_expand (toolitem, TRUE);
-	gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(toolitem), FALSE);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
-	
-	toolitem = gtk_tool_item_new ();
-	widget = gtk_image_new_from_icon_name (ICONNAME_INFO, GTK_ICON_SIZE_BUTTON);
-	gtk_widget_set_tooltip_text(widget, _("Drag & drop to change the order"));
-	gtk_container_add (GTK_CONTAINER(toolitem), widget);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
-*/
-
+		widget = ui_asg_popover_move_after_new(data);
+		data->BT_move = widget;
+		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
 
 	// connect dialog signals
 	g_signal_connect (dialog, "destroy", G_CALLBACK (gtk_widget_destroyed), &dialog);
@@ -1833,7 +1867,7 @@ gint w, h, dw, dh;
 
 	// cleanup and destroy
 	ui_asg_manage_cleanup(data, result);
-	gtk_widget_destroy (dialog);
+	gtk_window_destroy (GTK_WINDOW(dialog));
 
 	g_free(data);
 	

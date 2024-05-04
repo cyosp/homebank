@@ -23,6 +23,7 @@
 
 /* = = = = = = = = = = = = = = = = = = = = */
 
+gchar *CHART_CATEGORY = N_("Category");
 
 gchar *CYA_ASG_FIELD[] = { 
 	N_("Memo"), 
@@ -55,7 +56,7 @@ gchar *CYA_REPORT_MODE[] =
 
 HbKvData CYA_REPORT_SRC[] = {
 	{ REPORT_SRC_CATEGORY,		N_("Category") },
-	{ REPORT_SRC_SUBCATEGORY,	N_("Subcategory") },
+	//{ REPORT_SRC_SUBCATEGORY,	N_("Subcategory") },
 	{ REPORT_SRC_PAYEE,			N_("Payee") },
 	{ REPORT_SRC_ACCOUNT,		N_("Account") },
 	{ REPORT_SRC_TAG,			N_("Tag") },
@@ -134,7 +135,7 @@ HbKvData CYA_ACC_TYPE[] =
 };
 
 
-HbKvData CYA_FLT_RANGE[] = {
+HbKvData CYA_FLT_RANGE_DWF[] = {
 	{  FLT_RANGE_LAST_DAY       , N_("Yesterday") },
 	{  FLT_RANGE_THIS_DAY       , N_("Today") },
 	{  FLT_RANGE_NEXT_DAY       , N_("Tomorrow") },
@@ -147,6 +148,11 @@ HbKvData CYA_FLT_RANGE[] = {
 	{  FLT_RANGE_THIS_FORTNIGHT , N_("This Fortnight") },
 	{  FLT_RANGE_NEXT_FORTNIGHT , N_("Next Fortnight") },
 
+	{ 0, NULL }
+};
+
+
+HbKvData CYA_FLT_RANGE_MQY[] = {
 	{  FLT_RANGE_LAST_MONTH     , N_("Last Month") },
 	{  FLT_RANGE_THIS_MONTH     , N_("This Month") },
 	{  FLT_RANGE_NEXT_MONTH     , N_("Next Month") },
@@ -159,10 +165,15 @@ HbKvData CYA_FLT_RANGE[] = {
 	{  FLT_RANGE_THIS_YEAR      , N_("This Year") },
 	{  FLT_RANGE_NEXT_YEAR      , N_("Next Year") },
 
-	{ HBTK_IS_SEPARATOR, "" },
-	{ HBTK_IS_SEPARATOR, "" },
-	{ HBTK_IS_SEPARATOR, "" },
+	{  HBTK_IS_SEPARATOR, "" },
+	{  HBTK_IS_SEPARATOR, "" },
+	{  HBTK_IS_SEPARATOR, "" },
 
+	{ 0, NULL }
+};
+
+
+HbKvData CYA_FLT_RANGE_NORMAL[] = {
 	{  FLT_RANGE_LAST_30DAYS    , N_("Last 30 Days") },
 	{  FLT_RANGE_LAST_60DAYS    , N_("Last 60 Days") },
 	{  FLT_RANGE_LAST_90DAYS    , N_("Last 90 Days") },
@@ -170,7 +181,20 @@ HbKvData CYA_FLT_RANGE[] = {
 	{  FLT_RANGE_LAST_12MONTHS  , N_("Last 12 Months") },
 	{  FLT_RANGE_MISC_30DAYS    , N_("30 Days Around") },
 	{  FLT_RANGE_MISC_ALLDATE   , N_("All Date") },
+	{ 0, NULL }
+};
 
+HbKvData CYA_FLT_RANGE_BUDGET[] = {
+	{  FLT_RANGE_LAST_12MONTHS  , N_("Last 12 Months") },
+	{  FLT_RANGE_LAST_6MONTHS   , N_("Last 6 Months") },
+	{  FLT_RANGE_MISC_ALLDATE   , N_("All Date") },
+	{ 0, NULL }
+};
+
+
+HbKvData CYA_FLT_RANGE_CUSTOM[] = {
+	//5.7 added back
+	{  FLT_RANGE_MISC_CUSTOM   , N_("Custom") },
 	{ 0, NULL }
 };
 
@@ -182,6 +206,8 @@ HbKvData CYA_FLT_SCHEDULED[] = {
 	{ FLT_SCHEDULED_NEXT30DAYS,		N_("Next 30 days") },
 	{ FLT_SCHEDULED_NEXT60DAYS,		N_("Next 60 days") },
 	{ FLT_SCHEDULED_NEXT90DAYS,		N_("Next 90 days") },
+	{ HBTK_IS_SEPARATOR, "" },
+	{ FLT_SCHEDULED_MAXPOSTDATE,	N_("Maximum Post Date") },	
 	{ HBTK_IS_SEPARATOR, "" },
 	{ FLT_SCHEDULED_ALLDATE,		N_("All") },
 	{ 0, NULL }
@@ -247,6 +273,7 @@ gchar *CYA_FLT_TYPE[] = {
 	NULL
 };
 
+
 gchar *CYA_FLT_STATUS[] = {
 	N_("Any Status"),
 	"",
@@ -258,6 +285,7 @@ gchar *CYA_FLT_STATUS[] = {
 	N_("Uncategorized"),
 	NULL
 };
+
 
 /*gchar *OLD_CYA_FLT_RANGE[] = {
 	N_("This month"),
@@ -291,9 +319,13 @@ gchar *CYA_WEEKDAY[] =
 	N_("Sun"),
 };
 
+
 /* = = = = = = = = = = = = = = = = = = = = */
 
+
 //in prefs.c only
+// in repbudget
+//widget
 gchar *CYA_MONTHS[] =
 {
 	N_("January"),
@@ -330,3 +362,5 @@ gchar *CYA_ABMONTHS[] =
 	N_("Dec"),
 	NULL
 };
+
+

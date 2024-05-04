@@ -27,6 +27,9 @@
 #include "gtk-chart-colors.h"
 #include "gtk-chart-progress.h"
 
+#include "rep-budget.h"
+
+extern gchar *CHART_CATEGORY;
 
 /****************************************************************************/
 /* Debug macros                                                             */
@@ -69,7 +72,7 @@ static gboolean drawarea_scroll_event_callback( GtkWidget *widget, GdkEventScrol
 static gboolean drawarea_motionnotifyevent_callback(GtkWidget *widget, GdkEventMotion *event, gpointer user_data);
 static void ui_chart_progress_first_changed( GtkAdjustment *adj, gpointer user_data);
 
-static void ui_chart_progress_clear(ChartProgress *chart, gboolean store);
+//static void ui_chart_progress_clear(ChartProgress *chart);
 
 static gboolean drawarea_full_redraw(GtkWidget *widget, gpointer user_data);
 static void ui_chart_progress_queue_redraw(ChartProgress *chart);
@@ -147,6 +150,7 @@ HbtkDrawProgContext *context = &chart->context;
 gint retval, first, index, py;
 gint blkw = context->blkw;
 double oy;
+gboolean docursor = FALSE;
 
 	DB( g_print("\n[chartprogress] get hover\n") );
 
@@ -164,9 +168,27 @@ double oy;
 
 
 		if(index < chart->nb_items)
+		{
+		StackItem *item = &g_array_index(chart->items, StackItem, index);
+		
 			retval = index;
-
+			if( item->n_child > 1 )
+				docursor = TRUE;
+		}
 		DB( g_print(" hover=%d\n", retval) );
+	}
+
+	//5.7 cursor change
+	{
+	GdkWindow *gdkwindow;
+	GdkCursor *cursor;
+
+		gdkwindow = gtk_widget_get_window (GTK_WIDGET(widget));
+		cursor = gdk_cursor_new_for_display(gdk_window_get_display(gdkwindow), (docursor == TRUE) ? GDK_HAND2 : GDK_ARROW );
+		gdk_window_set_cursor (gdkwindow, cursor);
+
+		if(GDK_IS_CURSOR(cursor))
+			g_object_unref(cursor);
 	}
 
 	return(retval);
@@ -238,24 +260,11 @@ gint first;
 }
 
 
-static void ui_chart_progress_clear(ChartProgress *chart, gboolean store)
+static void ui_chart_progress_clear_items(ChartProgress *chart)
 {
 gint i;
 
 	DB( g_print("\n[chartprogress] clear\n") );
-
-	//free & clear any previous allocated datas
-	if(chart->title != NULL)
-	{
-		g_free(chart->title);
-		chart->title = NULL;
-	}
-
-	if(chart->subtitle != NULL)
-	{
-		g_free(chart->subtitle);
-		chart->subtitle = NULL;
-	}
 
 	if(chart->items != NULL)
 	{
@@ -275,51 +284,106 @@ gint i;
 }
 
 
-static void ui_chart_progress_setup_with_model(ChartProgress *chart, GtkTreeModel *list_store, gchar *coltitle1, gchar *coltitle2)
+static void ui_chart_progress_clear(ChartProgress *chart)
 {
-guint i;
-gboolean valid;
+	DB( g_print("\n[chartprogress] clear\n") );
+
+	//free & clear any previous allocated datas
+	if(chart->title != NULL)
+	{
+		g_free(chart->title);
+		chart->title = NULL;
+	}
+
+	if(chart->subtitle != NULL)
+	{
+		g_free(chart->subtitle);
+		chart->subtitle = NULL;
+	}
+
+	ui_chart_progress_clear_items(chart);
+
+}
+
+
+static void ui_chart_progress_setup_with_model(ChartProgress *chart, gint indice)
+{
+GtkTreeModel *model;
 GtkTreeIter iter;
+guint i;
+gboolean valid = FALSE;
 
 	DB( g_print("\n[chartprogress] setup with model\n") );
 
-	ui_chart_progress_clear(chart, TRUE);
+	model = chart->model;
 
-	chart->nb_items = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(list_store), NULL);
+	DB( g_print(" indice: %d\n", indice) );
+
+	if( indice < 0 )
+	{
+		valid = gtk_tree_model_get_iter_first (GTK_TREE_MODEL(model), &iter);
+		chart->nb_items = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(model), NULL);
+		gtk_widget_hide(chart->breadcrumb);
+	}
+	else
+	{
+	GtkTreePath *path = gtk_tree_path_new_from_indices(indice, -1);
+	gchar *pathstr, *itrlabel;
+
+		pathstr = gtk_tree_path_to_string(path);
+		DB( g_print(" total: path: %s\n", pathstr) );
+
+		gtk_tree_model_get_iter(model, &iter, path);
+		chart->nb_items = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(model), &iter);
+
+		// update the breadcrumb
+		gtk_tree_model_get (GTK_TREE_MODEL(model), &iter,
+			LST_BUDGET_NAME, &itrlabel,
+			-1);
+		gchar *bc = g_markup_printf_escaped("<a href=\"root\">%s</a> &gt; %s", CHART_CATEGORY, itrlabel);
+		gtk_label_set_markup(GTK_LABEL(chart->breadcrumb), bc);
+		g_free(bc);
+		gtk_widget_show(chart->breadcrumb);
+
+		// move to xx:0	
+		gtk_tree_path_append_index(path, 0);
+		valid = gtk_tree_model_get_iter(model, &iter, path);
+
+		DB( g_print(" total: path: %s\n", pathstr) );
+	
+		gtk_tree_path_free(path);
+		g_free(pathstr);	
+	}
 
 	chart->items = g_array_sized_new(FALSE, FALSE, sizeof(StackItem), chart->nb_items);
+	DB( g_print(" nbitems=%d, struct=%d\n", chart->nb_items, (gint)sizeof(StackItem)) );
 
-	DB( g_print(" nb=%d\n", chart->nb_items) );
-
-	if(coltitle1)
-		chart->budget_title = coltitle1;
-	if(coltitle2)
-		chart->result_title = coltitle2;
-
-	/* Get the first iter in the list */
-	valid = gtk_tree_model_get_iter_first (GTK_TREE_MODEL(list_store), &iter);
+	
 	i = 0;
 	while (valid)
     {
-	gint id;
+	gint pos;
 	gchar *label, *status;
 	gdouble	value1, value2;
 	StackItem item;
 
-		gtk_tree_model_get (GTK_TREE_MODEL(list_store), &iter,
-			0, &id,
-			//1, &pos,
-			2, &label,
-			3, &value1,   //spent
-			4, &value2,   //budget
-			//5, &result,
-			6, &status,
+		//TODO: remove id here....
+		gtk_tree_model_get (GTK_TREE_MODEL(model), &iter,
+			LST_BUDGET_POS, &pos,
+			//LST_BUDGET_KEY, &key,
+			LST_BUDGET_NAME, &label,
+			LST_BUDGET_SPENT, &value1,
+			LST_BUDGET_BUDGET, &value2,
+			//LST_BUDGET_FULFILLED, &toto,
+			//LST_BUDGET_RESULT, &result,
+			LST_BUDGET_STATUS, &status,
 			-1);
 
 		item.label = label;
 		item.spent = value1;
 		item.budget = value2;
 		item.status = status;
+		item.n_child = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(model), &iter);		
 
 		/* additional pre-compute */
 		item.result = item.spent - item.budget;
@@ -339,7 +403,7 @@ GtkTreeIter iter;
 		//don't g_free(status); here done into chart_clear
 
 		i++;
-		valid = gtk_tree_model_iter_next (list_store, &iter);
+		valid = gtk_tree_model_iter_next (model, &iter);
 	}
 
 }
@@ -349,7 +413,7 @@ static void chart_progress_layout_area(cairo_t *cr, ChartProgress *chart, HbtkDr
 {
 PangoLayout *layout;
 gchar *valstr;
-int tw, th;
+int tw, th, bch;
 gint blkw;
 gint i;
 
@@ -394,6 +458,14 @@ gint i;
 	//pango_font_description_set_size(chart->pfd, CHART_FONT_SIZE_NORMAL * PANGO_SCALE);
 	ui_chart_progress_set_font_size(chart, layout, CHART_FONT_SIZE_NORMAL);
 	pango_layout_set_font_description (layout, chart->pfd);
+
+	//breadcrumb top et position
+	ui_chart_progress_set_font_size(chart, layout, CHART_FONT_SIZE_NORMAL);
+	pango_layout_set_text (layout, "Category", -1);
+	pango_layout_get_size (layout, &tw, &th);
+	bch = (th / PANGO_SCALE);
+	gtk_widget_set_margin_top(chart->breadcrumb, context->subtitle_y);
+
 
 	double title_w = 0;
 	context->bud_col_w = 0;
@@ -474,7 +546,7 @@ gint i;
 	}
 
 	context->graph_width  = context->w - context->cat_col_w - context->bud_col_w - context->res_col_w - context->rel_col_w - (double)(CHART_SPACING*4);
-	context->graph_height = context->h - context->title_zh - context->subtitle_zh - context->header_zh;
+	context->graph_height = context->h - context->title_zh - context->subtitle_zh - context->header_zh - bch;
 
 
 	DB( g_print(" gfx_w = %.2f - %.2f - %.2f  - %.2f - %.2f \n",
@@ -1045,6 +1117,54 @@ HbtkDrawProgContext *context = &chart->context;
 }
 
 
+static gboolean
+drawarea_cb_root_activate_link (GtkWidget *label, const gchar *uri, gpointer user_data)
+{
+ChartProgress *chart = GTK_CHARTPROGRESS(user_data);
+
+	DB( g_print("\n[chartprogress] root breadcrumb clicked\n") );
+
+	ui_chart_progress_clear_items(chart);
+	ui_chart_progress_setup_with_model(chart, -1);
+	ui_chart_progress_queue_redraw(chart);
+    return TRUE;
+}
+
+
+static gboolean
+drawarea_cb_button_press_event (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
+{
+ChartProgress *chart = GTK_CHARTPROGRESS(user_data);
+
+	if (chart->surface == NULL)
+		return FALSE; /* paranoia check, in case we haven't gotten a configure event */
+
+	DB( g_print("\n[chartprogress] mouse button press event\n") );
+
+	if (event->button == GDK_BUTTON_PRIMARY)
+	{
+		DB( g_print(" x=%f, y=%f\n", event->x, event->y) );
+
+		if( chart->hover >= 0 )
+		{
+		StackItem *item = &g_array_index(chart->items, StackItem, chart->hover);
+
+			if( item->n_child > 1 )
+			{		
+				ui_chart_progress_clear_items(chart);
+				ui_chart_progress_setup_with_model(chart, chart->hover);
+				ui_chart_progress_queue_redraw(chart);
+			}
+		}
+	}
+
+	/* We've handled the event, stop processing */
+	return TRUE;
+}
+
+
+
+
 static gboolean drawarea_motionnotifyevent_callback(GtkWidget *widget, GdkEventMotion *event, gpointer user_data)
 {
 ChartProgress *chart = GTK_CHARTPROGRESS(user_data);
@@ -1379,20 +1499,25 @@ void ui_chart_progress_set_dualdatas(ChartProgress *chart, GtkTreeModel *model, 
 
 	DB( g_print("\n[chartprogress] set dual datas\n") );
 
+	ui_chart_progress_clear(chart);
 
 	if( GTK_IS_TREE_MODEL(model) )
 	{
-		ui_chart_progress_setup_with_model(chart, model, coltitle1, coltitle2 );
+		DB( g_print(" store model %p and columns=%s:%s\n", model, coltitle1, coltitle2) );
+		chart->model = model;
+
+		if(coltitle1)
+			chart->budget_title = coltitle1;
+		if(coltitle2)
+			chart->result_title = coltitle2;
+
 		if(title != NULL)
 			chart->title = g_strdup(title);
 		if(subtitle != NULL)
 			chart->subtitle = g_strdup(subtitle);
 
+		ui_chart_progress_setup_with_model(chart, -1);
 		ui_chart_progress_queue_redraw(chart);
-	}
-	else
-	{
-		ui_chart_progress_clear(chart, TRUE);
 	}
 }
 
@@ -1468,7 +1593,7 @@ void ui_chart_progress_set_currency(ChartProgress * chart, guint32 kcur)
 static void
 ui_chart_progress_init (ChartProgress * chart)
 {
-GtkWidget *widget, *hbox, *frame;
+GtkWidget *widget, *hbox, *frame, *overlay, *label;
 HbtkDrawProgContext *context = &chart->context;
 
 
@@ -1488,26 +1613,39 @@ HbtkDrawProgContext *context = &chart->context;
 	ui_chart_progress_set_color_scheme(chart, CHART_COLMAP_HOMEBANK);
 
 	widget=GTK_WIDGET(chart);
-
 	gtk_box_set_homogeneous(GTK_BOX(widget), FALSE);
 
-	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-    gtk_box_pack_start (GTK_BOX (widget), hbox, TRUE, TRUE, 0);
-
-	/* frame & drawing area */
 	frame = gtk_frame_new(NULL);
     gtk_frame_set_shadow_type (GTK_FRAME(frame), GTK_SHADOW_ETCHED_IN);
-    gtk_box_pack_start (GTK_BOX (hbox), frame, TRUE, TRUE, 0);
+    gtk_box_pack_start (GTK_BOX (widget), frame, TRUE, TRUE, 0);
 
+	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_frame_set_child(GTK_FRAME(frame), hbox);
+
+	overlay = gtk_overlay_new ();
 	chart->drawarea = gtk_drawing_area_new();
-	//gtk_widget_set_double_buffered (GTK_WIDGET(widget), FALSE);
-
-	gtk_container_add( GTK_CONTAINER(frame), chart->drawarea );
 	gtk_widget_set_size_request(chart->drawarea, 150, 150 );
-	#if DYNAMICS == 1
+#if DYNAMICS == 1
 	gtk_widget_set_has_tooltip(chart->drawarea, TRUE);
-	#endif
+#endif
+
 	gtk_widget_show(chart->drawarea);
+
+	gtk_overlay_set_child (GTK_OVERLAY(overlay), chart->drawarea);
+	gtk_box_pack_start (GTK_BOX (hbox), overlay, TRUE, TRUE, 0);
+
+
+	label = gtk_label_new(NULL);
+	chart->breadcrumb = label;
+	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
+	gtk_label_set_track_visited_links(GTK_LABEL(label), FALSE);
+	gtk_overlay_add_overlay( GTK_OVERLAY(overlay), label );
+	gtk_overlay_set_overlay_pass_through (GTK_OVERLAY (overlay), label, TRUE);
+	gtk_widget_set_halign (label, GTK_ALIGN_START);
+	gtk_widget_set_valign (label, GTK_ALIGN_START);	
+	gtk_widget_set_margin_start(label, SPACING_MEDIUM);
+	gtk_widget_set_margin_top(label, SPACING_MEDIUM*4);
+
 
 	/* scrollbar */
     chart->adjustment = GTK_ADJUSTMENT(gtk_adjustment_new (0.0, 0.0, 1.0, 1.0, 1.0, 1.0));
@@ -1526,6 +1664,7 @@ HbtkDrawProgContext *context = &chart->context;
 		GDK_EXPOSURE_MASK |
 		//GDK_POINTER_MOTION_MASK |
 		//GDK_POINTER_MOTION_HINT_MASK |
+		GDK_BUTTON_PRESS_MASK | 
 		GDK_SCROLL_MASK
 		);
 
@@ -1536,14 +1675,12 @@ HbtkDrawProgContext *context = &chart->context;
 
 	g_signal_connect (G_OBJECT(chart->adjustment), "value-changed", G_CALLBACK (ui_chart_progress_first_changed), chart);
 
-	/*
-	g_signal_connect( G_OBJECT(chart->drawarea), "leave-notify-event", G_CALLBACK(ui_chart_progress_leave), chart );
-	g_signal_connect( G_OBJECT(chart->drawarea), "enter-notify-event", G_CALLBACK(ui_chart_progress_enter), chart );
-	g_signal_connect( G_OBJECT(chart->drawarea), "button-press-event", G_CALLBACK(ui_chart_progress_button_press), chart );
-	g_signal_connect( G_OBJECT(chart->drawarea), "button-release-event", G_CALLBACK(ui_chart_progress_button_release), chart );
-	*/
-
-
+	g_signal_connect (G_OBJECT(chart->breadcrumb), "activate-link", G_CALLBACK (drawarea_cb_root_activate_link), chart);
+	
+	//g_signal_connect( G_OBJECT(chart->drawarea), "leave-notify-event", G_CALLBACK(ui_chart_progress_leave), chart );
+	//g_signal_connect( G_OBJECT(chart->drawarea), "enter-notify-event", G_CALLBACK(ui_chart_progress_enter), chart );
+	g_signal_connect( G_OBJECT(chart->drawarea), "button-press-event", G_CALLBACK(drawarea_cb_button_press_event), chart );
+	//g_signal_connect( G_OBJECT(chart->drawarea), "button-release-event", G_CALLBACK(ui_chart_progress_button_release), chart );
 }
 
 
@@ -1557,7 +1694,7 @@ ChartProgress *chart = GTK_CHARTPROGRESS(object);
 	DB( g_print("\n[chartprogress] destroy\n") );
 
 
-	ui_chart_progress_clear(GTK_CHARTPROGRESS (object), FALSE);
+	ui_chart_progress_clear(GTK_CHARTPROGRESS (object));
 
 	if(chart->pfd)
 	{

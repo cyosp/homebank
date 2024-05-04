@@ -83,7 +83,7 @@ struct ui_asg_manage_data
 
 	GtkWidget	*ST_search;
 	GtkWidget	*LV_rul;
-	GtkWidget	*BT_add, *BT_rem, *BT_edit, *BT_up, *BT_down, *BT_move;
+	GtkWidget	*BT_add, *BT_rem, *BT_edit, *BT_dup, *BT_up, *BT_down, *BT_move;
 
 	GtkWidget	*MB_moveto, *ST_poppos, *BT_popmove;
 

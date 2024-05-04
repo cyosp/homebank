@@ -449,7 +449,7 @@ GtkEntryCompletion *completion;
 	menubutton = gtk_menu_button_new ();
 	//data->MB_template = menubutton;
 	image = gtk_image_new_from_icon_name ("pan-down-symbolic", GTK_ICON_SIZE_BUTTON);
-	gtk_container_add(GTK_CONTAINER(menubutton), image);
+	gtk_button_set_image(GTK_BUTTON(menubutton), image);
 	gtk_menu_button_set_direction (GTK_MENU_BUTTON(menubutton), GTK_ARROW_LEFT );
 	//gtk_widget_set_halign (menubutton, GTK_ALIGN_END);
 	gtk_box_pack_start(GTK_BOX(mainbox), menubutton, FALSE, FALSE, 0);
@@ -484,7 +484,7 @@ GtkEntryCompletion *completion;
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	//gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scrollwin), HB_MINHEIGHT_LIST);
 	treeview = gtk_tree_view_new_with_model (GTK_TREE_MODEL(store));
-	gtk_container_add(GTK_CONTAINER(scrollwin), GTK_WIDGET(treeview));
+	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
 	gtk_widget_show_all(box);
 
 
@@ -1730,7 +1730,7 @@ gint row, n_child;
 		grid = gtk_grid_new();
 		gtk_grid_set_row_spacing (GTK_GRID (grid), SPACING_SMALL);
 		gtk_grid_set_column_spacing (GTK_GRID (grid), SPACING_MEDIUM);
-		gtk_container_set_border_width (GTK_CONTAINER(grid), SPACING_LARGE);
+		hb_widget_set_margin(GTK_WIDGET(grid), SPACING_LARGE);
 		gtk_box_pack_start (GTK_BOX (content_area), grid, TRUE, TRUE, 0);
 
 
@@ -1832,7 +1832,7 @@ gint row, n_child;
 	    }
 
 		// cleanup and destroy
-		gtk_widget_destroy (dialog);
+		gtk_window_destroy (GTK_WINDOW(dialog));
 	}
 
 }
@@ -1985,7 +1985,7 @@ GtkTreeIter iter;
 		}
 
 		// cleanup and destroy
-		gtk_widget_destroy (dialog);
+		gtk_window_destroy (GTK_WINDOW(dialog));
 	}
 
 }
@@ -2401,8 +2401,7 @@ GtkWidget *ui_cat_manage_dialog (void)
 {
 struct ui_cat_manage_dialog_data *data;
 GtkWidget *dialog, *content, *mainvbox, *bbox, *table, *hbox, *vbox, *label, *scrollwin, *treeview;
-GtkWidget *menu, *menuitem, *widget, *image, *tbar, *addreveal;
-GtkToolItem *toolitem;
+GtkWidget *menu, *menuitem, *widget, *image, *tbar, *revealer;
 gint w, h, dw, dh, row;
 
 	data = g_malloc0(sizeof(struct ui_cat_manage_dialog_data));
@@ -2435,7 +2434,7 @@ gint w, h, dw, dh, row;
 	content = gtk_dialog_get_content_area(GTK_DIALOG (dialog));
 	mainvbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, SPACING_SMALL);
 	gtk_box_pack_start (GTK_BOX (content), mainvbox, TRUE, TRUE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER(mainvbox), SPACING_LARGE);
+	hb_widget_set_margin(GTK_WIDGET(mainvbox), SPACING_LARGE);
 
     //our table
 	table = gtk_grid_new ();
@@ -2508,99 +2507,72 @@ gint w, h, dw, dh, row;
 	gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scrollwin), HB_MINHEIGHT_LIST);
  	treeview = ui_cat_listview_new(FALSE, TRUE);
 	data->LV_cat = treeview;
-	gtk_container_add(GTK_CONTAINER(scrollwin), treeview);
+	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
 	gtk_widget_set_hexpand (scrollwin, TRUE);
 	gtk_widget_set_vexpand (scrollwin, TRUE);
 	gtk_box_pack_start (GTK_BOX(vbox), scrollwin, TRUE, TRUE, 0);
 
 	//list toolbar
-	tbar = gtk_toolbar_new();
-	gtk_toolbar_set_icon_size (GTK_TOOLBAR(tbar), GTK_ICON_SIZE_MENU);
-	gtk_toolbar_set_style(GTK_TOOLBAR(tbar), GTK_TOOLBAR_ICONS);
+	tbar = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
 	gtk_box_pack_start (GTK_BOX (vbox), tbar, FALSE, FALSE, 0);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	toolitem = gtk_tool_item_new();
-	gtk_container_add (GTK_CONTAINER(toolitem), bbox);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+	gtk_box_pack_start (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
 
 		widget = make_image_toggle_button(ICONNAME_LIST_ADD, _("Add"));
 		data->BT_add = widget;
-		gtk_container_add (GTK_CONTAINER (bbox), widget);
+		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
 
 		widget = make_image_button(ICONNAME_LIST_DELETE, _("Delete"));
 		data->BT_delete = widget;
-		gtk_container_add (GTK_CONTAINER (bbox), widget);
-
-	toolitem = gtk_separator_tool_item_new ();
-	//gtk_tool_item_set_expand (toolitem, TRUE);
-	gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(toolitem), FALSE);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
-
+		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	toolitem = gtk_tool_item_new();
-	gtk_container_add (GTK_CONTAINER(toolitem), bbox);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+	gtk_box_pack_start (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
 
 		widget = make_image_button(ICONNAME_LIST_EDIT, _("Edit"));
 		data->BT_edit = widget;
-		gtk_container_add (GTK_CONTAINER (bbox), widget);
+		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
 
 		widget = make_image_button(ICONNAME_HB_LIST_MERGE, _("Move/Merge"));
 		data->BT_merge = widget;
-		gtk_container_add (GTK_CONTAINER (bbox), widget);
-
-	toolitem = gtk_separator_tool_item_new ();
-	//gtk_tool_item_set_expand (toolitem, TRUE);
-	gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(toolitem), FALSE);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	toolitem = gtk_tool_item_new();
-	gtk_container_add (GTK_CONTAINER(toolitem), bbox);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+	gtk_box_pack_start (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
 
 		widget = make_image_button(ICONNAME_HB_BUTTON_HIDE, _("Show/Hide"));
 		data->BT_hide = widget;
-		gtk_container_add (GTK_CONTAINER (bbox), widget);
+		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
 	
-	toolitem = gtk_separator_tool_item_new ();
-	gtk_tool_item_set_expand (toolitem, TRUE);
-	gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(toolitem), FALSE);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
-
-	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	toolitem = gtk_tool_item_new();
-	gtk_container_add (GTK_CONTAINER(toolitem), hbox);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_box_pack_end (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
 	
 		widget = make_image_button(ICONNAME_HB_BUTTON_EXPAND, _("Expand all"));
 		data->BT_expand = widget;
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
 
 		widget = make_image_button(ICONNAME_HB_BUTTON_COLLAPSE, _("Collapse all"));
 		data->BT_collapse = widget;
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
 
 	// subcategory + add button
 	row++;
-	addreveal = gtk_revealer_new ();
-	data->RE_addreveal = addreveal;
-	gtk_grid_attach (GTK_GRID (table), addreveal, 0, row, 2, 1);
+	revealer = gtk_revealer_new ();
+	data->RE_addreveal = revealer;
+	gtk_grid_attach (GTK_GRID (table), revealer, 0, row, 2, 1);
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, SPACING_SMALL);
-	gtk_container_add(GTK_CONTAINER(addreveal), vbox);
+	gtk_revealer_set_child (GTK_REVEALER(revealer), vbox);
 
 	widget = gtk_entry_new ();
 	data->ST_name1 = widget;
 	gtk_entry_set_placeholder_text(GTK_ENTRY(data->ST_name1), _("new category") );
-	gtk_widget_set_hexpand (widget, TRUE);
-	gtk_container_add (GTK_CONTAINER (vbox), widget);
+	gtk_box_pack_start (GTK_BOX (vbox), widget, TRUE, TRUE, 0);
 	
 	row++;
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
-	gtk_container_add (GTK_CONTAINER (vbox), hbox);
+	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 	data->LA_category = gtk_label_new(NULL);
 	gtk_box_pack_start (GTK_BOX (hbox), data->LA_category, FALSE, FALSE, 0);
 	label = gtk_label_new(":");
@@ -2625,7 +2597,7 @@ gint w, h, dw, dh, row;
 
 	// cleanup and destroy
 	ui_cat_manage_dialog_cleanup(data, result);
-	gtk_widget_destroy (dialog);
+	gtk_window_destroy (GTK_WINDOW(dialog));
 
 	g_free(data);
 

@@ -114,9 +114,14 @@ struct _ChartItem
 {
 	/* data part */
 	gchar		*label;
+	//gchar		*xlabel;
+	//gchar		*misclabel;
+	//gshort		flags;
+	//gshort		pad1;
 	gdouble		serie1;
 	gdouble		serie2;
 	gdouble		rate;
+	gint		n_child;
 
 	/* draw stuffs */
 	//gchar    *legend;
@@ -185,6 +190,7 @@ struct _GtkChart
 	GtkWidget		*drawarea;
 	GtkAdjustment	*adjustment;
 	GtkWidget		*scrollbar;
+	GtkWidget		*breadcrumb;
 
 	/* data storage */
 	GtkTreeModel   *totmodel;
@@ -198,7 +204,9 @@ struct _GtkChart
 	GtkTreeModel	*model;
 	gdouble		*colsum;
 	gchar       **collabel;
+	DataCol		**cols;
 	gint		nb_cols;
+	gint		colindice;
 
 	gchar		*title;
 	gchar		*subtitle;
@@ -208,8 +216,11 @@ struct _GtkChart
 
 	gboolean	dual;
 	gboolean	abs;
+	gboolean	show_breadcrumb;
 	gboolean	show_legend;
 	gboolean	show_legend_wide;
+	gboolean	legend_visible;
+	gboolean	legend_wide_visible;
 	gboolean	smallfont;
 	gboolean	show_over;
 	gboolean	show_average;
@@ -230,6 +241,7 @@ struct _GtkChart
 	//dynamics
 	gint		hover, lasthover;
 	gint		colhover, lastcolhover;
+	gboolean	drillable;
 
 	struct _HbtkDrawContext context;
 	PangoFontDescription *pfd;
@@ -268,7 +280,7 @@ GtkWidget *gtk_chart_new(gint type);
 
 void gtk_chart_set_datas_none (GtkChart *chart);
 void gtk_chart_set_datas_total(GtkChart *chart, GtkTreeModel *model, guint column1, guint column2, gchar *title, gchar *subtitle);
-void gtk_chart_set_datas_time (GtkChart *chart, GtkTreeView *treeview, guint nbrows, guint nbcols, gchar *title, gchar *subtitle);
+void gtk_chart_set_datas_time (GtkChart *chart, GtkTreeView *treeview, DataTable *dt, guint nbrows, guint nbcols, gchar *title, gchar *subtitle);
 
 void gtk_chart_set_type(GtkChart *chart, gint type);
 void gtk_chart_set_color_scheme(GtkChart * chart, gint colorscheme);

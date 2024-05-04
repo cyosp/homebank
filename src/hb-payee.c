@@ -563,10 +563,16 @@ payee_glist_sorted(gint column)
 {
 GList *list = g_hash_table_get_values(GLOBALS->h_pay);
 
-	if(column == 0)
-		return g_list_sort(list, (GCompareFunc)payee_glist_key_compare_func);
-	else
-		return g_list_sort(list, (GCompareFunc)payee_glist_name_compare_func);
+	switch(column)
+	{
+		case HB_GLIST_SORT_NAME:
+			return g_list_sort(list, (GCompareFunc)payee_glist_name_compare_func);
+			break;
+		//case HB_GLIST_SORT_KEY:
+		default:
+			return g_list_sort(list, (GCompareFunc)payee_glist_key_compare_func);
+			break;
+	}
 }
 
 
@@ -673,7 +679,7 @@ gchar *outstr;
 	io = g_io_channel_new_file(filename, "w", NULL);
 	if(io != NULL)
 	{
-		lpay = list = payee_glist_sorted(1);
+		lpay = list = payee_glist_sorted(HB_GLIST_SORT_NAME);
 
 		while (list != NULL)
 		{

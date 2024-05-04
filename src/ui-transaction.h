@@ -40,7 +40,7 @@ struct deftransaction_data
 
 	GtkWidget	*RA_type;
 	GtkWidget	*LB_date, *GR_date;
-	GtkWidget	*PO_date, *LB_wday;
+	GtkWidget	*PO_date;	//5.7 removed *LB_wday;
 	GtkWidget	*PO_pay;
 	GtkWidget	*ST_memo;
 	GtkWidget	*ST_amount, *BT_split, *LB_curr;
@@ -75,6 +75,7 @@ struct deftransaction_data
 	gint		accnum;
 	guint32		kacc;
 	gboolean	showtemplate;
+	gboolean	isxferdst;		//edit: true if this is a xfer target (amt > 0) 
 
 	Transaction *ope;
 };

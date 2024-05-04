@@ -45,6 +45,8 @@ struct _assign
 #define ASGF_DOMOD	(1<<3)
 //#define ASGF_DOTAG (later)
 
+#define ASGF_PREFILLED	(1<<5)
+
 #define ASGF_AMOUNT	(1<<7)	//5.6
 #define ASGF_REGEX	(1<<8)
 #define ASGF_OVWPAY	(1<<9)
@@ -65,6 +67,7 @@ gboolean	da_asg_create_none(void);
 gboolean	da_asg_remove(guint32 key);
 gboolean	da_asg_insert(Assign *asg);
 gboolean	da_asg_append(Assign *asg);
+Assign *da_asg_duplicate(Assign *srcitem);
 guint32		da_asg_get_max_key(void);
 Assign		*da_asg_get_by_name(gchar *name);
 Assign		*da_asg_get(guint32 key);

@@ -41,6 +41,7 @@ struct _account
 	gdouble		maximum;
 	guint32		cheque1;
 	guint32		cheque2;
+	gchar		*website;		//5.7 add
 	gchar	    *notes;
 	guint32		karc;
 	guint16		cccday;		//creditcard close day
@@ -137,6 +138,7 @@ void da_acc_anonymize(Account *item);
 GtkWindow *account_window(guint32 key);
 void account_transaction_sort(void);
 guint account_is_used(guint32 key);
+gboolean account_has_website(Account *item);
 gboolean account_exists(gchar *name);
 gboolean account_rename(Account *item, gchar *newname);
 void account_set_currency(Account *item, guint32 kcur);

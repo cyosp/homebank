@@ -45,5 +45,7 @@ void hb_export_qif_account_single(gchar *filename, Account *acc);
 
 void hb_export_pdf_listview(GtkTreeView *treeview, gchar *filepath, gchar *accname);
 
+void hb_print_listview(GtkWindow *parent, gchar *tabtext, gint8 *leftcols, gchar *title, gchar *filepath);
+
 #endif
 

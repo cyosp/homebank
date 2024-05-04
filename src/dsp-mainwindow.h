@@ -48,7 +48,7 @@ struct hbfile_data
 	GtkWidget	*menubar;
 	GtkWidget	*ME_menufile, *ME_menuedit, *ME_menuview, *ME_menuman, *ME_menutxn, *ME_menurep, *ME_menutool, *ME_menuhelp;
 	GtkWidget	*MI_new, *MI_open, *MI_save, *MI_saveas, *MI_import, *MI_exportqif, *MI_revert, *MI_openbak, *MI_properties, *MI_close, *MI_quit;
-	GtkWidget	*MI_prefs, *MI_showtbar, *MI_showspend, *MI_showbotlist, *MI_eurominor;
+	GtkWidget	*MI_prefs, *MI_showtbar, *MI_showtotchart, *MI_showtimchart, *MI_showbotlist, *MI_eurominor;
 	GtkWidget	*MI_manwal, *MI_manacc, *MI_manpay, *MI_mancat, *MI_mantpl, *MI_manbud, *MI_manbudtable, *MI_manasg, *MI_mancur, *MI_mantag;
 	GtkWidget	*MI_txnadd, *MI_txnshow, *MI_txnshowall, *MI_scheduler, *MI_addscheduled; 
 	GtkWidget	*MI_repstat, *MI_reptime, *MI_repbal, *MI_repbudg, *MI_repvehi;
@@ -67,24 +67,43 @@ struct hbfile_data
 
 	/* panel: your account */
 	GtkWidget	*LV_acc;
+	GtkWidget	*BT_browse;
 	GtkWidget   *BT_expandall;
 	GtkWidget   *BT_collapseall;
 	gboolean	showall;
 	GSimpleActionGroup *action_group_acc;
-	GSimpleActionGroup *action_group_top;
 	GHashTable  *h_accgrp;
 	PnlAccGrp	*totaccgrp;
 
-	GtkWidget	*GR_top;
-	GtkWidget	*LV_top;
-	gdouble		toptotal;
-	GtkWidget	*CY_range;
-	GtkWidget	*RE_pie;
+	//hub total
+	Filter		*hubtot_filter;
+	//DataTable   hobtot_dt;
+	GtkWidget	*GR_hubtot;
+	GtkWidget	*LB_hubtot;
+	GtkWidget	*LV_hubtot;
+	gdouble		hubtot_total;
+	GtkWidget	*CY_hubtot_range;
+	GtkWidget	*RE_hubtot_chart;
+	GSimpleActionGroup *hubtot_action_group;
 
+	//hub time
+	Filter		*hubtim_filter;
+	DataTable	*hubtim_dt;
+	gint		hubtim_rows;
+	gint		hubtim_cols;
+	GtkWidget	*GR_hubtim;
+	GtkWidget	*LB_hubtim;
+	GtkWidget	*LV_hubtim;
+	gdouble		hubtim_total;
+	GtkWidget	*CY_hubtim_range;
+	GtkWidget	*RE_hubtim_chart;
+	GSimpleActionGroup *hubtim_action_group;	
+
+	//hub scheduled
 	GtkWidget	*GR_upc;
 
+	GtkWidget	*IM_info;
 	GtkWidget	*LV_upc;
-	GtkWidget   *LB_maxpostdate;
 	GtkWidget   *BT_sched_skip;
 	GtkWidget   *BT_sched_post;
 	GtkWidget   *BT_sched_editpost;
@@ -104,8 +123,7 @@ struct hbfile_data
 	GtkRecentManager *recent_manager;
 	GtkWidget *recent_menu;
 
-	Filter		*filter;
-	
+
 	/*
 	UBYTE	accnum;
 	UBYTE	pad0;

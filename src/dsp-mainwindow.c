@@ -27,7 +27,8 @@
 #include "list-account.h"
 
 #include "hub-scheduled.h"
-#include "hub-spending.h"
+#include "hub-reptotal.h"
+#include "hub-reptime.h"
 #include "hub-transaction.h"
 
 #include "dsp-account.h"
@@ -234,7 +235,7 @@ gchar *version;
 
 	gtk_dialog_run (GTK_DIALOG (dialog));
 
-	gtk_widget_destroy (dialog);
+	gtk_window_destroy (GTK_WINDOW(dialog));
 
 	g_free(version);
 	
@@ -297,10 +298,7 @@ GtkWidget *widget = GLOBALS->mainwindow;
 
 static void ui_mainwindow_action_quit(void)
 {
-gboolean result;
-
-	//emulate the wm close button
-	g_signal_emit_by_name(GLOBALS->mainwindow, "delete-event", NULL, &result);
+	gtk_window_close(GTK_WINDOW(GLOBALS->mainwindow));
 }
 
 
@@ -478,17 +476,34 @@ static void ui_mainwindow_action_toggle_toolbar(GtkCheckMenuItem *menuitem, gpoi
 static void ui_mainwindow_action_toggle_upcoming(GtkCheckMenuItem *menuitem, gpointer     user_data)
 {
 //struct hbfile_data *data = g_object_get_data(G_OBJECT(GLOBALS->mainwindow), "inst_data");
+gint flags = UF_VISUAL;
 
 	PREFS->wal_upcoming = gtk_check_menu_item_get_active(menuitem);
-	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_VISUAL));
+	if( PREFS->wal_upcoming == TRUE )
+		flags |= UF_REFRESHALL;
+	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(flags));
 }
 
-static void ui_mainwindow_action_toggle_topspending(GtkCheckMenuItem *menuitem, gpointer     user_data)
+static void ui_mainwindow_action_toggle_totchart(GtkCheckMenuItem *menuitem, gpointer     user_data)
 {
 //struct hbfile_data *data = g_object_get_data(G_OBJECT(GLOBALS->mainwindow), "inst_data");
+gint flags = UF_VISUAL;
 
-	PREFS->wal_spending = gtk_check_menu_item_get_active(menuitem);
-	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_VISUAL));
+	PREFS->wal_totchart = gtk_check_menu_item_get_active(menuitem);
+	if( PREFS->wal_totchart == TRUE )
+		flags |= UF_REFRESHALL;
+	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(flags));
+}
+
+static void ui_mainwindow_action_toggle_timchart(GtkCheckMenuItem *menuitem, gpointer     user_data)
+{
+//struct hbfile_data *data = g_object_get_data(G_OBJECT(GLOBALS->mainwindow), "inst_data");
+gint flags = UF_VISUAL;
+
+	PREFS->wal_timchart = gtk_check_menu_item_get_active(menuitem);
+	if( PREFS->wal_timchart == TRUE )
+		flags |= UF_REFRESHALL;
+	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(flags));
 }
 
 static void ui_mainwindow_action_toggle_minor(GtkCheckMenuItem *menuitem, gpointer     user_data)
@@ -501,9 +516,10 @@ struct hbfile_data *data = g_object_get_data(G_OBJECT(GLOBALS->mainwindow), "ins
 	gtk_tree_view_columns_autosize (GTK_TREE_VIEW(data->LV_upc));
 
 	// top spending
-	gtk_chart_show_minor(GTK_CHART(data->RE_pie), GLOBALS->minor);
+	gtk_chart_show_minor(GTK_CHART(data->RE_hubtot_chart), GLOBALS->minor);
 	
-	ui_hub_spending_update(data->window, data);
+	ui_hub_reptotal_update(data->window, data);
+	ui_hub_reptime_update(data->window, data);
 
 }
 
@@ -685,9 +701,7 @@ gchar *pathfilename;
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG (dialog));
 
 	table = gtk_grid_new ();
-	//gtk_grid_set_row_spacing (GTK_GRID (table), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (table), SPACING_MEDIUM);
-	gtk_container_set_border_width (GTK_CONTAINER(table), SPACING_LARGE);
 	gtk_box_pack_start (GTK_BOX (content_area), table, FALSE, FALSE, 0);
 
 	//get our icon
@@ -715,7 +729,6 @@ gchar *pathfilename;
 	mainvbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, SPACING_MEDIUM);
 	gtk_box_pack_start (GTK_BOX (content_area), mainvbox, FALSE, FALSE, 0);
 	gtk_widget_set_halign (mainvbox, GTK_ALIGN_CENTER);
-	gtk_container_set_border_width (GTK_CONTAINER(mainvbox), SPACING_LARGE);
 
 	//label = make_label (_("What do you want to do:"), 0, 0);
 	//gimp_label_set_attributes(GTK_LABEL(label), PANGO_ATTR_WEIGHT, PANGO_WEIGHT_BOLD, -1);
@@ -762,7 +775,7 @@ gchar *pathfilename;
 	PREFS->showwelcome = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(check));
 
 	// cleanup and destroy
-	gtk_widget_destroy (dialog);
+	gtk_window_destroy (GTK_WINDOW(dialog));
 
 	// do appropriate action
 	switch(result)
@@ -859,7 +872,7 @@ GList *lacc, *elt;
 
 		if(item->window)
 		{
-			gtk_widget_destroy(GTK_WIDGET(item->window));
+			gtk_window_destroy (GTK_WINDOW(item->window));
 			item->window = NULL;
 		}
 
@@ -899,17 +912,27 @@ GSList *list;
 			gtk_window_get_window_type(window),
 			gtk_window_get_title(window) ));
 
-		gtk_widget_destroy(GTK_WIDGET(window));
+		gtk_window_destroy (GTK_WINDOW(window));
 		list = g_slist_next(list);	
 	}
 	
 	gtk_tree_store_clear(GTK_TREE_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_acc))));
+
 	gtk_list_store_clear(GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_upc))));
-	gtk_list_store_clear(GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_top))));
 	
+	//TODO those 2 do nothing
+	ui_hub_reptotal_clear(GLOBALS->mainwindow, NULL);
+	ui_hub_reptime_clear(GLOBALS->mainwindow, NULL);
+
 	data->showall = FALSE;
 	ui_hub_account_dispose(data);
 	ui_hub_account_setup(data);
+
+	ui_hub_reptotal_dispose(data);
+	ui_hub_reptotal_setup(data);
+
+	ui_hub_reptime_dispose(data);
+	ui_hub_reptime_setup(data);
 	
 	hbfile_cleanup(file_clear);
 	hbfile_setup(file_clear);
@@ -973,7 +996,7 @@ Transaction *ope;
 	da_transaction_free(ope);
 	
 	deftransaction_dispose(window, NULL);
-	gtk_widget_destroy (window);
+	gtk_window_destroy (GTK_WINDOW(window));
 
 	/* todo optimize this */
 	if(count > 0)
@@ -1164,11 +1187,7 @@ gint r;
 		DB( g_print(" - start update window\n") );
 
 		ui_hub_account_populate(GLOBALS->mainwindow, NULL);
-		ui_hub_scheduled_populate(GLOBALS->mainwindow, NULL);
-		ui_hub_spending_populate(GLOBALS->mainwindow, NULL);
-		ui_hub_transaction_populate(data);
-	
-		ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_VISUAL));
+		ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_VISUAL+UF_REFRESHALL));
 	}
 
 
@@ -1303,7 +1322,7 @@ gint flags;
 	GtkTreeModel     *model;
 	GtkTreeIter       iter;
 	GtkTreePath		*path;
-	gboolean	active,sensitive;
+	gboolean	active, sensitive;
 
 		DB( g_print(" 2: disabled, opelist count\n") );
 
@@ -1322,14 +1341,18 @@ gint flags;
 
 			if( depth > 1 )
 			{
-				DB( g_print(" depth is %d\n", depth) );
-
 				gtk_tree_model_get(GTK_TREE_MODEL(model), &iter, LST_DSPACC_DATAS, &acc, -1);
 				data->acc = acc;
+				DB( g_print(" depth is %d, acc=%p\n", depth, acc) );
 			}
 			else
 				active = FALSE;
 		}
+
+	//5.7 browse account website
+		sensitive = account_has_website(data->acc);
+		DB( g_print(" account has url: %d\n", sensitive) );
+		gtk_widget_set_sensitive(data->BT_browse, sensitive);
 
 		DB( g_print(" changes %d - new %d\n", GLOBALS->changes_count, GLOBALS->hbfile_is_new) );
 
@@ -1435,12 +1458,12 @@ gint flags;
 		DB( g_print(" - show toolbar=%d\n", PREFS->wal_toolbar) );
 		hb_widget_visible(data->toolbar, PREFS->wal_toolbar); 
 
-		DB( g_print(" - show top_spending=%d\n", PREFS->wal_spending) );
-		hb_widget_visible(data->GR_top, PREFS->wal_spending); 
+		DB( g_print(" - show totchart=%d\n", PREFS->wal_totchart) );
+		hb_widget_visible(data->GR_hubtot, PREFS->wal_totchart); 
 
-		//TODO: why this ? to redraw ?
-		hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_range), PREFS->date_range_wal);
-		
+		DB( g_print(" - show timchart=%d\n", PREFS->wal_timchart) );
+		hb_widget_visible(data->GR_hubtim, PREFS->wal_timchart); 
+
 		DB( g_print(" - show upcoming=%d\n", PREFS->wal_upcoming) );
 		hb_widget_visible(data->GR_upc, PREFS->wal_upcoming); 
 
@@ -1453,11 +1476,17 @@ gint flags;
 		DB( g_print(" 16: refreshall\n") );
 
 		ui_hub_account_compute(GLOBALS->mainwindow, NULL);
-		ui_hub_spending_populate(GLOBALS->mainwindow, NULL);
-		ui_hub_scheduled_populate(GLOBALS->mainwindow, NULL);
-		ui_hub_transaction_populate(data);
+		//5.7 don't process if not visible...
+		if( PREFS->wal_totchart )
+			ui_hub_reptotal_populate(GLOBALS->mainwindow, NULL);
+		if( PREFS->wal_timchart )
+			ui_hub_reptime_populate(GLOBALS->mainwindow, NULL);
+		if( PREFS->wal_upcoming )
+		{
+			ui_hub_scheduled_populate(GLOBALS->mainwindow, NULL);
+			ui_hub_transaction_populate(data);
+		}
 	}
-
 
 }
 
@@ -1539,12 +1568,17 @@ gboolean retval = FALSE;
 	{
 		//TODO: retval is useless and below should move to destroy
 		retval = TRUE;
-		gtk_widget_destroy(data->LV_top);
+
+		//ui_hub_xxx_dispose(data);
+		gtk_widget_destroy(data->LV_hubtot);
+		ui_hub_reptotal_dispose(data);
+
+		gtk_widget_destroy(data->LV_hubtim);
+		ui_hub_reptime_dispose(data);
 
 		ui_hub_account_dispose(data);
 		
 		g_free(data->wintitle);
-		da_flt_free(data->filter);
 		g_free(user_data);
 		
 		gtk_main_quit();
@@ -1861,7 +1895,9 @@ GtkAccelGroup *accel_group = NULL;
 
 		data->MI_showtbar = menuitem = gtk_check_menu_item_new_with_mnemonic(_("_Toolbar"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
-		data->MI_showspend = menuitem = gtk_check_menu_item_new_with_mnemonic(_("_Top spending"));
+		data->MI_showtotchart = menuitem = gtk_check_menu_item_new_with_mnemonic(_("T_otal Chart"));
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
+		data->MI_showtimchart = menuitem = gtk_check_menu_item_new_with_mnemonic(_("T_ime Chart"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
 		data->MI_showbotlist = menuitem = gtk_check_menu_item_new_with_mnemonic(_("_Bottom Lists"));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
@@ -2005,7 +2041,7 @@ GtkWidget *window;
 	GLOBALS->mainwindow = window;
 
 	mainvbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	gtk_container_add (GTK_CONTAINER (window), mainvbox);
+	gtk_window_set_child(GTK_WINDOW(window), mainvbox);
 
 	//menu and toolbar
 	data->recent_manager = gtk_recent_manager_get_default ();
@@ -2051,13 +2087,13 @@ GtkWidget *window;
 	
 	/* Add the main area */
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-    //gtk_container_set_border_width (GTK_CONTAINER(vbox), SPACING_MEDIUM);
     gtk_box_pack_start (GTK_BOX (mainvbox), vbox, TRUE, TRUE, 0);
 
 	vpaned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
 	data->vpaned = vpaned;
     gtk_box_pack_start (GTK_BOX (vbox), vpaned, TRUE, TRUE, 0);
 
+	// top part
 	hpaned = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
 	data->hpaned = hpaned;
 	gtk_paned_pack1 (GTK_PANED(vpaned), hpaned, FALSE, FALSE);
@@ -2066,10 +2102,20 @@ GtkWidget *window;
 		//gtk_widget_set_size_request (widget, 100, -1);
 		gtk_paned_pack1 (GTK_PANED(hpaned), widget, FALSE, FALSE);
 
-		widget = ui_hub_spending_create(data);
+		//5.7 add home time chart
+		box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+		gtk_box_set_homogeneous(GTK_BOX(box), TRUE);
+		gtk_paned_pack2 (GTK_PANED(hpaned), box, TRUE, FALSE);
+		
+		widget = ui_hub_reptotal_create(data);
 		//gtk_widget_set_size_request (widget, -1, 100);
-		gtk_paned_pack2 (GTK_PANED(hpaned), widget, TRUE, FALSE);
+		gtk_box_pack_start (GTK_BOX (box), widget, TRUE, TRUE, 0);
 
+		widget = ui_hub_reptime_create(data);
+		gtk_box_pack_start (GTK_BOX (box), widget, TRUE, TRUE, 0);
+
+
+	// bottom part
 	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 	data->GR_upc = box;
 	gtk_paned_pack2 (GTK_PANED(vpaned), box, TRUE, FALSE);
@@ -2121,12 +2167,9 @@ GtkWidget *window;
 	//todo: move this elsewhere
 	DB( g_print(" - setup stuff\n") );
 
-	data->filter = da_flt_malloc();
-	filter_reset(data->filter);
-	hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_range), PREFS->date_range_wal);
-
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data->MI_showtbar), PREFS->wal_toolbar);
-	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data->MI_showspend), PREFS->wal_spending);
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data->MI_showtotchart), PREFS->wal_totchart);
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data->MI_showtimchart), PREFS->wal_timchart);
 	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(data->MI_showbotlist), PREFS->wal_upcoming);
 
 	/* Drag and drop support, set targets to NULL because we add the
@@ -2168,7 +2211,8 @@ GtkWidget *window;
 	g_signal_connect (data->MI_prefs , "activate", G_CALLBACK (ui_mainwindow_action_preferences), (gpointer)data);
 
 	g_signal_connect (data->MI_showtbar , "toggled", G_CALLBACK (ui_mainwindow_action_toggle_toolbar), (gpointer)data);
-	g_signal_connect (data->MI_showspend , "toggled", G_CALLBACK (ui_mainwindow_action_toggle_topspending), (gpointer)data);
+	g_signal_connect (data->MI_showtotchart , "toggled", G_CALLBACK (ui_mainwindow_action_toggle_totchart), (gpointer)data);
+	g_signal_connect (data->MI_showtimchart , "toggled", G_CALLBACK (ui_mainwindow_action_toggle_timchart), (gpointer)data);
 	g_signal_connect (data->MI_showbotlist , "toggled", G_CALLBACK (ui_mainwindow_action_toggle_upcoming), (gpointer)data);
 	g_signal_connect (data->MI_eurominor , "toggled", G_CALLBACK (ui_mainwindow_action_toggle_minor), (gpointer)data);
 

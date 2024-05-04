@@ -65,6 +65,7 @@ private_icons = \
 	hicolor_status_16x16_hb-ope-forced.png \
 	hicolor_status_16x16_hb-ope-future.png \
 	hicolor_status_16x16_hb-ope-new.png \
+	hicolor_status_16x16_hb-ope-prefilled.png \
 	hicolor_status_16x16_hb-ope-reconciled.png \
 	hicolor_status_16x16_hb-ope-remind.png \
 	hicolor_status_16x16_hb-ope-similar.png \
@@ -86,6 +87,7 @@ private_icons = \
 	hicolor_status_48x48_prf-columns.png \
 	hicolor_status_48x48_prf-euro.png \
 	hicolor_status_48x48_prf-folder.png \
+	hicolor_status_48x48_prf-forecast.png \
 	hicolor_status_48x48_prf-general.png \
 	hicolor_status_48x48_prf-import.png \
 	hicolor_status_48x48_prf-interface.png \
@@ -96,9 +98,11 @@ private_icons = \
 	hicolor_actions_scalable_hb-go-up-symbolic.svg \
 	hicolor_actions_scalable_hb-go-down-symbolic.svg \
 	hicolor_actions_scalable_list-collapse-all-symbolic.svg \
+	hicolor_actions_scalable_list-duplicate-symbolic.svg \
 	hicolor_actions_scalable_list-expand-all-symbolic.svg \
 	hicolor_actions_scalable_list-merge-symbolic.svg \
 	hicolor_actions_scalable_list-move-after-symbolic.svg \
+	hicolor_actions_scalable_open-in-browser-symbolic.svg \
 	hicolor_actions_scalable_text-casesensitive-symbolic.svg \
 	hicolor_actions_scalable_text-regularexpression-symbolic.svg \
 	hicolor_actions_scalable_toggle-sign-symbolic.svg \

@@ -37,6 +37,16 @@ enum {
 };
 
 
+enum {
+	LST_TXN_EXP_ACC = 1 << 0,	//detail/print
+	LST_TXN_EXP_PMT = 1 << 1,	//!print
+	LST_TXN_EXP_CLR = 1 << 2,	
+	LST_TXN_EXP_CAT = 1 << 3,
+	LST_TXN_EXP_TAG = 1 << 4,
+	LST_TXN_EXP_BAL = 1 << 5
+};
+
+
 struct list_txn_data
 {
 	GtkWidget			*treeview;
@@ -62,7 +72,7 @@ void list_txn_set_column_acc_visible(GtkTreeView *treeview, gboolean visible);
 Transaction *list_txn_get_surround_transaction(GtkTreeView *treeview, Transaction **prev, Transaction **next);
 Transaction *list_txn_get_active_transaction(GtkTreeView *treeview);
 
-GString *list_txn_to_string(GtkTreeView *treeview, gboolean isclipboard, gboolean hassplit, gboolean hasstatus, gboolean hasacc);
+GString *list_txn_to_string(GtkTreeView *treeview, gboolean isclipboard, gboolean hassplit, guint flags);
 
 void list_txn_set_lockreconciled(GtkTreeView *treeview, gboolean lockreconciled);
 void list_txn_set_save_column_width(GtkTreeView *treeview, gboolean save_column_width);

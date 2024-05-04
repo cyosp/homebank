@@ -37,11 +37,11 @@ extern struct Preferences *PREFS;
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-static const double fac[9] = { 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000 };
+static const gdouble fac[9] = { 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000 };
 
-double hb_amount_round(const double d, unsigned int digits)
+double hb_amount_round(const gdouble d, guint digits)
 {
-double out;
+gdouble out;
 
 	//fixed 5.6 MIN, not MAX... + #1977796
 	digits = MIN(digits, 8);
@@ -56,6 +56,7 @@ double out;
 	//#2022049 overflow on windows cause compiled 32bits long is int32 4 bytes...
 	out = ((gint64) (d < 0 ? (d * fac[digits]) - 0.5 : (d * fac[digits]) + 0.5)) / fac[digits];
 	//DB( g_print(" in:%17g out:%17g\n", d, out) );
+
 	return out;
 }
 

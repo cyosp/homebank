@@ -54,8 +54,11 @@ static void repbalance_detail(GtkWidget *widget, gpointer user_data);
 static void repbalance_sensitive(GtkWidget *widget, gpointer user_data);
 static void repbalance_compute(GtkWidget *widget, gpointer user_data);
 
+static gchar *repbalance_compute_title(gint intvl);
+
 static GtkWidget *lst_repbal_create(void);
 static void lst_repbal_set_cur(GtkTreeView *treeview, guint32 kcur);
+static GString *lst_repbal_to_string(GtkTreeView *treeview, gchar *title, gboolean isclipboard);
 
 //todo amiga/linux
 //prev
@@ -92,18 +95,52 @@ struct repbalance_data *data = user_data;
 	repbalance_sensitive(data->window, NULL);
 }
 
+
 static void repbalance_action_print(GtkToolButton *toolbutton, gpointer user_data)
 {
 struct repbalance_data *data = user_data;
+gint tmpintvl, page;
+gchar *title, *name;
 
+	tmpintvl  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_intvl));
+	page = gtk_notebook_get_current_page(GTK_NOTEBOOK(data->GR_result));
 
+	name  = g_strdup_printf("hb-repbalance_%s.csv", hbtk_get_label(CYA_REPORT_INTVL, tmpintvl) );
 
-	gtk_chart_print(GTK_CHART(data->RE_chart), GTK_WINDOW(data->window), NULL, NULL);
+	if( page == 0 )
+	{
+	GString *node;
+	
+		title = repbalance_compute_title(tmpintvl);
+	
+		node = lst_repbal_to_string(GTK_TREE_VIEW(data->LV_report), title, TRUE);
+
+		hb_print_listview(GTK_WINDOW(data->window), node->str, NULL, title, name);
+
+		g_string_free(node, TRUE);
+		g_free(title);
+	}
+	else
+	{
+		gtk_chart_print(GTK_CHART(data->RE_chart), GTK_WINDOW(data->window), NULL, name);
+	}
 
 }
 
 
 /* ======================== */
+
+
+static gchar *
+repbalance_compute_title(gint intvl)
+{
+gchar *title;
+
+	//TRANSLATORS: example 'Balance by Month'
+	title = g_strdup_printf(_("Balance by %s"), hbtk_get_label(CYA_REPORT_INTVL, intvl) );
+	return title;
+}
+
 
 
 static void repbalance_date_change(GtkWidget *widget, gpointer user_data)
@@ -231,7 +268,8 @@ gint page;
 	//gtk_action_set_sensitive(action, sensitive);
 
 	visible = page == 0 ? FALSE : TRUE;
-	hb_widget_visible (data->BT_print, visible);
+	//5.7
+	//hb_widget_visible (data->BT_print, visible);
 	hb_widget_visible(data->LB_zoomx, visible);
 	hb_widget_visible(data->RG_zoomx, visible);
 
@@ -742,9 +780,10 @@ gint usrnbacc;
 	gtk_tree_view_columns_autosize (GTK_TREE_VIEW(data->LV_report));
 
 	/* update bar chart */
-	gtk_chart_set_datas_total(GTK_CHART(data->RE_chart), model, LST_OVER_BALANCE, LST_OVER_BALANCE, NULL, NULL);
+	gchar *title = repbalance_compute_title(tmpintvl); 
+	gtk_chart_set_datas_total(GTK_CHART(data->RE_chart), model, LST_OVER_BALANCE, LST_OVER_BALANCE, title, NULL);
 	//gtk_chart_set_line_datas(GTK_CHART(data->RE_chart), model, LST_OVER_BALANCE, LST_OVER_DATE);
-
+	g_free(title);
 
 end:
 	g_free(data->tmp_expense);
@@ -818,7 +857,7 @@ static void repbalance_window_setup(struct repbalance_data *data, guint32 accnum
 
 	DB( g_print(" populate\n") );
 	
-	ui_acc_listview_populate(data->LV_acc, ACC_LST_INSERT_REPORT);
+	ui_acc_listview_populate(data->LV_acc, ACC_LST_INSERT_REPORT, NULL);
 
 	DB( g_print(" set widgets default\n") );
 
@@ -945,7 +984,6 @@ static void repbalance_window_acquire(struct repbalance_data *data)
 	data->ope_list = NULL;
 	data->filter = da_flt_malloc();
 	data->detail = 0;
-	
 }
 
 
@@ -954,7 +992,7 @@ GtkWidget *repbalance_window_new(gint accnum)
 {
 struct repbalance_data *data;
 struct WinGeometry *wg;
-GtkWidget *window, *mainvbox, *hbox, *vbox, *notebook, *sw;
+GtkWidget *window, *mainvbox, *hbox, *vbox, *notebook, *scrollwin;
 GtkWidget *label, *widget, *table, *treebox, *treeview;
 gint row;
 
@@ -985,7 +1023,7 @@ gint row;
 
 	//window contents
 	mainvbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	gtk_container_add (GTK_CONTAINER (window), mainvbox);
+	gtk_window_set_child(GTK_WINDOW(window), mainvbox);
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_box_pack_start (GTK_BOX (mainvbox), hbox, TRUE, TRUE, 0);
@@ -995,7 +1033,7 @@ gint row;
 	gtk_widget_set_hexpand (GTK_WIDGET(table), FALSE);
 	gtk_box_pack_start (GTK_BOX (hbox), table, FALSE, FALSE, 0);
 
-	gtk_container_set_border_width (GTK_CONTAINER (table), SPACING_SMALL);
+	hb_widget_set_margin(GTK_WIDGET(table), SPACING_SMALL);
 	gtk_grid_set_row_spacing (GTK_GRID (table), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (table), SPACING_MEDIUM);
 
@@ -1096,17 +1134,17 @@ gint row;
 
 
 	row++;
- 	sw = gtk_scrolled_window_new(NULL,NULL);
- 	data->SW_acc = sw;
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(sw), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sw), GTK_SHADOW_ETCHED_IN);
-	gtk_widget_set_margin_bottom (sw, SPACING_LARGE);
-	widget = ui_acc_listview_new(TRUE);
-	data->LV_acc = widget;
-	gtk_widget_set_vexpand (widget, TRUE);
-	gtk_widget_set_size_request(data->LV_acc, HB_MINWIDTH_LIST, -1);
-	gtk_container_add(GTK_CONTAINER(sw), data->LV_acc);
-	gtk_grid_attach (GTK_GRID (table), sw, 1, row, 2, 1);
+ 	scrollwin = gtk_scrolled_window_new(NULL,NULL);
+ 	data->SW_acc = scrollwin;
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
+	gtk_widget_set_margin_bottom (scrollwin, SPACING_LARGE);
+	treeview = ui_acc_listview_new(TRUE);
+	data->LV_acc = treeview;
+	gtk_widget_set_vexpand (treeview, TRUE);
+	gtk_widget_set_size_request(treeview, HB_MINWIDTH_LIST, -1);
+	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
+	gtk_grid_attach (GTK_GRID (table), scrollwin, 1, row, 2, 1);
 
 
 	//part: info + report
@@ -1122,7 +1160,7 @@ gint row;
 	
 	//infos
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
-	gtk_container_set_border_width (GTK_CONTAINER(hbox), SPACING_SMALL);
+	hb_widget_set_margin(GTK_WIDGET(hbox), SPACING_SMALL);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
 	widget = make_label(NULL, 0.5, 0.5);
@@ -1147,27 +1185,27 @@ gint row;
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, NULL);
 
-	widget = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (widget), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (widget), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	scrollwin = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
 	treeview = lst_repbal_create();
 	data->LV_report = treeview;
-	gtk_container_add (GTK_CONTAINER(widget), treeview);
+	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
 	//gtk_notebook_append_page(GTK_NOTEBOOK(notebook), widget, NULL);
-	gtk_box_pack_start (GTK_BOX (vbox), widget, TRUE, TRUE, 0);
+	gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
 
 	//detail
-	widget = gtk_scrolled_window_new (NULL, NULL);
-	data->GR_detail = widget;
-	//gtk_scrolled_window_set_placement(GTK_SCROLLED_WINDOW (widget), GTK_CORNER_TOP_RIGHT);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (widget), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (widget), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	scrollwin = gtk_scrolled_window_new (NULL, NULL);
+	data->GR_detail = scrollwin;
+	//gtk_scrolled_window_set_placement(GTK_SCROLLED_WINDOW (scrollwin), GTK_CORNER_TOP_RIGHT);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	treeview = create_list_transaction(LIST_TXN_TYPE_DETAIL, PREFS->lst_det_columns);
 	data->LV_detail = treeview;
-	gtk_container_add (GTK_CONTAINER(widget), treeview);
+	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
 
-    gtk_box_pack_start (GTK_BOX (vbox), widget, TRUE, TRUE, 0);
+    gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
 
 	list_txn_set_save_column_width(GTK_TREE_VIEW(treeview), TRUE);
 
@@ -1208,6 +1246,72 @@ gint row;
 /*
 ** ============================================================================
 */
+
+static GString *lst_repbal_to_string(GtkTreeView *treeview, gchar *title, gboolean isclipboard)
+{
+GString *node;
+GtkTreeModel *model;
+GtkTreeIter	iter;
+gboolean valid;
+char strbuf[G_ASCII_DTOSTR_BUF_SIZE];
+gchar sep;
+
+	node = g_string_new(NULL);
+
+	sep = (isclipboard == TRUE) ? '\t' : ';';
+	
+	// header
+	g_string_append (node, _("Date") );	
+	g_string_append_c (node, sep );
+	g_string_append (node, _("Expense") );	
+	g_string_append_c (node, sep );
+	g_string_append (node, _("Income") );	
+	g_string_append_c (node, sep );
+	g_string_append (node, _("Balance") );
+
+	g_string_append (node, "\n" );
+	
+	// lines
+
+	model = gtk_tree_view_get_model(treeview);
+	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
+	while (valid)
+	{
+	gchar *intvlname;
+	gdouble expense, income, balance;
+
+		gtk_tree_model_get (model, &iter,
+			LST_OVER_DATESTR, &intvlname,
+			LST_OVER_EXPENSE, &expense,
+			LST_OVER_INCOME , &income,
+			LST_OVER_BALANCE, &balance,
+			-1);
+
+		g_string_append (node, intvlname );	
+		g_string_append_c (node, sep );
+
+		g_snprintf(strbuf, sizeof (strbuf), "%.2f", expense);
+		g_string_append (node, strbuf );
+		g_string_append_c (node, sep );
+		
+		g_snprintf(strbuf, sizeof (strbuf), "%.2f", income);
+		g_string_append (node, strbuf );
+		g_string_append_c (node, sep );
+
+		g_snprintf(strbuf, sizeof (strbuf), "%.2f", balance);
+		g_string_append (node, strbuf );
+
+		g_string_append (node, "\n" );
+		//leak
+		g_free(intvlname);
+
+		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
+	}
+
+	//DB( g_print("text is:\n%s", node->str) );
+
+	return node;
+}
 
 
 static void lst_repbal_cell_data_function_date (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)

@@ -73,9 +73,9 @@ enum
 //sort for various glist
 enum
 {
-	HB_GLIST_SORT_KEY,
-	HB_GLIST_SORT_NAME,
-	HB_GLIST_SORT_POS
+	HB_GLIST_SORT_KEY,	//0
+	HB_GLIST_SORT_NAME,	//1
+	HB_GLIST_SORT_POS	//2
 };
 
 

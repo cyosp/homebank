@@ -104,7 +104,9 @@ enum
 	FLT_SCHEDULED_NEXT30DAYS,
 	FLT_SCHEDULED_NEXT60DAYS,
 	FLT_SCHEDULED_NEXT90DAYS,
-	FLT_SCHEDULED_ALLDATE
+	FLT_SCHEDULED_ALLDATE,
+	//added 5.7
+	FLT_SCHEDULED_MAXPOSTDATE
 };
 
 
@@ -133,6 +135,7 @@ GList *da_archive_glist_sorted(gint column);
 
 
 void scheduled_nextdate_weekend_adjust(Archive *arc);
+guint32 scheduled_date_get_next_post(GDate *tmpdate, Archive *arc, guint32 nextdate);
 gboolean scheduled_is_postable(Archive *arc);
 guint32 scheduled_get_postdate(Archive *arc, guint32 postdate);
 guint32 scheduled_get_latepost_count(Archive *arc, guint32 jrefdate);

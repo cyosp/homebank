@@ -20,6 +20,13 @@
 #ifndef __HB_ACCOUNT_GTK_H__
 #define __HB_ACCOUNT_GTK_H__
 
+
+enum {
+	LST_DEFACC_SORT_POS = 1,
+	LST_DEFACC_SORT_NAME
+};
+
+
 enum
 {
 	LST_DEFACC_TOGGLE,
@@ -70,8 +77,10 @@ struct ui_acc_manage_data
 	GtkWidget	*dialog;
 	gboolean	mapped_done;
 
+	GtkWidget	*ST_search;
 	GtkWidget	*LV_acc;
 	GtkWidget	*BT_add, *BT_edit, *BT_rem;
+	GtkWidget	*BT_up, *BT_down;
 
 	GtkWidget   *notebook;
 
@@ -80,6 +89,7 @@ struct ui_acc_manage_data
 	GtkWidget	*ST_institution;
 	GtkWidget	*ST_number;
 	GtkWidget	*ST_group;
+	GtkWidget	*ST_website;
 	GtkWidget	*TB_notes;
 	GtkWidget	*CM_closed;
 
@@ -136,7 +146,7 @@ void ui_acc_listview_set_active(GtkTreeView *treeview, guint32 key);
 void ui_acc_listview_add(GtkTreeView *treeview, Account *item);
 guint32 ui_acc_listview_get_selected_key(GtkTreeView *treeview);
 void ui_acc_listview_remove_selected(GtkTreeView *treeview);
-void ui_acc_listview_populate(GtkWidget *view, gint insert_type);
+void ui_acc_listview_populate(GtkWidget *view, gint insert_type, gchar *needle);
 GtkWidget *ui_acc_listview_new(gboolean withtoggle);
 
 #endif

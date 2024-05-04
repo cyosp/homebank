@@ -96,7 +96,7 @@ gint retval;
 	
 	retval = gtk_dialog_run (GTK_DIALOG (dialog));
 
-	gtk_widget_destroy (dialog);
+	gtk_window_destroy (GTK_WINDOW(dialog));
 
 	return retval;
 }
@@ -139,7 +139,7 @@ gint retval;
 	
 	retval = gtk_dialog_run (GTK_DIALOG (dialog));
 
-	gtk_widget_destroy (dialog);
+	gtk_window_destroy (GTK_WINDOW(dialog));
 
 	return retval;
 }
@@ -174,7 +174,7 @@ va_list args;
     }
 
 	 gtk_dialog_run (GTK_DIALOG (dialog));
-	 gtk_widget_destroy (dialog);
+	 gtk_window_destroy (GTK_WINDOW(dialog));
 }
 
 
@@ -200,7 +200,7 @@ gint row, count, count2;
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG (dialog));
 
 	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
-	gtk_container_set_border_width (GTK_CONTAINER(box), SPACING_LARGE);
+	hb_widget_set_margin(GTK_WIDGET(box), SPACING_LARGE);
 	gtk_box_pack_start (GTK_BOX (content_area), box, FALSE, FALSE, 0);
 
 	// group :: file title
@@ -312,7 +312,7 @@ gint row, count, count2;
 	}
 
 	// cleanup and destroy
-	gtk_widget_destroy (dialog);
+	gtk_window_destroy (GTK_WINDOW(dialog));
 
 }
 
@@ -397,7 +397,7 @@ gint crow, row;
 	content_grid = gtk_grid_new();
 	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
 	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
-	gtk_container_set_border_width (GTK_CONTAINER(content_grid), SPACING_MEDIUM);
+	hb_widget_set_margin(GTK_WIDGET(content_grid), SPACING_MEDIUM);
 	gtk_box_pack_start (GTK_BOX (content_area), content_grid, TRUE, TRUE, 0);
 
 	crow = 0;
@@ -463,7 +463,7 @@ gint crow, row;
 	g_list_free(list);
 	
 	// cleanup and destroy
-	gtk_widget_destroy (dialog);
+	gtk_window_destroy (GTK_WINDOW(dialog));
 
 	g_free(data);
 
@@ -520,7 +520,7 @@ gboolean retval;
 		retval = TRUE;
 	}
 
-	gtk_widget_destroy (chooser);
+	gtk_window_destroy (GTK_WINDOW(chooser));
 
 	return retval;
 }
@@ -585,7 +585,7 @@ gchar *path;
 		retval = TRUE;
 	}
 
-	gtk_widget_destroy (chooser);
+	gtk_window_destroy (GTK_WINDOW(chooser));
 
 	return retval;
 }
@@ -666,7 +666,7 @@ gboolean retval;
 		retval = TRUE;
 	}
 
-	gtk_widget_destroy (chooser);
+	gtk_window_destroy (GTK_WINDOW(chooser));
 
 	return retval;
 }
@@ -713,7 +713,7 @@ gboolean retval;
 		retval = TRUE;
 	}
 
-	gtk_widget_destroy (chooser);
+	gtk_window_destroy (GTK_WINDOW(chooser));
 
 	return retval;
 }
@@ -759,7 +759,7 @@ GtkWidget *dialog;
 		gtk_dialog_set_default_response(GTK_DIALOG( dialog ), 2);
 
 		result = gtk_dialog_run( GTK_DIALOG( dialog ) );
-		gtk_widget_destroy( dialog );
+		gtk_window_destroy (GTK_WINDOW(dialog));
 
 		if(result == 1 || result == GTK_RESPONSE_DELETE_EVENT)
 		{
@@ -837,7 +837,7 @@ gint crow, row;
 	content_grid = gtk_grid_new();
 	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
 	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
-	gtk_container_set_border_width (GTK_CONTAINER(content_grid), SPACING_MEDIUM);
+	hb_widget_set_margin(GTK_WIDGET(content_grid), SPACING_MEDIUM);
 	gtk_box_pack_start (GTK_BOX (content_area), content_grid, TRUE, TRUE, 0);
 
 	crow = 0;
@@ -936,7 +936,7 @@ gint crow, row;
 	}
 
 	// cleanup and destroy
-	gtk_widget_destroy (dialog);
+	gtk_window_destroy (GTK_WINDOW(dialog));
 
 	g_free(data);
 	
@@ -965,7 +965,7 @@ gint crow, row;
 	content_grid = gtk_grid_new();
 	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
 	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
-	gtk_container_set_border_width (GTK_CONTAINER(content_grid), SPACING_MEDIUM);
+	hb_widget_set_margin(GTK_WIDGET(content_grid), SPACING_MEDIUM);
 	gtk_box_pack_start (GTK_BOX (content_area), content_grid, TRUE, TRUE, 0);
 
 	crow = 0;
@@ -1039,7 +1039,7 @@ gint crow, row;
 	}
 
 	// cleanup and destroy
-	gtk_widget_destroy (dialog);
+	gtk_window_destroy (GTK_WINDOW(dialog));
 
 	return result;
 }
@@ -1108,7 +1108,7 @@ static void ui_dialog_transaction_xfer_select_child_selection_cb(GtkTreeSelectio
 gint ui_dialog_transaction_xfer_select_child(GtkWindow *parent, Transaction *stxn, GList *matchlist, Transaction **child)
 {
 struct xfer_data *data;
-GtkWidget *dialog, *content, *mainvbox, *sw, *label;
+GtkWidget *dialog, *content, *mainvbox, *scrollwin, *label;
 GtkTreeModel *newmodel;
 GtkTreeIter newiter;
 
@@ -1150,22 +1150,22 @@ GtkTreeIter newiter;
 
 	mainvbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, SPACING_SMALL);
 	gtk_box_pack_start (GTK_BOX (content), mainvbox, TRUE, TRUE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (mainvbox), SPACING_LARGE);
+	hb_widget_set_margin(GTK_WIDGET(mainvbox), SPACING_LARGE);
 
 	label = make_label_group(_("Source transfer"));
 	gtk_box_pack_start (GTK_BOX (mainvbox), label, FALSE, FALSE, 0);
 
 	// source listview
-	sw = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sw), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	scrollwin = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 //	gtk_widget_set_size_request(sw, -1, HB_MINWIDTH_LIST/2);
-	gtk_widget_set_margin_left(sw, SPACING_MEDIUM);
-	gtk_box_pack_start (GTK_BOX (mainvbox), sw, FALSE, FALSE, 0);
+	gtk_widget_set_margin_left(scrollwin, SPACING_MEDIUM);
+	gtk_box_pack_start (GTK_BOX (mainvbox), scrollwin, FALSE, FALSE, 0);
 
 	data->srctreeview = create_list_transaction(LIST_TXN_TYPE_XFERSOURCE, lst_xfer_columns);
 	gtk_tree_selection_set_mode(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->srctreeview)), GTK_SELECTION_NONE);
-	gtk_container_add (GTK_CONTAINER (sw), data->srctreeview);
+	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), data->srctreeview);
 
 
 	// target listview
@@ -1184,16 +1184,16 @@ GtkTreeIter newiter;
                              -1);*/
 	gtk_box_pack_start (GTK_BOX (mainvbox), label, FALSE, FALSE, 0);
 
-	sw = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sw), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_widget_set_size_request(sw, -1, HB_MINWIDTH_LIST*1.5);
-	gtk_widget_set_margin_left(sw, SPACING_MEDIUM);
-	gtk_box_pack_start (GTK_BOX (mainvbox), sw, TRUE, TRUE, 0);
+	scrollwin = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_widget_set_size_request(scrollwin, -1, HB_MINWIDTH_LIST*1.5);
+	gtk_widget_set_margin_left(scrollwin, SPACING_MEDIUM);
+	gtk_box_pack_start (GTK_BOX (mainvbox), scrollwin, TRUE, TRUE, 0);
 
 	data->treeview = create_list_transaction(LIST_TXN_TYPE_XFERTARGET, lst_xfer_columns);
 	gtk_tree_selection_set_mode(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->treeview)), GTK_SELECTION_SINGLE);
-	gtk_container_add (GTK_CONTAINER (sw), data->treeview);
+	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), data->treeview);
 
 	DB( g_print(" populate src\n") );
 
@@ -1275,7 +1275,7 @@ GtkTreeIter newiter;
 
 	
 	// cleanup and destroy
-	gtk_widget_destroy (dialog);
+	gtk_window_destroy (GTK_WINDOW(dialog));
 
 	g_free(data);
 	

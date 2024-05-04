@@ -37,7 +37,9 @@
 extern struct HomeBank *GLOBALS;
 extern struct Preferences *PREFS;
 
+
 /* = = = = = = = = = = = = = = = = = = = = */
+
 
 static void hb_export_qif_elt_txn(GIOChannel *io, Account *acc, gboolean allxfer)
 {
@@ -228,7 +230,7 @@ GList *lacc, *list;
 	{
 		//5.5.1 save accounts in order
 		//lacc = list = g_hash_table_get_values(GLOBALS->h_acc);
-		lacc = list = account_glist_sorted(0);
+		lacc = list = account_glist_sorted(HB_GLIST_SORT_KEY);
 		while (list != NULL)
 		{
 		Account *item = list->data;
@@ -246,96 +248,9 @@ GList *lacc, *list;
 }
 
 
-/* = = = = = = = = beta feature version = = = = = = = = */
-
-//static GtkPrintSettings *settings = NULL;
-//static GtkPageSetup *page_setup = NULL;
-
-
-static void papersize(PdfPrintContext *ppc)
-{
-//GList *list, *item;
-const gchar *name;
-GtkPaperSize *ps;
-
-	DB( g_print("[papersize]\n") );
-	
-	name = gtk_paper_size_get_default();
-
-	DB( g_print("- def paper is %s\n", name) );
-	
-	ps = gtk_paper_size_new(name);
-
-
-
-  /*GtkPageSetup *new_page_setup;
-
-  if (settings == NULL)
-    settings = gtk_print_settings_new ();
-
-  new_page_setup = gtk_print_run_page_setup_dialog (NULL,
-                                                    page_setup, settings);
-
-  if (page_setup)
-    g_object_unref (page_setup);
-
-  page_setup = new_page_setup;
-*/
-
-//#if MYDEBUG == 1
-	gdouble w, h, mt, mb, ml, mr;
-	w = gtk_paper_size_get_width(ps, GTK_UNIT_MM);
-	h = gtk_paper_size_get_height(ps, GTK_UNIT_MM);
-	mt = gtk_paper_size_get_default_top_margin(ps, GTK_UNIT_MM);
-	mr = gtk_paper_size_get_default_right_margin(ps, GTK_UNIT_MM);
-	mb = gtk_paper_size_get_default_bottom_margin(ps, GTK_UNIT_MM);
-	ml = gtk_paper_size_get_default_left_margin(ps, GTK_UNIT_MM);
-	
-	DB( g_print("- name: %s\n", gtk_paper_size_get_display_name(ps)) );
-	DB( g_print("- w: %f (%f)\n- h: %f (%f)\n", w, w/PANGO_SCALE, h, h/PANGO_SCALE) );
-	DB( g_print("- margin: %f %f %f %f\n", mt, mr, mb, ml) );
-
-	ppc->w = w * 2.83;
-	ppc->h = h * 2.83;
-	ppc->mt = mt * 2.83;
-	ppc->mr = mr * 2.83;
-	ppc->mb = mb * 2.83;
-	ppc->ml = ml * 2.83;
-
-//#endif
-
-	gtk_paper_size_free(ps);
-
-	/* list all paper size */
-	/*
-	list = gtk_paper_size_get_paper_sizes (FALSE);
-	item = g_list_first(list);
-	while(item != NULL)
-	{
-		ps = item->data;
-		if(ps != NULL)
-		{
-			g_print("- name: %s\n", gtk_paper_size_get_display_name(ps));
-			gtk_paper_size_free(ps);
-		}
-		item = g_list_next(item);
-	}
-	g_list_free (list);
-	*/
-}
-
-
-#define FONT "Helvetica 9px"
-
-//#define PDF_MARGIN 24
-#define PDF_COL_MARGIN 8
-#define PDF_LINE_MARGIN 2
-#define PDF_FONT_NORMAL 9
-#define PDF_FONT_TITLE 12
-
+/* = = = = = = = = = = = = = = = = = = = = */
 
 #define HELPDRAW 0
-#define RULEHINT 1
 
 #define HEX_R(xcol) (((xcol>>24) & 0xFF)/255)
 #define HEX_G(xcol) (((xcol>>16) & 0xFF)/255)
@@ -357,384 +272,465 @@ static void hb_pdf_draw_help_rect(cairo_t *cr, gint32 xcol, double x, double y, 
 #endif
 
 
+// references
+// https://www.blurb.com/blog/choosing-a-font-for-print-6-things-you-should-know/
+// https://plumgroveinc.com/choosing-a-font-for-print-2/
 
+#define		HB_PRINT_FONT_HEAD_POINT 5
+#define		HB_PRINT_SPACING 6
 
-static void hb_pdf_draw_line(PdfPrintContext *ppc, cairo_t *cr, gdouble y, gboolean bold, gboolean rulehint)
+typedef struct
 {
-PangoLayout *layout;
-gint i;
-gdouble x;
+	gdouble	font_size;
 
-	/* Create a PangoLayout, set the font and text */
-	layout = pango_cairo_create_layout (cr);
+	gchar	*tabtext;
+	gchar	*title;
+	gchar	**lines;
 
-	//desc = pango_font_description_from_string (FONT);
-	if(bold)
-		pango_font_description_set_weight(ppc->desc, PANGO_WEIGHT_BOLD);
-	else
-		pango_font_description_set_weight(ppc->desc, PANGO_WEIGHT_NORMAL);
+	gint	header_height;
 
-	pango_layout_set_font_description (layout, ppc->desc);
-
+	gint	numpagerow;
+	gint	numpagecol;
+	gint	num_columns;
 	
-	x = ppc->ml;
+	gint	*col_width;
+	gint8	*col_align;		//0 if right, 1 if left
+	gint8	*leftcols;		//-1 terminated index of col left aligned
 
-	/* rule hint */
-	#if RULEHINT == 1
-	if( rulehint )
+	gint	lines_per_page;
+	gint	num_lines;
+	gint	num_pages;
+} PrintData;
+
+
+static gint 
+hb_print_listview_get_idx_for_pagecol(PrintData *data, gint width, gint pagecol)
+{
+gint col, currw, numbreak;
+
+	//DB( g_print(" get col for pagerow %d\n", pagecol) );
+
+	currw = width;
+	numbreak = 1;
+	for(col=0 ; col < data->num_columns ; col++)
 	{
-		cairo_set_source_rgb(cr, 0.9, 0.9, 0.9);
-		cairo_rectangle (cr, x, y, ppc->w - ppc->ml - ppc->mr, PDF_FONT_NORMAL);
-		cairo_fill(cr);
-	}
-	#endif
+		//DB( g_print(" ++ col=%d, curw=%d width=%d, numbrk=%d\n", col, currw, width, numbreak) );
+		if( numbreak >= pagecol )
+			break;
 
-
-	cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
-	cairo_move_to(cr, x, y);
-
-	for(i=0;i<PDF_NUMCOL;i++)
-	{
-		if(ppc->column_txt[i] != NULL)
+		currw -= data->col_width[col];
+		// new page column ?
+		if( currw < data->col_width[col] )
 		{
-		int width, height;
+			//DB( g_print(" ++ --break--\n") );
+			numbreak++;
+			currw = width;
+		}
+	}
 
-			pango_layout_set_text (layout, ppc->column_txt[i], -1);
-			pango_layout_get_size (layout, &width, &height);
-			if( i==1 || i==2 || i==3 )
+	//DB( g_print(" return %d\n", col) );
+	return col;
+}
+
+
+static void
+hb_print_listview_end_print (GtkPrintOperation *operation, GtkPrintContext *context, gpointer user_data)
+{
+PrintData *data = (PrintData *)user_data;
+
+	g_free(data->col_width);
+	g_free(data->col_align);
+	g_strfreev (data->lines);
+	g_free (data);
+}
+
+
+static void
+hb_print_listview_begin_print (GtkPrintOperation *operation, GtkPrintContext *context, gpointer user_data)
+{
+PrintData *data = (PrintData *)user_data;
+int i, j, count;
+double width, height;
+gchar **columns;
+PangoLayout *layout;
+PangoFontDescription *desc;
+gint text_width, text_height, line_height;
+
+	width  = gtk_print_context_get_width (context);
+	height = gtk_print_context_get_height (context);
+
+	line_height = data->font_size + 3;
+
+	layout = gtk_print_context_create_pango_layout (context);
+	desc = pango_font_description_from_string ("Helvetica");
+
+	//compute header height
+	pango_font_description_set_size (desc, (data->font_size + HB_PRINT_FONT_HEAD_POINT) * PANGO_SCALE);
+	pango_font_description_set_weight (desc, PANGO_WEIGHT_BOLD);
+
+	pango_layout_set_text (layout, data->title, -1);
+	pango_layout_get_pixel_size (layout, &text_width, &text_height);
+	
+	//1 line space + column title + spacer
+	data->header_height = text_height + (data->font_size * 2);
+
+	height -= data->header_height + (2 * HB_PRINT_SPACING);
+
+	data->lines = g_strsplit (data->tabtext, "\n", 0);
+
+	//todo: test if line > 1
+
+	//get number of column from title
+	columns = g_strsplit (data->lines[0], "\t", 0);
+	data->num_columns = g_strv_length(columns);
+	//debug
+	/*for(i=0;i<data->num_columns;i++)
+	{
+		DB( g_print(" %02d: %s\n", i, columns[i]) );
+	}*/	
+	
+	g_strfreev (columns);
+
+	//alloc memory
+	data->col_width = g_malloc0 (sizeof(gint)*(data->num_columns + 1));
+	data->col_align = g_malloc0 (sizeof(gint8)*(data->num_columns + 1));
+
+
+	pango_font_description_set_size (desc, data->font_size * PANGO_SCALE);
+	pango_layout_set_font_description (layout, desc);
+	pango_font_description_free (desc);
+
+	i = 0;
+	count = 0;
+	while (data->lines[i] != NULL)
+	{
+		DB( g_print(" print line %03d: '%s'\n", i, data->lines[i]) );
+
+		//skip empty lines
+		if( strlen(data->lines[i]) > 1 )
+		{
+			columns = g_strsplit (data->lines[i], "\t", 0);
+			j = 0;
+			while (columns[j] != NULL)
 			{
-				pango_layout_set_width(layout, ppc->column_width[i]*PANGO_SCALE);
-				pango_layout_set_ellipsize (layout, PANGO_ELLIPSIZE_END);
+				pango_layout_set_text (layout, columns[j], -1);
+				pango_layout_get_pixel_size (layout, &text_width, &text_height);
+
+				//DB( g_print("  %d : '%s' %d %d\n", j, columns[j], text_width, text_width / PANGO_SCALE ) );
+
+				//add a width
+				text_width += HB_PRINT_SPACING;
+
+				data->col_width[j] = MAX(data->col_width[j], text_width);
+				j++;
 			}
+			g_strfreev (columns);
+			count++;
+		}
+		else
+		{
+			DB( g_print(" skipped\n") );
+		}
+		i++;
+	}
+	
+	g_object_unref (layout);
 
-			//cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
+
+	data->num_lines = count;
+	DB( g_print(" num_lines: %d\n", data->num_lines) );
+
+	data->lines_per_page = floor (height / line_height);
+	DB( g_print(" lines_per_page: %d\n", data->lines_per_page) );
+	
+	data->numpagerow = (data->num_lines - 1) / data->lines_per_page + 1;
+	DB( g_print(" numpagerow: %d\n", data->numpagerow) );
+
+	DB( g_print(" num_colums: %d\n", data->num_columns) );
+
+	//todo: detect/remove empty columns
+
+	gint currw = width;
+	data->numpagecol = 1;
+	for(i=0;i<data->num_columns;i++)
+	{
+		currw -= data->col_width[i];
+		DB( g_print(" colw[%d]=%d, currw=%d\n", i, data->col_width[i], currw) );
+
+		// new page column ?
+		if( currw < data->col_width[i] ) 
+		{
+			DB( g_print(" --break--\n") );
+			data->numpagecol++;
+			currw = width;
+		}
+	}
+
+	//column 0 is left by default
+	data->col_align[0] = 1;
+	//affect left align columns
+	if( data->leftcols != NULL )
+	{
+		for(i=0;i<10;i++)
+		{
+		gint index = data->leftcols[i];
+		
+			if( index == -1 )
+				break;
+			data->col_align[index] = 1;
+			DB( g_print(" column %d i left align\n", index) );
+		}
+	}
+
+	DB( g_print(" numpagecol: %d\n", data->numpagecol) );
+
+	data->num_pages = data->numpagerow * data->numpagecol;
+	DB( g_print(" num_pages:%d\n", data->num_pages) );
+
+
+
+	gtk_print_operation_set_n_pages (operation, data->num_pages);
+}
+
+
+static void hb_print_listview_draw_line(PrintData *data, gchar *line, gint firstcol, gint lastcol, gint y, cairo_t *cr, PangoLayout *layout)
+{
+gchar **columns;
+gint text_width, text_height;
+gint j, x;
+
+	columns = g_strsplit (line, "\t", 0);
+	x = 0;
+	
+	//for(j=0;j<data->num_columns;j++)
+	for(j=firstcol ; j<lastcol ; j++)
+	{
+		//DB( g_print(" +%03d:%03d '%s'\n", line, j, columns[j]) );
+		if( columns[j] != NULL )
+		{		
+			//DB( g_print(" print r%d:c%d '%s'\n", i, j, columns[j]) );
+			pango_layout_set_text (layout, columns[j], -1);
 			
-			if( i==0 || i==4 || i==6 ) // pad right: date/amount/balance
+			//do align: 0=right, 1=left
+			if( data->col_align[j] == 0 )
 			{
-				//if(*ppc->column_txt[i] != '-')
-				   //cairo_set_source_rgba(cr, 0.0, 0.0, 0.0, 0.66); //grey
-				cairo_move_to(cr, x + ppc->column_width[i] - (width/PANGO_SCALE) , y);
+				pango_layout_get_pixel_size (layout, &text_width, &text_height);
+				cairo_move_to(cr, x + data->col_width[j] - text_width, y);
 			}
 			else
 				cairo_move_to(cr, x, y);
-			
-			pango_cairo_show_layout (cr, layout);
 
-			/* test line */
-			/*cairo_set_line_width(cr, 1.0);
-			cairo_move_to(cr, x, y + .5);
-			cairo_line_to(cr, x + ppc->column_width[i], y+.5);
-			cairo_stroke(cr);
-			*/
-			
+			pango_cairo_show_layout (cr, layout);
+			x += data->col_width[j];
 		}
-		x += ppc->column_width[i] + PDF_COL_MARGIN;
+		else
+			g_warning(" null print column %d", j);
 	}
 
-	g_object_unref (layout);	
-
+	g_strfreev (columns);
 }
 
 
-static void hb_pdf_set_col_title(PdfPrintContext *ppc)
-{
-	ppc->column_txt[0] = _("Date");
-	ppc->column_txt[1] = _("Info");
-	ppc->column_txt[2] = _("Payee");
-	ppc->column_txt[3] = _("Memo");
-	ppc->column_txt[4] = _("Amount");
-	ppc->column_txt[5] = "C";
-	ppc->column_txt[6] = _("Balance");
-}			
 
-
-void hb_export_pdf_listview(GtkTreeView *treeview, gchar *filepath, gchar *accname)
+//print is done from left to righ
+//page 1&2 will be the first colum to fit, then page 3&4 the other columns
+static void
+hb_print_listview_draw_page (GtkPrintOperation *operation, GtkPrintContext *context, gint page_nr, gpointer user_data)
 {
-cairo_surface_t *surf;
+PrintData *data = (PrintData *)user_data;
 cairo_t *cr;
-PdfPrintContext ppc;
-PangoFontDescription *desc;
 PangoLayout *layout;
-GtkTreeModel *model;
-GtkTreeIter	iter;
-gboolean valid;
-gint i, col;
+gint text_width, text_height;
+gdouble width, height;
+gint line, i, y;
+gint pagecol;
+PangoFontDescription *desc;
+gchar *page_str;
+GDate date;
+gchar buffer[256];
+double tmpval;
 
-	
-	DB( g_print("[gtk-chart] export to pdf\n") );
-
-	model = gtk_tree_view_get_model(treeview);
-	
-	papersize(&ppc);
-
-	//gchar *filename = "/home/max/Desktop/hb-txn-export.pdf";
-	double width;	//=210 * 2.83;
-	double height;	//=297 * 2.83;
-	
-	width  = ppc.w;
-	height = ppc.h;
-
-	surf = cairo_pdf_surface_create (filepath, width, height);
-	
-	if( cairo_surface_status(surf) != CAIRO_STATUS_SUCCESS )
-	//todo: manage error later on
-		return;
-
-	
-	cr = cairo_create (surf);
-	//cairo_pdf_surface_set_size(surf, width * 2.83, height * 2.83);
-
-	//g_print("width=%d\n", cairo_image_surface_get_width( surf));
-	double x1, x2, y1, y2;
-	cairo_clip_extents (cr, &x1, &y1, &x2, &y2);
-
-	DB( g_print("surface w=%f, h=%f\n", x2 - x1, y2 - y1) );
-	double pwidth = x2 - x1;
-	
-	
-	/* Create a PangoLayout, set the font and text */
-	layout = pango_cairo_create_layout (cr);
-
-	/* get and copy the font from the treeview widget */
-	gtk_style_context_get(gtk_widget_get_style_context(GTK_WIDGET(treeview)), GTK_STATE_FLAG_NORMAL, "font", &desc, NULL);
-	ppc.desc = pango_font_description_copy(desc);
-
-	DB( g_print("family: %s\n", pango_font_description_get_family(desc)) );
-	DB( g_print("size: %d (%d)\n", pango_font_description_get_size (desc), pango_font_description_get_size (desc )/PANGO_SCALE) );
-
-
-	
-	/* header is 1 line for date page number at top, then a title in bold, then 2 empty lines */
-	gint header_height = PDF_FONT_NORMAL * 2 + PDF_FONT_TITLE;
-	gint nb_lines = gtk_tree_model_iter_n_children(model, NULL);
-
-	/* should include here the headertitle line */
-	
-	gint lpp = floor ((height-header_height-ppc.mt-ppc.mb) / (PDF_FONT_NORMAL + PDF_LINE_MARGIN));
-	gint page, num_pages = (nb_lines - 1) / lpp + 1;
-
-	DB( g_print("\n - should pdf %d lines, lpp=%d, num_pages=%d\n", nb_lines, lpp, num_pages) );
-
-
-	gint tot_lines = 0;
-	gint cur_page_line = 1;
-
-	gchar dbuffer[255];
-	gchar amtbuf[G_ASCII_DTOSTR_BUF_SIZE];
-	gchar balbuf[G_ASCII_DTOSTR_BUF_SIZE];
-
-	GDate *date = g_date_new ();
-
-	//cairo_set_font_size(cr, PDF_FONT_NORMAL);
-	pango_font_description_set_absolute_size(ppc.desc, PDF_FONT_NORMAL * PANGO_SCALE);
-	pango_layout_set_font_description (layout, ppc.desc);
-	
-	/* reset struct */
-	hb_pdf_set_col_title(&ppc);
-	
-	for(col=0;col<PDF_NUMCOL;col++)
-	{
-	int tw, th;
-
-		ppc.column_width[col] = 0;
-		pango_layout_set_text (layout, ppc.column_txt[col], -1);
-		pango_layout_get_size (layout, &tw, &th);
-		ppc.column_width[col] = MAX(ppc.column_width[col], tw / PANGO_SCALE);
-	}
-
-
-	DB( g_print(" - compute width\n") );
-
-	/* first pass to get max width */
-	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
-	while (valid)
-	{
-	Transaction *txn;
-	int tw, th;
-			
-		gtk_tree_model_get (model, &iter, MODEL_TXN_POINTER, &txn, -1);
-
-		i = 0;
-		g_date_set_julian (date, txn->date);
-		g_date_strftime (dbuffer, 255-1, "%x", date);
-		pango_layout_set_text (layout, dbuffer, -1);
-		pango_layout_get_size (layout, &tw, &th);
-		ppc.column_width[i] = MAX(ppc.column_width[i], tw / PANGO_SCALE);
-		
-		i = 1;
-		if(txn->info != NULL && strlen(txn->info) > 0)
-		{
-			pango_layout_set_text (layout, txn->info, -1);
-			pango_layout_get_size (layout, &tw, &th);
-			ppc.column_width[i] = MAX(ppc.column_width[i], tw / PANGO_SCALE);
-		}
-		
-		i = 4;
-		hb_strfmon(amtbuf, G_ASCII_DTOSTR_BUF_SIZE-1, txn->amount, txn->kcur, GLOBALS->minor);
-		pango_layout_set_text (layout, amtbuf, -1);
-		pango_layout_get_size (layout, &tw, &th);
-		ppc.column_width[i] = MAX(ppc.column_width[i], tw / PANGO_SCALE);
-
-		i = 5;
-		pango_layout_set_text (layout, "R", -1);
-		pango_layout_get_size (layout, &tw, &th);
-		ppc.column_width[i] = MAX(ppc.column_width[i], tw / PANGO_SCALE);
-
-		i = 6;
-		hb_strfmon(balbuf, G_ASCII_DTOSTR_BUF_SIZE-1, txn->balance, txn->kcur, GLOBALS->minor);
-		pango_layout_set_text (layout, balbuf, -1);
-		pango_layout_get_size (layout, &tw, &th);
-		ppc.column_width[i] = MAX(ppc.column_width[i], tw / PANGO_SCALE);
-
-		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
-	}
-
-	/* distribute remaining size */
-	gdouble tmp = pwidth - ppc.ml - ppc.mr - (PDF_COL_MARGIN*PDF_NUMCOL);
-
-
-	DB( g_print(" page width=%f, remain width=%f\n", pwidth, tmp) );
-	
-	tmp -= ppc.column_width[0];
-	tmp -= ppc.column_width[4];
-	tmp -= ppc.column_width[5];
-	tmp -= ppc.column_width[6];
-	
-	/* info=1/4 payee=1/4 memo=2/4 */
-	ppc.column_width[1] = tmp / 4;;
-	ppc.column_width[2] = tmp / 4;
-	ppc.column_width[3] = 2*tmp / 4;
-
-	DB( g_print(" page width=%f, remain width=%f\n", width, tmp) );
-	
 	#if MYDEBUG == 1
-	for(i=0;i<PDF_NUMCOL;i++)
-		g_print(" col%d=%g ", i, ppc.column_width[i]);
-
-	g_print("\n");
+	gint pagerow = page_nr%data->numpagerow;
 	#endif
 
-	DB( g_print("\n - start printing\n") );
-	
-	gint y;
-	page = 1;
-	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
-	while (valid)
+	tmpval = (double)(page_nr+1)/(double)data->numpagerow;
+	pagecol = ceil(tmpval);
+
+	DB( g_print("\n-- draw page %d, pagerow=%d pagecol=%d (tmp=%f)\n", page_nr, pagerow, pagecol, tmpval) );
+
+	cr = gtk_print_context_get_cairo_context (context);
+	width  = gtk_print_context_get_width (context);
+	height = gtk_print_context_get_height (context);
+
+	//helpdraw
+	#if HELPDRAW == 1
+	hb_pdf_draw_help_rect(cr, 0x0000FF00, 0, 0, width, 0 + data->header_height);
+	hb_pdf_draw_help_rect(cr, 0x00FFFF00, 0, 0 + data->header_height, width, height - (data->header_height + 9 + (2* HB_PRINT_SPACING)));
+	hb_pdf_draw_help_rect(cr, 0x00FF0000, 0, height - 9 - HB_PRINT_SPACING, width, 9 + HB_PRINT_SPACING);
+	#endif
+
+	/*
+	cairo_rectangle (cr, 0, 0, width, data->header_height);
+
+	cairo_set_source_rgb (cr, 0.8, 0.8, 0.8);
+	cairo_fill_preserve (cr);
+
+	cairo_set_source_rgb (cr, 0, 0, 0);
+	cairo_set_line_width (cr, 1);
+	cairo_stroke (cr);
+	*/
+
+	//header
+	layout = gtk_print_context_create_pango_layout (context);
+
+	desc = pango_font_description_from_string ("Helvetica");
+	pango_font_description_set_size (desc, (data->font_size + HB_PRINT_FONT_HEAD_POINT) * PANGO_SCALE);
+	pango_font_description_set_weight (desc, PANGO_WEIGHT_BOLD);
+	pango_layout_set_font_description (layout, desc);
+	pango_font_description_free (desc);
+
+	pango_layout_set_text (layout, data->title, -1);
+	pango_layout_get_pixel_size (layout, &text_width, &text_height);
+
+	if (text_width > width)
 	{
-	Transaction *txn;
-	int tw, th;
-			
-		gtk_tree_model_get (model, &iter, MODEL_TXN_POINTER, &txn, -1);
-
-		//DB( g_print(" - %d, %d, %s\n", x, y, txn->memo) );
-		if(cur_page_line == 1)
-		{
-			//helpdraw
-			#if HELPDRAW == 1
-			//page with margin
-			hb_pdf_draw_help_rect(cr, 0xFF0000FF, ppc.ml+0.5, ppc.mt+0.5, width-(ppc.ml+ppc.mr), height - (ppc.mt+ppc.mb));
-			hb_pdf_draw_help_rect(cr, 0xFF00FFFF, ppc.ml+0.5, ppc.mt+0.5, width-(ppc.ml+ppc.mr), header_height);
-			#endif
-
-			cairo_set_source_rgb(cr, 0.0, 0.0, 0.0);
-
-			// draw account title
-			pango_font_description_set_absolute_size(ppc.desc, PDF_FONT_TITLE * PANGO_SCALE);
-			pango_layout_set_font_description (layout, ppc.desc);
-
-			pango_layout_set_text (layout, accname, -1);
-			pango_layout_get_pixel_size (layout, &tw, &th);
-			cairo_move_to(cr, pwidth/2 - (tw/2), ppc.mt);
-			pango_cairo_show_layout (cr, layout);
-
-			// draw column titles
-			pango_font_description_set_absolute_size(ppc.desc, PDF_FONT_NORMAL * PANGO_SCALE);
-			pango_layout_set_font_description (layout, ppc.desc);
-
-			g_sprintf(dbuffer, "Page %d/%d", page, num_pages);
-			pango_layout_set_text (layout, dbuffer, -1);
-			pango_layout_get_pixel_size (layout, &tw, &th);
-			cairo_move_to(cr, pwidth - ppc.mr - tw, ppc.mt);
-			pango_cairo_show_layout (cr, layout);
-
-			//x = ppc.ml;
-			y = ppc.mt + header_height - (PDF_FONT_NORMAL + PDF_LINE_MARGIN);
-			hb_pdf_set_col_title(&ppc);
-
-			hb_pdf_draw_line(&ppc, cr, y, TRUE, FALSE);
-		}
-
-		/* print a single line */
-		//x = ppc.ml;
-		y = ppc.mt + header_height + (cur_page_line * (PDF_FONT_NORMAL + PDF_LINE_MARGIN));
-
-
-
-		/* reset struct */
-		for(i=0;i<PDF_NUMCOL;i++)
-		{
-			ppc.column_txt[i] = NULL;
-		}
-		
-		i = 0;
-		g_date_set_julian (date, txn->date);
-		g_date_strftime (dbuffer, 255-1, "%x", date);
-		ppc.column_txt[i] = dbuffer;
-		
-		i = 1;
-		ppc.column_txt[i] = txn->info;
-
-		i = 2;
-		Payee *p = da_pay_get(txn->kpay);
-		if(p)
-			ppc.column_txt[i] = p->name;
-
-		i = 3;
-		/*Category *c = da_cat_get(txn->kcat);
-		if(c)
-			ppc.column_txt[i] = da_cat_get_fullname(c);*/
-		ppc.column_txt[i] = txn->memo;
-			
-		i = 4;
-		hb_strfmon(amtbuf, G_ASCII_DTOSTR_BUF_SIZE-1, txn->amount, txn->kcur, GLOBALS->minor);
-		ppc.column_txt[i] = amtbuf;
-
-		i = 5;
-		ppc.column_txt[i] = transaction_get_status_string(txn);
-		
-		i = 6;
-		hb_strfmon(balbuf, G_ASCII_DTOSTR_BUF_SIZE-1, txn->balance, txn->kcur, GLOBALS->minor);
-		ppc.column_txt[i] = balbuf;
-
-		hb_pdf_draw_line(&ppc, cr, y, FALSE, (cur_page_line % 2));
-		
-		/* free any fullcat name */
-		/*if(ppc.column_txt[3] != NULL)
-			g_free(ppc.column_txt[3]);*/
-		
-		/* export page */		
-		if(cur_page_line >= lpp)
-		{
-			DB( g_print("\n - next page %d\n", page) );
-			
-			cairo_show_page(cr);
-			cur_page_line = 0;
-			page++;
-		}
-
-		cur_page_line++;
-		tot_lines++;
-		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
+		pango_layout_set_width (layout, width);
+		pango_layout_set_ellipsize (layout, PANGO_ELLIPSIZE_START);
+		pango_layout_get_pixel_size (layout, &text_width, &text_height);
 	}
 
-	g_date_free(date);
+	//left
+	cairo_move_to (cr, 0, 0);
+	//center
+	//cairo_move_to (cr, (width - text_width) / 2, 0);
+	pango_cairo_show_layout (cr, layout);
 
 	g_object_unref (layout);
-	pango_font_description_free (ppc.desc);
 
-	cairo_destroy (cr);
-	cairo_surface_destroy (surf);
+
+	layout = gtk_print_context_create_pango_layout (context);
+	desc = pango_font_description_from_string ("Helvetica");
+	pango_font_description_set_size (desc, data->font_size * PANGO_SCALE);
+	pango_layout_set_font_description (layout, desc);
+
+	gint firstcol = hb_print_listview_get_idx_for_pagecol(data, width, pagecol);
+	gint lastcol  = hb_print_listview_get_idx_for_pagecol(data, width, pagecol+1);
+
+	//line header
+	y = data->header_height - data->font_size;
+	pango_font_description_set_weight (desc, PANGO_WEIGHT_BOLD);
+	pango_layout_set_font_description (layout, desc);
+	hb_print_listview_draw_line(data, data->lines[0], firstcol, lastcol, y, cr, layout);
+
+	y = data->header_height + HB_PRINT_SPACING;
+	pango_font_description_set_weight (desc, PANGO_WEIGHT_NORMAL);
+	pango_layout_set_font_description (layout, desc);
+	pango_font_description_free (desc);
+
+
+	//lines
+	line = (page_nr%data->numpagerow) * data->lines_per_page;
+	if( line == 0 )	//skip title line
+		line++;
+
+	DB( g_print(" print lines from %d to %d\n", line, line+data->lines_per_page) );
+	DB( g_print(" print cols from %d\n", firstcol) );
+
+	for (i = 0; i < data->lines_per_page && line < data->num_lines; i++)
+	{
+		hb_print_listview_draw_line(data, data->lines[line], firstcol, lastcol, y, cr, layout);
+		y += data->font_size + 3;
+		line++;
+	}
+	g_object_unref (layout);
+
+
+	//footer
+	layout = gtk_print_context_create_pango_layout (context);
+	desc = pango_font_description_from_string ("Helvetica");
+	pango_font_description_set_size (desc, 9 * PANGO_SCALE);
+	pango_layout_set_font_description (layout, desc);
+	pango_font_description_free (desc);
+
+	y = height - 9;
+
+	//left: date
+	g_date_set_julian (&date, GLOBALS->today);
+	g_date_strftime (buffer, 256-1, "%a %x", &date);
+	pango_layout_set_text (layout, buffer, -1);
+	pango_layout_set_width (layout, -1);
+	pango_layout_get_pixel_size (layout, &text_width, &text_height);
+	cairo_move_to (cr, 0, y);
+	pango_cairo_show_layout (cr, layout);
+
+	//right: page
+	page_str = g_strdup_printf ("page %d/%d", page_nr + 1, data->num_pages);
+	pango_layout_set_text (layout, page_str, -1);
+	g_free (page_str);
+
+	pango_layout_set_width (layout, -1);
+	pango_layout_get_pixel_size (layout, &text_width, &text_height);
+	cairo_move_to (cr, width - text_width - 4, y);
+	pango_cairo_show_layout (cr, layout);
+	g_object_unref (layout);
+  
+}
+
+
+void
+hb_print_listview(GtkWindow *parent, gchar *tabtext, gint8 *leftcols, gchar *title, gchar *filepath)
+{
+GtkPrintOperation *operation;
+GtkPrintSettings *settings;
+PrintData *data;
+GError *error = NULL;
+
+	data = g_new0 (PrintData, 1);
+	data->font_size = 12.0;
+	data->tabtext   = tabtext;
+	data->title     = title;
+	data->leftcols  = leftcols;
+
+	DB( g_print("tabtext debug:\n%s\n------\n", tabtext) );
+
+	operation = gtk_print_operation_new ();
+
+	g_signal_connect (G_OBJECT (operation), "begin-print", G_CALLBACK (hb_print_listview_begin_print), data);
+	g_signal_connect (G_OBJECT (operation), "draw-page"  , G_CALLBACK (hb_print_listview_draw_page), data);
+	g_signal_connect (G_OBJECT (operation), "end-print"  , G_CALLBACK (hb_print_listview_end_print), data);	
+
+	gtk_print_operation_set_use_full_page (operation, FALSE);
+	gtk_print_operation_set_unit (operation, GTK_UNIT_POINTS);
+	gtk_print_operation_set_embed_page_setup (operation, TRUE);
+
+	settings = gtk_print_settings_new ();
+
+	gtk_print_settings_set (settings, GTK_PRINT_SETTINGS_OUTPUT_BASENAME, filepath);
+	gtk_print_operation_set_print_settings (operation, settings);
+
+	gtk_print_operation_run (operation, GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG, GTK_WINDOW (parent), &error);
+
+	g_object_unref (operation);
+	g_object_unref (settings);
+
+	if (error)
+	{
+	GtkWidget *dialog;
+
+		dialog = gtk_message_dialog_new (GTK_WINDOW (parent),
+		GTK_DIALOG_DESTROY_WITH_PARENT,
+		GTK_MESSAGE_ERROR,
+		GTK_BUTTONS_CLOSE,
+		"%s", error->message);
+		g_error_free (error);
+
+		g_signal_connect (dialog, "response", G_CALLBACK (gtk_widget_destroy), NULL);
+
+		gtk_widget_show (dialog);
+	}
 
 }
+
 
 

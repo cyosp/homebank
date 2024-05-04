@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.71])
-AC_INIT([homebank],[5.6.6])
+AC_INIT([homebank],[5.7])
 #AC_INIT([homebank],[x.x-rc])
 
 AC_CONFIG_HEADERS(config.h)
@@ -49,7 +49,7 @@ CFLAGS="${CFLAGS} -Wno-deprecated-declarations"
 # pre-relase # 2 - error as warning for 
 #CFLAGS="${CFLAGS} -Werror"
 
-# gtk4 migration
+# GTK4 migration
 #CFLAGS="${CFLAGS} -DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED"
 
 

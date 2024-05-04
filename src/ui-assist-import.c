@@ -495,7 +495,8 @@ GList *lacc, *list;
 			LST_GENACC_KEY, DST_ACC_NEW,
 			-1);
 	
-	lacc = list = account_glist_sorted(0);
+	//#2030333 5.7 sort by pos
+	lacc = list = account_glist_sorted(HB_GLIST_SORT_POS);
 	while (list != NULL)
 	{
 	Account *item = list->data;
@@ -825,7 +826,7 @@ gint res;
 		PREFS->path_import = folder;
 	}
 	
-	gtk_widget_destroy (dialog);
+	gtk_window_destroy (GTK_WINDOW(dialog));
 	
 	ui_import_page_filechooser_eval(widget,  NULL);
 	
@@ -1524,11 +1525,10 @@ static void ui_import_page_filechooser_selection(GtkTreeSelection *treeselection
 static GtkWidget *
 ui_import_page_filechooser_create (GtkWidget *assistant, struct import_data *data)
 {
-GtkWidget *mainbox, *vbox, *hbox, *widget, *label, *scrollwin, *tbar;
-GtkToolItem *toolitem;
+GtkWidget *mainbox, *vbox, *hbox, *bbox;
+GtkWidget *widget, *label, *scrollwin, *treeview, *tbar;
 
 	mainbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, SPACING_SMALL);
-	//gtk_container_set_border_width (GTK_CONTAINER(vbox), SPACING_SMALL);
 
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start (GTK_BOX (mainbox), hbox, FALSE, FALSE, SPACING_SMALL);
@@ -1555,31 +1555,27 @@ GtkToolItem *toolitem;
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_widget_set_hexpand(scrollwin, TRUE);
 	gtk_widget_set_vexpand(scrollwin, TRUE);
-	widget = list_file_new();
-	data->LV_file = widget;
-	gtk_container_add (GTK_CONTAINER (scrollwin), widget);
+	treeview = list_file_new();
+	data->LV_file = treeview;
+	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
 	//gtk_grid_attach (GTK_GRID (group_grid), scrollwin, 0, row, 2, 1);
 	gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
 
 	//list toolbar
-	tbar = gtk_toolbar_new();
-	gtk_toolbar_set_icon_size (GTK_TOOLBAR(tbar), GTK_ICON_SIZE_MENU);
-	gtk_toolbar_set_style(GTK_TOOLBAR(tbar), GTK_TOOLBAR_ICONS);
+	tbar = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
 	gtk_box_pack_start (GTK_BOX (vbox), tbar, FALSE, FALSE, 0);
 
-	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	toolitem = gtk_tool_item_new();
-	gtk_container_add (GTK_CONTAINER(toolitem), hbox);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_box_pack_start (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
 	
 		widget = make_image_button(ICONNAME_LIST_ADD, _("Add"));
 		data->BT_file_add = widget;
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
 
 		widget = make_image_button(ICONNAME_LIST_DELETE, _("Delete"));
 		data->BT_file_delete = widget;
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
 
 	gtk_widget_show_all (mainbox);
 	
@@ -1690,7 +1686,7 @@ ui_import_page_transaction_create (GtkWidget *assistant, gint idx, struct import
 {
 ImpTxnData *txndata;
 GtkWidget *table, *box, *group, *stack;
-GtkWidget *label, *scrollwin, *expander, *widget;
+GtkWidget *label, *scrollwin, *treeview, *expander, *widget;
 ImpTxnData tmp;
 gint row;
 
@@ -1859,11 +1855,11 @@ gint row;
 	scrollwin = gtk_scrolled_window_new (NULL, NULL);
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	widget = list_txn_import_create();
-	txndata->LV_gentxn = widget;
+	treeview = list_txn_import_create();
+	txndata->LV_gentxn = treeview;
 	gtk_widget_set_hexpand(scrollwin, TRUE);
 	gtk_widget_set_vexpand(scrollwin, TRUE);
-	gtk_container_add (GTK_CONTAINER (scrollwin), widget);
+	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
 	gtk_grid_attach (GTK_GRID(table), scrollwin, 0, row, 2, 1);
 	
 
@@ -1878,16 +1874,16 @@ gint row;
 	group = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group), SPACING_SMALL);
-	gtk_container_add (GTK_CONTAINER (expander), group);
+	gtk_expander_set_child (GTK_EXPANDER(expander), group);
 
 		row = 0;
 		scrollwin = gtk_scrolled_window_new (NULL, NULL);
 		gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
 		gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 		gtk_widget_set_hexpand(scrollwin, TRUE);
-		widget = create_list_transaction(LIST_TXN_TYPE_OTHER, PREFS->lst_impope_columns);
-		txndata->LV_duptxn = widget;
-		gtk_container_add (GTK_CONTAINER (scrollwin), widget);
+		treeview = create_list_transaction(LIST_TXN_TYPE_OTHER, PREFS->lst_impope_columns);
+		txndata->LV_duptxn = treeview;
+		gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
 		gtk_widget_set_size_request(scrollwin, -1, HB_MINWIDTH_LIST/2);
 		gtk_grid_attach (GTK_GRID (group), scrollwin, 0, row, 5, 1);
 
@@ -1974,7 +1970,7 @@ gint row = 0;
 	gtk_widget_set_vexpand(scrollwin, TRUE);
 	widget = gtk_label_new (NULL);
 	data->TX_summary = widget;
-	gtk_container_add (GTK_CONTAINER (scrollwin), widget);
+	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), widget);
 	//gtk_box_pack_start (GTK_BOX (mainbox), scrollwin, TRUE, TRUE, 0);
 	gtk_grid_attach (GTK_GRID (group_grid), scrollwin, 0, row, 4, 1);
 
@@ -2295,7 +2291,7 @@ GtkWidget *assistant = (GtkWidget *) user_data;
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
 	ui_import_assistant_dispose(widget, data);
-	gtk_widget_destroy (assistant);
+	gtk_window_destroy (GTK_WINDOW(assistant));
 }
 
 

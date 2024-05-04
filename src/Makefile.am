@@ -72,10 +72,12 @@ homebank_SOURCES =  \
 	homebank.h \
 	hub-account.c \
 	hub-account.h \
+	hub-reptime.c \
+	hub-reptime.h \
+	hub-reptotal.c \
+	hub-reptotal.h \
 	hub-scheduled.c \
 	hub-scheduled.h \
-	hub-spending.c \
-	hub-spending.h \
 	hub-transaction.c \
 	hub-transaction.h \
 	language.c \

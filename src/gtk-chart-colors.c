@@ -434,6 +434,15 @@ void cairo_user_set_rgbacol(cairo_t *cr, struct rgbcol *col, double alpha)
 }
 
 
+void cairo_user_set_rgbacol_over(cairo_t *cr, struct rgbcol *col, gboolean over, double alpha)
+{
+	if( over )
+		cairo_set_source_rgba(cr, COLTOCAIROOVER(col->r), COLTOCAIROOVER(col->g), COLTOCAIROOVER(col->b), alpha);
+	else
+		cairo_set_source_rgba(cr, COLTOCAIRO(col->r), COLTOCAIRO(col->g), COLTOCAIRO(col->b), alpha);
+}
+
+
 void cairo_user_set_rgbcol_over(cairo_t *cr, struct rgbcol *col, gboolean over)
 {
 	if( over )
