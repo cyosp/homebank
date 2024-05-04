@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-19 08:55+0100\n"
-"PO-Revision-Date: 2022-11-18 18:13+0000\n"
-"Last-Translator: Leonardo Regnier de Lima Pereira <Unknown>\n"
+"PO-Revision-Date: 2023-04-04 03:02+0000\n"
+"Last-Translator: Erasmo de  Carvalho <Unknown>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2023-03-19 17:16+0000\n"
-"X-Generator: Launchpad (build 997ba17554f0ee82f56d9282fce82d3e09a43780)\n"
+"X-Launchpad-Export-Date: 2023-05-18 13:56+0000\n"
+"X-Generator: Launchpad (build 333bbdc825b25f14e50a980a2dbe4dc39f3d34d9)\n"
 
 #: ../data/homebank.desktop.in.in.h:1 ../src/dsp-mainwindow.c:702
 msgid "HomeBank"
@@ -129,12 +129,12 @@ msgstr "_Criar"
 
 #: ../src/dsp-account.c:728
 msgid "Create Assignment"
-msgstr ""
+msgstr "Criar atribuição"
 
 #: ../src/dsp-account.c:729 ../src/dsp-account.c:804
 #, c-format
 msgid "%d created and prefixed with **PREFILLED**"
-msgstr ""
+msgstr "%d criado e prefixado com **PREENCHIDO**"
 
 #: ../src/dsp-account.c:758
 msgid ""
@@ -146,7 +146,7 @@ msgstr ""
 
 #: ../src/dsp-account.c:803
 msgid "Create Template"
-msgstr ""
+msgstr "Criar Modelo"
 
 #: ../src/dsp-account.c:1681
 msgid ""
@@ -179,7 +179,7 @@ msgstr "_Alterar"
 
 #: ../src/dsp-account.c:1822
 msgid "Are you sure you want to toggle the status Reconciled?"
-msgstr "Tem certeza de que deseja alternar o status para Reconciliada?"
+msgstr "Tem certeza de que deseja alternar a condição para Reconciliada?"
 
 #: ../src/dsp-account.c:1824
 msgid "_Toggle"
@@ -229,7 +229,7 @@ msgstr "_Nenhum"
 
 #: ../src/dsp-account.c:2536 ../src/dsp-account.c:2635
 msgid "_Cleared"
-msgstr "_Limpar"
+msgstr "_Limpo"
 
 #: ../src/dsp-account.c:2538 ../src/dsp-account.c:2637
 msgid "_Reconciled"
@@ -433,7 +433,7 @@ msgstr "Mover transação para baixo"
 
 #: ../src/dsp-account.c:2701
 msgid "Reconciled changes is"
-msgstr ""
+msgstr "Reconciliadas Alteradas"
 
 #: ../src/dsp-account.c:2762
 msgid "(closed)"
@@ -463,7 +463,7 @@ msgstr "_Período:"
 #: ../src/dsp-account.c:2842
 #, c-format
 msgid "Toggle show %d days ahead"
-msgstr ""
+msgstr "Agendar para %d dias"
 
 #: ../src/dsp-account.c:2847 ../src/rep-budget.c:1326 ../src/rep-stats.c:1674
 #: ../src/ui-account.c:1915 ../src/ui-assist-start.c:536
@@ -1143,7 +1143,7 @@ msgstr "%d-q%d"
 #: ../src/hb-report.c:1047
 #, c-format
 msgid "%d-h%d"
-msgstr ""
+msgstr "%d-Sem %d"
 
 #: ../src/homebank.c:70
 msgid "Output version information and exit"
@@ -1210,7 +1210,7 @@ msgstr "Por instituição"
 #: ../src/hub-scheduled.c:350
 #, c-format
 msgid "sum: %s (%s + %s)"
-msgstr ""
+msgstr "Somatório: %s (%s + %s)"
 
 #: ../src/hub-scheduled.c:394
 msgid "No transaction to add"
@@ -1924,7 +1924,7 @@ msgstr "Excluir do resumo da conta"
 
 #: ../src/ui-account.c:2032
 msgid "outflow into summary"
-msgstr ""
+msgstr "Resumo de Saída de Caixa"
 
 #: ../src/ui-account.c:2037
 msgid "exclude from the _budget"
@@ -2622,14 +2622,14 @@ msgstr "Totais"
 msgid ""
 "Annual\n"
 "Total"
-msgstr ""
+msgstr "Total Anual"
 
 #. gtk_tree_view_column_set_title(col, _("Monthly Average"));
 #: ../src/ui-budget-tabview.c:1589
 msgid ""
 "Monthly\n"
 "Average"
-msgstr ""
+msgstr "Média Mensal"
 
 #: ../src/ui-budget-tabview.c:1602
 msgid "Monthly"
@@ -2741,7 +2741,7 @@ msgstr "Receita"
 
 #: ../src/ui-category.c:1761
 msgid "Propagate to _children"
-msgstr ""
+msgstr "Propagar para_subcategoria"
 
 #: ../src/ui-category.c:1815
 #, c-format
@@ -3045,7 +3045,7 @@ msgstr ""
 
 #: ../src/ui-dialogs.c:1122
 msgid "Select action for target creation"
-msgstr ""
+msgstr "Selecione a ação para o alvo criado"
 
 #: ../src/ui-dialogs.c:1126
 msgid "Create _New"
@@ -3057,12 +3057,12 @@ msgstr "Usar_Seleção"
 
 #: ../src/ui-dialogs.c:1155
 msgid "Source transfer"
-msgstr ""
+msgstr "Transferir Recursos"
 
 #. target listview
 #: ../src/ui-dialogs.c:1172
 msgid "Target association suggested"
-msgstr ""
+msgstr "Associação de destino sugerida"
 
 #: ../src/ui-dialogs.c:1177
 msgid ""
@@ -3108,7 +3108,7 @@ msgstr "Transferência"
 
 #: ../src/ui-filter.c:1185
 msgid "Always show"
-msgstr ""
+msgstr "Sempre exibir"
 
 #: ../src/ui-filter.c:1192 ../src/ui-widgets-data.c:209
 msgid "Void"
@@ -3116,7 +3116,7 @@ msgstr "Nula"
 
 #: ../src/ui-filter.c:1196
 msgid "Added"
-msgstr ""
+msgstr "Incluído"
 
 #: ../src/ui-filter.c:1200
 msgid "Edited"
@@ -3128,7 +3128,7 @@ msgstr "_Usar"
 
 #: ../src/ui-filter.c:1307
 msgid "Amount/Text"
-msgstr ""
+msgstr "Valor/Texto"
 
 #: ../src/ui-hbfile.c:43
 msgid "Due Date"
@@ -3136,11 +3136,11 @@ msgstr "Data de vencimento"
 
 #: ../src/ui-hbfile.c:44
 msgid "Next Payout"
-msgstr ""
+msgstr "Próximo Pagamento"
 
 #: ../src/ui-hbfile.c:45
 msgid "In Advance"
-msgstr ""
+msgstr "adiantado"
 
 #: ../src/ui-hbfile.c:230
 msgid "File properties"
@@ -3180,7 +3180,7 @@ msgstr "Editar Recebedor/pagador"
 
 #: ../src/ui-payee.c:1281
 msgid "Default Fill"
-msgstr ""
+msgstr "Preenchimento Padrão"
 
 #: ../src/ui-payee.c:1295 ../src/ui-transaction.c:1624
 #: ../src/ui-txn-multi.c:541
@@ -3426,7 +3426,7 @@ msgstr "Exibir _detalhes"
 
 #: ../src/ui-pref.c:1427
 msgid "Include _transfer"
-msgstr ""
+msgstr "Incluir _transferência"
 
 #: ../src/ui-pref.c:1437
 msgid "Budget options"
@@ -3546,7 +3546,7 @@ msgstr "Incluir lembretes no saldo"
 
 #: ../src/ui-pref.c:1766
 msgid "Lock reconciled for any changes"
-msgstr ""
+msgstr "Reconciliação bloqueada para Alterações"
 
 #: ../src/ui-pref.c:1777
 msgid "Transaction dialog"
@@ -3750,11 +3750,11 @@ msgstr "Atenção: a soma das divisões e o tipo da transação não conferem"
 
 #: ../src/ui-tag.c:323
 msgid "(no tag)"
-msgstr ""
+msgstr "Sem Etiqueta"
 
 #: ../src/ui-tag.c:677
 msgid "Edit Tag"
-msgstr ""
+msgstr "Editar etiqueta"
 
 #: ../src/ui-tag.c:749
 #, c-format
@@ -3881,7 +3881,7 @@ msgstr ""
 
 #: ../src/ui-transaction.c:1584
 msgid "No rate available to auto fill"
-msgstr ""
+msgstr "Sem preenchimento automático de taxas"
 
 #: ../src/ui-transaction.c:1616
 msgid "T_o:"
@@ -3952,7 +3952,7 @@ msgstr "Semana"
 
 #: ../src/ui-widgets-data.c:88
 msgid "Fortnight"
-msgstr ""
+msgstr "Quinzena"
 
 #: ../src/ui-widgets-data.c:90
 msgid "Quarter"
@@ -4008,95 +4008,95 @@ msgstr "Poupança"
 
 #: ../src/ui-widgets-data.c:138
 msgid "Yesterday"
-msgstr ""
+msgstr "Ontem"
 
 #: ../src/ui-widgets-data.c:140
 msgid "Tomorrow"
-msgstr ""
+msgstr "Amanhã"
 
 #: ../src/ui-widgets-data.c:142
 msgid "Last Week"
-msgstr ""
+msgstr "Semana passada"
 
 #: ../src/ui-widgets-data.c:143
 msgid "This Week"
-msgstr ""
+msgstr "Esta Semana"
 
 #: ../src/ui-widgets-data.c:144
 msgid "Next Week"
-msgstr ""
+msgstr "Próxima Semana"
 
 #: ../src/ui-widgets-data.c:146
 msgid "Last Fortnight"
-msgstr ""
+msgstr "última quinzena"
 
 #: ../src/ui-widgets-data.c:147
 msgid "This Fortnight"
-msgstr ""
+msgstr "Quinzena Atual"
 
 #: ../src/ui-widgets-data.c:148
 msgid "Next Fortnight"
-msgstr ""
+msgstr "Próxima quinzena"
 
 #: ../src/ui-widgets-data.c:150
 msgid "Last Month"
-msgstr ""
+msgstr "Mês passado"
 
 #: ../src/ui-widgets-data.c:151
 msgid "This Month"
-msgstr ""
+msgstr "Este mês"
 
 #: ../src/ui-widgets-data.c:152
 msgid "Next Month"
-msgstr ""
+msgstr "Próximo Mês"
 
 #: ../src/ui-widgets-data.c:154
 msgid "Last Quarter"
-msgstr ""
+msgstr "Trimestre passado"
 
 #: ../src/ui-widgets-data.c:155
 msgid "This Quarter"
-msgstr ""
+msgstr "Trimestre atual"
 
 #: ../src/ui-widgets-data.c:156
 msgid "Next Quarter"
-msgstr ""
+msgstr "Próximo Trimestre"
 
 #: ../src/ui-widgets-data.c:158
 msgid "Last Year"
-msgstr ""
+msgstr "Ano passado"
 
 #: ../src/ui-widgets-data.c:159
 msgid "This Year"
-msgstr ""
+msgstr "Este Ano"
 
 #: ../src/ui-widgets-data.c:160
 msgid "Next Year"
-msgstr ""
+msgstr "Próximo Ano"
 
 #: ../src/ui-widgets-data.c:166
 msgid "Last 30 Days"
-msgstr ""
+msgstr "Últimos 30 Dias"
 
 #: ../src/ui-widgets-data.c:167
 msgid "Last 60 Days"
-msgstr ""
+msgstr "Últimos 60 Dias"
 
 #: ../src/ui-widgets-data.c:168
 msgid "Last 90 Days"
-msgstr ""
+msgstr "Últimos 90 Dias"
 
 #: ../src/ui-widgets-data.c:170
 msgid "Last 12 Months"
-msgstr ""
+msgstr "Últimos 12 Meses"
 
 #: ../src/ui-widgets-data.c:171
 msgid "30 Days Around"
-msgstr ""
+msgstr "Por volta de 30 dias"
 
 #: ../src/ui-widgets-data.c:172
 msgid "All Date"
-msgstr ""
+msgstr "Todas as Datas."
 
 #: ../src/ui-widgets-data.c:179
 msgid "This month"
@@ -4133,7 +4133,7 @@ msgstr "Depois"
 #. added 5.6
 #: ../src/ui-widgets-data.c:228
 msgid "Skip"
-msgstr ""
+msgstr "Ignorar"
 
 #: ../src/ui-widgets-data.c:234
 msgid "Exp. & Inc."
@@ -4271,15 +4271,3 @@ msgstr "Taxa da Instituição Financeira"
 #: ../src/ui-widgets.c:1348
 msgid "Direct Debit"
 msgstr "Débito Direto"
-
-#~ msgid "Toggle show future transaction"
-#~ msgstr "Mostrar transação futura"
-
-#~ msgid "Annual Total"
-#~ msgstr "Total Anual"
-
-#~ msgid "Monthly Average"
-#~ msgstr "Média Mensal"
-
-#~ msgid "Budget (table view)"
-#~ msgstr "Orçamento (visão de tabela)"

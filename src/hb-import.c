@@ -887,6 +887,8 @@ gint count = 0;
 	{
 	GenTxn *gentxn = list1->data;
 
+		DB( g_print("\n--------\n src: a:%d d:%d %.17g '%s'\n", gentxn->kacc, gentxn->julian, gentxn->amount, gentxn->memo) );
+
 		if(genacc->key == gentxn->kacc)
 		{
 			//#5.5.1, commented and reported below
@@ -920,6 +922,8 @@ gint count = 0;
 					{
 					Transaction *txn = list2->data;
 
+						DB( g_print("  evl: a:%d d:%d %.17g '%s'\n", txn->kacc, txn->date, txn->amount, txn->memo) );
+
 						//break if the date goes below the gentxn date + gap
 						if( txn->date < (gentxn->julian - ictx->opt_daygap) )
 							break;
@@ -929,7 +933,8 @@ gint count = 0;
 						if( ( genacc->kacc == txn->kacc ) 
 						 && ( gentxn->julian <= (txn->date + ictx->opt_daygap) )
 						 && ( gentxn->julian >= (txn->date - ictx->opt_daygap) )
-						 && ( amount == txn->amount ) 
+						 //#2012999
+						 && ( hb_amount_equal(amount, txn->amount) )
 						)
 						{
 							gentxn->lst_existing = g_list_append(gentxn->lst_existing, txn);
@@ -937,7 +942,7 @@ gint count = 0;
 							gentxn->is_dst_similar = TRUE;
 							count++;
 
-							DB( g_print(" found dst acc dup %d %.2f '%s' in=%d, dup=%d\n", gentxn->julian, amount, gentxn->memo, gentxn->to_import, gentxn->is_dst_similar) );
+							DB( g_print("    => found dst acc dup %d %.17g '%s' in=%d, dup=%d\n", gentxn->julian, amount, gentxn->memo, gentxn->to_import, gentxn->is_dst_similar) );
 						}
 						
 						list2 = g_list_previous(list2);
@@ -1340,7 +1345,7 @@ gint nsplit;
 					}
 
 					//todo: remove this when no more use ||
-					hb_string_replace_char('|', s->memo);
+					hb_string_remove_char('|', s->memo);
 					hbs = da_split_malloc ();
 					hbs->kcat   = kcat;
 					hbs->memo   = g_strdup(s->memo);

@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: HomeBank 3.2.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-19 08:55+0100\n"
-"PO-Revision-Date: 2022-08-16 10:30+0000\n"
-"Last-Translator: vofka <Unknown>\n"
+"PO-Revision-Date: 2023-04-06 10:13+0000\n"
+"Last-Translator: Андрей <mitrofanovandrey1998@gmail.com>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2023-03-19 17:16+0000\n"
-"X-Generator: Launchpad (build 997ba17554f0ee82f56d9282fce82d3e09a43780)\n"
+"X-Launchpad-Export-Date: 2023-05-18 13:56+0000\n"
+"X-Generator: Launchpad (build 333bbdc825b25f14e50a980a2dbe4dc39f3d34d9)\n"
 "Language: ru\n"
 
 #: ../data/homebank.desktop.in.in.h:1 ../src/dsp-mainwindow.c:702
@@ -146,7 +146,7 @@ msgstr ""
 
 #: ../src/dsp-account.c:803
 msgid "Create Template"
-msgstr ""
+msgstr "Создать шаблон"
 
 #: ../src/dsp-account.c:1681
 msgid ""
@@ -241,7 +241,7 @@ msgstr "_Показать разделение операции"
 
 #: ../src/dsp-account.c:2545
 msgid "Copy raw amount"
-msgstr ""
+msgstr "Скопировать значение"
 
 #: ../src/dsp-account.c:2547 ../src/dsp-account.c:2641
 msgid "Create template..."
@@ -433,7 +433,7 @@ msgstr "Переместить транзакцию ниже"
 
 #: ../src/dsp-account.c:2701
 msgid "Reconciled changes is"
-msgstr ""
+msgstr "Согласованные значения"
 
 #: ../src/dsp-account.c:2762
 msgid "(closed)"
@@ -463,7 +463,7 @@ msgstr "_Диапазон:"
 #: ../src/dsp-account.c:2842
 #, c-format
 msgid "Toggle show %d days ahead"
-msgstr ""
+msgstr "Переключить показ на %d дней вперед"
 
 #: ../src/dsp-account.c:2847 ../src/rep-budget.c:1326 ../src/rep-stats.c:1674
 #: ../src/ui-account.c:1915 ../src/ui-assist-start.c:536
@@ -729,7 +729,7 @@ msgstr "_Управление"
 
 #: ../src/dsp-mainwindow.c:1875
 msgid "Wallet..."
-msgstr ""
+msgstr "Кошелек"
 
 #: ../src/dsp-mainwindow.c:1876
 msgid "Acc_ounts..."
@@ -1052,7 +1052,7 @@ msgstr "_Сегодня"
 
 #: ../src/hb-archive.c:215 ../src/ui-archive.c:827
 msgid "(no memo)"
-msgstr ""
+msgstr "(нет памятки)"
 
 #: ../src/hb-archive.c:388 ../src/hb-archive.c:390 ../src/hb-assign.c:278
 msgid "**PREFILLED**"
@@ -2782,11 +2782,11 @@ msgstr "Управление категориями"
 #. content = gtk_dialog_get_header_bar(GTK_DIALOG (dialog));
 #: ../src/ui-category.c:2446 ../src/ui-payee.c:1808
 msgid "Show Hidden"
-msgstr ""
+msgstr "Показать скрытые"
 
 #: ../src/ui-category.c:2450 ../src/ui-payee.c:1812
 msgid "Show Usage"
-msgstr ""
+msgstr "Показать частоту использования"
 
 #: ../src/ui-category.c:2473 ../src/ui-payee.c:1831
 msgid "_Delete unused"
@@ -2798,7 +2798,7 @@ msgstr "Переместить/Объеденить"
 
 #: ../src/ui-category.c:2560 ../src/ui-payee.c:1913
 msgid "Show/Hide"
-msgstr ""
+msgstr "Показать/Скрыть"
 
 #: ../src/ui-category.c:2592
 msgid "new category"
@@ -3948,7 +3948,7 @@ msgstr "Неделя"
 
 #: ../src/ui-widgets-data.c:88
 msgid "Fortnight"
-msgstr ""
+msgstr "Две недели"
 
 #: ../src/ui-widgets-data.c:90
 msgid "Quarter"
@@ -4004,87 +4004,87 @@ msgstr "Сбережения"
 
 #: ../src/ui-widgets-data.c:138
 msgid "Yesterday"
-msgstr ""
+msgstr "Вчера"
 
 #: ../src/ui-widgets-data.c:140
 msgid "Tomorrow"
-msgstr ""
+msgstr "Завтра"
 
 #: ../src/ui-widgets-data.c:142
 msgid "Last Week"
-msgstr ""
+msgstr "Прошлая неделя"
 
 #: ../src/ui-widgets-data.c:143
 msgid "This Week"
-msgstr ""
+msgstr "Текущая неделя"
 
 #: ../src/ui-widgets-data.c:144
 msgid "Next Week"
-msgstr ""
+msgstr "Следующая неделя"
 
 #: ../src/ui-widgets-data.c:146
 msgid "Last Fortnight"
-msgstr ""
+msgstr "Последние две недели"
 
 #: ../src/ui-widgets-data.c:147
 msgid "This Fortnight"
-msgstr ""
+msgstr "Текущие две недели"
 
 #: ../src/ui-widgets-data.c:148
 msgid "Next Fortnight"
-msgstr ""
+msgstr "Следующие две недели"
 
 #: ../src/ui-widgets-data.c:150
 msgid "Last Month"
-msgstr ""
+msgstr "Прошлый месяц"
 
 #: ../src/ui-widgets-data.c:151
 msgid "This Month"
-msgstr ""
+msgstr "Текущий месяц"
 
 #: ../src/ui-widgets-data.c:152
 msgid "Next Month"
-msgstr ""
+msgstr "Следующий месяц"
 
 #: ../src/ui-widgets-data.c:154
 msgid "Last Quarter"
-msgstr ""
+msgstr "Последний квартал"
 
 #: ../src/ui-widgets-data.c:155
 msgid "This Quarter"
-msgstr ""
+msgstr "Текущий квартал"
 
 #: ../src/ui-widgets-data.c:156
 msgid "Next Quarter"
-msgstr ""
+msgstr "Следующий квартал"
 
 #: ../src/ui-widgets-data.c:158
 msgid "Last Year"
-msgstr ""
+msgstr "Прошлый год"
 
 #: ../src/ui-widgets-data.c:159
 msgid "This Year"
-msgstr ""
+msgstr "Текущий год"
 
 #: ../src/ui-widgets-data.c:160
 msgid "Next Year"
-msgstr ""
+msgstr "Следующий год"
 
 #: ../src/ui-widgets-data.c:166
 msgid "Last 30 Days"
-msgstr ""
+msgstr "За последние 30 дней"
 
 #: ../src/ui-widgets-data.c:167
 msgid "Last 60 Days"
-msgstr ""
+msgstr "За последние 60 дней"
 
 #: ../src/ui-widgets-data.c:168
 msgid "Last 90 Days"
-msgstr ""
+msgstr "За последние 90 дней"
 
 #: ../src/ui-widgets-data.c:170
 msgid "Last 12 Months"
-msgstr ""
+msgstr "За последние 12 месяцев"
 
 #: ../src/ui-widgets-data.c:171
 msgid "30 Days Around"
@@ -4092,7 +4092,7 @@ msgstr ""
 
 #: ../src/ui-widgets-data.c:172
 msgid "All Date"
-msgstr ""
+msgstr "Всё время"
 
 #: ../src/ui-widgets-data.c:179
 msgid "This month"
@@ -4267,15 +4267,3 @@ msgstr "FI гонорар"
 #: ../src/ui-widgets.c:1348
 msgid "Direct Debit"
 msgstr "Прямой дебет"
-
-#~ msgid "Toggle show future transaction"
-#~ msgstr "Переключить отображение будующих транзакций"
-
-#~ msgid "Monthly Average"
-#~ msgstr "В среднем за месяц"
-
-#~ msgid "Annual Total"
-#~ msgstr "Итого за год"
-
-#~ msgid "Budget (table view)"
-#~ msgstr "Бюджет (таблица)"

@@ -719,7 +719,8 @@ guint32 key;
 
 		gtk_dialog_set_default_response(GTK_DIALOG( dialog ), GTK_RESPONSE_ACCEPT);
 
-
+		//#2018414 disable input space...
+		g_signal_connect(G_OBJECT(ST_name), "insert-text", G_CALLBACK(ui_tag_manage_filter_text_handler), NULL);
 		g_signal_connect (G_OBJECT (ST_name), "changed", G_CALLBACK (ui_tag_manage_dialog_edit_entry_cb), dialog);
 
 		gtk_widget_show_all(content_grid);

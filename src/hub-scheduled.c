@@ -312,35 +312,54 @@ gint count;
 		tmplist = g_list_first(list);
 		while (tmplist != NULL)
 		{
-		Archive *item;
-		Account *acc;
-		gdouble txnexp, txninc;
+		Archive *arc;
+		Account *acc = NULL;
 
 			gtk_tree_model_get_iter(model, &iter, tmplist->data);
 			gtk_tree_model_get(model, &iter, 
-				LST_DSPUPC_DATAS, &item,
-				LST_DSPUPC_EXPENSE, &txnexp,
-				LST_DSPUPC_INCOME, &txninc,
-				LST_DSPUPC_ACCOUNT, &acc,
+				LST_DSPUPC_DATAS, &arc,
 				-1);
 
 			//DB( g_print(" collect %f - %f = %f %s\n", txninc, txnexp, txninc + txnexp, item->memo) );
 
+			acc = da_acc_get(arc->kacc);
 			if( acc != NULL )
 			{
-				//if( item->flags & OF_INCOME )
-					suminc += hb_amount_base(txninc, acc->kcur);
-				//else
-					sumexp += hb_amount_base(txnexp, acc->kcur);
+				if( arc->flags & OF_INCOME )
+					suminc += hb_amount_base(arc->amount, acc->kcur);
+				else
+					sumexp += hb_amount_base(arc->amount, acc->kcur);
 			}
 
-			DB( g_print(" %f - %f = %f temp\n", suminc, sumexp, suminc + sumexp) );
+			/* insert internal xfer txn : 1378836 */
+			if( (arc->flags & OF_INTXFER) )
+			{
+			gdouble amount = -arc->amount;
+
+				if( arc->flags & OF_ADVXFER )
+				{
+					amount = arc->xferamount;
+					DB( g_print("  xfer amount is != curr %.17g\n", amount ) );
+				}
+				
+				/* opposite here */
+				acc = da_acc_get(arc->kxferacc);
+				if( acc != NULL )
+				{
+					if( arc->flags & OF_INCOME )
+						sumexp += hb_amount_base(amount, acc->kcur);
+					else
+						suminc += hb_amount_base(amount, acc->kcur);
+				}
+			}
+
+			DB( g_print(" %.17g - %.17g = %.17g temp\n", suminc, sumexp, suminc + sumexp) );
 		
 			tmplist = g_list_next(tmplist);
 		}
 		g_list_free(list);
 
-		DB( g_print(" %f - %f = %f final\n", suminc, sumexp, suminc + sumexp) );
+		DB( g_print(" %.17g - %.17g = %.17g final\n", suminc, sumexp, suminc + sumexp) );
 
 		hb_strfmon(buf1, 64-1, suminc + sumexp, GLOBALS->kcur, GLOBALS->minor);
 		hb_strfmon(buf2, 64-1, sumexp, GLOBALS->kcur, GLOBALS->minor);
@@ -453,7 +472,7 @@ GDate *date;
 	gdouble inc, exp;
 	gint nbdays, nblate;
 
-		if((arc->flags & OF_AUTO) ) //&& arc->kacc > 0)
+		if( (arc->flags & OF_AUTO) ) //&& arc->kacc > 0)
 		{
 			count++;
 			nbdays = arc->nextdate - maxpostdate;
@@ -473,76 +492,64 @@ GDate *date;
 				}
 			}
 
-			DB( g_print("  append\n") );
-
 			exp = inc = 0.0;
-			if( arc->amount > 0.0 )
+			if( arc->flags & OF_INCOME )
 				inc = arc->amount;
 			else
 				exp = arc->amount;
 
-
-			/* insert normal txn */
 			acc = da_acc_get(arc->kacc);
 			if( acc != NULL )
 			{
-				DB( g_print("  amount: %.2f\n", arc->amount) );
-				totinc += hb_amount_base(inc, acc->kcur);
-				totexp += hb_amount_base(exp, acc->kcur);
+				DB( g_print("  add totals: %.17g %.17g\n", exp, inc) );
+				if( arc->flags & OF_INCOME )
+					totinc += hb_amount_base(arc->amount, acc->kcur);
+				else
+					totexp += hb_amount_base(arc->amount, acc->kcur);
+			}
+
+		/* good */
+
+			/* insert internal xfer txn : 1378836 */
+			if( (arc->flags & OF_INTXFER) )
+			{
+			gdouble amount = -arc->amount;
+
+				if( arc->flags & OF_ADVXFER )
+				{
+					amount = arc->xferamount;
+					DB( g_print("  xfer amount is != curr %.17g\n", amount ) );
+				}
+				
+				/* opposite here */
+				if( arc->flags & OF_INCOME )
+					exp = amount;
+				else
+					inc = amount;
+
+				acc = da_acc_get(arc->kxferacc);
+				if( acc != NULL )
+				{
+					DB( g_print("  add totals: %.17g %.17g\n", exp, inc) );
+					if( arc->flags & OF_INCOME )
+						totexp += hb_amount_base(amount, acc->kcur);
+					else
+						totinc += hb_amount_base(amount, acc->kcur);
+				}
 			}
 
 			gtk_list_store_append (GTK_LIST_STORE(model), &iter);
 			gtk_list_store_set (GTK_LIST_STORE(model), &iter,
 				  LST_DSPUPC_DATAS, arc,
 			      LST_DSPUPC_NEXT, nbdays,
-				  LST_DSPUPC_ACCOUNT, acc,
+				  //LST_DSPUPC_ACCOUNT, acc,
 			      LST_DSPUPC_MEMO, arc->memo,
 			      LST_DSPUPC_EXPENSE, exp,
-			      LST_DSPUPC_INCOME, inc,
+			      LST_DSPUPC_INCOME , inc,
 			      LST_DSPUPC_NB_LATE, nblate,
 				  -1);
 
-			/* insert internal xfer txn : 1378836 */
-			if(arc->flags & OF_INTXFER)
-			{
-			gdouble amount;
-			
-				DB( g_print("  insert dst xfer\n") );
-
-				amount = -arc->amount;
-				if( arc->flags & OF_ADVXFER )
-				{
-					amount = arc->xferamount;
-					DB( g_print("  amount is != curr %.2f\n", amount ) );
-				}
-
-				exp = inc = 0.0;
-				if( amount > 0.0 )
-					inc = amount;
-				else
-					exp = amount;
-
-				acc = da_acc_get(arc->kxferacc);
-				if( acc != NULL )
-				{
-					DB( g_print("  amount: %.2f => %.2f\n", amount, hb_amount_base(amount, acc->kcur) ) );
-
-					totinc += hb_amount_base(inc, acc->kcur);
-					totexp += hb_amount_base(exp, acc->kcur);
-				}
-				gtk_list_store_append (GTK_LIST_STORE(model), &iter);
-				gtk_list_store_set (GTK_LIST_STORE(model), &iter,
-					  LST_DSPUPC_DATAS, arc,
-				      LST_DSPUPC_NEXT, nbdays,
-					  LST_DSPUPC_ACCOUNT, acc,
-					  LST_DSPUPC_MEMO, arc->memo,
-					  LST_DSPUPC_EXPENSE, exp,
-					  LST_DSPUPC_INCOME, inc,
-					  LST_DSPUPC_NB_LATE, nblate,
-					  -1);
-			}
-
-			DB( g_print("  totals: %.2f %.2f\n", totexp, totinc) );
+			DB( g_print("  totals: %.17g %.17g\n", totexp, totinc) );
 
 		}
 next:
@@ -555,7 +562,6 @@ next:
 		gtk_list_store_append (GTK_LIST_STORE(model), &iter);
 		gtk_list_store_set (GTK_LIST_STORE(model), &iter,
 			  LST_DSPUPC_DATAS, NULL,
-			  LST_DSPUPC_ACCOUNT, NULL,
 			  LST_DSPUPC_MEMO, _("Total"),
 			  LST_DSPUPC_EXPENSE, totexp,
 		      LST_DSPUPC_INCOME, totinc,

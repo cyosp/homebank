@@ -147,15 +147,10 @@ static void
 lst_sch_cell_data_func_payee (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
 Archive *arc;
-Account *acc = NULL;
 gchar *text = NULL;
-gdouble exp, inc;
 
 	gtk_tree_model_get(model, iter,
 		LST_DSPUPC_DATAS, &arc,
-		LST_DSPUPC_EXPENSE, &exp,
-		LST_DSPUPC_INCOME, &inc,
-		LST_DSPUPC_ACCOUNT, &acc,
 		-1);
 
 	if(arc)
@@ -163,9 +158,11 @@ gdouble exp, inc;
 		//#bugfix 5.6.3
 		if(arc->flags & OF_INTXFER)
 		{
+		Account *acc = da_acc_get(arc->kxferacc);
+
 			//5.6 use acc strings for 5.3 add > < for internal xfer
 			if( acc )
-				text = ( inc > 0.0 ) ? acc->xferincname : acc->xferexpname;
+				text = ( arc->flags & OF_INCOME ) ? acc->xferincname : acc->xferexpname;
 			
 		}
 		else
@@ -235,29 +232,45 @@ Archive *arc;
 gdouble expense, income, amount;
 gchar buf[G_ASCII_DTOSTR_BUF_SIZE];
 gint column = GPOINTER_TO_INT(user_data);
-Account *acc;
 gchar *color;
 gint weight;
 
 	gtk_tree_model_get(model, iter, 
 		LST_DSPUPC_DATAS, &arc,
-		LST_DSPUPC_ACCOUNT, &acc,
 		LST_DSPUPC_EXPENSE, &expense,
-		LST_DSPUPC_INCOME, &income,
+		LST_DSPUPC_INCOME , &income,
 		-1);
 
-	amount = column == -1 ? expense : income;
+	amount = (column == -1) ? expense : income;
 		
-	if( amount != 0.0)
+	if( amount != 0.0 )
 	{
-		if( acc != NULL )
-			hb_strfmon(buf, G_ASCII_DTOSTR_BUF_SIZE-1, amount, acc->kcur, GLOBALS->minor);
-		else
-			hb_strfmon(buf, G_ASCII_DTOSTR_BUF_SIZE-1, amount, GLOBALS->kcur, GLOBALS->minor);
+	Account *acc = NULL;
+	guint32 kcur = GLOBALS->kcur;
+
+		if( arc != NULL ) /* display total */
+		{
+			if(arc->flags & OF_INTXFER)
+			{
+				if( column == -1)
+					acc = da_acc_get(arc->kacc);
+				else
+					acc = da_acc_get(arc->kxferacc);
+			}
+			else
+			{
+				acc = da_acc_get(arc->kacc);
+			}
+		}
+
+		if(acc != NULL)
+			kcur = acc->kcur;
+
+		hb_strfmon(buf, G_ASCII_DTOSTR_BUF_SIZE-1, amount, kcur, GLOBALS->minor);
 
 		color = get_normal_color_amount(amount);
 
-		weight = arc == NULL ? PANGO_WEIGHT_BOLD : PANGO_WEIGHT_NORMAL;
+		weight = (arc == NULL) ? PANGO_WEIGHT_BOLD : PANGO_WEIGHT_NORMAL;
 
 		g_object_set(renderer,
 			"weight", weight,
@@ -276,16 +289,22 @@ gint weight;
 static void 
 lst_sch_cell_data_func_account (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
+Archive *arc;
 Account *acc;
 gchar *name = NULL;
 
 	gtk_tree_model_get(model, iter, 
-		LST_DSPUPC_ACCOUNT, &acc,
+		LST_DSPUPC_DATAS, &arc,
 		-1);
+
 	/* 1378836 display acc or dstacc */
-	if( acc != NULL )
+	if( arc != NULL )
 	{
-		name = acc->name;
+		acc = da_acc_get(arc->kacc);
+		if( acc != NULL )
+		{
+			name = acc->name;
+		}
 	}
 
 	g_object_set(renderer, "text", name, NULL);
@@ -523,7 +542,6 @@ GtkTreeViewColumn *column;
 	 	NUM_LST_DSPUPC,
 		G_TYPE_POINTER,	/* scheduled */
 		G_TYPE_INT,		/* next (sort) */
-		G_TYPE_POINTER,	/* account */
 		G_TYPE_STRING,	/* memo/total */
 		G_TYPE_DOUBLE,	/* expense */
 		G_TYPE_DOUBLE,	/* income */

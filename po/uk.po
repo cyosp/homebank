@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2023-03-19 17:16+0000\n"
-"X-Generator: Launchpad (build 997ba17554f0ee82f56d9282fce82d3e09a43780)\n"
+"X-Launchpad-Export-Date: 2023-05-18 13:56+0000\n"
+"X-Generator: Launchpad (build 333bbdc825b25f14e50a980a2dbe4dc39f3d34d9)\n"
 
 #: ../src/dsp-account.c:2861
 msgid "Open the list filter"
@@ -4261,15 +4261,3 @@ msgstr "FI гонорар"
 #: ../src/ui-widgets.c:1348
 msgid "Direct Debit"
 msgstr "Прямий дебет"
-
-#~ msgid "Annual Total"
-#~ msgstr "Загальна річна сума"
-
-#~ msgid "Monthly Average"
-#~ msgstr "Середньомісячний"
-
-#~ msgid "Toggle show future transaction"
-#~ msgstr "Показати майбутні транзакції"
-
-#~ msgid "Budget (table view)"
-#~ msgstr "Кошторис (перегляд таблицею)"

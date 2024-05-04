@@ -9,14 +9,14 @@ msgstr ""
 "Project-Id-Version: HomeBank 3.2 alpha2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-03-19 08:55+0100\n"
-"PO-Revision-Date: 2023-01-25 07:27+0000\n"
-"Last-Translator: Javier Alama <Unknown>\n"
+"PO-Revision-Date: 2023-04-05 18:08+0000\n"
+"Last-Translator: Sergio Soriano Peiró <sersope@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2023-03-19 17:16+0000\n"
-"X-Generator: Launchpad (build 997ba17554f0ee82f56d9282fce82d3e09a43780)\n"
+"X-Launchpad-Export-Date: 2023-05-18 13:56+0000\n"
+"X-Generator: Launchpad (build 333bbdc825b25f14e50a980a2dbe4dc39f3d34d9)\n"
 "Language: es\n"
 
 #: ../data/homebank.desktop.in.in.h:1 ../src/dsp-mainwindow.c:702
@@ -131,12 +131,12 @@ msgstr "_Crear"
 
 #: ../src/dsp-account.c:728
 msgid "Create Assignment"
-msgstr ""
+msgstr "Crear asignación"
 
 #: ../src/dsp-account.c:729 ../src/dsp-account.c:804
 #, c-format
 msgid "%d created and prefixed with **PREFILLED**"
-msgstr ""
+msgstr "%d creadas con el prefijo **PRELLENADO**"
 
 #: ../src/dsp-account.c:758
 msgid ""
@@ -148,7 +148,7 @@ msgstr ""
 
 #: ../src/dsp-account.c:803
 msgid "Create Template"
-msgstr ""
+msgstr "Crear Plantilla"
 
 #: ../src/dsp-account.c:1681
 msgid ""
@@ -1212,7 +1212,7 @@ msgstr "Por institución"
 #: ../src/hub-scheduled.c:350
 #, c-format
 msgid "sum: %s (%s + %s)"
-msgstr ""
+msgstr "suma: %s (%s + %s)"
 
 #: ../src/hub-scheduled.c:394
 msgid "No transaction to add"
@@ -2623,6 +2623,8 @@ msgid ""
 "Annual\n"
 "Total"
 msgstr ""
+"Total\n"
+"anual"
 
 #. gtk_tree_view_column_set_title(col, _("Monthly Average"));
 #: ../src/ui-budget-tabview.c:1589
@@ -2630,6 +2632,8 @@ msgid ""
 "Monthly\n"
 "Average"
 msgstr ""
+"Media\n"
+"Mensual"
 
 #: ../src/ui-budget-tabview.c:1602
 msgid "Monthly"
@@ -3959,7 +3963,7 @@ msgstr "Semana"
 
 #: ../src/ui-widgets-data.c:88
 msgid "Fortnight"
-msgstr ""
+msgstr "Quincena"
 
 #: ../src/ui-widgets-data.c:90
 msgid "Quarter"
@@ -4278,15 +4282,3 @@ msgstr "Honorarios FI"
 #: ../src/ui-widgets.c:1348
 msgid "Direct Debit"
 msgstr "Cargo Directo"
-
-#~ msgid "Annual Total"
-#~ msgstr "Total anual"
-
-#~ msgid "Monthly Average"
-#~ msgstr "Promedio mensual"
-
-#~ msgid "Budget (table view)"
-#~ msgstr "Presupuesto (vista de tabla)"
-
-#~ msgid "Toggle show future transaction"
-#~ msgstr "Mostrar las transacciones futuras"

@@ -39,6 +39,8 @@ double hb_amount_round(const double x, unsigned int n);
 gdouble hb_amount_base(gdouble value, guint32 kcur);
 gdouble hb_amount_to_euro(gdouble amount);
 gboolean hb_amount_type_match(gdouble amount, gint type);
+gboolean hb_amount_equal(gdouble val1, gdouble val2);
+
 
 gdouble hb_rate(gdouble value, gdouble total);
 gchar *hb_str_rate(gchar *outstr, gint outlen, gdouble rate);
@@ -77,7 +79,9 @@ gchar *hb_string_dup_raw_amount_clean(const gchar *string, gint digits);
 void hb_string_strip_utf8_bom(gchar *str);
 void hb_string_strip_crlf(gchar *str);
 gboolean hb_string_has_leading_trailing(gchar *str);
-void hb_string_replace_char(gchar c, gchar *str);
+
+void hb_string_replace_char(gchar oc, gchar nc, gchar *str);
+void hb_string_remove_char(gchar c, gchar *str);
 gchar *hb_string_copy_jsonpair(gchar *dst, gchar *str);
 void hb_string_inline(gchar *str);
 gchar *hb_strdup_nobrackets (const gchar *str);

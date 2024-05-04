@@ -518,16 +518,20 @@ gint tmpintvl;
 gboolean showempty;
 GList *lst_acc, *lnk_acc;
 GList *lnk_txn;
-guint32 i, jmindate, jmaxdate, maxkacc;
+guint32 i, maxkacc;
 gdouble trn_amount;
 GtkTreeModel *model;
 GtkTreeIter  iter;
 //Account *acc;
-gint usrnbacc, usrrange;
+gint usrnbacc;
 
 	DB( g_print(" \n[repbalance] compute\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	//#2019876 return is invalid date range
+	if( data->filter->maxdate < data->filter->mindate )
+		return;
 
 	//get kacc array
 	maxkacc = da_acc_get_max_key();
@@ -542,12 +546,8 @@ gint usrnbacc, usrrange;
 	g_list_free(data->ope_list);
 	data->ope_list = NULL;
 
-	jmindate = 0;
-	jmaxdate = 0;
-
 	//grab user selection
 	tmpintvl  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_intvl));
-	usrrange  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_range));
 	showempty = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_showempty));
 	usrnbacc  = ui_acc_listview_fill_keys(GTK_TREE_VIEW(data->LV_acc), data->tmp_acckeys, &data->usrkcur);
 
@@ -585,29 +585,6 @@ gint usrnbacc, usrrange;
 		data->firstbalance += trn_amount;
 		DB( g_print(" - stored initial %.2f for account %d:%s\n", trn_amount, acc->key, acc->name) );
 
-		// get mindate
-		lnk_txn = g_queue_peek_head_link(acc->txn_queue);
-		if(lnk_txn)
-		{
-		Transaction *txn = lnk_txn->data;
-			if(jmindate == 0)
-				jmindate = txn->date;
-			else
-				jmindate = MIN(jmindate, txn->date);
-		}
-
-		// get maxdate
-		lnk_txn = g_queue_peek_tail_link(acc->txn_queue);
-		if(lnk_txn)
-		{
-		Transaction *txn = lnk_txn->data;
-			if(jmaxdate == 0)
-				jmaxdate = txn->date;
-			else
-				jmaxdate = MAX(jmaxdate, txn->date);
-		}
-		DB( g_print(" mindate: %d maxdate: %d\n", jmindate, jmaxdate) );
-		
 		//collect every txn for account
 		lnk_txn = g_queue_peek_head_link(acc->txn_queue);
 		while (lnk_txn != NULL)
@@ -638,16 +615,7 @@ gint usrnbacc, usrrange;
 	if(g_list_length(data->ope_list) == 0)
 		goto end;
 
-	// update the date range if alldate is selected
-	if( (usrrange == FLT_RANGE_MISC_ALLDATE) )
-	{
-		data->filter->mindate = jmindate;
-		data->filter->maxdate = jmaxdate;
-		repbalance_update_quickdate(widget, NULL);
-	}
-	
 	// grab nb result and allocate memory
-	data->jbasedate = jmindate;
 	//#1958001
 	data->n_result = report_interval_count(tmpintvl, data->filter->mindate, data->filter->maxdate);
 	data->tmp_income  = g_malloc0((data->n_result+2) * sizeof(gdouble));

@@ -14,8 +14,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2023-03-19 17:16+0000\n"
-"X-Generator: Launchpad (build 997ba17554f0ee82f56d9282fce82d3e09a43780)\n"
+"X-Launchpad-Export-Date: 2023-05-18 13:56+0000\n"
+"X-Generator: Launchpad (build 333bbdc825b25f14e50a980a2dbe4dc39f3d34d9)\n"
 
 #: ../data/homebank.desktop.in.in.h:1 ../src/dsp-mainwindow.c:702
 msgid "HomeBank"
@@ -4266,15 +4266,3 @@ msgstr "Finansinstitutsavgift"
 #: ../src/ui-widgets.c:1348
 msgid "Direct Debit"
 msgstr "Autogiro"
-
-#~ msgid "Toggle show future transaction"
-#~ msgstr "Växla visa framtida transaktion"
-
-#~ msgid "Budget (table view)"
-#~ msgstr "Budget (visa som tabell)"
-
-#~ msgid "Monthly Average"
-#~ msgstr "Månatligt genomsnitt"
-
-#~ msgid "Annual Total"
-#~ msgstr "Årligt total"

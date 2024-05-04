@@ -615,6 +615,10 @@ gdouble *tmp_amount;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
+	//#2019876 return is invalid date range
+	if( data->filter->maxdate < data->filter->mindate )
+		return;
+
 	tmpintvl  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_intvl));
 	cumul     = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_cumul));
 	//range     = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_range));
@@ -633,7 +637,6 @@ gdouble *tmp_amount;
 	//get our min max date
 	from = data->filter->mindate;
 	to   = data->filter->maxdate;
-	if(to < from) return;
 
 	g_queue_free (data->txn_queue);
 	data->txn_queue = hbfile_transaction_get_partial(data->filter->mindate, data->filter->maxdate);

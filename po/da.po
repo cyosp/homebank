@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: homebank\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2023-03-19 08:55+0100\n"
-"PO-Revision-Date: 2023-03-16 16:46+0000\n"
-"Last-Translator: Søren Halkier Christensen <Unknown>\n"
+"PO-Revision-Date: 2023-04-02 18:36+0000\n"
+"Last-Translator: nanker <Unknown>\n"
 "Language-Team: Danish <da@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2023-03-19 17:16+0000\n"
-"X-Generator: Launchpad (build 997ba17554f0ee82f56d9282fce82d3e09a43780)\n"
+"X-Launchpad-Export-Date: 2023-05-18 13:56+0000\n"
+"X-Generator: Launchpad (build 333bbdc825b25f14e50a980a2dbe4dc39f3d34d9)\n"
 
 #: ../data/homebank.desktop.in.in.h:1 ../src/dsp-mainwindow.c:702
 msgid "HomeBank"
@@ -1230,7 +1230,7 @@ msgstr "Tjek resultatet af de planlagte transaktioner"
 #: ../src/rep-stats.c:970 ../src/rep-vehicle.c:1071 ../src/ui-widgets-data.c:50
 #: ../src/ui-widgets-data.c:71 ../src/ui-widgets-data.c:99
 msgid "Total"
-msgstr "Totaler"
+msgstr "Total"
 
 #: ../src/hub-scheduled.c:619
 msgid "_Skip"
@@ -4268,15 +4268,3 @@ msgstr "BankGebyr"
 #: ../src/ui-widgets.c:1348
 msgid "Direct Debit"
 msgstr "Bet.Service/Direkte Debitering"
-
-#~ msgid "Toggle show future transaction"
-#~ msgstr "Vis fremtidige transaktioner"
-
-#~ msgid "Annual Total"
-#~ msgstr "Total/år"
-
-#~ msgid "Monthly Average"
-#~ msgstr "Gennemsnit/md."
-
-#~ msgid "Budget (table view)"
-#~ msgstr "Budget (tabelvisning)"

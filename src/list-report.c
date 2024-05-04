@@ -85,7 +85,6 @@ const gchar *format;
 }
 
 
-
 static void 
 lst_rep_total_name_cell_data_function (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
@@ -117,7 +116,7 @@ static void lst_rep_total_rate_cell_data_function (GtkTreeViewColumn *col,
                            gpointer           user_data)
 {
 gdouble  tmp;
-gchar   buf[128];
+gchar   buf[16];
 
 	gtk_tree_model_get(model, iter, GPOINTER_TO_INT(user_data), &tmp, -1);
 
@@ -262,7 +261,11 @@ gdouble val1, val2;
 					retval = pos1 - pos2;
 					//DB( g_print(" sort %3d = %3d :: %d\n", pos1, pos2, retval) );
 					break;
-				default:
+				case LST_REPDIST_EXPENSE:
+				case LST_REPDIST_INCOME:
+					retval = (ABS(val1) - ABS(val2)) > 0 ? -1 : 1;
+					break;
+				default: // should be LST_REPDIST_TOTAL
 					//#1956060 sort with sign (no abs), option is possible but complex
 					//retval = (ABS(val1) - ABS(val2)) > 0 ? -1 : 1;
 					retval = (val1 - val2) > 0 ? -1 : 1;
@@ -720,11 +723,10 @@ guint i;
 		gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 	}
 
-	if( avg == TRUE )
-	{
-		column = lst_rep_time_column_create_amount(_("Average"), i++);
-		gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
-	}
+	column = lst_rep_time_column_create_amount(_("Average"), i++);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+	//#2012576 keep column but hide it
+	gtk_tree_view_column_set_visible(column, avg);
 
 	column = lst_rep_time_column_create_amount(_("Total"), i++);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);

@@ -142,6 +142,7 @@ gint nbmonth;
 	return(nbmonth);
 }
 
+
 static gdouble budget_compute_result(gdouble budget, gdouble spent)
 {
 gdouble retval;
@@ -677,6 +678,10 @@ gint nbmonth = 1;
 	DB( g_print("\n[repbudget] compute\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	//#2019876 return is invalid date range
+	if( data->filter->maxdate < data->filter->mindate )
+		return;
 
 	tmpfor     = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_for));
 	tmpkind    = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_kind));
