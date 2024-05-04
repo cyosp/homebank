@@ -23,8 +23,9 @@
 
 typedef enum
 {
+	REPORT_SRC_NONE,
 	REPORT_SRC_CATEGORY,
-	REPORT_SRC_SUBCATEGORY,
+	//REPORT_SRC_SUBCATEGORY,
 	REPORT_SRC_PAYEE,
 	REPORT_SRC_ACCOUNT,
 	REPORT_SRC_TAG,
@@ -42,6 +43,7 @@ typedef enum {
 
 typedef enum
 {
+	REPORT_INTVL_NONE,
 	REPORT_INTVL_DAY,
 	REPORT_INTVL_WEEK,
 	REPORT_INTVL_FORTNIGHT,
@@ -62,6 +64,7 @@ typedef enum
 
 typedef struct _datatable DataTable;
 typedef struct _datarow DataRow;
+typedef struct _datacol DataCol;
 
 
 typedef struct _carcost CarCost;
@@ -84,60 +87,74 @@ CarCost *da_vehiclecost_malloc(void);
 void da_vehiclecost_free(CarCost *item);
 void da_vehiclecost_destroy(GList *list);
 
+
+enum {
+	REPORT_MODE_TOTAL,
+	REPORT_MODE_TREND
+};
+
+
 void da_datatable_free(DataTable *dt);
-DataTable *da_datatable_malloc(gshort type, guint32 nbrows, guint32 nbcols);
 
 gdouble da_datarow_get_cell_sum(DataRow *dr, guint32 index);
 
-void datatable_init_items(DataTable *dt, gint src, guint32 jfrom);
 
-void datatable_amount_add(DataTable *dt, guint32 idx, gdouble value);
+DataTable *report_compute(gint src, gint intvl, Filter *flt, GQueue *txn_queue, gboolean do_forecast, gboolean do_balance);
 
-
-DataTable *report_compute_total(gint tmpsrc, Filter *flt, GQueue *txn_queue);
-DataTable *report_compute_trend(gint tmpsrc, gint tmpintvl, Filter *flt, GQueue *txn_queue);
-DataTable *report_compute_trend_balance(gint tmpsrc, gint tmpintvl, Filter *flt);
-
-gint report_items_count(gint src, guint32 jfrom, guint32 jto);
-gint report_items_get_pos(gint tmpsrc, guint jfrom, Transaction *ope);
+DataCol *report_data_get_col(DataTable *dt, guint32 idx);
+DataRow *report_data_get_row(DataTable *dt, guint32 row);
+guint report_items_get_key(gint tmpsrc, guint jfrom, Transaction *ope);
 
 gint report_interval_get_pos(gint intvl, guint jfrom, Transaction *ope);
 gint report_interval_count(gint intvl, guint32 jfrom, guint32 jto);
-void report_interval_snprint_name(gchar *s, gint slen, gint intvl, guint32 jfrom, gint idx);
 
-gdouble report_acc_initbalance_get(Filter *flt);
+guint32 report_interval_snprint_name(gchar *s, gint slen, gint intvl, guint32 jfrom, gint idx);
+
 gdouble report_txn_amount_get(Filter *flt, Transaction *txn);
 
 
 struct _datarow
 {
-	//guint32		key;
-	guint32		pos;		//used for sort
-	//gint		type;
-	gchar		*label;		//row label
-
-	//todo: for total mode: I should just keep some simple gdouble inc/exp here
-	//and do not allocate extra memory for nothing
 	guint32		nbcols;
-	gdouble		*expense;	//array for each row column
-	gdouble		*income;
+	guint32		pos;		//used for sort
+	gchar		*label;		//row label
+	gshort		flags;		//See below
+	gshort	  	pad1;
+	gchar		*xlabel;	//short label
+	gchar		*misclabel;	//host top label: year, today, etc
+	gdouble		*colexp;	//array for each row column
+	gdouble		*colinc;	//array for each row column
+	gdouble		rowexp;		//row total expense
+	gdouble		rowinc;		//row total income
 };
+
+
+struct _datacol
+{
+	gchar		*label;		//long label
+	gshort		flags;		//See below
+	gshort  	pad1;
+	gchar		*xlabel;	//short label
+	gchar		*misclabel;	//host top label: year, today, etc
+};
+
+#define RF_NEWYEAR 		(1<<1)
+#define RF_FORECAST		(1<<2)
 
 
 struct _datatable
 {
-	gshort		mode;		//0=total / 1=time
-
-	guint32		nbrows;		//nb of items: cat/subcat/pay/acc/...
+	guint32		nbkeys;		//maximum key value for items (row)
+	guint32		nbrows;		//nb of items (length): cat/subcat/pay/acc/...
 	guint32		nbcols;		//nb of intervals: d, w, m, q, hy, y
+	guint32		maxpostdate;
 
+	guint32		*keyindex;	//array of correspondance key => index in rows
+	guint32		*keylist;
 	DataRow		**rows;		//array of _datarow struct per key of item
-	//gchar		**coltitle;	//array of column title
-
 	DataRow		*totrow;	//for trend
+	DataCol		**cols;		//array of datacol
 
-	gdouble		totexp;
-	gdouble		totinc;
 };
 
 

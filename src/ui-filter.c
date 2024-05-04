@@ -637,7 +637,7 @@ static void ui_flt_manage_setup(struct ui_flt_manage_data *data)
 	{
 		//gtk_tree_selection_set_mode(GTK_TREE_SELECTION(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_acc))), GTK_SELECTION_MULTIPLE);
 
-		ui_acc_listview_populate(data->LV_acc, ACC_LST_INSERT_REPORT);
+		ui_acc_listview_populate(data->LV_acc, ACC_LST_INSERT_REPORT, NULL);
 		//populate_view_acc(data->LV_acc, GLOBALS->acc_list, FALSE);
 	}
 
@@ -779,7 +779,7 @@ GtkWidget *vbox, *treebox, *scrollwin;
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
 	gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
 	gtk_tree_view_set_grid_lines(GTK_TREE_VIEW(treeview), GTK_TREE_VIEW_GRID_LINES_NONE);
-	gtk_container_add(GTK_CONTAINER(scrollwin), treeview);
+	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
 
 
 	//list toolbar
@@ -822,9 +822,8 @@ GtkWidget *treeview;
 static GtkWidget *ui_flt_page_category (struct ui_flt_manage_data *data)
 {
 struct ui_flt_list_data tmp;
-GtkWidget *part, *grid, *widget, *tbar, *hbox;
+GtkWidget *part, *grid, *widget, *tbar, *bbox;
 GtkWidget *treeview;
-GtkToolItem *toolitem;
 
 	part = gtk_box_new(GTK_ORIENTATION_VERTICAL, SPACING_LARGE);
 
@@ -847,30 +846,20 @@ GtkToolItem *toolitem;
 	g_signal_connect (tmp.bt_inv, "activate-link", G_CALLBACK (ui_flt_hub_category_activate_link), treeview);
 
 	// expand/colapse
-	tbar = gtk_toolbar_new();
-	gtk_toolbar_set_icon_size (GTK_TOOLBAR(tbar), GTK_ICON_SIZE_MENU);
-	gtk_toolbar_set_style(GTK_TOOLBAR(tbar), GTK_TOOLBAR_ICONS);
+	tbar = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
 	gtk_box_pack_start (GTK_BOX (grid), tbar, FALSE, FALSE, 0);
 
-	toolitem = gtk_separator_tool_item_new ();
-	gtk_tool_item_set_expand (toolitem, TRUE);
-	gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(toolitem), FALSE);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
-
-
-	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	toolitem = gtk_tool_item_new();
-	gtk_container_add (GTK_CONTAINER(toolitem), hbox);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_box_pack_end (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
 
 		widget = make_image_button(ICONNAME_HB_BUTTON_EXPAND, _("Expand all"));
 		data->BT_expand = widget;
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
 
 		widget = make_image_button(ICONNAME_HB_BUTTON_COLLAPSE, _("Collapse all"));
 		data->BT_collapse = widget;
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
 
 	g_signal_connect (G_OBJECT (data->BT_expand), "clicked", G_CALLBACK (ui_flt_hub_category_expand_all), NULL);
 	g_signal_connect (G_OBJECT (data->BT_collapse), "clicked", G_CALLBACK (ui_flt_hub_category_collapse_all), NULL);
@@ -1072,7 +1061,7 @@ gint i, row;
 	//gtk_grid_set_row_spacing (GTK_GRID (grid), SPACING_SMALL);
 	//gtk_grid_set_column_spacing (GTK_GRID (grid), SPACING_SMALL);
 	//gtk_box_pack_start (GTK_BOX (vbox2), grid, FALSE, FALSE, 0);
-	gtk_container_add(GTK_CONTAINER(frame), grid);
+	gtk_frame_set_child(GTK_FRAME(frame), grid);
 	
 	hb_widget_set_margin(grid, 4);
 	gtk_style_context_add_class (gtk_widget_get_style_context (frame), GTK_STYLE_CLASS_VIEW);
@@ -1236,7 +1225,7 @@ gint w, h, dw, dh;
 	gtk_stack_set_transition_type (GTK_STACK (stack), GTK_STACK_TRANSITION_TYPE_SLIDE_UP_DOWN);
 	//gtk_stack_set_transition_type (GTK_STACK (stack), GTK_STACK_TRANSITION_TYPE_CROSSFADE);
 	gtk_stack_sidebar_set_stack (GTK_STACK_SIDEBAR (sidebar), GTK_STACK (stack));
-	gtk_container_set_border_width(GTK_CONTAINER(stack), SPACING_LARGE);
+	hb_widget_set_margin(GTK_WIDGET(stack), SPACING_LARGE);
 
 
 	data->stack = stack;
@@ -1376,7 +1365,7 @@ gint w, h, dw, dh;
 	//g_free(data);
 
 	DB( g_print(" destroy\n") );
-	gtk_widget_destroy (dialog);
+	gtk_window_destroy (GTK_WINDOW(dialog));
 
 	g_free(data);
 	

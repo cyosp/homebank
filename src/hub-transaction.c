@@ -145,7 +145,7 @@ gboolean result;
 
 GtkWidget *ui_hub_transaction_create(struct hbfile_data *data, HbHubTxnType type)
 {
-GtkWidget *hub, *vbox, *sw, *widget;
+GtkWidget *hub, *vbox, *scrollwin, *treeview;
 
 	DB( g_print("\n[ui_hub_txn] create %d\n", type) );
 	
@@ -153,24 +153,20 @@ GtkWidget *hub, *vbox, *sw, *widget;
 		return NULL;
 	
 	hub = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(hub), SPACING_SMALL);
+	hb_widget_set_margin(GTK_WIDGET(hub), SPACING_SMALL);
 
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	//gtk_widget_set_margin_top(GTK_WIDGET(vbox), 0);
-	//gtk_widget_set_margin_bottom(GTK_WIDGET(vbox), SPACING_SMALL);
-	//gtk_widget_set_margin_start(GTK_WIDGET(vbox), 2*SPACING_SMALL);
-	//gtk_widget_set_margin_end(GTK_WIDGET(vbox), SPACING_SMALL);
 	gtk_box_pack_start (GTK_BOX (hub), vbox, TRUE, TRUE, 0);
 
-	sw = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sw), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_box_pack_start (GTK_BOX (vbox), sw, TRUE, TRUE, 0);
+	scrollwin = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
 	
-	widget = (GtkWidget *)create_list_transaction(LIST_TXN_TYPE_OTHER, PREFS->lst_ope_columns);
-	list_txn_set_column_acc_visible(GTK_TREE_VIEW(widget), TRUE);
-	data->LV_txn[type] = widget;
-	gtk_container_add (GTK_CONTAINER (sw), widget);
+	treeview = (GtkWidget *)create_list_transaction(LIST_TXN_TYPE_OTHER, PREFS->lst_ope_columns);
+	list_txn_set_column_acc_visible(GTK_TREE_VIEW(treeview), TRUE);
+	data->LV_txn[type] = treeview;
+	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
 
 	g_signal_connect (GTK_TREE_VIEW(data->LV_txn[type]), "row-activated", G_CALLBACK (ui_hub_transaction_onRowActivated), data);
 	

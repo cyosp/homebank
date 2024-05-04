@@ -109,6 +109,9 @@ void homebank_pref_free(void)
 
 	g_free(PREFS->date_format);
 
+	g_free(PREFS->api_rate_url);
+	g_free(PREFS->api_rate_key);
+
 	g_free(PREFS->color_exp);
 	g_free(PREFS->color_inc);
 	g_free(PREFS->color_warn);
@@ -269,6 +272,7 @@ gint i;
 	PREFS->txn_memoacp_days = 365;
 	//#1887212
 	PREFS->txn_xfer_daygap = 2;
+	PREFS->txn_xfer_syncstat = FALSE;
 
 	PREFS->toolbar_style = 4;	//text beside icons
 	PREFS->grid_lines = GTK_TREE_VIEW_GRID_LINES_NONE;
@@ -290,13 +294,20 @@ gint i;
 	currency_get_system_iso();
 
 	PREFS->wal_toolbar = TRUE;
-	PREFS->wal_spending = TRUE;
+	PREFS->wal_totchart = TRUE;	
+	PREFS->wal_timchart = TRUE;
 	PREFS->wal_upcoming = TRUE;
 	PREFS->wal_vpaned = 600/2;
 	PREFS->wal_hpaned = 1024/2;
 
 	PREFS->pnl_acc_col_acc_width = -1;
-	PREFS->pnl_acc_show_by = 0;
+	PREFS->pnl_acc_show_by = DSPACC_GROUP_BY_TYPE;
+
+	PREFS->hub_tot_view  = 1;
+	PREFS->hub_tot_range = FLT_RANGE_THIS_MONTH;
+	PREFS->hub_tim_view  = 1;
+	PREFS->hub_tim_range = FLT_RANGE_LAST_12MONTHS;
+
 	i = 0;
 	PREFS->lst_acc_columns[i++] = COL_DSPACC_STATUS;
 	PREFS->lst_acc_columns[i++] = COL_DSPACC_ACCOUNTS;
@@ -342,11 +353,15 @@ gint i;
 	//PREFS->date_range_rep = FLT_RANGE_THISYEAR;
 
 	//v5.2 change to let the example file show things
-	PREFS->date_range_wal = FLT_RANGE_MISC_ALLDATE;
+	//PREFS->date_range_wal = FLT_RANGE_MISC_ALLDATE;
 	PREFS->date_range_txn = FLT_RANGE_MISC_ALLDATE;
 	PREFS->date_range_rep = FLT_RANGE_MISC_ALLDATE;
 	PREFS->date_future_nbdays = 0;
 	PREFS->rep_maxspenditems = 10;
+
+	//forecast
+	PREFS->rep_forcast = TRUE;
+	PREFS->rep_forecat_nbmonth = 6;
 
 	//import/export
 	PREFS->dtex_nointro = TRUE;
@@ -360,6 +375,10 @@ gint i;
 	PREFS->dtex_qifmemo = TRUE;
 	PREFS->dtex_qifswap = FALSE;
 	PREFS->dtex_csvsep = PRF_DTEX_CSVSEP_SEMICOLON;
+
+	//currency api
+	PREFS->api_rate_url = g_strdup("https://api.exchangerate.host");
+	PREFS->api_rate_key = NULL;
 
 	//todo: add intelligence here
 	PREFS->euro_active  = FALSE;
@@ -730,6 +749,8 @@ GError *error = NULL;
 				homebank_pref_get_boolean(keyfile, group, "TxnMemoAcp", &PREFS->txn_memoacp);
 				homebank_pref_get_short  (keyfile, group, "TxnMemoAcpDays", &PREFS->txn_memoacp_days);
 				homebank_pref_get_short  (keyfile, group, "TxnXferDayGap", &PREFS->txn_xfer_daygap);
+				homebank_pref_get_boolean(keyfile, group, "TxnXferSyncStatus", &PREFS->txn_xfer_syncstat);
+				
 
 				if( g_key_file_has_key(keyfile, group, "ColumnsOpe", NULL) )
 				{
@@ -900,8 +921,13 @@ GError *error = NULL;
 				homebank_pref_get_integer(keyfile, group, "WalVPaned", &PREFS->wal_vpaned);
 				homebank_pref_get_integer(keyfile, group, "WalHPaned", &PREFS->wal_hpaned);
 				homebank_pref_get_boolean(keyfile, group, "WalToolbar", &PREFS->wal_toolbar);
-				homebank_pref_get_boolean(keyfile, group, "WalSpending", &PREFS->wal_spending);
+				homebank_pref_get_boolean(keyfile, group, "WalTotalChart", &PREFS->wal_totchart);
+				homebank_pref_get_boolean(keyfile, group, "WalTimeChart", &PREFS->wal_timchart);
 				homebank_pref_get_boolean(keyfile, group, "WalUpcoming", &PREFS->wal_upcoming);
+				if( version < 570 )
+				{
+					homebank_pref_get_boolean(keyfile, group, "WalSpending", &PREFS->wal_totchart);
+				}
 
 			//since 5.1.3
 			group = "Panels";
@@ -926,6 +952,13 @@ GError *error = NULL;
 					g_free(src);
 				}						
 
+				//hub total/time
+				homebank_pref_get_short(keyfile, group, "HubTotView" , &PREFS->hub_tot_view);
+				homebank_pref_get_short(keyfile, group, "HubTotViewRange", &PREFS->hub_tot_range);
+				homebank_pref_get_short(keyfile, group, "HubTimView" , &PREFS->hub_tim_view);
+				homebank_pref_get_short(keyfile, group, "HubTimViewRange", &PREFS->hub_tim_range);
+
+				//upcoming
 				homebank_pref_get_short(keyfile, group, "UpcColPayV", &PREFS->pnl_upc_col_pay_show);
 				homebank_pref_get_short(keyfile, group, "UpcColCatV", &PREFS->pnl_upc_col_cat_show);
 				homebank_pref_get_short(keyfile, group, "UpcColMemV", &PREFS->pnl_upc_col_mem_show);
@@ -962,7 +995,7 @@ GError *error = NULL;
 
 				DB( g_print(" -> ** Filter\n") );
 
-				homebank_pref_get_integer(keyfile, group, "DateRangeWal", &PREFS->date_range_wal);
+				//homebank_pref_get_integer(keyfile, group, "DateRangeWal", &PREFS->date_range_wal);
 				homebank_pref_get_integer(keyfile, group, "DateRangeTxn", &PREFS->date_range_txn);
 				homebank_pref_get_integer(keyfile, group, "DateFutureNbDays", &PREFS->date_future_nbdays);
 				homebank_pref_get_integer(keyfile, group, "DateRangeRep", &PREFS->date_range_rep);
@@ -970,14 +1003,20 @@ GError *error = NULL;
 				if(version <= 7)
 				{
 					// shift date range >= 5, since we inserted a new one at position 5
-					if(PREFS->date_range_wal >= OLD56_FLT_RANGE_LASTYEAR)
-						PREFS->date_range_wal++;
+					//if(PREFS->date_range_wal >= OLD56_FLT_RANGE_LASTYEAR)
+					//	PREFS->date_range_wal++;
 					if(PREFS->date_range_txn >= OLD56_FLT_RANGE_LASTYEAR)
 						PREFS->date_range_txn++;
 					if(PREFS->date_range_rep >= OLD56_FLT_RANGE_LASTYEAR)
 						PREFS->date_range_rep++;
 				}
 
+			group = "API";
+
+				DB( g_print(" -> ** API\n") );
+
+				homebank_pref_get_string(keyfile, group, "APIRateUrl", &PREFS->api_rate_url);
+				homebank_pref_get_string(keyfile, group, "APIRateKey", &PREFS->api_rate_key);
 
 			group = "Euro";
 
@@ -1044,6 +1083,9 @@ GError *error = NULL;
 				homebank_pref_get_boolean(keyfile, group, "SmallFont", &PREFS->rep_smallfont);
 				homebank_pref_get_integer(keyfile, group, "MaxSpendItems", &PREFS->rep_maxspenditems);
 
+				homebank_pref_get_boolean(keyfile, group, "Forecast", &PREFS->rep_forcast);
+				homebank_pref_get_integer(keyfile, group, "ForecastNbMonth", &PREFS->rep_forecat_nbmonth);
+
 			group = "Exchange";
 
 				DB( g_print(" -> ** Exchange\n") );
@@ -1068,7 +1110,7 @@ GError *error = NULL;
 			{
 				DB( g_print(" ugrade 5.6 daterange\n") );
 				//convert old daterange
-				PREFS->date_range_wal = homebank_pref_upgrade_560_daterange(PREFS->date_range_wal);	//top spending	
+				//PREFS->date_range_wal = homebank_pref_upgrade_560_daterange(PREFS->date_range_wal);	//top spending	
 				PREFS->date_range_txn = homebank_pref_upgrade_560_daterange(PREFS->date_range_txn);	//transactions
 				PREFS->date_range_rep = homebank_pref_upgrade_560_daterange(PREFS->date_range_rep);	//report options
 			}
@@ -1176,6 +1218,7 @@ GError *error = NULL;
 		g_key_file_set_boolean (keyfile, group, "TxnMemoAcp", PREFS->txn_memoacp);
 		g_key_file_set_integer (keyfile, group, "TxnMemoAcpDays" , PREFS->txn_memoacp_days);
 		g_key_file_set_integer (keyfile, group, "TxnXferDayGap" , PREFS->txn_xfer_daygap);
+		g_key_file_set_boolean (keyfile, group, "TxnXferSyncStatus", PREFS->txn_xfer_syncstat);
 
 		//register colums
 		g_key_file_set_integer_list(keyfile, group, "ColumnsOpe", PREFS->lst_ope_columns, NUM_LST_DSPOPE);
@@ -1208,7 +1251,8 @@ GError *error = NULL;
 		g_key_file_set_integer (keyfile, group, "WalVPaned" , PREFS->wal_vpaned);
 		g_key_file_set_integer (keyfile, group, "WalHPaned" , PREFS->wal_hpaned);
 		g_key_file_set_boolean (keyfile, group, "WalToolbar", PREFS->wal_toolbar);
-		g_key_file_set_boolean (keyfile, group, "WalSpending", PREFS->wal_spending);
+		g_key_file_set_boolean (keyfile, group, "WalTotalChart", PREFS->wal_totchart);
+		g_key_file_set_boolean (keyfile, group, "WalTimeChart", PREFS->wal_timchart);
 		g_key_file_set_boolean (keyfile, group, "WalUpcoming", PREFS->wal_upcoming);
 
 		//since 5.1.3
@@ -1219,6 +1263,13 @@ GError *error = NULL;
 		g_key_file_set_integer(keyfile, group, "AccShowBy" , PREFS->pnl_acc_show_by);
 		g_key_file_set_integer_list(keyfile, group, "AccColumns", PREFS->lst_acc_columns, NUM_LST_COL_DSPACC);
 
+		//hub total/time
+		g_key_file_set_integer(keyfile, group, "HubTotView" , PREFS->hub_tot_view);
+		g_key_file_set_integer(keyfile, group, "HubTotViewRange" , PREFS->hub_tot_range);
+		g_key_file_set_integer(keyfile, group, "HubTimView" , PREFS->hub_tim_view);
+		g_key_file_set_integer(keyfile, group, "HubTimViewRange" , PREFS->hub_tim_range);
+
+		//upcoming
 		g_key_file_set_integer(keyfile, group, "UpcColPayV", PREFS->pnl_upc_col_pay_show);
 		g_key_file_set_integer(keyfile, group, "UpcColCatV", PREFS->pnl_upc_col_cat_show);
 		g_key_file_set_integer(keyfile, group, "UpcColMemV", PREFS->pnl_upc_col_mem_show);
@@ -1242,10 +1293,18 @@ GError *error = NULL;
 		DB( g_print(" -> ** filter\n") );
 
 		group = "Filter";
-		g_key_file_set_integer (keyfile, group, "DateRangeWal", PREFS->date_range_wal);
+		//g_key_file_set_integer (keyfile, group, "DateRangeWal", PREFS->date_range_wal);
 		g_key_file_set_integer (keyfile, group, "DateRangeTxn", PREFS->date_range_txn);
 		g_key_file_set_integer (keyfile, group, "DateFutureNbDays", PREFS->date_future_nbdays);
 		g_key_file_set_integer (keyfile, group, "DateRangeRep", PREFS->date_range_rep);
+
+		DB( g_print(" -> ** API\n") );
+
+		group = "API";
+
+		homebank_pref_set_string(keyfile, group, "APIRateUrl", PREFS->api_rate_url);
+		homebank_pref_set_string(keyfile, group, "APIRateKey", PREFS->api_rate_key);
+
 
 		DB( g_print(" -> ** euro\n") );
 
@@ -1280,6 +1339,10 @@ GError *error = NULL;
 		g_key_file_set_integer (keyfile, group, "ColorScheme"  , PREFS->report_color_scheme);
 		g_key_file_set_boolean (keyfile, group, "SmallFont"    , PREFS->rep_smallfont);
 		g_key_file_set_integer (keyfile, group, "MaxSpendItems", PREFS->rep_maxspenditems);
+
+		g_key_file_set_boolean (keyfile, group, "Forecast"    , PREFS->rep_forcast);
+		g_key_file_set_integer (keyfile, group, "ForecastNbMonth", PREFS->rep_forecat_nbmonth);
+
 
 		group = "Exchange";
 		g_key_file_set_boolean (keyfile, group, "DoIntro", PREFS->dtex_nointro);

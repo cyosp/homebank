@@ -801,10 +801,8 @@ static void repvehicle_filter_setup(struct repvehicle_data *data)
 	filter_reset(data->filter);
 
 	/* 3.4 : make int transfer out of stats */
-	data->filter->option[FLT_GRP_TYPE] = 2;
-	data->filter->type = FLT_TYPE_INTXFER;
-
 	filter_preset_daterange_set(data->filter, PREFS->date_range_rep, 0);
+	filter_preset_type_set(data->filter, FLT_TYPE_INTXFER, FLT_EXCLUDE);
 	
 	//g_signal_handler_block(data->PO_mindate, data->handler_id[HID_REPVEHICLE_MINDATE]);
 	//g_signal_handler_block(data->PO_maxdate, data->handler_id[HID_REPVEHICLE_MAXDATE]);
@@ -930,7 +928,7 @@ GtkWidget *repvehicle_window_new(void)
 {
 struct repvehicle_data *data;
 struct WinGeometry *wg;
-GtkWidget *window, *mainvbox, *hbox, *vbox, *treeview;
+GtkWidget *window, *mainvbox, *hbox, *vbox, *scrollwin, *treeview;
 GtkWidget *label, *widget, *table;
 gint row, col;
 
@@ -959,7 +957,7 @@ gint row, col;
 
 	//window contents
 	mainvbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	gtk_container_add (GTK_CONTAINER (window), mainvbox);
+	gtk_window_set_child(GTK_WINDOW(window), mainvbox);
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_box_pack_start (GTK_BOX (mainvbox), hbox, TRUE, TRUE, 0);
@@ -969,7 +967,7 @@ gint row, col;
 	gtk_widget_set_hexpand (GTK_WIDGET(table), FALSE);
     gtk_box_pack_start (GTK_BOX (hbox), table, FALSE, FALSE, 0);
 
-	gtk_container_set_border_width (GTK_CONTAINER (table), SPACING_SMALL);
+	hb_widget_set_margin(GTK_WIDGET(table), SPACING_SMALL);
 	gtk_grid_set_row_spacing (GTK_GRID (table), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (table), SPACING_MEDIUM);
 
@@ -1034,7 +1032,7 @@ gint row, col;
 	gtk_widget_set_hexpand (GTK_WIDGET(table), FALSE);
     gtk_box_pack_start (GTK_BOX (vbox), table, FALSE, FALSE, 0);
 
-	gtk_container_set_border_width (GTK_CONTAINER (table), SPACING_SMALL);
+	hb_widget_set_margin(GTK_WIDGET(table), SPACING_SMALL);
 	gtk_grid_set_row_spacing (GTK_GRID (table), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (table), SPACING_MEDIUM);
 
@@ -1085,14 +1083,14 @@ gint row, col;
 	
 
 	//detail
-	widget = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (widget), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (widget), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	scrollwin = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
 	treeview = list_vehicle_create();
 	data->LV_report = treeview;
-	gtk_container_add (GTK_CONTAINER(widget), treeview);
-    gtk_box_pack_start (GTK_BOX (vbox), widget, TRUE, TRUE, 0);
+	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
+    gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
 
 
 	// connect dialog signals

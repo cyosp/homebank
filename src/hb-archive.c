@@ -322,10 +322,17 @@ da_archive_glist_key_compare_func(Archive *a, Archive *b)
 
 GList *da_archive_glist_sorted(gint column)
 {
-	if(column == 0)
-		GLOBALS->arc_list = g_list_sort(GLOBALS->arc_list, (GCompareFunc)da_archive_glist_key_compare_func);
-	else
-		GLOBALS->arc_list = g_list_sort(GLOBALS->arc_list, (GCompareFunc)da_archive_glist_name_compare_func);
+
+	switch(column)
+	{
+		case HB_GLIST_SORT_NAME:
+			GLOBALS->arc_list = g_list_sort(GLOBALS->arc_list, (GCompareFunc)da_archive_glist_name_compare_func);
+			break;
+		//case HB_GLIST_SORT_KEY:
+		default:
+			GLOBALS->arc_list = g_list_sort(GLOBALS->arc_list, (GCompareFunc)da_archive_glist_key_compare_func);
+			break;
+	}
 
 	return GLOBALS->arc_list;
 }
@@ -384,10 +391,13 @@ Archive *da_archive_init_from_transaction(Archive *arc, Transaction *txn, gboole
 	}
 	else
 	{
+		arc->flags |= OF_PREFILLED;
+		//#2018680
 		if(txn->memo != NULL)
-			arc->memo = g_strdup_printf("%s %s", _("**PREFILLED**"), txn->memo );
-		else
-			arc->memo = g_strdup(_("**PREFILLED**"));
+			arc->memo = g_strdup( txn->memo );
+			//arc->memo = g_strdup_printf("%s %s", _("**PREFILLED**"), txn->memo );
+		//else
+		//	arc->memo = g_strdup(_("**PREFILLED**"));
 	}	
 
 	if(txn->info != NULL)
@@ -457,6 +467,12 @@ guint32 nextpostdate = nextdate;
 	nextpostdate = g_date_get_julian(tmpdate);
 	
 	return nextpostdate;
+}
+
+
+guint32 scheduled_date_get_next_post(GDate *tmpdate, Archive *arc, guint32 nextdate)
+{
+	return _sched_date_get_next_post(tmpdate, arc, nextdate);
 }
 
 
@@ -717,6 +733,7 @@ guint8 daysinmonth;
 			daysinmonth = g_date_get_days_in_month(g_date_get_month(today), g_date_get_year(today));
 			maxdate = g_date_new_julian(start + (daysinmonth - auto_weekday));
 			
+			//TODO: 5.7 probably this is false
 			nxtmonth = ceil((gdouble)g_date_get_month(maxdate)/(gdouble)nbmonth)*(gdouble)nbmonth;
 			DB( g_print("nxtmonth: %f =  ceil( %d / %d) / %d\n", nxtmonth, g_date_get_month(today), month, month) );
 			g_date_set_day(maxdate, auto_weekday);

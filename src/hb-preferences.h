@@ -73,7 +73,7 @@ struct Preferences
 	gboolean	do_update_currency;
 
 	//top spending
-	gint		date_range_wal;
+	//gint		date_range_wal;
 	gint		rep_maxspenditems;
 
 	//interface
@@ -110,6 +110,7 @@ struct Preferences
 	gboolean	heritdate;
 	gboolean	txn_memoacp;
 	gshort		txn_xfer_daygap;
+	gboolean	txn_xfer_syncstat;
 	gshort		txn_memoacp_days;
 	gboolean	txn_showconfirm;
 
@@ -131,7 +132,11 @@ struct Preferences
 	gboolean	stat_showrate;
 	gboolean	stat_showdetail;
 	gboolean	stat_includexfer;
-	gboolean	budg_showdetail;	
+	gboolean	budg_showdetail;
+	//5.7
+	gboolean	rep_forcast;
+	gint		rep_forecat_nbmonth;
+		
 
 	//backup option
 	gboolean	bak_is_automatic;
@@ -143,6 +148,10 @@ struct Preferences
 	gchar		*path_import;
 	gchar		*path_export;
 	gchar		*path_attach;
+
+	//currency api
+	gchar		*api_rate_url;
+	gchar		*api_rate_key;
 
 	//euro zone
 	gboolean	euro_active;
@@ -185,7 +194,8 @@ struct Preferences
 
 	// main window stuffs 
 	gboolean	wal_toolbar;
-	gboolean	wal_spending;
+	gboolean	wal_totchart;
+	gboolean	wal_timchart;
 	gboolean	wal_upcoming;
 
 	gint		wal_vpaned;
@@ -195,6 +205,12 @@ struct Preferences
 	gshort		pnl_acc_col_acc_width;
 	gint 		lst_acc_columns[NUM_LST_COL_DSPACC+1];
 	gshort		pnl_acc_show_by;
+
+	//hub total/time
+	gshort		hub_tot_view;
+	gshort		hub_tot_range;
+	gshort		hub_tim_view;
+	gshort		hub_tim_range;
 
 	gshort		pnl_upc_col_pay_show;
 	gshort		pnl_upc_col_pay_width;

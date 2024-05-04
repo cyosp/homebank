@@ -19,7 +19,8 @@ src/hb-report.c
 src/homebank.c
 src/hub-account.c
 src/hub-scheduled.c
-src/hub-spending.c
+src/hub-reptotal.c
+src/hub-reptime.c
 src/hb-import-csv.c
 src/hb-import.c
 src/list-account.c

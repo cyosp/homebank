@@ -67,7 +67,7 @@ struct register_panel_data
 	GtkWidget	*NB_txn_daygap;
 	
 	GtkWidget	*ME_menuacc, *ME_menuedit, *ME_menutxn, *ME_menutools, *ME_menustatus;
-	GtkWidget	*MI_exportqif, *MI_exportcsv, *MI_exportpdf, *MI_print, *MI_close;
+	GtkWidget	*MI_exportqif, *MI_exportcsv, *MI_print, *MI_browse, *MI_close;
 	GtkWidget	*MI_copy, *MI_pasten, *MI_pastet;
 	GtkWidget	*MI_add, *MI_herit, *MI_edit;
 	GtkWidget	*MI_statnone, *MI_statclear, *MI_statrecon;
@@ -87,7 +87,7 @@ struct register_panel_data
 	GtkWidget	*CY_type;
 	GtkWidget	*CY_status;
 //	GtkWidget	*CY_month, *NB_year;
-	GtkWidget	*BT_reset, *BT_refresh, *BT_filter;
+	GtkWidget	*BT_reset, *BT_refresh, *BT_filter, *BT_print;
 	GtkWidget	*TX_selection;
 
 	GtkWidget   *ST_search;

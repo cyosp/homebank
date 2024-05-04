@@ -204,6 +204,50 @@ guint32 *new_key;
 	return FALSE;
 }
 
+
+Assign *
+da_asg_duplicate(Assign *srcitem)
+{
+Assign *existitem, *newitem = NULL;
+gchar *newsearch;
+guint32 *new_key;
+
+	DB( g_print("da_asg_duplicate\n") );
+
+	newsearch = g_strdup_printf("%s %s", srcitem->search, _("(copy)") );
+
+	/* ensure no duplicate */
+	existitem = da_asg_get_by_name( newsearch );
+	if( existitem == NULL )
+	{
+		newitem = da_asg_malloc();
+		//raw duplicate the memory segment
+		memcpy(newitem, srcitem, sizeof(Assign));
+		newitem->search = NULL;
+		newitem->notes = NULL;
+		
+		new_key = g_new0(guint32, 1);
+		*new_key = da_asg_get_max_key() + 1;
+		newitem->key = *new_key;
+		//added 5.3.3
+		newitem->pos = da_asg_length() + 1;
+
+		newitem->search = newsearch;
+		if( srcitem->notes )
+			newitem->notes = g_strdup(srcitem->notes);
+
+		g_hash_table_insert(GLOBALS->h_rul, new_key, newitem);
+	}
+	else
+	{
+	
+		g_free(newsearch);
+	}
+
+	return newitem;
+}
+
+
 /**
  * da_asg_get_max_key:
  *
@@ -275,7 +319,10 @@ Assign *da_asg_init_from_transaction(Assign *asg, Transaction *txn)
 {
 	DB( g_print("\n[scheduled] init from txn\n") );
 
-	asg->search = g_strdup_printf("%s %s", _("**PREFILLED**"), txn->memo );
+	//#2018680
+	//asg->search = g_strdup_printf("%s %s", _("**PREFILLED**"), txn->memo );
+	asg->search = g_strdup( txn->memo );
+	asg->flags |= ASGF_PREFILLED;
 	asg->flags |= (ASGF_DOPAY|ASGF_DOCAT|ASGF_DOMOD);
 	asg->kcat = txn->kcat;
 
@@ -363,6 +410,7 @@ GList *list = g_hash_table_get_values(GLOBALS->h_rul);
 		case HB_GLIST_SORT_POS:
 			return g_list_sort(list, (GCompareFunc)assign_glist_pos_compare_func);
 			break;
+		//case HB_GLIST_SORT_KEY:
 		default:
 			return g_list_sort(list, (GCompareFunc)assign_glist_key_compare_func);
 			break;

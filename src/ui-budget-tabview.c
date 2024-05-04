@@ -1299,7 +1299,7 @@ const ui_bud_tabview_store_t column_id = GPOINTER_TO_INT(user_data);
 		"visible", is_visible,
 		"editable", is_editable,
 		"foreground", fgcolor,
-		"xalign", 1.0,
+		"xalign", 1.0f,
 		"adjustment", adjustment,
 		"digits", 2,
 		NULL);
@@ -1383,7 +1383,7 @@ gboolean is_visible = TRUE;
 		"text", text,
 		"foreground", fgcolor,
 		"visible", is_visible,
-		"xalign", 1.0,
+		"xalign", 1.0f,
 		NULL);
 
 	g_free(text);
@@ -1435,7 +1435,7 @@ gboolean is_visible = TRUE;
 		"text", text,
 		"foreground", fgcolor,
 		"visible", is_visible,
-		"xalign", 1.0,
+		"xalign", 1.0f,
 		NULL);
 
 	g_free(text);
@@ -1606,8 +1606,9 @@ ui_bud_tabview_data_t *data = user_data;
 
 	// Monthly toggler
 	renderer = gtk_cell_renderer_toggle_new();
+	//5.7 fix memhit because value was nor float...
 	g_object_set(renderer,
-		"xalign", 0,
+		"xalign", 0.0f,
 		NULL);
 	gtk_tree_view_column_pack_start(col, renderer, FALSE);
 	gtk_tree_view_column_set_cell_data_func(col, renderer, ui_bud_tabview_view_display_is_same_amount, NULL, NULL);
@@ -2064,7 +2065,7 @@ GtkWidget *apply;
 ui_bud_tabview_view_mode_t view_mode;
 GtkTreeModel *budget, *categories;
 GtkTreeIter default_parent_iter, categories_iter;
-GtkWidget *dialog, *content_area, *grid, *combobox, *textentry, *widget;
+GtkWidget *dialog, *content, *grid, *combobox, *textentry, *widget;
 GtkCellRenderer *renderer;
 Category *category;
 gint gridrow, response;
@@ -2131,14 +2132,14 @@ gboolean exists_default_select = FALSE;
 	gtk_widget_set_sensitive(apply, FALSE);
 
 	//window contents
-	content_area = gtk_dialog_get_content_area(GTK_DIALOG (dialog));
+	content = gtk_dialog_get_content_area(GTK_DIALOG (dialog));
 
 	// design content
 	grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (grid), SPACING_MEDIUM);
 	gtk_grid_set_column_spacing (GTK_GRID (grid), SPACING_MEDIUM);
-	g_object_set(grid, "margin", SPACING_MEDIUM, NULL);
-	gtk_container_add(GTK_CONTAINER(content_area), grid);
+	hb_widget_set_margin(GTK_WIDGET(grid), SPACING_MEDIUM);
+	gtk_box_pack_start (GTK_BOX (content), grid, FALSE, FALSE, 0);
 
 	// First row display parent selector
 	gridrow = 0;
@@ -2283,7 +2284,7 @@ gboolean exists_default_select = FALSE;
 		}
 	}
 
-	gtk_widget_destroy(dialog);
+	gtk_window_destroy (GTK_WINDOW(dialog));
 
 	return;
 }
@@ -2358,7 +2359,7 @@ ui_bud_tabview_data_t *data = user_data;
 GtkWidget *apply;
 GtkTreeModel *budget, *categories;
 GtkTreeIter iter_source, iter, categories_iter;
-GtkWidget *dialog, *content_area, *grid, *combobox, *widget, *checkbutton;
+GtkWidget *dialog, *content, *grid, *combobox, *widget, *checkbutton;
 GtkCellRenderer *renderer;
 gint gridrow, response;
 Category *merge_source;
@@ -2384,14 +2385,14 @@ gchar *label_source, *label_delete;
 		gtk_widget_set_sensitive(apply, FALSE);
 
 		//window contents
-		content_area = gtk_dialog_get_content_area(GTK_DIALOG (dialog));
+		content = gtk_dialog_get_content_area(GTK_DIALOG (dialog));
 
 		// design content
 		grid = gtk_grid_new ();
 		gtk_grid_set_row_spacing (GTK_GRID (grid), SPACING_MEDIUM);
 		gtk_grid_set_column_spacing (GTK_GRID (grid), SPACING_MEDIUM);
-		g_object_set(grid, "margin", SPACING_MEDIUM, NULL);
-		gtk_container_add(GTK_CONTAINER(content_area), grid);
+		hb_widget_set_margin(GTK_WIDGET(grid), SPACING_MEDIUM);
+		gtk_box_pack_start (GTK_BOX (content), grid, FALSE, FALSE, 0);
 
 		// First row display parent selector
 		gridrow = 0;
@@ -2497,7 +2498,7 @@ gchar *label_source, *label_delete;
 
 		data->MERGE_source_category_key = 0;
 
-		gtk_widget_destroy(dialog);
+		gtk_window_destroy (GTK_WINDOW(dialog));
 
 		g_free(label_source);
 		g_free(label_delete);
@@ -2755,14 +2756,14 @@ GtkWidget *ui_bud_tabview_manage_dialog(void)
 {
 ui_bud_tabview_data_t *data;
 struct WinGeometry *wg;
-GtkWidget *dialog, *content_area, *grid;
+GtkWidget *dialog, *content, *grid;
 GtkWidget *radiomode;
 GtkWidget *widget;
-GtkWidget *vbox, *hbox;
+GtkWidget *vbox, *hbox, *bbox;
 GtkWidget *search_entry;
-GtkWidget *scrolledwindow, *treeview;
-GtkWidget *toolbar;
-GtkToolItem *toolitem;
+GtkWidget *scrollwin, *treeview;
+GtkWidget *tbar;
+//GtkWidget *menu, *menuitem, *image;
 GtkTreeModel *model, *filter;
 gint response;
 gint w, h, dw, dh;
@@ -2806,14 +2807,14 @@ gint gridrow;
 	DB( g_print(" - new dialog=%p, inst_data=%p\n", dialog, data) );
 
 	//window contents
-	content_area = gtk_dialog_get_content_area(GTK_DIALOG (dialog)); // return a vbox
+	content = gtk_dialog_get_content_area(GTK_DIALOG (dialog)); // return a vbox
 
 	// design content
 	grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (grid), SPACING_MEDIUM);
 	gtk_grid_set_column_spacing (GTK_GRID (grid), SPACING_MEDIUM);
-	g_object_set(grid, "margin", SPACING_MEDIUM, NULL);
-	gtk_container_add(GTK_CONTAINER(content_area), grid);
+	hb_widget_set_margin(GTK_WIDGET(grid), SPACING_MEDIUM);
+	gtk_box_pack_start (GTK_BOX (content), grid, TRUE, TRUE, 0);
 
 	// First row displays radio button to change mode (edition / view) and search entry
 	gridrow = 0;
@@ -2839,106 +2840,72 @@ gint gridrow;
 	gtk_grid_attach (GTK_GRID (grid), vbox, 0, gridrow, 1, 1);
 
 	// Scrolled Window will permit to display budgets with a lot of active categories
-	scrolledwindow = gtk_scrolled_window_new(NULL, NULL);
-	gtk_widget_set_hexpand (scrolledwindow, TRUE);
-	gtk_widget_set_vexpand (scrolledwindow, TRUE);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolledwindow), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_box_pack_start (GTK_BOX (vbox), scrolledwindow, TRUE, TRUE, 0);
+	scrollwin = gtk_scrolled_window_new(NULL, NULL);
+	gtk_widget_set_hexpand (scrollwin, TRUE);
+	gtk_widget_set_vexpand (scrollwin, TRUE);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
 
 	treeview = ui_bud_tabview_view_new ((gpointer) data);
 	data->TV_budget = treeview;
-	gtk_container_add(GTK_CONTAINER(scrolledwindow), treeview);
+	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
 
 	data->TV_selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview));
 
 	// Toolbar to add, remove categories, expand and collapse categorie
-	toolbar = gtk_toolbar_new();
-	gtk_toolbar_set_icon_size (GTK_TOOLBAR(toolbar), GTK_ICON_SIZE_MENU);
-	gtk_toolbar_set_style(GTK_TOOLBAR(toolbar), GTK_TOOLBAR_ICONS);
-	gtk_box_pack_start (GTK_BOX (vbox), toolbar, FALSE, FALSE, 0);
+	tbar = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
+	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
+	gtk_box_pack_start (GTK_BOX (vbox), tbar, FALSE, FALSE, 0);
 
-	gtk_style_context_add_class (gtk_widget_get_style_context (toolbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
-
-	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-
-	toolitem = gtk_tool_item_new();
-	gtk_container_add (GTK_CONTAINER(toolitem), hbox);
-	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(toolitem), -1);
+	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_box_pack_start (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
 
 #if HB_BUD_TABVIEW_EDIT_ENABLE
 	// Add / Remove / Merge
 	widget = make_image_button(ICONNAME_LIST_ADD, _("Add category"));
 	data->BT_category_add = widget;
 	gtk_widget_set_sensitive(widget, FALSE);
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
 
 	widget = make_image_button(ICONNAME_LIST_DELETE, _("Remove category"));
 	data->BT_category_delete = widget;
 	gtk_widget_set_sensitive(widget, FALSE);
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
 
 	widget = gtk_button_new_with_label (_("Merge"));
 	data->BT_category_merge = widget;
 	gtk_widget_set_sensitive(widget, FALSE);
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
 
-	// Separator
-	toolitem = gtk_separator_tool_item_new ();
-	gtk_tool_item_set_expand (toolitem, FALSE);
-	gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(toolitem), FALSE);
-	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(toolitem), -1);
 #endif
 
 	// Clear Input
-	toolitem = gtk_tool_item_new();
-	gtk_tool_item_set_expand (toolitem, FALSE);
-	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(toolitem), -1);
-
 	widget = gtk_button_new_with_label (_("Clear input"));
 	data->BT_category_reset = widget;
 	gtk_widget_set_sensitive(widget, FALSE);
-	gtk_container_add (GTK_CONTAINER(toolitem), widget);
-
-	// Separator
-	toolitem = gtk_separator_tool_item_new ();
-	gtk_tool_item_set_expand (toolitem, FALSE);
-	gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(toolitem), FALSE);
-	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(toolitem), -1);
+	gtk_box_pack_start (GTK_BOX (tbar), widget, FALSE, FALSE, 0);
 
 	// Force monitoring
-	toolitem = gtk_tool_item_new();
-	gtk_tool_item_set_expand (toolitem, FALSE);
-	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(toolitem), -1);
-
 	widget = gtk_check_button_new_with_mnemonic (_("_Force monitoring this category"));
 	data->BT_category_force_monitoring = widget;
 	gtk_widget_set_sensitive (widget, FALSE);
-	gtk_container_add (GTK_CONTAINER(toolitem), widget);
+	gtk_box_pack_start (GTK_BOX (tbar), widget, FALSE, FALSE, 0);
 	g_object_set(widget,
 		"draw-indicator", TRUE,
 		NULL);
 
-	// Separator
-	toolitem = gtk_separator_tool_item_new ();
-	gtk_tool_item_set_expand (toolitem, TRUE);
-	gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(toolitem), FALSE);
-	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(toolitem), -1);
-
 	// Expand / Collapse
-	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-
-	toolitem = gtk_tool_item_new();
-	gtk_container_add (GTK_CONTAINER(toolitem), hbox);
-	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(toolitem), -1);
+	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_box_pack_end (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
 
 	widget = make_image_button(ICONNAME_HB_BUTTON_EXPAND, _("Expand all"));
 	data->BT_expand = widget;
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
 
 	widget = make_image_button(ICONNAME_HB_BUTTON_COLLAPSE, _("Collapse all"));
 	data->BT_collapse = widget;
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
 
 	/* signal connect */
 
@@ -2999,7 +2966,7 @@ gint gridrow;
 	gtk_window_get_size(GTK_WINDOW(dialog), &wg->w, &wg->h);
 
 	ui_bud_tabview_dialog_close(data, response);
-	gtk_widget_destroy (dialog);
+	gtk_window_destroy (GTK_WINDOW(dialog));
 
 	g_free(data);
 

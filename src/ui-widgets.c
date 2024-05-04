@@ -38,13 +38,53 @@
 extern struct HomeBank *GLOBALS;
 
 
-/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 
-extern HbKvData CYA_FLT_RANGE[];
+extern HbKvData CYA_FLT_RANGE_DWF[];
+extern HbKvData CYA_FLT_RANGE_MQY[];
+extern HbKvData CYA_FLT_RANGE_NORMAL[];
+extern HbKvData CYA_FLT_RANGE_BUDGET[];
+extern HbKvData CYA_FLT_RANGE_CUSTOM[];
+
+extern gchar *CYA_ABMONTHS[];
 
 
-/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+/* GTK4 transitional anticipation */
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+#if( (GTK_MAJOR_VERSION < 4)  )
+
+void gtk_window_set_child (GtkWindow* window, GtkWidget* child)
+{ gtk_container_add (GTK_CONTAINER(window), child); }
+
+void gtk_popover_set_child (GtkPopover* popover, GtkWidget* child)
+{ gtk_container_add (GTK_CONTAINER(popover), child); }
+
+void gtk_frame_set_child (GtkFrame* frame, GtkWidget* child)
+{ gtk_container_add (GTK_CONTAINER(frame), child); }
+
+void gtk_overlay_set_child (GtkOverlay* overlay, GtkWidget* child)
+{ gtk_container_add (GTK_CONTAINER(overlay), child); }
+
+void gtk_scrolled_window_set_child (GtkScrolledWindow* scrolled_window, GtkWidget* child)
+{ gtk_container_add (GTK_CONTAINER(scrolled_window), child); }
+
+void gtk_revealer_set_child (GtkRevealer* revealer, GtkWidget* child)
+{ gtk_container_add (GTK_CONTAINER(revealer), child); }
+
+void gtk_expander_set_child (GtkExpander* expander, GtkWidget* child)
+{ gtk_container_add (GTK_CONTAINER(expander), child); }
+
+
+void gtk_window_destroy (GtkWindow* window)
+{ gtk_widget_destroy(GTK_WIDGET(window)); }
+
+#endif
+
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
 
 //TODO: only WEIGHT & SCALE are used for now
 void
@@ -185,12 +225,18 @@ gint retval = HB_LIST_QUICK_SELECT_UNSET;
 }
 
 
+void hb_widget_set_margins(GtkWidget *widget, gint top, gint right, gint bottom, gint left)
+{
+	gtk_widget_set_margin_top (widget, top);
+	gtk_widget_set_margin_end (widget, right);
+	gtk_widget_set_margin_bottom (widget, bottom);
+	gtk_widget_set_margin_start (widget, left);
+}
+
+
 void hb_widget_set_margin(GtkWidget *widget, gint margin)
 {
-	gtk_widget_set_margin_start (widget, margin);
-	gtk_widget_set_margin_end (widget, margin);
-	gtk_widget_set_margin_top (widget, margin);
-	gtk_widget_set_margin_bottom (widget, margin);
+	hb_widget_set_margins (widget, margin, margin, margin, margin);
 }
 
 
@@ -284,6 +330,50 @@ GtkTreePath *path;
 		gtk_tree_model_row_changed(model, path, &iter);
 		gtk_tree_path_free (path);
 	}
+}
+
+
+gboolean
+hbtk_tree_store_get_top_level(GtkTreeModel *model, gint column_id, guint32 key, GtkTreeIter *return_iter)
+{
+GtkTreeIter iter;
+gboolean valid;
+guint32 tmpkey;
+
+    if( model != NULL && key > 0 )
+    {
+		valid = gtk_tree_model_get_iter_first(model, &iter);
+		while (valid)
+		{
+			gtk_tree_model_get (model, &iter, column_id, &tmpkey, -1);
+			if(tmpkey == key)
+			{
+				*return_iter = iter;
+				return TRUE;
+			}
+
+		 valid = gtk_tree_model_iter_next(model, &iter);
+		}
+	}
+	return FALSE;
+}
+
+
+void 
+hbtk_tree_store_remove_iter_with_child(GtkTreeModel *model, GtkTreeIter *iter)
+{
+GtkTreeIter child;
+gboolean valid;
+
+	valid = gtk_tree_model_iter_children(model, &child, iter);
+	while( valid )
+	{
+		valid = gtk_tree_store_remove(GTK_TREE_STORE(model), &child);
+		if( valid )
+			valid = gtk_tree_model_iter_next(model, &child);
+	}
+
+	gtk_tree_store_remove(GTK_TREE_STORE(model), iter);
 }
 
 
@@ -661,6 +751,9 @@ GtkAdjustment *adj;
 	spinner = gtk_spin_button_new (adj, 1.0, 2);
 	g_object_set(spinner, "xalign", 1.0, NULL);
 
+	//5.7
+	gtk_entry_set_width_chars(GTK_ENTRY(spinner), 13);
+
 	if(label)
 		gtk_label_set_mnemonic_widget (GTK_LABEL(label), spinner);
 
@@ -740,6 +833,174 @@ GtkWidget *spinner;
 }
 
 
+static gint
+hbtk_monthyear_spin_input (GtkSpinButton *spin_button,
+                 gdouble       *new_val)
+{
+  const gchar *text;
+  gchar **str;
+  gboolean found = FALSE;
+  gint month = 0;
+  gint year;
+  gchar *endm;
+   gint i;
+  gchar *tmp1, *tmp2;
+
+  text = gtk_entry_get_text (GTK_ENTRY (spin_button));
+  str = g_strsplit (text, " ", 2);
+
+  if (g_strv_length (str) == 2)
+    {
+      //month = strtol (str[0], &endh, 10);
+	  for (i = 0; i < 12; i++)
+		{
+		  tmp1 = g_ascii_strup (CYA_ABMONTHS[i+1], -1);
+		  tmp2 = g_ascii_strup (str[0], -1);
+		  if (strstr (tmp1, tmp2) == tmp1)
+		  {
+		    found = TRUE;
+		    month = i;
+		  }
+		  g_free (tmp1);
+		  g_free (tmp2);
+		  if (found)
+		    break;
+		}
+
+
+      year = strtol (str[1], &endm, 10) - 1900;
+      
+	//g_print(" input: m=%d y=%d => %d\n", month, year, month + year * 12);
+
+      if (found && !*endm && 0 <= month && month < 12 )
+        {
+          *new_val = month + (year * 12);
+          found = TRUE;
+          //g_print("  affect newval %f\n", *new_val);
+        }
+    }
+
+  g_strfreev (str);
+
+  if (!found)
+    {
+      *new_val = 0.0;
+      return GTK_INPUT_ERROR;
+    }
+
+  return TRUE;
+}
+
+
+static gint
+hbtk_monthyear_spin_output (GtkSpinButton *spin_button)
+{
+  GtkAdjustment *adjustment;
+  gchar *buf;
+  gint month;
+  gint year;
+  gint retval = TRUE;
+
+  adjustment = gtk_spin_button_get_adjustment (spin_button);
+  month = ((gint)gtk_adjustment_get_value (adjustment) % 12);
+  year = (gint)gtk_adjustment_get_value (adjustment) / 12.0;
+
+  //g_print(" output: %d => m:%d y:%d\n", (gint)gtk_adjustment_get_value (adjustment), month, year);
+
+  buf = g_strdup_printf ("%s %04d", CYA_ABMONTHS[month+1], year+1900);
+
+  //g_signal_handlers_block_by_func(spin_button, time_spin_input, NULL);
+
+  if (strcmp (buf, gtk_entry_get_text (GTK_ENTRY (spin_button))))
+  {
+	//g_print("  update text '%s'\n", buf);
+    gtk_entry_set_text (GTK_ENTRY (spin_button), buf);
+    retval = TRUE;
+	}
+
+	//g_signal_handlers_unblock_by_func(spin_button, time_spin_input, NULL);
+
+  g_free (buf);
+
+  return retval;
+}
+
+
+static guint32 hbtk_monthyear_get_internal(GtkSpinButton *spin, guint type)
+{
+GDate date;
+guint month, year;
+gint val;
+
+	if(!GTK_IS_SPIN_BUTTON(spin))
+		return GLOBALS->today;
+
+	val = gtk_spin_button_get_value_as_int(spin);
+	year  = 1900 + (val / 12);
+	month = (val % 12) + 1;
+	
+	g_date_clear(&date, 1);
+	g_date_set_year(&date, year);
+	g_date_set_month(&date, month);
+	if(type == 0)
+		g_date_set_day(&date, 1);
+	else
+		g_date_set_day(&date, g_date_get_days_in_month(month, year));
+
+	return g_date_get_julian(&date);
+}
+
+
+guint32 hbtk_monthyear_getmin(GtkSpinButton *spin)
+{
+	return hbtk_monthyear_get_internal(spin, 0);
+}
+
+guint32 hbtk_monthyear_getmax(GtkSpinButton *spin)
+{
+	return hbtk_monthyear_get_internal(spin, 1);
+}
+
+
+void hbtk_monthyear_set(GtkSpinButton *spin, guint32 julian)
+{
+GDate date;
+gdouble newval;
+
+	if(!GTK_IS_SPIN_BUTTON(spin))
+		return;
+
+	g_date_set_julian(&date, julian);
+	newval = (g_date_get_month(&date)-1) + (g_date_get_year(&date) - 1900) * 12;
+	gtk_spin_button_set_value(spin, newval);
+}
+
+
+GtkWidget *make_monthyear(GtkWidget *label)
+{
+GtkWidget *spinner;
+GtkAdjustment *adj;
+
+	adj = (GtkAdjustment *) gtk_adjustment_new (0, 0, (2200-1900)*12, 1, 12, 0);
+	//adj = (GtkAdjustment *) gtk_adjustment_new (0, 0, 14010, 30, 60, 0);
+	spinner = gtk_spin_button_new (adj, 0, 0);
+	//gtk_spin_button_set_wrap (GTK_SPIN_BUTTON (spinner), TRUE);
+	//gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinner), TRUE);
+	//g_object_set(spinner, "xalign", 1.0, NULL);
+
+	//gtk_entry_set_width_chars(spinner, 10);
+
+	if(label)
+		gtk_label_set_mnemonic_widget (GTK_LABEL(label), spinner);
+
+	g_signal_connect (spinner, "output", G_CALLBACK (hbtk_monthyear_spin_output), NULL);
+	g_signal_connect (spinner, "input", G_CALLBACK (hbtk_monthyear_spin_input), NULL);
+
+	return spinner;
+}
+
+
+/*
 GtkWidget *make_year(GtkWidget *label)
 {
 GtkWidget *spinner;
@@ -755,7 +1016,7 @@ GtkAdjustment *adj;
 		gtk_label_set_mnemonic_widget (GTK_LABEL(label), spinner);
 
 	return spinner;
-}
+}*/
 
 
 GtkWidget *
@@ -767,7 +1028,7 @@ GtkWidget *popover;
 
 	popover = gtk_popover_new (parent);
 	gtk_popover_set_position (GTK_POPOVER (popover), pos);
-	gtk_container_add (GTK_CONTAINER (popover), child);
+	gtk_popover_set_child (GTK_POPOVER(popover), child);
 	gtk_widget_show (child);
 
 	hb_widget_set_margin(child, SPACING_POPOVER);
@@ -1211,31 +1472,29 @@ guint32 i;
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 static void
-set_sensitive (GtkCellLayout   *cell_layout,
+make_daterange_set_sensitive (GtkCellLayout   *cell_layout,
 	       GtkCellRenderer *cell,
 	       GtkTreeModel    *tree_model,
 	       GtkTreeIter     *iter,
 	       gpointer         data)
 {
-GtkTreePath *path;
-gint *indices;
+gint id_column = GPOINTER_TO_INT(data);
 gboolean sensitive;
+gchar *textid;
+gint id;
 
-	path = gtk_tree_model_get_path (tree_model, iter);
-	indices = gtk_tree_path_get_indices (path);
-	sensitive = indices[0] != FLT_RANGE_MISC_CUSTOM;  
-	gtk_tree_path_free (path);
-
+	g_return_if_fail (id_column >= 0);
+	gtk_tree_model_get (tree_model, iter, id_column, &textid, -1);
+	id = atoi(textid);
+	sensitive = (id != FLT_RANGE_MISC_CUSTOM);
 	g_object_set (cell, "sensitive", sensitive, NULL);
+	g_free(textid);
 }
 
 
-
-GtkWidget *make_daterange(GtkWidget *label, guint dspmode)
+static void make_daterange_fill_items(GtkComboBoxText *combo_box, HbKvData *kvdata)
 {
-GtkWidget *combobox = hbtk_combo_box_new(label);
-GList *renderers, *list;
-HbKvData *tmp, *kvdata = CYA_FLT_RANGE;
+HbKvData *tmp;
 guint32 i;
 
 	for(i=0;i<HB_KV_ITEMS_MAX_LEN;i++)
@@ -1243,41 +1502,56 @@ guint32 i;
 		tmp = &kvdata[i];
 		if( tmp->name == NULL )
 			break;
+		hbtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(combo_box), tmp->key, (*tmp->name != 0) ? (gchar *)_(tmp->name) : (gchar *)"");
+	}
+}
 
-		if( (tmp->key == FLT_RANGE_MISC_CUSTOM) )
+
+GtkWidget *make_daterange(GtkWidget *label, HbDateRangeFlags flags)
+{
+GtkWidget *combo_box;
+GList *renderers, *list;
+
+	combo_box = hbtk_combo_box_new(label);
+
+	if( !(flags & DATE_RANGE_BUDGET_MODE) )
+		make_daterange_fill_items(GTK_COMBO_BOX_TEXT(combo_box), CYA_FLT_RANGE_DWF);
+
+	make_daterange_fill_items(GTK_COMBO_BOX_TEXT(combo_box), CYA_FLT_RANGE_MQY);
+
+	if( flags & DATE_RANGE_BUDGET_MODE )
+		make_daterange_fill_items(GTK_COMBO_BOX_TEXT(combo_box), CYA_FLT_RANGE_BUDGET);
+	else
+		make_daterange_fill_items(GTK_COMBO_BOX_TEXT(combo_box), CYA_FLT_RANGE_NORMAL);
+
+	if( !(flags & DATE_RANGE_CUSTOM_HIDDEN) )
+		make_daterange_fill_items(GTK_COMBO_BOX_TEXT(combo_box), CYA_FLT_RANGE_CUSTOM);
+
+	if( flags & DATE_RANGE_CUSTOM_DISABLE )
+	{
+		renderers = gtk_cell_layout_get_cells (GTK_CELL_LAYOUT(combo_box));
+		if(g_list_length(renderers) == 1)
 		{
-			if( dspmode == DATE_RANGE_CUSTOM_DISABLE )
-			{
-				renderers = gtk_cell_layout_get_cells (GTK_CELL_LAYOUT(combobox));
-				if(g_list_length(renderers) == 1)
-				{
-					list = g_list_first(renderers);
-					gtk_cell_layout_set_cell_data_func (GTK_CELL_LAYOUT (combobox),
-									list->data,
-									set_sensitive,
-									NULL, NULL);
-				}	
-				g_list_free(renderers);
-			}
-			else
-			if( dspmode == DATE_RANGE_CUSTOM_HIDE )
-			{
-				//if hide, we do not show it
-				i++;
-				continue;
-			}
-		}
-
-		hbtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(combobox), tmp->key, (*tmp->name != 0) ? (gchar *)_(tmp->name) : (gchar *)"");
+		gint id_column = gtk_combo_box_get_id_column (GTK_COMBO_BOX (combo_box));
+		
+			list = g_list_first(renderers);
+			gtk_cell_layout_set_cell_data_func (GTK_CELL_LAYOUT (combo_box),
+							list->data,
+							make_daterange_set_sensitive,
+							GINT_TO_POINTER(id_column),
+							NULL);
+		}	
+		g_list_free(renderers);
 	}
 
 	//TODO: option removed into GTK4 ??
-	gtk_combo_box_set_wrap_width (GTK_COMBO_BOX(combobox), 3);
+	gtk_combo_box_set_wrap_width (GTK_COMBO_BOX(combo_box), 3);
 
-	gtk_combo_box_set_active(GTK_COMBO_BOX(combobox), 0);
-	gtk_combo_box_set_row_separator_func (GTK_COMBO_BOX (combobox), hbtk_combo_box_is_separator, NULL, NULL);
+	//gtk_combo_box_set_active(GTK_COMBO_BOX(combobox), FLT_RANGE_MISC_ALLDATE);
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(combo_box), FLT_RANGE_MISC_ALLDATE);
+	gtk_combo_box_set_row_separator_func (GTK_COMBO_BOX (combo_box), hbtk_combo_box_is_separator, NULL, NULL);
 
-	return combobox;
+	return combo_box;
 }
 
 

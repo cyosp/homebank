@@ -87,19 +87,23 @@ void homebank_file_ensure_xhb(gchar *filename)
 {
 	DB( g_print("\n[homebank] file_ensure_xhb\n") );
 	filename = (filename == NULL) ? g_strdup(GLOBALS->xhb_filepath) : filename;
+
+	DB( g_print(" in filepath: '%s'\n", GLOBALS->xhb_filepath) );
+
 	if( g_str_has_suffix (filename, ".xhb") == FALSE )
 	{
 	gchar *newfilename;
 	
 		newfilename = hb_filename_new_with_extension(filename, "xhb");
 		hbfile_change_filepath(newfilename);
-		DB( g_print(" - changed to: '%s'\n", GLOBALS->xhb_filepath) );
 	}
 	//#1460390
 	else
 	{
 		hbfile_change_filepath(filename);
 	}
+
+	DB( g_print(" out filepath: '%s'\n", GLOBALS->xhb_filepath) );
 }
 
 
@@ -780,38 +784,39 @@ GtkWidget *frame, *vbox, *image;
 //gchar *ver_string, *markup, *version;
 gchar *pathfilename;
 
-	DB( g_print("\n[homebank_construct_splash]\n") );
+		DB( g_print("\n[homebank] app slash show\n") );
 
-	window = gtk_window_new(GTK_WINDOW_POPUP);	//TOPLEVEL DONT WORK
-	gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_SPLASHSCREEN);
-	gtk_window_set_skip_taskbar_hint (GTK_WINDOW (window), TRUE);
+		window = gtk_window_new(GTK_WINDOW_POPUP);	//TOPLEVEL DONT WORK
+		gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_SPLASHSCREEN);
+		gtk_window_set_skip_taskbar_hint (GTK_WINDOW (window), TRUE);
 
-	gtk_window_set_title (GTK_WINDOW (window), "HomeBank");
-	gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
+		gtk_window_set_title (GTK_WINDOW (window), "HomeBank");
+		gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
 
-	pathfilename = g_build_filename(homebank_app_get_images_dir(), "splash.png", NULL);
-	image = gtk_image_new_from_file((const gchar *)pathfilename);
-	g_free(pathfilename);
+		pathfilename = g_build_filename(homebank_app_get_images_dir(), "splash.png", NULL);
+		image = gtk_image_new_from_file((const gchar *)pathfilename);
+		g_free(pathfilename);
 
-	frame = gtk_frame_new (NULL);
-	gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_OUT);
-	gtk_container_add (GTK_CONTAINER (window), frame);
+		frame = gtk_frame_new (NULL);
+		gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_OUT);
+		gtk_window_set_child(GTK_WINDOW(window), frame);
 
-	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	gtk_container_add (GTK_CONTAINER (frame), vbox);
+		vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+		gtk_frame_set_child(GTK_FRAME(frame), vbox);
 
-	/*
-	ver_string = g_strdup_printf(_("Version: HomeBank-%s"), VERSION);
 
-	version = gtk_label_new(NULL);
-	markup = g_markup_printf_escaped(MARKUP_STRING, ver_string);
-	gtk_label_set_markup(GTK_LABEL(version), markup);
-	g_free(markup);
-	g_free(ver_string);
-	*/
+		/*
+		ver_string = g_strdup_printf(_("Version: HomeBank-%s"), VERSION);
 
-	gtk_box_pack_start (GTK_BOX (vbox), image, FALSE, FALSE, 0);
-	//gtk_box_pack_start (GTK_BOX (vbox), version, FALSE, FALSE, 0);
+		version = gtk_label_new(NULL);
+		markup = g_markup_printf_escaped(MARKUP_STRING, ver_string);
+		gtk_label_set_markup(GTK_LABEL(version), markup);
+		g_free(markup);
+		g_free(ver_string);
+		*/
+
+		gtk_box_pack_start (GTK_BOX (vbox), image, FALSE, FALSE, 0);
+		//gtk_box_pack_start (GTK_BOX (vbox), version, FALSE, FALSE, 0);
 
 	return window;
 }

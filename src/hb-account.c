@@ -50,6 +50,7 @@ da_acc_free(Account *item)
 		g_free(item->number);
 		g_free(item->bankname);
 		g_free(item->notes);
+		g_free(item->website);
 		
 		g_free(item->xferexpname);
 		g_free(item->xferincname);
@@ -396,11 +397,16 @@ account_glist_name_compare_func(Account *a, Account *b)
 	return hb_string_utf8_compare(a->name, b->name);
 }
 
-
 static gint
 account_glist_key_compare_func(Account *a, Account *b)
 {
 	return a->key - b->key;
+}
+
+static gint
+account_glist_pos_compare_func(Account *a, Account *b)
+{
+	return a->pos - b->pos;
 }
 
 
@@ -408,12 +414,20 @@ GList *account_glist_sorted(gint column)
 {
 GList *list = g_hash_table_get_values(GLOBALS->h_acc);
 
-	if(column == 0)
-		return g_list_sort(list, (GCompareFunc)account_glist_key_compare_func);
-	else
-		return g_list_sort(list, (GCompareFunc)account_glist_name_compare_func);
+	switch(column)
+	{
+		case HB_GLIST_SORT_POS:
+			return g_list_sort(list, (GCompareFunc)account_glist_pos_compare_func);
+			break;
+		case HB_GLIST_SORT_NAME:
+			return g_list_sort(list, (GCompareFunc)account_glist_name_compare_func);
+			break;
+		//case HB_GLIST_SORT_KEY:
+		default:
+			return g_list_sort(list, (GCompareFunc)account_glist_key_compare_func);
+			break;
+	}
 }
-
 
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
@@ -531,6 +545,22 @@ end:
 
 	return retval;
 }
+
+
+gboolean
+account_has_website(Account *item)
+{
+gboolean retval = FALSE;
+
+	if( item != NULL && item->website != NULL )
+	{
+		//TODO: reinforce controls here
+		if( strlen(item->website) > 4 )
+			retval = TRUE;
+	}
+	return retval;
+}
+
 
 
 gboolean

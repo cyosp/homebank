@@ -72,6 +72,10 @@ struct repstats_data
 	GtkWidget	*CY_src;
 	GtkWidget	*CY_type, *LB_type;
 	GtkWidget	*CY_intvl, *LB_intvl;
+	GtkWidget	*CM_forecast;
+
+	GtkWidget	*BT_expand;
+	GtkWidget	*BT_collapse;
 
 	//beta start
 	GtkWidget	*PO_hubfilter;

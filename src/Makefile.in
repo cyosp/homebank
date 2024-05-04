@@ -111,13 +111,13 @@ am_homebank_OBJECTS = dsp-account.$(OBJEXT) dsp-mainwindow.$(OBJEXT) \
 	hb-group.$(OBJEXT) hb-preferences.$(OBJEXT) \
 	hb-report.$(OBJEXT) hb-tag.$(OBJEXT) hb-split.$(OBJEXT) \
 	hb-transaction.$(OBJEXT) hb-xml.$(OBJEXT) homebank.$(OBJEXT) \
-	hub-account.$(OBJEXT) hub-scheduled.$(OBJEXT) \
-	hub-spending.$(OBJEXT) hub-transaction.$(OBJEXT) \
-	language.$(OBJEXT) list-account.$(OBJEXT) \
-	list-operation.$(OBJEXT) list-report.$(OBJEXT) \
-	list-scheduled.$(OBJEXT) rep-balance.$(OBJEXT) \
-	rep-budget.$(OBJEXT) rep-stats.$(OBJEXT) rep-time.$(OBJEXT) \
-	rep-vehicle.$(OBJEXT) ui-account.$(OBJEXT) \
+	hub-account.$(OBJEXT) hub-reptime.$(OBJEXT) \
+	hub-reptotal.$(OBJEXT) hub-scheduled.$(OBJEXT) \
+	hub-transaction.$(OBJEXT) language.$(OBJEXT) \
+	list-account.$(OBJEXT) list-operation.$(OBJEXT) \
+	list-report.$(OBJEXT) list-scheduled.$(OBJEXT) \
+	rep-balance.$(OBJEXT) rep-budget.$(OBJEXT) rep-stats.$(OBJEXT) \
+	rep-time.$(OBJEXT) rep-vehicle.$(OBJEXT) ui-account.$(OBJEXT) \
 	ui-archive.$(OBJEXT) ui-assign.$(OBJEXT) \
 	ui-assist-import.$(OBJEXT) ui-assist-start.$(OBJEXT) \
 	ui-budget.$(OBJEXT) ui-budget-tabview.$(OBJEXT) \
@@ -160,16 +160,16 @@ am__depfiles_remade = ./$(DEPDIR)/dsp-account.Po \
 	./$(DEPDIR)/hb-report.Po ./$(DEPDIR)/hb-split.Po \
 	./$(DEPDIR)/hb-tag.Po ./$(DEPDIR)/hb-transaction.Po \
 	./$(DEPDIR)/hb-xml.Po ./$(DEPDIR)/homebank.Po \
-	./$(DEPDIR)/hub-account.Po ./$(DEPDIR)/hub-scheduled.Po \
-	./$(DEPDIR)/hub-spending.Po ./$(DEPDIR)/hub-transaction.Po \
-	./$(DEPDIR)/language.Po ./$(DEPDIR)/list-account.Po \
-	./$(DEPDIR)/list-operation.Po ./$(DEPDIR)/list-report.Po \
-	./$(DEPDIR)/list-scheduled.Po ./$(DEPDIR)/rep-balance.Po \
-	./$(DEPDIR)/rep-budget.Po ./$(DEPDIR)/rep-stats.Po \
-	./$(DEPDIR)/rep-time.Po ./$(DEPDIR)/rep-vehicle.Po \
-	./$(DEPDIR)/ui-account.Po ./$(DEPDIR)/ui-archive.Po \
-	./$(DEPDIR)/ui-assign.Po ./$(DEPDIR)/ui-assist-import.Po \
-	./$(DEPDIR)/ui-assist-start.Po \
+	./$(DEPDIR)/hub-account.Po ./$(DEPDIR)/hub-reptime.Po \
+	./$(DEPDIR)/hub-reptotal.Po ./$(DEPDIR)/hub-scheduled.Po \
+	./$(DEPDIR)/hub-transaction.Po ./$(DEPDIR)/language.Po \
+	./$(DEPDIR)/list-account.Po ./$(DEPDIR)/list-operation.Po \
+	./$(DEPDIR)/list-report.Po ./$(DEPDIR)/list-scheduled.Po \
+	./$(DEPDIR)/rep-balance.Po ./$(DEPDIR)/rep-budget.Po \
+	./$(DEPDIR)/rep-stats.Po ./$(DEPDIR)/rep-time.Po \
+	./$(DEPDIR)/rep-vehicle.Po ./$(DEPDIR)/ui-account.Po \
+	./$(DEPDIR)/ui-archive.Po ./$(DEPDIR)/ui-assign.Po \
+	./$(DEPDIR)/ui-assist-import.Po ./$(DEPDIR)/ui-assist-start.Po \
 	./$(DEPDIR)/ui-budget-tabview.Po ./$(DEPDIR)/ui-budget.Po \
 	./$(DEPDIR)/ui-category.Po ./$(DEPDIR)/ui-currency.Po \
 	./$(DEPDIR)/ui-dialogs.Po ./$(DEPDIR)/ui-filter.Po \
@@ -409,10 +409,12 @@ homebank_SOURCES = \
 	homebank.h \
 	hub-account.c \
 	hub-account.h \
+	hub-reptime.c \
+	hub-reptime.h \
+	hub-reptotal.c \
+	hub-reptotal.h \
 	hub-scheduled.c \
 	hub-scheduled.h \
-	hub-spending.c \
-	hub-spending.h \
 	hub-transaction.c \
 	hub-transaction.h \
 	language.c \
@@ -601,8 +603,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hb-xml.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/homebank.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hub-account.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hub-reptime.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hub-reptotal.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hub-scheduled.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hub-spending.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hub-transaction.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/language.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/list-account.Po@am__quote@ # am--include-marker
@@ -812,8 +815,9 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/hb-xml.Po
 	-rm -f ./$(DEPDIR)/homebank.Po
 	-rm -f ./$(DEPDIR)/hub-account.Po
+	-rm -f ./$(DEPDIR)/hub-reptime.Po
+	-rm -f ./$(DEPDIR)/hub-reptotal.Po
 	-rm -f ./$(DEPDIR)/hub-scheduled.Po
-	-rm -f ./$(DEPDIR)/hub-spending.Po
 	-rm -f ./$(DEPDIR)/hub-transaction.Po
 	-rm -f ./$(DEPDIR)/language.Po
 	-rm -f ./$(DEPDIR)/list-account.Po
@@ -921,8 +925,9 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/hb-xml.Po
 	-rm -f ./$(DEPDIR)/homebank.Po
 	-rm -f ./$(DEPDIR)/hub-account.Po
+	-rm -f ./$(DEPDIR)/hub-reptime.Po
+	-rm -f ./$(DEPDIR)/hub-reptotal.Po
 	-rm -f ./$(DEPDIR)/hub-scheduled.Po
-	-rm -f ./$(DEPDIR)/hub-spending.Po
 	-rm -f ./$(DEPDIR)/hub-transaction.Po
 	-rm -f ./$(DEPDIR)/language.Po
 	-rm -f ./$(DEPDIR)/list-account.Po

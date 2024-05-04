@@ -23,6 +23,8 @@
 enum {
 	HID_REPBUDGET_MINDATE,
 	HID_REPBUDGET_MAXDATE,
+	HID_REPBUDGET_MINMONTHYEAR,
+	HID_REPBUDGET_MAXMONTHYEAR,
 	HID_REPBUDGET_RANGE,
 	MAX_REPBUDGET_HID
 };
@@ -36,6 +38,7 @@ enum
 	LST_BUDGET_NAME,
 	LST_BUDGET_SPENT,
 	LST_BUDGET_BUDGET,
+	LST_BUDGET_FULFILLED,
 	LST_BUDGET_RESULT,
 	LST_BUDGET_STATUS,
 	NUM_LST_BUDGET
@@ -70,12 +73,16 @@ struct repbudget_data
 	GtkWidget	*TX_daterange;
 	GtkWidget	*CM_onlyout;
 	GtkWidget	*CM_minor;
-	GtkWidget	*CY_for;
-	GtkWidget	*CY_kind;
+	GtkWidget	*RA_mode;
+	GtkWidget	*CY_type;
+	
+	GtkWidget	*BT_expand;
+	GtkWidget	*BT_collapse;
 
 	GtkWidget	*LV_report;
 
-	GtkWidget	*PO_mindate, *PO_maxdate;
+	//GtkWidget	*PO_mindate, *PO_maxdate;
+	GtkWidget	*SB_mindate, *SB_maxdate;
 
 	GtkWidget	*CY_range;
 	GtkWidget	*GR_result;

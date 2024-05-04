@@ -21,42 +21,60 @@
 #define __LIST_REPORT__H__
 
 
-
-
 enum
 {
-	LST_REPDIST_POS,	//keep for compatibility with chart
-	LST_REPDIST_KEY,
-	LST_REPDIST_NAME,
-	LST_REPDIST_EXPENSE,
-	LST_REPDIST_EXPRATE,
-	LST_REPDIST_INCOME,
-	LST_REPDIST_INCRATE,
-	LST_REPDIST_TOTAL,
-	LST_REPDIST_TOTRATE,
-	NUM_LST_REPDIST
+	LST_REPORT_POS,	//keep for compatibility with chart
+	LST_REPORT_KEY,
+	LST_REPORT_NAME,
+	//LST_REPORT_ROW,
+	LST_REPORT_EXPENSE,
+	LST_REPORT_INCOME,
+	LST_REPORT_TOTAL,
+	NUM_LST_REPORT
 };
 
-#define LST_REPDIST_POS_TOTAL G_MAXINT
+#define LST_REPORT_POS_TOTAL G_MAXINT
+
+//special column id
+#define LST_REP_COLID_AVERAGE -1
+#define LST_REP_COLID_TOTAL   -3
 
 //test
 enum {
-	LST_REPDIST2_POS,
-	LST_REPDIST2_KEY,
-	LST_REPDIST2_LABEL,
-	LST_REPDIST2_ROW,
-	NUM_LST_REPDIST2
+	LST_REPORT2_POS,
+	LST_REPORT2_KEY,
+	LST_REPORT2_LABEL,
+	LST_REPORT2_ROW,
+	NUM_LST_REPORT2
 };
 
 
-GtkWidget *lst_rep_total_create(void);
-GString *lst_rep_total_to_string(GtkTreeView *treeview, gchar *title, gboolean clipboard);
+struct lst_report_data
+{
+	GtkWidget	*treeview;
+
+//	guint		intvl;
+//	guint		n_cols;
+//	DataCol		**cols;
+	gdouble		tot_exp;
+	gdouble		tot_inc;
+	
+};
 
 
-GString *lst_rep_time_to_string(GtkTreeView *treeview, gchar *title, gboolean clipboard);
+
+GtkTreeStore *lst_report_new(void);
+GtkWidget *lst_report_create(void);
+gboolean lst_report_get_top_level (GtkTreeModel *liststore, guint32 key, GtkTreeIter *return_iter);
+GString *lst_report_to_string(GtkTreeView *treeview, gint src, gchar *title, gboolean clipboard);
+
+
+gboolean lst_rep_time_get_top_level (GtkTreeModel *liststore, guint32 key, GtkTreeIter *return_iter);
+GString *lst_rep_time_to_string(GtkTreeView *treeview, gint src, gchar *title, gboolean clipboard);
 GtkWidget *lst_rep_time_createtype(GtkListStore *store);
+GtkTreeStore *lst_rep_time_new(void);
 GtkWidget *lst_rep_time_create(void);
-void lst_rep_time_renewcol(GtkTreeView *treeview, guint32 nbintvl, guint32 jfrom, gint intvl, gboolean avg);
+void lst_rep_time_renewcol(GtkTreeView *treeview, DataTable *dt, guint32 nbintvl, guint32 jfrom, gint intvl, gboolean avg);
 
 
 #endif

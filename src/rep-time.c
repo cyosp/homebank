@@ -67,6 +67,8 @@ static void reptime_cb_cat_changed(GtkCellRendererToggle *cell, gchar *path_str,
 static void reptime_cb_pay_changed(GtkCellRendererToggle *cell, gchar *path_str, gpointer user_data);
 static void reptime_cb_tag_changed(GtkCellRendererToggle *cell, gchar *path_str, gpointer user_data);
 
+static gchar *reptime_compute_title(gint src, gint intvl);
+
 
 extern HbKvData CYA_REPORT_SRC_TREND[];
 extern HbKvData CYA_REPORT_INTVL[];
@@ -111,13 +113,33 @@ struct reptime_data *data = user_data;
 static void reptime_action_print(GtkToolButton *toolbutton, gpointer user_data)
 {
 struct reptime_data *data = user_data;
-gint tmpsrc;
-gchar *name;
+gint tmpsrc, tmpintvl, page;
+gchar *coltitle, *title, *name;
 
 	tmpsrc  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_src));
+	tmpintvl  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_intvl));
+	page = gtk_notebook_get_current_page(GTK_NOTEBOOK(data->GR_result));
+
+	title = reptime_compute_title(tmpsrc, tmpintvl);
+
 	name = g_strdup_printf("hb-reptime_%s.csv", hbtk_get_label(CYA_REPORT_SRC_TREND, tmpsrc) );
 
-	gtk_chart_print(GTK_CHART(data->RE_chart), GTK_WINDOW(data->window), PREFS->path_export, name);
+	if( page == 0 )
+	{
+	GString *node;
+
+		coltitle = hbtk_get_label(CYA_REPORT_INTVL, tmpintvl);
+		node = lst_reptime_to_string(GTK_TREE_VIEW(data->LV_report), coltitle, TRUE);
+
+		hb_print_listview(GTK_WINDOW(data->window), node->str, NULL, title, name);
+
+		g_string_free(node, TRUE);
+	}
+	else
+	{
+		gtk_chart_print(GTK_CHART(data->RE_chart), GTK_WINDOW(data->window), PREFS->path_export, name);
+
+	}
 
 	g_free(name);
 }
@@ -148,8 +170,23 @@ struct reptime_data *data = user_data;
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
+static gchar *
+reptime_compute_title(gint src, gint intvl)
+{
+gchar *title;
 
-static void reptime_date_change(GtkWidget *widget, gpointer user_data)
+	//TRANSLATORS: example 'Category by Month'
+	title = g_strdup_printf(_("%s by %s"), 
+		hbtk_get_label(CYA_REPORT_SRC_TREND, src), 
+		hbtk_get_label(CYA_REPORT_INTVL, intvl)
+	);
+
+	return title;
+}
+
+
+static void
+reptime_date_change(GtkWidget *widget, gpointer user_data)
 {
 struct reptime_data *data;
 
@@ -232,14 +269,12 @@ gchar *daterange;
 }
 
 
-
-
 static void reptime_update(GtkWidget *widget, gpointer user_data)
 {
 struct reptime_data *data;
 GtkTreeModel *model;
 gint page;
-gint tmpsrc;
+gint tmpsrc, tmpintvl;
 gboolean cumul;
 gchar *title;
 
@@ -251,7 +286,7 @@ gchar *title;
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_report));
 	//byamount = 0;
 	tmpsrc  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_src));
-	//tmpintvl = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_intvl));
+	tmpintvl = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_intvl));
 	cumul     = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_cumul));
 
 	// ensure not exp & inc for piechart
@@ -260,7 +295,7 @@ gchar *title;
 	DB( g_print(" page %d\n\n", page) );
 	//DB( g_print(" tmpintvl %d\n\n", tmpintvl) );
 
-	//column = LST_REPTIME_POS;
+	//column = LST_HUBREPTIME_POS;
 	//DB( g_print(" sort on column %d\n\n", column) );
 	//gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), column, GTK_SORT_DESCENDING);
 
@@ -269,9 +304,8 @@ gchar *title;
 
 	gtk_chart_show_average(GTK_CHART(data->RE_chart), data->average, cumul);
 
-	//TRANSLATORS: example 'Category Over Time'
-	title = g_strdup_printf(_("%s Over Time"), hbtk_get_label(CYA_REPORT_SRC_TREND, tmpsrc) );
-	gtk_chart_set_datas_total(GTK_CHART(data->RE_chart), model, LST_REPTIME_AMOUNT, LST_REPTIME_AMOUNT, title, NULL);
+	title = reptime_compute_title(tmpsrc, tmpintvl);
+	gtk_chart_set_datas_total(GTK_CHART(data->RE_chart), model, LST_HUBREPTIME_AMOUNT, LST_HUBREPTIME_AMOUNT, title, NULL);
 	g_free(title);
 
 	if(page == 1)
@@ -288,7 +322,7 @@ static void reptime_export_result_clipboard(GtkWidget *widget, gpointer user_dat
 struct reptime_data *data;
 GtkClipboard *clipboard;
 GString *node;
-gchar *title;
+gchar *coltitle;
 gint tmpintvl;
 
 	DB( g_print("\n[reptime] export result clipboard\n") );
@@ -297,9 +331,9 @@ gint tmpintvl;
 	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
 	tmpintvl  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_intvl));
-	title = hbtk_get_label(CYA_REPORT_INTVL, tmpintvl);
 
-	node = lst_reptime_to_string(GTK_TREE_VIEW(data->LV_report), title, TRUE);
+	coltitle = hbtk_get_label(CYA_REPORT_INTVL, tmpintvl);
+	node = lst_reptime_to_string(GTK_TREE_VIEW(data->LV_report), coltitle, TRUE);
 
 	clipboard = gtk_clipboard_get_default(gdk_display_get_default());
 	gtk_clipboard_set_text(clipboard, node->str, node->len);
@@ -352,13 +386,15 @@ static void reptime_export_detail_clipboard(GtkWidget *widget, gpointer user_dat
 struct reptime_data *data;
 GtkClipboard *clipboard;
 GString *node;
+guint flags;
 
 	DB( g_print("\n[reptime] export detail clipboard\n") );
 
 	data = user_data;
 	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	node = list_txn_to_string(GTK_TREE_VIEW(data->LV_detail), TRUE, FALSE, TRUE, FALSE);
+	flags = LST_TXN_EXP_CLR | LST_TXN_EXP_PMT | LST_TXN_EXP_CAT | LST_TXN_EXP_TAG;
+	node = list_txn_to_string(GTK_TREE_VIEW(data->LV_detail), TRUE, FALSE, flags);
 
 	clipboard = gtk_clipboard_get_default(gdk_display_get_default());
 	gtk_clipboard_set_text(clipboard, node->str, node->len);
@@ -396,7 +432,12 @@ gboolean hassplit, hasstatus;
 		io = g_io_channel_new_file(filepath, "w", NULL);
 		if(io != NULL)
 		{
-			node = list_txn_to_string(GTK_TREE_VIEW(data->LV_detail), FALSE, hassplit, hasstatus, FALSE);
+		guint flags;
+
+			flags = LST_TXN_EXP_PMT | LST_TXN_EXP_CAT | LST_TXN_EXP_TAG;
+			if( hasstatus )
+				flags |= LST_TXN_EXP_CLR;
+			node = list_txn_to_string(GTK_TREE_VIEW(data->LV_detail), FALSE, hassplit, flags);
 			g_io_channel_write_chars(io, node->str, -1, NULL, NULL);
 
 			g_io_channel_unref (io);
@@ -642,13 +683,15 @@ gdouble *tmp_amount;
 	from = data->filter->mindate;
 	to   = data->filter->maxdate;
 
+	//TODO: not necessary until date range change
+	//free previous txn
 	g_queue_free (data->txn_queue);
 	data->txn_queue = hbfile_transaction_get_partial(data->filter->mindate, data->filter->maxdate);
 
 	n_result = report_interval_count(tmpintvl, from, to);
 
-	DB( gint tmpsrc = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_src)); );
-	DB( g_print(" %s :: n_result=%d\n", hbtk_get_label(CYA_REPORT_SRC_TREND, tmpsrc), n_result) );
+	//DB( gint tmpsrc = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_src)) );
+	//DB( g_print(" %s :: n_result=%d\n", hbtk_get_label(CYA_REPORT_SRC_TREND, tmpsrc), n_result) );
 
 	/* allocate some memory */
 	tmp_amount = g_malloc0((n_result+2) * sizeof(gdouble));
@@ -714,10 +757,10 @@ gdouble *tmp_amount;
 			//DB( g_print(" inserting %2d, '%s', %9.2f\n", i, intvlname, value) );
 
 	    	gtk_list_store_insert_with_values (GTK_LIST_STORE(model), &iter, -1,
-				LST_REPTIME_POS, id++,
-				LST_REPTIME_KEY, i,
-				LST_REPTIME_TITLE, intvlname,
-				LST_REPTIME_AMOUNT, value,
+				LST_HUBREPTIME_POS, id++,
+				LST_HUBREPTIME_KEY, i,
+				LST_HUBREPTIME_TITLE, intvlname,
+				LST_HUBREPTIME_AMOUNT, value,
 				-1);
 
 		}
@@ -800,7 +843,8 @@ gint page;
 	hb_widget_visible (data->BT_export, visible);
 
 	visible = page == 0 ? FALSE : TRUE;
-	hb_widget_visible(data->BT_print, visible);
+	//5.7
+	//hb_widget_visible(data->BT_print, visible);
 	hb_widget_visible(data->LB_zoomx, visible);
 	hb_widget_visible(data->RG_zoomx, visible);
 
@@ -937,7 +981,7 @@ struct reptime_data *data;
 
 		if (gtk_tree_selection_get_selected(treeselection, &model, &iter))
 		{
-			gtk_tree_model_get(model, &iter, LST_REPTIME_KEY, &key, -1);
+			gtk_tree_model_get(model, &iter, LST_HUBREPTIME_KEY, &key, -1);
 
 			DB( g_print(" - active is %d\n", key) );
 
@@ -1015,7 +1059,7 @@ guint key = -1;
 
 	if (gtk_tree_selection_get_selected(treeselection, &model, &iter))
 	{
-		gtk_tree_model_get(model, &iter, LST_REPTIME_KEY, &key, -1);
+		gtk_tree_model_get(model, &iter, LST_HUBREPTIME_KEY, &key, -1);
 
 	}
 
@@ -1123,13 +1167,10 @@ static void reptime_filter_setup(struct reptime_data *data)
 	DB( g_print("\n[reptime] reset filter\n") );
 
 	filter_reset(data->filter);
-
-	/* 3.4 : make int transfer out of stats */
-	//todo: for compatibility with < 5.3, keep this unset, but normally it should be set
-	//data->filter->option[FLT_GRP_TYPE] = 2;
-	//data->filter->type = FLT_TYPE_INTXFER;
-
 	filter_preset_daterange_set(data->filter, PREFS->date_range_rep, data->accnum);
+	/* 3.4 : make int transfer out of stats */
+	//TODO: for compatibility with < 5.3, keep this unset, but normally it should be set
+	//filter_preset_type_set(data->filter, FLT_TYPE_INTXFER, FLT_EXCLUDE);
 
 	//g_signal_handler_block(data->PO_mindate, data->handler_id[HID_REPTIME_MINDATE]);
 	//g_signal_handler_block(data->PO_maxdate, data->handler_id[HID_REPTIME_MAXDATE]);
@@ -1150,17 +1191,13 @@ static void reptime_window_setup(struct reptime_data *data, guint32 accnum)
 
 	reptime_filter_setup(data);
 
-
-
 	DB( g_print(" populate\n") );
-	
-	ui_acc_listview_populate(data->LV_acc, ACC_LST_INSERT_REPORT);
+	ui_acc_listview_populate(data->LV_acc, ACC_LST_INSERT_REPORT, NULL);
 	ui_cat_listview_populate(data->LV_cat, CAT_TYPE_ALL, NULL, TRUE);
 	ui_pay_listview_populate(data->LV_pay, NULL, TRUE);
 	ui_tag_listview_populate(data->LV_tag, 0);
 
 	DB( g_print(" set widgets default\n") );
-
 	//src is account
 	hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_intvl), REPORT_INTVL_MONTH);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_minor), GLOBALS->minor);
@@ -1304,7 +1341,7 @@ GtkWidget *reptime_window_new(guint32 accnum)
 {
 struct reptime_data *data;
 struct WinGeometry *wg;
-GtkWidget *window, *mainvbox, *hbox, *vbox, *notebook, *treeview, *treebox, *sw;
+GtkWidget *window, *mainvbox, *hbox, *vbox, *notebook, *treeview, *treebox, *scrollwin;
 GtkWidget *label, *widget, *table;
 gint row;
 
@@ -1334,7 +1371,7 @@ gint row;
 
 	//window contents
 	mainvbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	gtk_container_add (GTK_CONTAINER (window), mainvbox);
+	gtk_window_set_child(GTK_WINDOW(window), mainvbox);
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
     gtk_box_pack_start (GTK_BOX (mainvbox), hbox, TRUE, TRUE, 0);
@@ -1344,7 +1381,7 @@ gint row;
 	gtk_widget_set_hexpand (GTK_WIDGET(table), FALSE);
     gtk_box_pack_start (GTK_BOX (hbox), table, FALSE, FALSE, 0);
 
-	gtk_container_set_border_width (GTK_CONTAINER (table), SPACING_SMALL);
+	hb_widget_set_margin(GTK_WIDGET(table), SPACING_SMALL);
 	gtk_grid_set_row_spacing (GTK_GRID (table), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (table), SPACING_MEDIUM);
 
@@ -1455,53 +1492,53 @@ gint row;
 	gtk_notebook_set_show_border(GTK_NOTEBOOK(notebook), FALSE);	
 	gtk_grid_attach (GTK_GRID (table), notebook, 1, row, 2, 1);
 
-	 	sw = gtk_scrolled_window_new(NULL,NULL);
-	 	data->SW_acc = sw;
-		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(sw), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-		gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sw), GTK_SHADOW_ETCHED_IN);
-		gtk_widget_set_margin_bottom (sw, SPACING_LARGE);
-		widget = ui_acc_listview_new(TRUE);
-		data->LV_acc = widget;
-		gtk_widget_set_vexpand (widget, TRUE);
+	 	scrollwin = gtk_scrolled_window_new(NULL,NULL);
+	 	data->SW_acc = scrollwin;
+		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+		gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
+		gtk_widget_set_margin_bottom (scrollwin, SPACING_LARGE);
+		treeview = ui_acc_listview_new(TRUE);
+		data->LV_acc = treeview;
+		gtk_widget_set_vexpand (treeview, TRUE);
 		//gtk_widget_set_size_request(widget, HB_MINWIDTH_LIST, -1);
-		gtk_container_add(GTK_CONTAINER(sw), widget);
-		gtk_notebook_append_page(GTK_NOTEBOOK(notebook), sw, NULL);
+		gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook), scrollwin, NULL);
 
-	 	sw = gtk_scrolled_window_new(NULL,NULL);
-	 	//data->SW_acc = sw;
-		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(sw), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-		gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sw), GTK_SHADOW_ETCHED_IN);
-		gtk_widget_set_margin_bottom (sw, SPACING_LARGE);
-		widget = ui_cat_listview_new(TRUE, FALSE);
-		data->LV_cat = widget;
-		gtk_widget_set_vexpand (widget, TRUE);
+	 	scrollwin = gtk_scrolled_window_new(NULL,NULL);
+	 	//data->SW_acc = scrollwin;
+		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+		gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
+		gtk_widget_set_margin_bottom (scrollwin, SPACING_LARGE);
+		treeview = ui_cat_listview_new(TRUE, FALSE);
+		data->LV_cat = treeview;
+		gtk_widget_set_vexpand (treeview, TRUE);
 		//gtk_widget_set_size_request(widget, HB_MINWIDTH_LIST, -1);
-		gtk_container_add(GTK_CONTAINER(sw), widget);
-		gtk_notebook_append_page(GTK_NOTEBOOK(notebook), sw, NULL);
+		gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook), scrollwin, NULL);
 
-	 	sw = gtk_scrolled_window_new(NULL,NULL);
-	 	//data->SW_acc = sw;
-		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(sw), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-		gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sw), GTK_SHADOW_ETCHED_IN);
-		gtk_widget_set_margin_bottom (sw, SPACING_LARGE);
-		widget = ui_pay_listview_new(TRUE, FALSE);
-		data->LV_pay = widget;
-		gtk_widget_set_vexpand (widget, TRUE);
+	 	scrollwin = gtk_scrolled_window_new(NULL,NULL);
+	 	//data->SW_acc = scrollwin;
+		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+		gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
+		gtk_widget_set_margin_bottom (scrollwin, SPACING_LARGE);
+		treeview = ui_pay_listview_new(TRUE, FALSE);
+		data->LV_pay = treeview;
+		gtk_widget_set_vexpand (treeview, TRUE);
 		//gtk_widget_set_size_request(widget, HB_MINWIDTH_LIST, -1);
-		gtk_container_add(GTK_CONTAINER(sw), widget);
-		gtk_notebook_append_page(GTK_NOTEBOOK(notebook), sw, NULL);
+		gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook), scrollwin, NULL);
 
-	 	sw = gtk_scrolled_window_new(NULL,NULL);
-	 	//data->SW_acc = sw;
-		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(sw), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-		gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sw), GTK_SHADOW_ETCHED_IN);
-		gtk_widget_set_margin_bottom (sw, SPACING_LARGE);
-		widget = ui_tag_listview_new(TRUE);
-		data->LV_tag = widget;
-		gtk_widget_set_vexpand (widget, TRUE);
+	 	scrollwin = gtk_scrolled_window_new(NULL,NULL);
+	 	//data->SW_acc = scrollwin;
+		gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+		gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
+		gtk_widget_set_margin_bottom (scrollwin, SPACING_LARGE);
+		treeview = ui_tag_listview_new(TRUE);
+		data->LV_tag = treeview;
+		gtk_widget_set_vexpand (treeview, TRUE);
 		//gtk_widget_set_size_request(widget, HB_MINWIDTH_LIST, -1);
-		gtk_container_add(GTK_CONTAINER(sw), widget);
-		gtk_notebook_append_page(GTK_NOTEBOOK(notebook), sw, NULL);
+		gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
+		gtk_notebook_append_page(GTK_NOTEBOOK(notebook), scrollwin, NULL);
 
 	//part: info + report
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
@@ -1514,7 +1551,7 @@ gint row;
 
 	//infos
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
-	gtk_container_set_border_width (GTK_CONTAINER(hbox), SPACING_SMALL);
+	hb_widget_set_margin(GTK_WIDGET(hbox), SPACING_SMALL);
     gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
 	widget = make_label(NULL, 0.5, 0.5);
@@ -1539,25 +1576,25 @@ gint row;
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, NULL);
 
-		widget = gtk_scrolled_window_new (NULL, NULL);
-		//gtk_scrolled_window_set_placement(GTK_SCROLLED_WINDOW (widget), GTK_CORNER_TOP_RIGHT);
-		gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (widget), GTK_SHADOW_ETCHED_IN);
-		gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (widget), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+		scrollwin = gtk_scrolled_window_new (NULL, NULL);
+		//gtk_scrolled_window_set_placement(GTK_SCROLLED_WINDOW (scrollwin), GTK_CORNER_TOP_RIGHT);
+		gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
+		gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 		treeview = lst_reptime_create();
 		data->LV_report = treeview;
-		gtk_container_add (GTK_CONTAINER(widget), treeview);
-		gtk_box_pack_start (GTK_BOX (vbox), widget, TRUE, TRUE, 0);
+		gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
+		gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
 
 		//detail
-		widget = gtk_scrolled_window_new (NULL, NULL);
-		data->GR_detail = widget;
-		//gtk_scrolled_window_set_placement(GTK_SCROLLED_WINDOW (widget), GTK_CORNER_TOP_RIGHT);
-		gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (widget), GTK_SHADOW_ETCHED_IN);
-		gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (widget), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+		scrollwin = gtk_scrolled_window_new (NULL, NULL);
+		data->GR_detail = scrollwin;
+		//gtk_scrolled_window_set_placement(GTK_SCROLLED_WINDOW (scrollwin), GTK_CORNER_TOP_RIGHT);
+		gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
+		gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 		treeview = create_list_transaction(LIST_TXN_TYPE_DETAIL, PREFS->lst_det_columns);
 		data->LV_detail = treeview;
-		gtk_container_add (GTK_CONTAINER(widget), treeview);
-		gtk_box_pack_start (GTK_BOX (vbox), widget, TRUE, TRUE, 0);
+		gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
+		gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
 
 		list_txn_set_save_column_width(GTK_TREE_VIEW(treeview), TRUE);
 
@@ -1622,9 +1659,9 @@ const gchar *format;
 	gdouble amount;
 
 		gtk_tree_model_get (model, &iter,
-			//LST_REPTIME_KEY, i,
-			LST_REPTIME_TITLE  , &name,
-			LST_REPTIME_AMOUNT , &amount,
+			//LST_HUBREPTIME_KEY, i,
+			LST_HUBREPTIME_TITLE  , &name,
+			LST_HUBREPTIME_AMOUNT , &amount,
 			-1);
 
 		format = (clipboard == TRUE) ? "%s\t%.2f\n" : "%s;%.2f\n";
@@ -1698,11 +1735,11 @@ gint pos1, pos2;
 gdouble val1, val2;
 
 	gtk_tree_model_get(model, a,
-		LST_REPTIME_POS, &pos1,
+		LST_HUBREPTIME_POS, &pos1,
 		sortcol, &val1,
 		-1);
 	gtk_tree_model_get(model, b,
-		LST_REPTIME_POS, &pos2,
+		LST_HUBREPTIME_POS, &pos2,
 		sortcol, &val2,
 		-1);
 /*
@@ -1710,12 +1747,12 @@ gdouble val1, val2;
 	if(pos2 == -1) return(-1);
 */
 
-	if(sortcol == LST_REPTIME_POS)
+	if(sortcol == LST_HUBREPTIME_POS)
 		retval = pos2 - pos1;
 	else
 		retval = (ABS(val1) - ABS(val2)) > 0 ? 1 : -1;
 
-	//DB( g_print(" sort %d=%d or %.2f=%.2f :: %d\n", pos1,pos2, val1, val2, ret) );
+	DB( g_print(" sort %d=%d or %.2f=%.2f :: %d\n", pos1,pos2, val1, val2, retval) );
 
     return retval;
 }
@@ -1739,7 +1776,7 @@ GtkTreeViewColumn  *column;
 
 	/* create list store */
 	store = gtk_list_store_new(
-	  	NUM_LST_REPTIME,
+	  	NUM_LST_HUBREPTIME,
 		G_TYPE_INT,
 		G_TYPE_INT,
 		G_TYPE_STRING,
@@ -1760,8 +1797,8 @@ GtkTreeViewColumn  *column;
 	//g_object_set(renderer, "xalign", 1.0, NULL);
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	//gtk_tree_view_column_set_cell_data_func(column, renderer, ope_result_cell_data_function, NULL, NULL);
-	gtk_tree_view_column_add_attribute(column, renderer, "text", LST_REPTIME_TITLE);
-	//gtk_tree_view_column_set_sort_column_id (column, LST_REPTIME_NAME);
+	gtk_tree_view_column_add_attribute(column, renderer, "text", LST_HUBREPTIME_TITLE);
+	//gtk_tree_view_column_set_sort_column_id (column, LST_HUBREPTIME_NAME);
 	gtk_tree_view_column_set_resizable(column, TRUE);
 	
 	//#2004631 date and column title alignement
@@ -1770,7 +1807,7 @@ GtkTreeViewColumn  *column;
 	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
 
 	/* column: Amount */
-	column = lst_reptime_column_create_amount(_("Amount"), LST_REPTIME_AMOUNT);
+	column = lst_reptime_column_create_amount(_("Amount"), LST_HUBREPTIME_AMOUNT);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
 
   /* column last: empty */
@@ -1778,8 +1815,8 @@ GtkTreeViewColumn  *column;
 	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
 
 	/* sort */
-	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_REPTIME_POS   , lst_reptime_compare_func, GINT_TO_POINTER(LST_REPTIME_POS), NULL);
-	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_REPTIME_AMOUNT, lst_reptime_compare_func, GINT_TO_POINTER(LST_REPTIME_AMOUNT), NULL);
+	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_HUBREPTIME_POS   , lst_reptime_compare_func, GINT_TO_POINTER(LST_HUBREPTIME_POS), NULL);
+	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_HUBREPTIME_AMOUNT, lst_reptime_compare_func, GINT_TO_POINTER(LST_HUBREPTIME_AMOUNT), NULL);
 
 	return(view);
 }

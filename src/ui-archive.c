@@ -114,9 +114,12 @@ gint retval = 0;
     {
 		case LST_DEFARC_SORT_DATE:
 			retval = item1->nextdate - item2->nextdate;
+			//#2024956 default to next date
+			if(!retval)
+				goto domemo;
 			break;
 		case LST_DEFARC_SORT_MEMO:
-			retval = (item1->flags & GF_INCOME) - (item2->flags & GF_INCOME);
+domemo:			retval = (item1->flags & GF_INCOME) - (item2->flags & GF_INCOME);
 			if(!retval)
 			{
 				retval = hb_string_utf8_compare(item1->memo, item2->memo);
@@ -170,6 +173,25 @@ gint retval = 0;
 			g_return_val_if_reached(0);
 	}
     return retval;
+}
+
+
+static void 
+ui_arc_listview_cell_data_func_icons (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
+{
+Archive *item;
+gchar *iconname = NULL;
+
+	gtk_tree_model_get(model, iter, LST_DEFARC_DATAS, &item, -1);
+
+	switch(GPOINTER_TO_INT(user_data))
+	{
+		case 1:
+			iconname = ( item->flags & OF_PREFILLED  ) ? ICONNAME_HB_OPE_PREFILLED : NULL;
+			break;
+	}
+
+	g_object_set(renderer, "icon-name", iconname, NULL);
 }
 
 
@@ -439,6 +461,15 @@ GtkTreeViewColumn  *column;
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 	#endif
 
+	// column: icons
+	column = gtk_tree_view_column_new();
+	renderer = gtk_cell_renderer_pixbuf_new ();
+	//gtk_cell_renderer_set_fixed_size(renderer, GLOBALS->lst_pixbuf_maxwidth, -1);
+	gtk_tree_view_column_pack_start(column, renderer, TRUE);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_arc_listview_cell_data_func_icons, GINT_TO_POINTER(1), NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+
+
 	/* column: Scheduled icon */
 	column = gtk_tree_view_column_new();
 	renderer = gtk_cell_renderer_pixbuf_new ();
@@ -459,7 +490,7 @@ GtkTreeViewColumn  *column;
 	
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
-	/* column: Next on */
+	/* column: Date Next on */
 	renderer = gtk_cell_renderer_text_new ();
 	//#2004631 date and column title alignement
 	//g_object_set(renderer, "xalign", 1.0, NULL);
@@ -471,7 +502,7 @@ GtkTreeViewColumn  *column;
 	//#2004631 date and column title alignement
 	//gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
-	
+
 	/* column: Payee */
 	column = ui_arc_listview_column_text_create(_("Payee"), LST_DEFARC_SORT_PAYEE, ui_arc_listview_cell_data_function_payee, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
@@ -479,11 +510,11 @@ GtkTreeViewColumn  *column;
 	/* column: Category */
 	column = ui_arc_listview_column_text_create(_("Category"), LST_DEFARC_SORT_CATEGORY, ui_arc_listview_cell_data_function_category, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
-	
+
 	/* column: Memo */
 	column = ui_arc_listview_column_text_create(_("Memo"), LST_DEFARC_SORT_MEMO, ui_arc_listview_cell_data_function_memo, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
-	
+
 	/* column : amount */
 	column = gtk_tree_view_column_new();
 	gtk_tree_view_column_set_title(column, _("Amount"));
@@ -512,7 +543,9 @@ GtkTreeViewColumn  *column;
 	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_DEFARC_SORT_AMOUNT, ui_arc_listview_compare_func, GINT_TO_POINTER(LST_DEFARC_SORT_AMOUNT), NULL);
 	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_DEFARC_SORT_ACCOUNT, ui_arc_listview_compare_func, GINT_TO_POINTER(LST_DEFARC_SORT_ACCOUNT), NULL);
 
-	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), LST_DEFARC_SORT_MEMO, GTK_SORT_ASCENDING);
+	//#2024956 default to next date
+	//gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), LST_DEFARC_SORT_MEMO, GTK_SORT_ASCENDING);
+	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), LST_DEFARC_SORT_DATE, GTK_SORT_ASCENDING);
 
 	//gtk_tree_view_set_headers_visible (GTK_TREE_VIEW(view), FALSE);
 	//gtk_tree_view_set_reorderable (GTK_TREE_VIEW(view), TRUE);
@@ -758,7 +791,7 @@ gboolean result;
 	}
 
 	deftransaction_dispose(dialog, NULL);
-	gtk_widget_destroy (dialog);
+	gtk_window_destroy (GTK_WINDOW(dialog));
 	
 	da_transaction_free(new_txn);
 
@@ -805,7 +838,7 @@ gboolean result;
 		}
 
 		deftransaction_dispose(dialog, NULL);
-		gtk_widget_destroy (dialog);
+		gtk_window_destroy (GTK_WINDOW(dialog));
 		
 		da_transaction_free(new_txn);
 	}
@@ -1046,7 +1079,7 @@ gboolean doupdate = FALSE;
 
 	DB( g_print("\n[ui-scheduled] cleanup\n") );
 
-	da_archive_glist_sorted(1);
+	da_archive_glist_sorted(HB_GLIST_SORT_NAME);
 
 	GLOBALS->changes_count += data->change;
 
@@ -1179,8 +1212,8 @@ gint row;
 	group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	g_object_set(group_grid, "margin", SPACING_SMALL, NULL);
-	gtk_container_add(GTK_CONTAINER(expander), group_grid);
+	hb_widget_set_margin(GTK_WIDGET(group_grid), SPACING_SMALL);
+	gtk_expander_set_child (GTK_EXPANDER(expander), group_grid);
 	
 	row++;
 	label = make_label_widget(_("Week end:"));
@@ -1222,7 +1255,6 @@ struct ui_arc_manage_data *data;
 GtkWidget *dialog, *content_area, *bbox, *hbox, *vbox, *tbar;
 GtkWidget *box, *treeview, *scrollwin;
 GtkWidget *widget, *content, *menubutton, *image, *label;
-GtkToolItem *toolitem;
 gint w, h, dw, dh;
 
 	DB( g_print("\n[ui-scheduled] dialog\n") );
@@ -1255,7 +1287,7 @@ gint w, h, dw, dh;
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG (dialog));	 	// return a vbox
 
 	content = gtk_box_new(GTK_ORIENTATION_VERTICAL, SPACING_MEDIUM);
-	g_object_set(content, "margin", SPACING_LARGE, NULL);
+	hb_widget_set_margin(GTK_WIDGET(content), SPACING_LARGE);
 	gtk_box_pack_start (GTK_BOX (content_area), content, TRUE, TRUE, 0);
 	
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
@@ -1295,62 +1327,51 @@ gint w, h, dw, dh;
 	treeview = (GtkWidget *)ui_arc_listview_new();
 	data->LV_arc = treeview;
 	gtk_widget_set_size_request(treeview, HB_MINWIDTH_LIST, -1);
-	gtk_container_add(GTK_CONTAINER(scrollwin), treeview);
+	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
 	gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
 
-	tbar = gtk_toolbar_new();
-	gtk_toolbar_set_icon_size (GTK_TOOLBAR(tbar), GTK_ICON_SIZE_MENU);
-	gtk_toolbar_set_style(GTK_TOOLBAR(tbar), GTK_TOOLBAR_ICONS);
+	tbar = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
 	gtk_box_pack_start (GTK_BOX (vbox), tbar, FALSE, FALSE, 0);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	toolitem = gtk_tool_item_new();
-	gtk_container_add (GTK_CONTAINER(toolitem), bbox);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+	gtk_box_pack_start (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
 
 		widget = make_image_button(ICONNAME_LIST_ADD, _("Add"));
 		data->BT_add = widget;
-		gtk_container_add (GTK_CONTAINER(bbox), widget);
+		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
 
 		widget = make_image_button(ICONNAME_LIST_DELETE, _("Delete"));
 		data->BT_rem = widget;
-		gtk_container_add (GTK_CONTAINER(bbox), widget);
-
-	toolitem = gtk_separator_tool_item_new ();
-	//gtk_tool_item_set_expand (toolitem, TRUE);
-	gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(toolitem), FALSE);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	toolitem = gtk_tool_item_new();
-	gtk_container_add (GTK_CONTAINER(toolitem), bbox);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+	gtk_box_pack_start (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
 
-	//widget = gtk_button_new_with_mnemonic(_("_Edit"));
-	widget = make_image_button(ICONNAME_LIST_EDIT, _("Edit"));
-	data->BT_edit = widget;
-	gtk_container_add (GTK_CONTAINER(bbox), widget);
-	
-	//schedule button
-	menubutton = gtk_menu_button_new ();
-	data->MB_schedule = menubutton;
-	gtk_menu_button_set_direction (GTK_MENU_BUTTON(menubutton), GTK_ARROW_DOWN );
-	gtk_widget_set_halign (menubutton, GTK_ALIGN_END);
-	//gtk_widget_set_hexpand (menubutton, TRUE);
-	gtk_widget_show_all(menubutton);
-	gtk_container_add (GTK_CONTAINER(bbox), menubutton);
+		//widget = gtk_button_new_with_mnemonic(_("_Edit"));
+		widget = make_image_button(ICONNAME_LIST_EDIT, _("Edit"));
+		data->BT_edit = widget;
+		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
 
-	box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
-	label = gtk_label_new_with_mnemonic (_("_Schedule"));
-	gtk_box_pack_start (GTK_BOX(box), label, FALSE, FALSE, 0);
-	image = gtk_image_new_from_icon_name ("pan-down-symbolic", GTK_ICON_SIZE_BUTTON);
-	gtk_box_pack_start (GTK_BOX(box), image, FALSE, FALSE, 0);
-	gtk_container_add(GTK_CONTAINER(menubutton), box);
-	GtkWidget *template = ui_arc_manage_create_scheduling(data);
-	GtkWidget *popover = create_popover (menubutton, template, GTK_POS_TOP);
-	data->PO_schedule = popover;
-	gtk_menu_button_set_popover(GTK_MENU_BUTTON(menubutton), popover);
+		//schedule button
+		menubutton = gtk_menu_button_new ();
+		data->MB_schedule = menubutton;
+		gtk_menu_button_set_direction (GTK_MENU_BUTTON(menubutton), GTK_ARROW_DOWN );
+		gtk_widget_set_halign (menubutton, GTK_ALIGN_END);
+		//gtk_widget_set_hexpand (menubutton, TRUE);
+		gtk_widget_show_all(menubutton);
+		gtk_box_pack_start(GTK_BOX(bbox), menubutton, FALSE, FALSE, 0);
+
+		box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
+		label = gtk_label_new_with_mnemonic (_("_Schedule"));
+		gtk_box_pack_start (GTK_BOX(box), label, FALSE, FALSE, 0);
+		image = gtk_image_new_from_icon_name ("pan-down-symbolic", GTK_ICON_SIZE_BUTTON);
+		gtk_box_pack_start (GTK_BOX(box), image, FALSE, FALSE, 0);
+		gtk_container_add(GTK_CONTAINER(menubutton), box);
+		GtkWidget *template = ui_arc_manage_create_scheduling(data);
+		GtkWidget *popover = create_popover (menubutton, template, GTK_POS_TOP);
+		data->PO_schedule = popover;
+		gtk_menu_button_set_popover(GTK_MENU_BUTTON(menubutton), popover);
 	
 
 	// connect dialog signals
@@ -1369,7 +1390,7 @@ gint w, h, dw, dh;
 
 	// cleanup and destroy
 	ui_arc_manage_cleanup(data, result);
-	gtk_widget_destroy (dialog);
+	gtk_window_destroy (GTK_WINDOW(dialog));
 
 	g_free(data);
 	

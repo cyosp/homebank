@@ -291,7 +291,7 @@ GtkWidget *scrollwin;
 	gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scrollwin), 0.75*HB_MINHEIGHT_LIST);
 	widget = make_label(NULL, 0.0, 0.0);
 	data->LB_cur_others = widget;
-	gtk_container_add(GTK_CONTAINER(scrollwin), widget);
+	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), widget);
 
 	widget = gtk_button_new_with_mnemonic (_("_Add"));
 	gtk_widget_set_halign(widget, GTK_ALIGN_START);
@@ -449,7 +449,7 @@ GtkWidget *scrollwin;
 	gtk_box_pack_start (GTK_BOX (mainbox), scrollwin, TRUE, TRUE, 0);
 	widget = make_label(NULL, 0.0, 0.5);
 	data->TX_preview = widget;
-	gtk_container_add(GTK_CONTAINER(scrollwin), widget);
+	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), widget);
 
 	g_signal_connect (G_OBJECT (data->CM_load), "toggled", G_CALLBACK (ui_newfile_page_categories_cb_toggle), data);
 	
@@ -687,7 +687,7 @@ struct assist_start_data *data = user_data;
 
 
 	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-	gtk_widget_destroy (data->dialog);
+	gtk_window_destroy (GTK_WINDOW(data->dialog));
 
 	g_free(data->pathfilename);
 	g_ptr_array_free(data->cur_arr, TRUE);

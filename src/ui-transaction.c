@@ -146,6 +146,7 @@ gchar *lbfrom, *lbto;
 	
 	//xfer: hide split+paymode / show accto
 	visible = (type == TXN_TYPE_INTXFER) ? FALSE : TRUE;
+	DB( g_print(" is xfer %d: hide split/pay, show accto\n", !visible) );
 	hb_widget_visible(data->BT_split, visible);
 	hb_widget_visible(data->LB_mode , visible);
 	hb_widget_visible(data->NU_mode , visible);
@@ -157,8 +158,9 @@ gchar *lbfrom, *lbto;
 	visible = (type == TXN_TYPE_INTXFER) ? FALSE : visible;
 	hb_widget_visible(data->CM_cheque, visible);
 
-	/* disable amount+category if split is set */
+	//disable amount+category if split is set
 	sensitive = (data->ope->flags & (OF_SPLIT)) ? FALSE : TRUE;
+	DB( g_print(" is plit %d: disable amt/cat\n", !sensitive) );
 	gtk_widget_set_sensitive(data->RA_type, sensitive);	
 	gtk_widget_set_sensitive(data->ST_amount, sensitive);
 	gtk_widget_set_sensitive(data->PO_cat, sensitive);
@@ -203,6 +205,7 @@ gchar *lbfrom, *lbto;
 	hb_widget_visible(data->LB_xfercurr, xferamtvisible);
 
 	// item validation
+	sensitive = FALSE;
 	if( (data->type == TXN_DLG_TYPE_TPL) )
 	{
 		DB( g_print(" add tpl no check\n") );
@@ -363,7 +366,8 @@ gchar *cheque_str;
 
 }
 
-
+//5.7 removed
+/*
 static void deftransaction_cb_date_changed(GtkWidget *widget, gpointer user_data)
 {
 struct deftransaction_data *data;
@@ -380,7 +384,7 @@ GDateWeekday weekday;
 	gtk_label_set_label(GTK_LABEL(data->LB_wday), _(CYA_WEEKDAY[weekday]));
 
 }
-
+*/
 
 static void deftransaction_cb_accfrom_changed(GtkWidget *widget, gpointer user_data)
 {
@@ -911,14 +915,44 @@ gchar *txt;
 */
 gint deftransaction_external_edit(GtkWindow *parent, Transaction *old_txn, Transaction *new_txn)
 {
+struct deftransaction_data *data;
 GtkWidget *dialog;
 gboolean result;
 Account *acc;
 
 	DB( g_print("\n[ui-transaction] external edit (from out)\n") );
 
-
 	dialog = create_deftransaction_window(GTK_WINDOW(parent), TXN_DLG_ACTION_EDIT, TXN_DLG_TYPE_TXN, 0);
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(dialog, GTK_TYPE_WINDOW)), "inst_data");
+
+	//5.7 test if xfer src or dst
+	// and disable expense or income as well to avoid mistake
+	data->isxferdst = FALSE;
+	if( old_txn->flags & OF_INTXFER )
+	{
+	GtkWidget *radio;
+
+		if( old_txn->amount < 0 )
+		{
+			//disbale income
+			radio = hbtk_radio_button_get_nth(GTK_CONTAINER(data->RA_type), 1);
+			if(radio)
+				gtk_widget_set_sensitive(radio, FALSE);
+		}
+		
+		if( old_txn->amount > 0 )
+		{
+			data->isxferdst = TRUE;
+			//disbale expense
+			radio = hbtk_radio_button_get_nth(GTK_CONTAINER(data->RA_type), 0);
+			if(radio)
+				gtk_widget_set_sensitive(radio, FALSE);
+		}
+	}
+
+	DB( g_print(" xfer is target: %d\n", data->isxferdst) );
+
 	deftransaction_set_transaction(dialog, new_txn);
 
 	DB( g_print(" ** dialog run **\n") );
@@ -1034,7 +1068,7 @@ Account *acc;
 	}
 
 	deftransaction_dispose(dialog, NULL);
-	gtk_widget_destroy (dialog);
+	gtk_window_destroy (GTK_WINDOW(dialog));
 
 	DB( g_print("[ui-transaction] end external edit (from out)\n") );
 	
@@ -1293,7 +1327,7 @@ GtkWidget *box, *widget, *scrollwin, *treeview;
 
 	treeview = gtk_tree_view_new_with_model(GTK_TREE_MODEL(data->modelfilter));
 	data->LV_arc = treeview;
-	gtk_container_add(GTK_CONTAINER(scrollwin), treeview);
+	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
 
 	gtk_widget_grab_focus(treeview);
 
@@ -1488,8 +1522,8 @@ gint row;
 
 	gtk_window_set_title (GTK_WINDOW(dialog), title);
 
-	DB( g_print(" action:%d, type:%d, title:'%s'\n", action, type, title) );
-	
+	DB( g_print(" action:%d '%s', type:%d \n", action, title, type ) );
+
 	//gtk_window_set_decorated(GTK_WINDOW(dialog), TRUE);
 
 	//dialog contents
@@ -1499,7 +1533,7 @@ gint row;
 	group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	g_object_set(group_grid, "margin", SPACING_LARGE, NULL);
+	hb_widget_set_margin(GTK_WIDGET(group_grid), SPACING_LARGE);
 	gtk_box_pack_start (GTK_BOX (content), group_grid, FALSE, FALSE, 0);
 
 	row=0;
@@ -1538,9 +1572,12 @@ gint row;
 		gtk_widget_set_tooltip_text(widget, _("- type: d, d/m, m/d a complete date\n- use arrow key + ctrl or shift\n- empty for today"));
 		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
 
+		//5.7 removed
+		/*
 		label = make_label(NULL, 0, 0.5);
 		data->LB_wday = label;
 		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+		*/
 
 	row++;
 	label = make_label_widget(_("Amou_nt:"));
@@ -1619,6 +1656,7 @@ gint row;
 	widget = ui_acc_entry_popover_new(label);
 	data->PO_accto = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
+
 
 	row++;
 	label = make_label_widget(_("Pa_yment:"));
@@ -1734,7 +1772,6 @@ gint row;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
 
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_widget_set_hexpand(hbox, TRUE);
 	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(hbox)), GTK_STYLE_CLASS_LINKED);
 	gtk_grid_attach (GTK_GRID (group_grid), hbox, 1, row, 2, 1);
 
@@ -1746,7 +1783,6 @@ gint row;
 		data->CY_tags = widget;
 		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
 
-	
 	gtk_widget_show_all(group_grid);
 
 	row++;
@@ -1777,7 +1813,8 @@ gint row;
 
 	hbtk_radio_button_connect (GTK_CONTAINER(data->RA_type), "toggled", G_CALLBACK (deftransaction_cb_type_toggled), NULL);
 
-	g_signal_connect (data->PO_date, "changed", G_CALLBACK (deftransaction_cb_date_changed), NULL);
+	//5.7 removed
+	//g_signal_connect (data->PO_date, "changed", G_CALLBACK (deftransaction_cb_date_changed), NULL);
 	
 	//g_signal_connect (data->PO_acc  , "changed", G_CALLBACK (deftransaction_cb_accfrom_changed), NULL);
 	g_signal_connect (ui_acc_entry_popover_get_entry(GTK_BOX(data->PO_acc)), "changed", G_CALLBACK (deftransaction_cb_accfrom_changed), NULL);

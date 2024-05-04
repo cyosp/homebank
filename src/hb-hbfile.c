@@ -145,6 +145,7 @@ static void hbfile_file_load_backup_xhb(void)
 }
 */
 
+
 void hbfile_replace_basecurrency(Currency4217 *curfmt)
 {
 Currency *item;

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   id="svg7384"
+   height="16"
+   width="16"
+   version="1.1"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   sodipodi:docname="hicolor_actions_scalable_edit-duplicate-symbolic.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs12">
+    <linearGradient
+       id="linearGradient5606"
+       inkscape:swatch="solid">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop5608" />
+    </linearGradient>
+    <filter
+       style="color-interpolation-filters:sRGB"
+       id="filter7554">
+      <feBlend
+         mode="darken"
+         in2="BackgroundImage"
+         id="feBlend7556" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB"
+       id="filter7554-5">
+      <feBlend
+         mode="darken"
+         in2="BackgroundImage"
+         id="feBlend7556-6" />
+    </filter>
+    <filter
+       id="filter7554-1"
+       style="color-interpolation-filters:sRGB">
+      <feBlend
+         id="feBlend7556-8"
+         in2="BackgroundImage"
+         mode="darken" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="995"
+     id="namedview10"
+     showgrid="true"
+     inkscape:zoom="33.625"
+     inkscape:cx="7.9851301"
+     inkscape:cy="6.9739777"
+     inkscape:window-x="0"
+     inkscape:window-y="1080"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg7384"
+     inkscape:pagecheckerboard="0">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3219" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata90">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>HomeBank Symbolic Icon Theme</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <title
+     id="title9167">HomeBank Symbolic Icon Theme</title>
+  <g
+     aria-label="x2"
+     style="font-style:normal;font-weight:normal;font-size:5.37998px;line-height:16.8124px;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#bebebe;fill-opacity:1;stroke:none;stroke-width:0.952351px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     id="text857"
+     transform="matrix(2.3771629,0,0,3.9918615,-19.83908,-39.858526)">
+    <path
+       d="M 9.4595212,12.472664 8.3982355,11.035725 h 0.9956121 l 0.6015704,0.872146 0.609451,-0.872146 h 0.995612 l -1.061285,1.431685 1.113824,1.510493 H 10.657408 L 9.995418,13.047965 9.3413087,13.977903 H 8.3456966 Z"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#bebebe;fill-opacity:1;stroke-width:1.58254px"
+       id="path350"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 13.284353,13.234478 h 1.725903 v 0.743425 h -2.850235 v -0.743425 l 1.431684,-1.26356 q 0.191767,-0.173379 0.28371,-0.338876 0.09194,-0.165498 0.09194,-0.34413 0,-0.275829 -0.186514,-0.443954 -0.183886,-0.168124 -0.491238,-0.168124 -0.236425,0 -0.517508,0.102451 -0.281083,0.09982 -0.601571,0.299471 v -0.861638 q 0.341503,-0.112958 0.675125,-0.170751 0.333622,-0.06042 0.654109,-0.06042 0.704022,0 1.092809,0.30998 0.391415,0.309979 0.391415,0.864265 0,0.320487 -0.165497,0.598943 -0.165498,0.275829 -0.696141,0.740798 z"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:sans-serif;-inkscape-font-specification:'sans-serif Bold';fill:#bebebe;fill-opacity:1;stroke-width:1.58254px"
+       id="path347"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>

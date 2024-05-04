@@ -261,12 +261,15 @@ GList *group_glist_sorted(gint column)
 {
 GList *list = g_hash_table_get_values(GLOBALS->h_grp);
 
-	if(column == 0)
-		return g_list_sort(list, (GCompareFunc)group_glist_key_compare_func);
-	else
-		return g_list_sort(list, (GCompareFunc)group_glist_name_compare_func);
+	switch(column)
+	{
+		case HB_GLIST_SORT_NAME:
+			return g_list_sort(list, (GCompareFunc)group_glist_name_compare_func);
+			break;
+		//case HB_GLIST_SORT_KEY:
+		default:
+			return g_list_sort(list, (GCompareFunc)group_glist_key_compare_func);
+			break;
+	}
 }
-
-
-
 

@@ -975,12 +975,16 @@ category_glist_sorted(gint column)
 {
 GList *list = g_hash_table_get_values(GLOBALS->h_cat);
 
-	if(column == 0)
-		// sort by cat and their consecutive subcat
-		return g_list_sort(list, (GCompareFunc)category_glist_key_compare_func);
-	else
-		// sort by name
-		return g_list_sort(list, (GCompareFunc)category_glist_name_compare_func);
+	switch(column)
+	{
+		case HB_GLIST_SORT_NAME:
+			return g_list_sort(list, (GCompareFunc)category_glist_name_compare_func);
+			break;
+		//case HB_GLIST_SORT_KEY:
+		default:
+			return g_list_sort(list, (GCompareFunc)category_glist_key_compare_func);
+			break;
+	}
 }
 
 
@@ -1097,7 +1101,7 @@ GList *lcat, *list;
 	io = g_io_channel_new_file(filename, "w", NULL);
 	if(io != NULL)
 	{
-		lcat = list = category_glist_sorted(1);
+		lcat = list = category_glist_sorted(HB_GLIST_SORT_NAME);
 
 		while (list != NULL)
 		{

@@ -863,7 +863,7 @@ Currency *cur;
 	content = gtk_dialog_get_content_area(GTK_DIALOG (dialog));
 
 	table = gtk_grid_new ();
-	gtk_container_set_border_width (GTK_CONTAINER (table), SPACING_SMALL);
+	hb_widget_set_margin(GTK_WIDGET(table), SPACING_SMALL);
 	gtk_grid_set_row_spacing (GTK_GRID (table), SPACING_TINY);
 	gtk_grid_set_column_spacing (GTK_GRID (table), SPACING_TINY);
 	gtk_box_pack_start (GTK_BOX (content), table, TRUE, TRUE, 0);
@@ -877,7 +877,7 @@ Currency *cur;
 	gtk_widget_set_hexpand (scrollwin, TRUE);
 	gtk_widget_set_vexpand (scrollwin, TRUE);
 	treeview = list_split_new(cur->format);
-	gtk_container_add(GTK_CONTAINER(scrollwin), treeview);
+	gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scrollwin), treeview);
 	gtk_grid_attach (GTK_GRID (table), scrollwin, 0, row, 4, 1);
 
 	//setup
@@ -887,7 +887,7 @@ Currency *cur;
 
 	gtk_dialog_run (GTK_DIALOG (dialog));
 
-	gtk_widget_destroy (dialog);
+	gtk_window_destroy (GTK_WINDOW(dialog));
 	
 	return NULL;
 	
@@ -951,7 +951,7 @@ gint row;
 	content = gtk_dialog_get_content_area(GTK_DIALOG (dialog));
 
 	table = gtk_grid_new ();
-	gtk_container_set_border_width (GTK_CONTAINER (table), SPACING_LARGE);
+	hb_widget_set_margin(GTK_WIDGET(table), SPACING_LARGE);
 	gtk_grid_set_row_spacing (GTK_GRID (table), SPACING_TINY);
 	gtk_grid_set_column_spacing (GTK_GRID (table), SPACING_TINY);
 	gtk_box_pack_start (GTK_BOX (content), table, TRUE, TRUE, 0);
@@ -965,7 +965,7 @@ gint row;
 	gtk_widget_set_hexpand (scrollwin, TRUE);
 	gtk_widget_set_vexpand (scrollwin, TRUE);
 	data->LV_split = list_split_new(data->cur->format);
-	gtk_container_add(GTK_CONTAINER(scrollwin), data->LV_split);
+	gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scrollwin), data->LV_split);
 	gtk_grid_attach (GTK_GRID (table), scrollwin, 0, row, 4, 1);
 
 	box = gtk_box_new (GTK_ORIENTATION_VERTICAL, SPACING_TINY);
@@ -1158,7 +1158,7 @@ gint row;
 
 	// cleanup and destroy
 	//GLOBALS->changes_count += data->change;
-	gtk_widget_destroy (dialog);
+	gtk_window_destroy (GTK_WINDOW(dialog));
 	
 	da_split_destroy (data->tmp_splits);
 

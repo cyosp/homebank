@@ -808,7 +808,7 @@ static void list_txn_to_string_csv_text(GString *node, gchar *sep, gchar *text)
 }
 
 
-static void list_txn_to_string_line(GString *node, gchar sep, Transaction *ope, guint32 kcat, gchar *memo, gdouble amount, gboolean hasstatus, gboolean hasacc)
+static void list_txn_to_string_line(GString *node, gchar sep, Transaction *ope, guint32 kcat, gchar *memo, gdouble amount, guint flags)
 {
 Payee *payee;
 Category *category;
@@ -816,7 +816,7 @@ gchar *tags;
 char strbuf[G_ASCII_DTOSTR_BUF_SIZE];
 
 	//account
-	if( hasacc )
+	if( flags & LST_TXN_EXP_ACC )
 	{
 	Account *acc = da_acc_get(ope->kacc);
 	
@@ -827,28 +827,30 @@ char strbuf[G_ASCII_DTOSTR_BUF_SIZE];
 	//date
 	hb_sprint_date(strbuf, ope->date);
 	g_string_append (node, strbuf );
-	g_string_append_c (node, sep );
 
 	//paymode
-	g_snprintf(strbuf, sizeof (strbuf), "%d", ope->paymode);
-	g_string_append (node, strbuf );
-	g_string_append_c (node, sep );
-
+	if( flags & LST_TXN_EXP_PMT )
+	{
+		g_snprintf(strbuf, sizeof (strbuf), "%d", ope->paymode);
+		g_string_append_c (node, sep );
+		g_string_append (node, strbuf );
+	}
+	
 	//info
 	//g_string_append (node, (ope->info != NULL) ? ope->info : "" );
-	list_txn_to_string_csv_text(node, &sep, ope->info);
 	g_string_append_c (node, sep );
+	list_txn_to_string_csv_text(node, &sep, ope->info);
 
 	//payee	
 	payee = da_pay_get(ope->kpay);
 	//g_string_append (node, (payee->name != NULL) ? payee->name : "");
-	list_txn_to_string_csv_text(node, &sep, payee->name);
 	g_string_append_c (node, sep );
+	list_txn_to_string_csv_text(node, &sep, payee->name);
 
 	//memo
 	//g_string_append (node, (memo != NULL) ? memo : "" );
-	list_txn_to_string_csv_text(node, &sep, memo);
 	g_string_append_c (node, sep );
+	list_txn_to_string_csv_text(node, &sep, memo);
 
 	//amount
 	//#793719
@@ -859,27 +861,45 @@ char strbuf[G_ASCII_DTOSTR_BUF_SIZE];
 	g_snprintf(strbuf, sizeof (strbuf), "%.2f", amount);
 
 	DB( g_print("amount = %f '%s'\n", amount, strbuf) );
-	g_string_append (node, strbuf );
 	g_string_append_c (node, sep );
+	g_string_append (node, strbuf );
 
 	//#1847907 v 5.3.2 add reconcile as c column like in pdf export
 	//status
-	if( hasstatus )
+	if( flags & LST_TXN_EXP_CLR )
 	{
-		g_string_append (node, transaction_get_status_string(ope) );
 		g_string_append_c (node, sep );
+		g_string_append (node, transaction_get_status_string(ope) );
 	}
 	
 	//category
-	category = da_cat_get(kcat);
-	//g_string_append (node, (category->fullname != NULL) ? category->fullname : "" );
-	list_txn_to_string_csv_text(node, &sep, category->fullname);
-	g_string_append_c (node, sep );
+	if( flags & LST_TXN_EXP_CAT )
+	{
+		category = da_cat_get(kcat);
+		//g_string_append (node, (category->fullname != NULL) ? category->fullname : "" );
+		g_string_append_c (node, sep );
+		list_txn_to_string_csv_text(node, &sep, category->fullname);
+	}
 
 	//tags
-	tags = tags_tostring(ope->tags);
-	g_string_append (node, tags != NULL ? tags : "");
-	g_free(tags);
+	if( flags & LST_TXN_EXP_TAG )
+	{
+
+		tags = tags_tostring(ope->tags);
+		g_string_append_c (node, sep );
+		g_string_append (node, tags != NULL ? tags : "");
+		g_free(tags);
+	}
+
+	//balance
+	if( flags & LST_TXN_EXP_BAL )
+	{
+		g_snprintf(strbuf, sizeof (strbuf), "%.2f", ope->balance);
+
+		DB( g_print(" balance = %f '%s'\n", ope->balance, strbuf) );
+		g_string_append_c (node, sep );
+		g_string_append (node, strbuf );
+	}
 
 	//eol
 	g_string_append (node, "\n" );
@@ -887,7 +907,7 @@ char strbuf[G_ASCII_DTOSTR_BUF_SIZE];
 }
 
 
-GString *list_txn_to_string(GtkTreeView *treeview, gboolean isclipboard, gboolean hassplit, gboolean hasstatus, gboolean hasacc)
+GString *list_txn_to_string(GtkTreeView *treeview, gboolean isclipboard, gboolean hassplit, guint flags)
 {
 struct list_txn_data *data = NULL;
 GtkTreeModel *model;
@@ -898,6 +918,9 @@ Transaction *ope;
 gdouble amount, samount;
 gchar sep;
 
+	//adding account, status, split, balance break csv reimport
+	//date payment info payee memo amount category tags
+
 	data = g_object_get_data(G_OBJECT(treeview), "inst_data");
 	
 	node = g_string_new(NULL);
@@ -905,35 +928,66 @@ gchar sep;
 	sep = (isclipboard == TRUE) ? '\t' : ';';
 
 	// header line
-	if( hasacc )
+	if( flags & LST_TXN_EXP_ACC )
 	{
-		g_string_append (node, "account" );
+		//g_string_append (node, "account" );
+		g_string_append (node, _("Account") );
 		g_string_append_c (node, sep );
 	}
-	g_string_append (node, "date" );
+
+	//g_string_append (node, "date" );
+	g_string_append (node, _("Date") );	
+
+	if( flags & LST_TXN_EXP_PMT )
+	{
+		g_string_append_c (node, sep );
+		//g_string_append (node, "paymode" );
+		g_string_append (node, _("Payment") );
+	}
 	g_string_append_c (node, sep );
-	g_string_append (node, "paymode" );
+	//g_string_append (node, "info" );
+	g_string_append (node, _("Info") );	
+
 	g_string_append_c (node, sep );
-	g_string_append (node, "info" );
+	//g_string_append (node, "payee" );
+	g_string_append (node, _("Payee") );	
+
 	g_string_append_c (node, sep );
-	g_string_append (node, "payee" );
+	//g_string_append (node, "memo" );
+	g_string_append (node, _("Memo") );	
+
 	g_string_append_c (node, sep );
-	g_string_append (node, "memo" );
-	g_string_append_c (node, sep );
-	g_string_append (node, "amount" );
-	g_string_append_c (node, sep );
+	//g_string_append (node, "amount" );
+	g_string_append (node, _("Amount") );	
 	//#1847907 v 5.3.2 add reconcile as c column like in pdf export
-	if( hasstatus )
+	if( flags & LST_TXN_EXP_CLR )
 	{
-		g_string_append (node, "c" );
 		g_string_append_c (node, sep );
+		g_string_append (node, "C" );	//CLR/STATUS
 	}
-	g_string_append (node, "category" );
-	g_string_append_c (node, sep );
-	g_string_append (node, "tags");
+	if( flags & LST_TXN_EXP_CAT )
+	{
+		g_string_append_c (node, sep );
+		//g_string_append (node, "category" );
+		g_string_append (node, _("Category") );	
+	}
+	if( flags & LST_TXN_EXP_TAG )
+	{
+		g_string_append_c (node, sep );
+		//g_string_append (node, "tags" );
+		g_string_append (node, _("Tags") );
+	}
+	if( flags & LST_TXN_EXP_BAL )
+	{
+		g_string_append_c (node, sep );
+		//g_string_append (node, "balance" );
+		g_string_append (node, _("Balance") );
+	}
+
 	g_string_append (node, "\n" );
 
-	// each txn	
+	// each txn
+	//total = 0.0;
 	model = gtk_tree_view_get_model(treeview);
 	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
 	while (valid)
@@ -950,13 +1004,15 @@ gchar sep;
 			//for detail display the split part (if any)
 			if( data && (data->list_type == LIST_TXN_TYPE_DETAIL) )
 				amount = samount;
-			list_txn_to_string_line(node, sep, ope, ope->kcat, ope->memo, amount, hasstatus, hasacc);
+			list_txn_to_string_line(node, sep, ope, ope->kcat, ope->memo, amount, flags);
+			//total += amount;
 		}
 		else
 		{
 			if( (ope->splits == NULL) )
 			{
-				list_txn_to_string_line(node, sep, ope, ope->kcat, ope->memo, ope->amount, hasstatus, hasacc);
+				list_txn_to_string_line(node, sep, ope, ope->kcat, ope->memo, ope->amount, flags);
+				//total += ope->amount;
 			}
 			else
 			{
@@ -965,7 +1021,8 @@ gchar sep;
 				for(i=0;i<nbsplit;i++)
 				{
 				Split *split = da_splits_get(ope->splits, i);
-					list_txn_to_string_line(node, sep, ope, split->kcat, split->memo, split->amount, hasstatus, hasacc);
+					list_txn_to_string_line(node, sep, ope, split->kcat, split->memo, split->amount, flags);
+					//total += split->amount;
 				}
 			}
 		}

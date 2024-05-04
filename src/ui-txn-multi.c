@@ -439,7 +439,7 @@ struct ui_multipleedit_dialog_data *data;
 GtkWidget *ui_multipleedit_dialog_new(GtkWindow *parent, GtkTreeView *treeview)
 {
 struct ui_multipleedit_dialog_data *data;
-GtkWidget *dialog, *content_area;
+GtkWidget *dialog, *content;
 GtkWidget *group_grid, *label, *widget, *toggle;
 gint row;
 
@@ -472,13 +472,13 @@ gint row;
 
 	gtk_window_set_title (GTK_WINDOW (data->dialog), _("Multiple edit transactions"));
 
-	content_area = gtk_dialog_get_content_area(GTK_DIALOG (dialog));
+	content = gtk_dialog_get_content_area(GTK_DIALOG (dialog));
 
 	group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_container_set_border_width (GTK_CONTAINER(group_grid), SPACING_LARGE);
-	gtk_container_add (GTK_CONTAINER (content_area), group_grid);
+	hb_widget_set_margin(GTK_WIDGET(group_grid), SPACING_LARGE);
+	gtk_box_pack_start (GTK_BOX (content), group_grid, FALSE, FALSE, 0);
 
 	row = -1;
 

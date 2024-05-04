@@ -81,8 +81,9 @@ struct _transaction
 #define OF_SPLIT	(1<<8)
 
 //unsaved tmp flags
-#define OF_ADDED	(1<<9)  //was 1<<3 < 5.3
-#define OF_CHANGED	(1<<10) //was 1<<4 < 5.3
+#define OF_ADDED		(1<<9)  //was 1<<3 < 5.3
+#define OF_CHANGED		(1<<10) //was 1<<4 < 5.3
+#define OF_PREFILLED	(1<<11)
 
 //deprecated since 5.x
 #define OLDF_VALID	(1<<0)  

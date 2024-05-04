@@ -27,6 +27,10 @@
 
 #include "gtk-dateentry.h"
 
+//TODO: move this after GTK4
+#include "ui-widgets.h"
+
+
 #define MYDEBUG 0
 
 #if MYDEBUG
@@ -240,7 +244,8 @@ gchar label[127];
 	DB( g_print("\n[dateentry] update text\n") );
 
 	//%x : The preferred date representation for the current locale without the time.
-	g_date_strftime (label, 127 - 1, "%x", priv->date);
+	//5.7 added %a to display abbreviated weekday
+	g_date_strftime (label, 127 - 1, "%a %x", priv->date);
 	gtk_entry_set_text (GTK_ENTRY (priv->entry), label);
 	DB( g_print(" = %s\n", label) );
 }
@@ -653,13 +658,13 @@ GtkWidget *vbox;
 
 	priv->button = gtk_button_new ();
 	priv->arrow = gtk_image_new_from_icon_name ("pan-down-symbolic", GTK_ICON_SIZE_BUTTON);
-	gtk_container_add (GTK_CONTAINER (priv->button), priv->arrow);
+	gtk_button_set_image(GTK_BUTTON(priv->button), priv->arrow);
 	gtk_box_pack_end (GTK_BOX (dateentry), priv->button, FALSE, FALSE, 0);
 
 	priv->popover = gtk_popover_new (priv->button);
 	gtk_popover_set_position(GTK_POPOVER(priv->popover), GTK_POS_BOTTOM);
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
-	gtk_container_add (GTK_CONTAINER (priv->popover), vbox);
+	gtk_popover_set_child (GTK_POPOVER(priv->popover), vbox);
 
 	gtk_widget_set_margin_start (vbox, 10);
 	gtk_widget_set_margin_end (vbox, 10);

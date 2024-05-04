@@ -71,6 +71,7 @@ struct _StackItem
 	gdouble	 budget;
 	gdouble  result;
 	gchar    *status;
+	gint     n_child;
 
 	/* draw stuffs */
 	gdouble  rate;
@@ -118,8 +119,10 @@ struct _ChartProgress
 	GtkWidget		*drawarea;
 	GtkAdjustment	*adjustment;
 	GtkWidget		*scrollbar;
+	GtkWidget		*breadcrumb;
 
 	/* data storage */
+	GtkTreeModel   *model;
 	gint		nb_items;
 	GArray		*items;
 

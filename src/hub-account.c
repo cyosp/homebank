@@ -376,6 +376,19 @@ struct hbfile_data *data;
 }
 
 
+static void ui_hub_account_browse(GtkWidget *widget, gpointer user_data)
+{
+struct hbfile_data *data;
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	if( account_has_website(data->acc) )
+	{
+		homebank_util_url_show(data->acc->website);
+	}
+}
+
+
 static void ui_hub_account_expand_all(GtkWidget *widget, gpointer user_data)
 {
 struct hbfile_data *data;
@@ -401,6 +414,40 @@ activate_action (GSimpleAction *action, GVariant *parameter, gpointer user_data)
 {
   g_print ("Action %s activated\n", g_action_get_name (G_ACTION (action)));
 }*/
+
+
+static void
+ui_hub_account_clipboard (GSimpleAction *action, GVariant *parameter, gpointer user_data)
+{
+struct hbfile_data *data = user_data;
+GtkClipboard *clipboard;
+GString *node;
+
+	//g_print ("Action %s activated\n", g_action_get_name (G_ACTION (action)));
+
+	node = lst_accview_to_string(GTK_TREE_VIEW(data->LV_acc), TRUE);
+
+	clipboard = gtk_clipboard_get_default(gdk_display_get_default());
+	gtk_clipboard_set_text(clipboard, node->str, node->len);
+
+	g_string_free(node, TRUE);
+}
+
+
+static void
+ui_hub_account_print (GSimpleAction *action, GVariant *parameter, gpointer user_data)
+{
+struct hbfile_data *data = user_data;
+GString *node;
+
+	//g_print ("Action %s activated\n", g_action_get_name (G_ACTION (action)));
+
+	node = lst_accview_to_string(GTK_TREE_VIEW(data->LV_acc), TRUE);
+	hb_print_listview(GTK_WINDOW(data->window), node->str, NULL, _("Your accounts"), NULL);
+
+	g_string_free(node, TRUE);
+}
+
 
 static void
 ui_hub_account_activate_toggle (GSimpleAction *action, GVariant *parameter, gpointer user_data)
@@ -454,9 +501,11 @@ GVariant *old_state, *new_state;
 
 static const GActionEntry actions[] = {
 //	name, function(), type, state, 
-//  { "paste", activate_action, NULL, NULL,      NULL, {0,0,0} },
+	{ "groupby", ui_hub_account_activate_radio ,  "s", "'type'", NULL, {0,0,0} },
 	{ "showall", ui_hub_account_activate_toggle, NULL, "false" , NULL, {0,0,0} },
-	{ "groupby", ui_hub_account_activate_radio ,  "s", "'type'", NULL, {0,0,0} }
+	{ "clipboard", ui_hub_account_clipboard, NULL, NULL , NULL, {0,0,0} },
+	{ "print", ui_hub_account_print, NULL, NULL , NULL, {0,0,0} },
+//  { "paste", activate_action, NULL, NULL,      NULL, {0,0,0} },
 };
 
 
@@ -508,100 +557,92 @@ void ui_hub_account_dispose(struct hbfile_data *data)
 
 GtkWidget *ui_hub_account_create(struct hbfile_data *data)
 {
-GtkWidget *hub, *label, *widget, *sw, *tbar, *hbox, *image;
-GtkToolItem *toolitem;
+GtkWidget *hub, *label, *widget, *scrollwin, *treeview, *tbar, *bbox, *image;
 
 	DB( g_print("\n[hub-account] create\n") );
 
 
 	hub = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(hub), SPACING_SMALL);
+	hb_widget_set_margins(GTK_WIDGET(hub), 0, SPACING_SMALL, SPACING_SMALL, SPACING_SMALL);
 
-	sw = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sw), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_box_pack_start (GTK_BOX (hub), sw, TRUE, TRUE, 0);
-	widget = (GtkWidget *)lst_accview_new();
-	data->LV_acc = widget;
-	gtk_container_add (GTK_CONTAINER (sw), widget);
+	scrollwin = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_box_pack_start (GTK_BOX (hub), scrollwin, TRUE, TRUE, 0);
+	treeview = (GtkWidget *)lst_accview_new();
+	data->LV_acc = treeview;
+	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
 
 	//list toolbar
-	tbar = gtk_toolbar_new();
-	gtk_toolbar_set_icon_size (GTK_TOOLBAR(tbar), GTK_ICON_SIZE_MENU);
-	gtk_toolbar_set_style(GTK_TOOLBAR(tbar), GTK_TOOLBAR_ICONS);
+	tbar = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
 	gtk_box_pack_start (GTK_BOX (hub), tbar, FALSE, FALSE, 0);
 
 	label = make_label_group(_("Your accounts"));
-	toolitem = gtk_tool_item_new();
-	gtk_container_add (GTK_CONTAINER(toolitem), label);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
-
-	toolitem = gtk_separator_tool_item_new ();
-	gtk_tool_item_set_expand (toolitem, TRUE);
-	gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(toolitem), FALSE);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
-
-	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	toolitem = gtk_tool_item_new();
-	gtk_container_add (GTK_CONTAINER(toolitem), hbox);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
-	
-		widget = make_image_button(ICONNAME_HB_BUTTON_EXPAND, _("Expand all"));
-		data->BT_expandall = widget;
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
-
-		widget = make_image_button(ICONNAME_HB_BUTTON_COLLAPSE, _("Collapse all"));
-		data->BT_collapseall = widget;
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
-
-	toolitem = gtk_separator_tool_item_new ();
-	gtk_tool_item_set_expand (toolitem, FALSE);
-	gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(toolitem), FALSE);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
-
+	gtk_box_pack_start (GTK_BOX (tbar), label, FALSE, FALSE, 0);
 
 	//gmenu test (see test folder into gtk)
 GMenu *menu, *section;
 
 	menu = g_menu_new ();
-	//g_menu_append (menumodel, "About", "actions.undo");
-	//g_menu_append (menumodel, "Test", "actions.redo");
+
 	section = g_menu_new ();
+	g_menu_append_section (menu, NULL, G_MENU_MODEL(section));
+	g_menu_append (section, _("Copy to clipboard"), "actions.clipboard");
+	g_menu_append (section, _("Print..."), "actions.print");
+	g_object_unref (section);
+
+	section = g_menu_new ();
+	g_menu_append_section (menu, _("Group by"), G_MENU_MODEL(section));
+	g_menu_append (section, _("type")       , "actions.groupby::type");
+	g_menu_append (section, _("group")      , "actions.groupby::group");
+	g_menu_append (section, _("institution"), "actions.groupby::bank");
+	g_object_unref (section);
+
+	section = g_menu_new ();
+	g_menu_append_section (menu, NULL, G_MENU_MODEL(section));
 	g_menu_append (section, _("Show all"), "actions.showall");
-	g_menu_append_section(menu, NULL, G_MENU_MODEL(section));
 	g_object_unref (section);
-
-	section = g_menu_new ();
-	g_menu_append (section, _("By type")       , "actions.groupby::type");
-	g_menu_append (section, _("By group")      , "actions.groupby::group");
-	g_menu_append (section, _("By institution"), "actions.groupby::bank");
-	g_menu_append_section(menu, NULL, G_MENU_MODEL(section));
-	g_object_unref (section);
-
 
 	GSimpleActionGroup *group = g_simple_action_group_new ();
 	data->action_group_acc = group;
 	g_action_map_add_action_entries (G_ACTION_MAP (group), actions, G_N_ELEMENTS (actions), data);
 
+	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_box_pack_end (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
 
-	widget = gtk_menu_button_new();
-	gtk_menu_button_set_direction (GTK_MENU_BUTTON(widget), GTK_ARROW_UP);
-	gtk_widget_set_halign (widget, GTK_ALIGN_END);
-	image = gtk_image_new_from_icon_name (ICONNAME_EMBLEM_SYSTEM, GTK_ICON_SIZE_MENU);
-	g_object_set (widget, "image", image,  NULL);
+		widget = gtk_menu_button_new();
+		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+		gtk_menu_button_set_direction (GTK_MENU_BUTTON(widget), GTK_ARROW_UP);
+		gtk_widget_set_halign (widget, GTK_ALIGN_END);
+		image = gtk_image_new_from_icon_name (ICONNAME_EMBLEM_SYSTEM, GTK_ICON_SIZE_MENU);
+		g_object_set (widget, "image", image,  NULL);
 
-	toolitem = gtk_tool_item_new();
-	gtk_container_add (GTK_CONTAINER(toolitem), widget);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+		gtk_widget_insert_action_group (widget, "actions", G_ACTION_GROUP(group));
+		gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (widget), G_MENU_MODEL (menu));
 
-	gtk_widget_insert_action_group (widget, "actions", G_ACTION_GROUP(group));
-	gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (widget), G_MENU_MODEL (menu));
-
+	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_box_pack_end (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
 	
+		widget = make_image_button(ICONNAME_HB_BUTTON_EXPAND, _("Expand all"));
+		data->BT_expandall = widget;
+		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+
+		widget = make_image_button(ICONNAME_HB_BUTTON_COLLAPSE, _("Collapse all"));
+		data->BT_collapseall = widget;
+		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+
+	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_box_pack_end (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
+	
+		widget = make_image_button(ICONNAME_HB_BUTTON_BROWSER, _("Browse Website"));
+		data->BT_browse = widget;
+		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+
 	g_signal_connect (G_OBJECT (data->BT_expandall  ), "clicked"      , G_CALLBACK (ui_hub_account_expand_all), NULL);
 	g_signal_connect (G_OBJECT (data->BT_collapseall), "clicked"      , G_CALLBACK (ui_hub_account_collapse_all), NULL);
-	
+	g_signal_connect (G_OBJECT (data->BT_browse     ), "clicked"      , G_CALLBACK (ui_hub_account_browse), NULL);
+
 	return hub;
 }
 

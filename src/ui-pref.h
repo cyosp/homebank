@@ -42,7 +42,7 @@ struct defpref_data
 	GtkWidget   *CM_bak_is_automatic;
 	GtkWidget	*GR_bak_freq;
 	GtkWidget   *LB_bak_max_num_copies, *NB_bak_max_num_copies;
-	GtkWidget	*CY_daterange_wal;
+	//GtkWidget	*CY_daterange_wal;
 	GtkWidget	*ST_maxspenditems;
 	GtkWidget   *NB_fiscyearday;
 	GtkWidget   *CY_fiscyearmonth;
@@ -89,6 +89,7 @@ struct defpref_data
 	GtkWidget	*CM_memoacp;
 	GtkWidget	*ST_memoacp_days;
 	GtkWidget	*ST_xfer_daygap;
+	GtkWidget	*CM_xfer_syncstat;
 
 	GtkWidget	*ST_datefmt;
 	GtkWidget	*LB_date;
@@ -130,6 +131,11 @@ struct defpref_data
 	GtkWidget	*CM_stat_incxfer;
 
 	GtkWidget	*CM_budg_showdetail;
+
+	//forecast
+	GtkWidget	*CM_forecast;
+	GtkWidget	*LB_forecast_nbmonth;
+	GtkWidget	*ST_forecast_nbmonth;
 
 	GtkWidget	*CY_color_scheme;
 	GtkWidget   *DA_colors;

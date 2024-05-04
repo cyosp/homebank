@@ -419,6 +419,12 @@ gboolean found;
 
 void da_transaction_set_flag(Transaction *item)
 {
+	DB( g_print("\n[transaction] set flag\n") );
+
+	DB( g_print(" amnt=%f => %f\n", item->amount, item->xferamount) );
+	DB( g_print(" kxfer=%d\n", item->kxfer) );
+	DB( g_print(" in  :: of_inc is %s\n", item->flags & OF_INCOME ? "set" : "unset" ) ) ;
+
 	//#2002348 no change if zero
 	if( item->amount != 0.0 )
 	{
@@ -426,6 +432,8 @@ void da_transaction_set_flag(Transaction *item)
 		if( item->amount > 0)
 			item->flags |= (OF_INCOME);
 	}
+
+	DB( g_print(" out :: of_inc is %s\n", item->flags & OF_INCOME ? "set" : "unset" ) );
 }
 
 
@@ -856,6 +864,13 @@ Account *acc;
 
 	//# 1708974 enable different date
 	//child->date		= s_txn->date;
+
+	//#2019193 option the sync xfer status
+	if( PREFS->txn_xfer_syncstat == TRUE )
+	{
+		child->status = s_txn->status;
+		child->flags |= OF_CHANGED;
+	}	
 
 	//# 1673260 enable different currency
 	if( !(child->flags & OF_ADVXFER) )
@@ -1308,20 +1323,20 @@ gint nbdup = 0;
 					stxn->dspflags |= TXN_DSPFLG_DUPSRC;
 					//dtxn->marker = TXN_MARK_DUPDST;
 					dtxn->dspflags |= TXN_DSPFLG_DUPDST;
-					DB( g_print(" = dtxn marker=%d\n", dtxn->marker) );
+					DB( g_print(" = dtxn marker=%d\n", dtxn->dspflags) );
 					nball++;
 				}
 			}
 			else
 			{
-				DB( g_print(" already marked %d\n", dtxn->marker) );
+				DB( g_print(" already marked %d\n", dtxn->dspflags) );
 			}
 
 			
 			list2 = g_list_previous(list2);
 		}
 	
-		DB( g_print(" = stxn marker=%d\n", stxn->marker) );
+		DB( g_print(" = stxn marker=%d\n", stxn->dspflags) );
 		//if( stxn->marker == TXN_MARK_DUPSRC )
 		if( stxn->dspflags & TXN_DSPFLG_DUPSRC )
 			nbdup++;

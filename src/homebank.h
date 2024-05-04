@@ -74,14 +74,14 @@
 
 
 #define HOMEBANK_MAJOR	5
-#define HOMEBANK_MINOR	6
-#define HOMEBANK_MICRO	6
+#define HOMEBANK_MINOR	7
+#define HOMEBANK_MICRO	0
 
-#define HB_VERSION		"5.6.6"
+#define HB_VERSION		"5.7"
 #define HB_VERSION_NUM	(HOMEBANK_MAJOR*10000) + (HOMEBANK_MINOR*100) + HOMEBANK_MICRO
 
 #define FILE_VERSION		1.4
-#define PREF_VERSION		566
+#define PREF_VERSION		570
 
 #if HB_UNSTABLE == FALSE
 	#define	PROGNAME		"HomeBank"
@@ -203,6 +203,7 @@ typedef enum
 #define ICONNAME_WINDOW_CLOSE		"window-close-symbolic"
 #define ICONNAME_LIST_ADD			"list-add-symbolic"
 #define ICONNAME_LIST_EDIT			"document-edit-symbolic"
+#define ICONNAME_LIST_DUPLICATE		"list-duplicate-symbolic"
 #define ICONNAME_LIST_DELETE		"list-remove-symbolic"
 #define ICONNAME_LIST_DELETE_ALL	"list-remove-all-symbolic"
 #define ICONNAME_LIST_MOVE_UP		"hb-go-up-symbolic"
@@ -215,6 +216,7 @@ typedef enum
 
 // custom or gnome not found
 #define ICONNAME_HB_BUTTON_MENU		"open-menu-symbolic"
+#define ICONNAME_HB_BUTTON_BROWSER	"open-in-browser-symbolic"
 #define ICONNAME_HB_BUTTON_COLLAPSE	"list-collapse-all-symbolic"
 #define ICONNAME_HB_BUTTON_EXPAND	"list-expand-all-symbolic"
 #define ICONNAME_HB_BUTTON_SPLIT	"edit-split-symbolic"
@@ -285,6 +287,7 @@ typedef enum
 #define ICONNAME_HB_OPE_MOVDW		"hb-go-down"
 
 #define ICONNAME_HB_OPE_NEW		    "hb-ope-new"
+#define ICONNAME_HB_OPE_PREFILLED   "hb-ope-prefilled"
 // edit is defined above
 #define ICONNAME_HB_OPE_VOID        "hb-ope-void"
 #define ICONNAME_HB_OPE_REMIND      "hb-ope-remind"

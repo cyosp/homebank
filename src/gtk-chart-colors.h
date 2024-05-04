@@ -42,6 +42,9 @@ struct rgbcol
 	guint8	r, g, b;
 };
 
+#define SHADE_FACTOR 0.15
+#define LIGHT_FACTOR 0.15
+#define HOVER_FACTOR 0.15
 
 struct _ColorScheme
 {
@@ -54,6 +57,12 @@ struct _ColorScheme
 };
 
 
+#define HBTK_CHART_FLAGS_NONE		0
+#define HBTK_CHART_FLAGS_HOVER		1 << 1
+#define HBTK_CHART_FLAGS_SHADED		1 << 2
+
+
+//TODO: get rid of unused here
 enum {
 	BLACK,
 	WHITE,
@@ -123,6 +132,7 @@ void chart_color_global_default(void);
 
 void cairo_user_set_rgbcol(cairo_t *cr, struct rgbcol *col);
 void cairo_user_set_rgbacol(cairo_t *cr, struct rgbcol *col, double alpha);
+void cairo_user_set_rgbacol_over(cairo_t *cr, struct rgbcol *col, gboolean over, double alpha);
 void cairo_user_set_rgbcol_over(cairo_t *cr, struct rgbcol *col, gboolean over);
 
 void colorscheme_init(GtkColorScheme *scheme, gint index);

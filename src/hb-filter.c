@@ -451,11 +451,13 @@ GList *lnk_txn;
 }
 
 
-gboolean filter_preset_daterange_future_enable(gint range)
+gboolean filter_preset_daterange_future_enable(Filter *flt, gint range)
 {
 gboolean retval = FALSE;
 
 	DB( g_print("\n[filter] range future enabled\n") );
+
+	DB( g_print(" fltrang=%d range=%d\n", flt->range, range) );
 
 	switch( range )
 	{
@@ -469,23 +471,68 @@ gboolean retval = FALSE;
 		case FLT_RANGE_LAST_60DAYS:
 		case FLT_RANGE_LAST_90DAYS:
 		case FLT_RANGE_LAST_12MONTHS:
+		case FLT_RANGE_LAST_6MONTHS:
 			retval = TRUE;
 			break;
 	}
 
-	DB( g_print(" %s\n", retval==TRUE ? "yes" : "no") );
+	//TODO: custom date
+	if( range == FLT_RANGE_MISC_ALLDATE )
+	{
+	GDate *date1, *date2;
+
+		DB( g_print(" eval alldate\n") );
+	
+		date1 = g_date_new_julian(GLOBALS->today);
+		date2 = g_date_new_julian(flt->maxdate);
+
+		if( date2 > date1 && (g_date_get_year(date2) == g_date_get_year(date1)
+		 && g_date_get_month(date2) == g_date_get_month(date1)) )
+		{
+			retval = TRUE;
+		}
+		g_date_free(date2);
+		g_date_free(date1);
+	}
+
+	DB( hb_print_date(flt->maxdate , " maxdate ") );
+	DB( g_print(" return: %s\n", retval==TRUE ? "yes" : "no") );
 
 	return retval;
 }
 
 
+guint32 filter_get_maxdate_forecast(Filter *filter)
+{
+guint32 retval = filter->maxdate;
+
+	DB( g_print("\n[filter] get maxdate to forecast\n") );
+
+	if( filter_preset_daterange_future_enable(filter, filter->range) )
+	{
+	GDate *post_date = g_date_new();
+
+		g_date_set_time_t(post_date, time(NULL));
+		g_date_add_months(post_date, PREFS->rep_forecat_nbmonth);
+		g_date_set_day(post_date, g_date_get_days_in_month(g_date_get_month(post_date), g_date_get_year(post_date)));
+		retval = g_date_get_julian(post_date);
+		g_date_free(post_date);
+	}
+
+	DB( hb_print_date(retval, "retval:") );
+
+	return retval;
+}
+
+
+//used only in register
 void filter_preset_daterange_add_futuregap(Filter *filter, gint nbdays)
 {
 	DB( g_print("\n[filter] range add future gap\n") );
 	
 	filter->nbdaysfuture = 0;
 	//#1840998 if future active and visible: we should always maxdate to today + nbdays
-	if( filter_preset_daterange_future_enable(filter->range) )
+	if( filter_preset_daterange_future_enable(filter, filter->range) )
 	{
 	guint32 jforcedmax = GLOBALS->today + nbdays;
 
@@ -656,6 +703,13 @@ GDateWeekday wday;
 			flt->maxdate = jtoday;
 			break;
 
+		case FLT_RANGE_LAST_6MONTHS:
+			g_date_set_julian (tmpdate, jtoday);
+			g_date_subtract_months(tmpdate, 6);
+			flt->mindate = g_date_get_julian(tmpdate);
+			flt->maxdate = jtoday;
+			break;
+
 		// case FLT_RANGE_MISC_CUSTOM:
 			//nothing to do
 			
@@ -668,15 +722,18 @@ GDateWeekday wday;
 			break;
 	}
 	g_date_free(tmpdate);
+	
+	DB( hb_print_date(flt->mindate , " min ") );
+	DB( hb_print_date(flt->maxdate , " max ") );
 }
 
 
-void filter_preset_type_set(Filter *flt, gint type)
+void filter_preset_type_set(Filter *flt, gint type, gint mode)
 {
 
 	DB( g_print("\n[filter] preset type set\n") );
 
-	flt->option[FLT_GRP_TYPE] = 0;
+	flt->option[FLT_GRP_TYPE] = FLT_OFF;
 	flt->type = type;
 	flt->typ_exp = FALSE;
 	flt->typ_inc = FALSE;
@@ -684,7 +741,8 @@ void filter_preset_type_set(Filter *flt, gint type)
 
 	if( type != FLT_TYPE_ALL )
 	{
-		flt->option[FLT_GRP_TYPE] = 1;
+		//FLT_INCLUDE / FLT_EXCLUDE
+		flt->option[FLT_GRP_TYPE] = mode;
 		switch(type)
 		{
 			case FLT_TYPE_EXPENSE:

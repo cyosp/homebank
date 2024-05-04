@@ -865,6 +865,8 @@ gint count = 0;
 		}
 		list1 = g_list_next(list1);
 	}
+
+	genacc->n_txnsimimp = count;
 	return count;
 }
 
@@ -961,6 +963,7 @@ gint count = 0;
 		list1 = g_list_next(list1);
 	}
 
+	genacc->n_txnsimdst = count;
 	return count;
 }
 

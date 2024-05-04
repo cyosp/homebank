@@ -129,7 +129,7 @@ Transaction *txn;
 	da_transaction_free(txn);
 
 	deftransaction_dispose(window, NULL);
-	gtk_widget_destroy (window);
+	gtk_window_destroy (GTK_WINDOW(window));
 
 }
 
@@ -272,6 +272,7 @@ gint count;
 
 	//filter = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_sched_filter));
 
+	// sensitive agaisnt selection
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_upc));
 	count = gtk_tree_selection_count_selected_rows(selection);
 
@@ -432,7 +433,7 @@ GList *list;
 gdouble totexp = 0;
 gdouble totinc = 0;
 gint count = 0;
-gchar buffer[256];
+gchar buffer[256], *tooltip;
 guint32 maxpostdate = 0;
 guint32 fltmindate, fltmaxdate;
 GDate *date;
@@ -447,17 +448,30 @@ GDate *date;
 	homebank_app_date_get_julian();
 
 	PREFS->pnl_upc_range = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_sched_range));
-	
+
+	//set tooltip text
 	maxpostdate = scheduled_date_get_post_max(GLOBALS->today, GLOBALS->auto_smode, GLOBALS->auto_nbdays, GLOBALS->auto_weekday, GLOBALS->auto_nbmonths);
 	date = g_date_new_julian (maxpostdate);
 	g_date_strftime (buffer, 256-1, PREFS->date_format, date);
+
+	//post when program start: ON/OFF
+	tooltip = g_strdup_printf("%s: %s\n%s: %s", 
+		_("Post when program start"), PREFS->appendscheduled ? _("On") : _("Off"),
+		_("maximum post date"),	buffer);
+	//gtk_label_set_text(GTK_LABEL(data->LB_maxpostdate), buffer);
+	gtk_widget_set_tooltip_text(data->IM_info, tooltip);
+
+	g_free(tooltip);
 	g_date_free(date);
 
-	gtk_label_set_text(GTK_LABEL(data->LB_maxpostdate), buffer);
 
 	fltmindate = HB_MINDATE;
 	fltmaxdate = HB_MAXDATE;
 	scheduled_date_get_show_minmax(PREFS->pnl_upc_range, &fltmindate, &fltmaxdate);
+
+	//#1909851 5.7 override if FLT_SCHEDULED_MAXPOSTDATE
+	if( PREFS->pnl_upc_range == FLT_SCHEDULED_MAXPOSTDATE )
+		fltmaxdate = maxpostdate;
 
 	DB( hb_print_date(GLOBALS->today, "today" ) );
 	DB( hb_print_date(maxpostdate, "maxpostdate" ) );
@@ -559,6 +573,8 @@ next:
 	// insert total
 	if(count > 0 )
 	{
+		DB( g_print(" insert totals: %.17g %.17g\n", totexp, totinc) );
+
 		gtk_list_store_append (GTK_LIST_STORE(model), &iter);
 		gtk_list_store_set (GTK_LIST_STORE(model), &iter,
 			  LST_DSPUPC_DATAS, NULL,
@@ -574,53 +590,32 @@ next:
 
 GtkWidget *ui_hub_scheduled_create(struct hbfile_data *data)
 {
-GtkWidget *hub, *hbox, *vbox, *bbox, *sw, *tbar;
+GtkWidget *hub, *vbox, *bbox, *scrollwin, *treeview, *tbar;
 GtkWidget *label, *widget;
-GtkToolItem *toolitem;
 
 	DB( g_print("\n[hub-scheduled] create\n") );
 	
 	hub = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	gtk_container_set_border_width(GTK_CONTAINER(hub), SPACING_SMALL);
-	//data->GR_upc = hub;
+	hb_widget_set_margin(GTK_WIDGET(hub), SPACING_SMALL);
 
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	//gtk_widget_set_margin_top(GTK_WIDGET(vbox), 0);
-	//gtk_widget_set_margin_bottom(GTK_WIDGET(vbox), SPACING_SMALL);
-	//gtk_widget_set_margin_start(GTK_WIDGET(vbox), 2*SPACING_SMALL);
-	//gtk_widget_set_margin_end(GTK_WIDGET(vbox), SPACING_SMALL);
 	gtk_box_pack_start (GTK_BOX (hub), vbox, TRUE, TRUE, 0);
 
-	sw = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (sw), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (sw), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_box_pack_start (GTK_BOX (vbox), sw, TRUE, TRUE, 0);
+	scrollwin = gtk_scrolled_window_new (NULL, NULL);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
 	
-	widget = (GtkWidget *)lst_sch_widget_new();
-	data->LV_upc = widget;
-	gtk_container_add (GTK_CONTAINER (sw), widget);
+	treeview = (GtkWidget *)lst_sch_widget_new();
+	data->LV_upc = treeview;
+	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
 
-	tbar = gtk_toolbar_new();
-	gtk_toolbar_set_icon_size (GTK_TOOLBAR(tbar), GTK_ICON_SIZE_MENU);
-	gtk_toolbar_set_style(GTK_TOOLBAR(tbar), GTK_TOOLBAR_ICONS);
+	tbar = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
 	gtk_box_pack_start (GTK_BOX (vbox), tbar, FALSE, FALSE, 0);
 
-	/*label = make_label_group(_("Scheduled transactions"));
-	toolitem = gtk_tool_item_new();
-	gtk_container_add (GTK_CONTAINER(toolitem), label);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
-
-	toolitem = gtk_separator_tool_item_new ();
-	gtk_tool_item_set_expand (toolitem, FALSE);
-	gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(toolitem), FALSE);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);*/
-
-
 	bbox = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
-	toolitem = gtk_tool_item_new();
-	gtk_container_add (GTK_CONTAINER(toolitem), bbox);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+	gtk_box_pack_start (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
 
 		widget = gtk_button_new_with_mnemonic (_("_Skip"));
 		data->BT_sched_skip = widget;
@@ -636,48 +631,22 @@ GtkToolItem *toolitem;
 		data->BT_sched_post = widget;
 		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
 
-	toolitem = gtk_separator_tool_item_new ();
-	gtk_tool_item_set_expand (toolitem, FALSE);
-	gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(toolitem), FALSE);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
-
-	hbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
-	gtk_widget_set_valign (hbox, GTK_ALIGN_CENTER);
-	toolitem = gtk_tool_item_new();
-	gtk_container_add (GTK_CONTAINER(toolitem), hbox);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
-
-		label = make_label(_("maximum post date"), 0.0, 0.7);
-		gtk_widget_set_halign (label, GTK_ALIGN_CENTER);
-		gimp_label_set_attributes (GTK_LABEL (label), PANGO_ATTR_SCALE, PANGO_SCALE_SMALL, -1);
-		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
-
-		label = make_label(NULL, 0.0, 0.7);
-		data->LB_maxpostdate = label;
-		gtk_widget_set_halign (label, GTK_ALIGN_CENTER);
-		gimp_label_set_attributes (GTK_LABEL (label), PANGO_ATTR_SCALE, PANGO_SCALE_SMALL, -1);
-		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
-
-	/*toolitem = gtk_separator_tool_item_new ();
-	gtk_tool_item_set_expand (toolitem, TRUE);
-	gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(toolitem), FALSE);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);*/
+	//info icon
+	widget = gtk_image_new_from_icon_name (ICONNAME_INFO, GTK_ICON_SIZE_BUTTON);
+	data->IM_info = widget;
+	gtk_box_pack_start (GTK_BOX (tbar), widget, FALSE, FALSE, 0);
 
 	//#1996505 add sum of selected
 	label = make_label(NULL, 0.5, 0.5);
 	gtk_widget_set_margin_end(GTK_WIDGET(label), SPACING_MEDIUM);
 	data->TX_selection = label;
-	toolitem = gtk_tool_item_new();
-	gtk_tool_item_set_expand (toolitem, TRUE);
-	gtk_container_add (GTK_CONTAINER(toolitem), label);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+	gtk_box_pack_start (GTK_BOX (tbar), label, TRUE, TRUE, 0);
 
 	//#1857636 add setting to input max due date to show
 	widget = hbtk_combo_box_new_with_data (NULL, CYA_FLT_SCHEDULED);
 	data->CY_sched_range = widget;
-	toolitem = gtk_tool_item_new();
-	gtk_container_add (GTK_CONTAINER(toolitem), widget);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+	gtk_box_pack_end (GTK_BOX (tbar), widget, FALSE, FALSE, 0);
+
 
 	//setup
 	hbtk_combo_box_set_active_id (GTK_COMBO_BOX_TEXT(data->CY_sched_range), PREFS->pnl_upc_range);
@@ -685,6 +654,7 @@ GtkToolItem *toolitem;
 
 	g_signal_connect (gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_upc)), "changed", G_CALLBACK (ui_hub_scheduled_selection_cb), NULL);
 	g_signal_connect (GTK_TREE_VIEW(data->LV_upc), "row-activated", G_CALLBACK (ui_hub_scheduled_onRowActivated), NULL);
+	
 	g_signal_connect (G_OBJECT (data->BT_sched_skip), "clicked", G_CALLBACK (ui_hub_scheduled_skip_cb), data);
 	g_signal_connect (G_OBJECT (data->BT_sched_editpost), "clicked", G_CALLBACK (ui_hub_scheduled_editpost_cb), data);
 	g_signal_connect (G_OBJECT (data->BT_sched_post), "clicked", G_CALLBACK (ui_hub_scheduled_post_cb), data);
@@ -693,3 +663,4 @@ GtkToolItem *toolitem;
 	
 	return hub;
 }
+

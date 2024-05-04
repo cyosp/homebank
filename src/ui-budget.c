@@ -722,7 +722,7 @@ gint j;
 	data->totexp = 0;
 	data->totinc = 0;
 
-	lcat = list = category_glist_sorted(1);
+	lcat = list = category_glist_sorted(HB_GLIST_SORT_NAME);
 	while (list != NULL)
 	{
 	Category *item = list->data;
@@ -1134,7 +1134,6 @@ GtkWidget *dialog, *content_area;
 GtkWidget *content_grid, *group_grid, *scrollwin, *label;
 GtkWidget *treeview, *hpaned, *bbox, *vbox, *hbox;
 GtkWidget *menu, *menuitem, *widget, *image, *tbar;
-GtkToolItem *toolitem;
 GList *fchain;
 guint i;
 gint w, h, dw, dh;
@@ -1168,7 +1167,7 @@ gint crow, row;
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG (dialog));	 	// return a vbox
 
 	hpaned = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
-	gtk_container_set_border_width (GTK_CONTAINER(hpaned), SPACING_LARGE);
+	hb_widget_set_margin(GTK_WIDGET(hpaned), SPACING_LARGE);
 	gtk_box_pack_start (GTK_BOX (content_area), hpaned, TRUE, TRUE, 0);
 
 	/* left area */
@@ -1220,43 +1219,32 @@ gint crow, row;
 	gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scrollwin), HB_MINHEIGHT_LIST);
  	treeview = (GtkWidget *)ui_bud_listview_new();
  	data->LV_cat = treeview;
-	gtk_container_add(GTK_CONTAINER(scrollwin), treeview);
+	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
 	gtk_widget_set_hexpand (scrollwin, TRUE);
 	gtk_widget_set_vexpand (scrollwin, TRUE);
 	gtk_box_pack_start (GTK_BOX(vbox), scrollwin, TRUE, TRUE, 0);
 
 	//list toolbar
-	tbar = gtk_toolbar_new();
-	gtk_toolbar_set_icon_size (GTK_TOOLBAR(tbar), GTK_ICON_SIZE_MENU);
-	gtk_toolbar_set_style(GTK_TOOLBAR(tbar), GTK_TOOLBAR_ICONS);
+	tbar = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
+	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
 	gtk_box_pack_start (GTK_BOX (vbox), tbar, FALSE, FALSE, 0);
 
-	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
-
-	toolitem = gtk_separator_tool_item_new ();
-	gtk_tool_item_set_expand (toolitem, TRUE);
-	gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(toolitem), FALSE);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
-
-	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	toolitem = gtk_tool_item_new();
-	gtk_container_add (GTK_CONTAINER(toolitem), hbox);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_box_pack_end (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
 	
 		widget = make_image_button(ICONNAME_HB_BUTTON_EXPAND, _("Expand all"));
 		data->BT_expand = widget;
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
 
 		widget = make_image_button(ICONNAME_HB_BUTTON_COLLAPSE, _("Collapse all"));
 		data->BT_collapse = widget;
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
 
 	
 	/* right area */
 	content_grid = gtk_grid_new();
 	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
 	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
-	//gtk_container_set_border_width (GTK_CONTAINER(content_grid), SPACING_MEDIUM);
 	gtk_widget_set_margin_start(content_grid, SPACING_SMALL);
 	gtk_paned_pack2 (GTK_PANED(hpaned), content_grid, FALSE, FALSE);
 
@@ -1401,7 +1389,7 @@ gint crow, row;
 
 	// cleanup and destroy
 	ui_bud_manage_cleanup(data, result);
-	gtk_widget_destroy (dialog);
+	gtk_window_destroy (GTK_WINDOW(dialog));
 
 	g_free(data);
 	

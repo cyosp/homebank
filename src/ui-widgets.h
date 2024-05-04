@@ -39,11 +39,31 @@ struct _hbtk_kiv_data {
 #define HBTK_IS_SEPARATOR -66
 
 
-enum {
-	DATE_RANGE_CUSTOM_SHOW,
-	DATE_RANGE_CUSTOM_HIDE,
-	DATE_RANGE_CUSTOM_DISABLE
-};
+typedef enum {
+	DATE_RANGE_BUDGET_MODE    = 1 << 1,
+	DATE_RANGE_CUSTOM_HIDDEN  = 1 << 8,
+	DATE_RANGE_CUSTOM_DISABLE = 1 << 9
+} HbDateRangeFlags;
+
+
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+/* GTK4 transitional anticipation */
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+#if( (GTK_MAJOR_VERSION < 4)  )
+void gtk_window_set_child (GtkWindow* window, GtkWidget* child);
+void gtk_popover_set_child (GtkPopover* popover, GtkWidget* child);
+
+void gtk_frame_set_child (GtkFrame* frame, GtkWidget* child);
+void gtk_overlay_set_child (GtkOverlay* overlay, GtkWidget* child);
+void gtk_scrolled_window_set_child (GtkScrolledWindow* scrolled_window, GtkWidget* child);
+void gtk_revealer_set_child (GtkRevealer* revealer, GtkWidget* child);
+void gtk_expander_set_child (GtkExpander* expander, GtkWidget* child);
+
+void gtk_window_destroy (GtkWindow* window);
+#endif
+
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 
 GtkWidget *make_label(gchar *str, gfloat xalign, gfloat yalign);
@@ -72,15 +92,22 @@ GtkWidget *make_exchange_rate(GtkWidget *label);
 GtkWidget *make_numeric(GtkWidget *label, gdouble min, gdouble max);
 GtkWidget *make_scale(GtkWidget *label);
 GtkWidget *make_long(GtkWidget *label);
-GtkWidget *make_year(GtkWidget *label);
+
+guint32 hbtk_monthyear_getmin(GtkSpinButton *spin);
+guint32 hbtk_monthyear_getmax(GtkSpinButton *spin);
+void hbtk_monthyear_set(GtkSpinButton *spin, guint32 julian);
+GtkWidget *make_monthyear(GtkWidget *label);
+//GtkWidget *make_year(GtkWidget *label);
 GtkWidget *make_cycle(GtkWidget *label, gchar **items);
-GtkWidget *make_daterange(GtkWidget *label, guint dspmode);
+GtkWidget *make_daterange(GtkWidget *label, HbDateRangeFlags flags);
 
 GtkWidget *create_popover (GtkWidget *parent, GtkWidget *child, GtkPositionType pos);
 
 void ui_label_set_integer(GtkLabel *label, gint value);
 
 void hbtk_listview_redraw_selected_row(GtkTreeView *treeview);
+gboolean hbtk_tree_store_get_top_level(GtkTreeModel *model, gint column_id, guint32 key, GtkTreeIter *return_iter);
+void hbtk_tree_store_remove_iter_with_child(GtkTreeModel *model, GtkTreeIter *iter);
 GtkTreeViewColumn *hbtk_treeview_get_column_by_id(GtkTreeView *treeview, gint search_id);
 
 gchar *hbtk_get_label(HbKvData *kvdata, guint32 key);
@@ -106,6 +133,7 @@ void hbtk_assistant_hack_button_order(GtkAssistant *assistant);
 void gimp_label_set_attributes (GtkLabel *label, ...);
 
 
+void hb_widget_set_margins(GtkWidget *widget, gint top, gint right, gint bottom, gint left);
 void hb_widget_set_margin(GtkWidget *widget, gint margin);
 void hb_widget_visible(GtkWidget *widget, gboolean visible);
 void hbtk_entry_tag_name_append(GtkEntry *entry, gchar *tagname);

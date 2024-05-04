@@ -146,8 +146,9 @@ GDate *date;
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
 	smode    = hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_postmode));
-	weekday  = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->NU_weekday));
 	nbdays   = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->NU_nbdays));
+
+	weekday  = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->NU_weekday));
 	nbmonths = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->NU_nbmonths));
 
 	DB( g_print(" -> postmode=%d\n", smode) );
@@ -247,7 +248,7 @@ gint crow, row;
 	content_grid = gtk_grid_new();
 	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
 	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
-	gtk_container_set_border_width (GTK_CONTAINER(content_grid), SPACING_LARGE);
+	hb_widget_set_margin(GTK_WIDGET(content_grid), SPACING_LARGE);
 	gtk_box_pack_start (GTK_BOX (content_area), content_grid, TRUE, TRUE, 0);
 
 	crow = 0;
@@ -365,7 +366,7 @@ gint crow, row;
 
 	// cleanup and destroy
 	defhbfile_cleanup(data, result);
-	gtk_widget_destroy (dialog);
+	gtk_window_destroy (GTK_WINDOW(dialog));
 
 	g_free(data);
 	

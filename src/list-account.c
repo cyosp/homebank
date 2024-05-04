@@ -39,6 +39,123 @@ extern struct HomeBank *GLOBALS;
 extern struct Preferences *PREFS;
 
 
+
+
+static void lst_accview_to_string_row(GString *node, gboolean clipboard, GtkTreeModel *model, GtkTreeIter *iter, gchar *sub)
+{
+const gchar *format;
+gpointer p;
+gint type;
+gchar *text = "";
+gdouble clear, recon, today, future;
+
+	clear = recon = today = future = 0.0;
+
+	gtk_tree_model_get (model, iter,
+		LST_DSPACC_DATATYPE, &type,
+		LST_DSPACC_DATAS, &p,
+		-1);
+
+	if( type == DSPACC_TYPE_HEADER )
+	{
+	PnlAccGrp *g = p;
+		text = g->name;	
+		g_string_append_printf(node, "%s\t\t\t\t\n", text);
+	}
+	else
+	{
+		if( type == DSPACC_TYPE_NORMAL )
+		{
+		Account *acc = p;
+			text = acc->name;
+			recon  = acc->bal_recon;
+			clear  = acc->bal_clear;
+			today  = acc->bal_today;
+			future = acc->bal_future;
+		}
+		else
+		{
+		PnlAccGrp *g = p;
+			recon  = g->bal_recon;
+			clear  = g->bal_clear;
+			today  = g->bal_today;
+			future = g->bal_future;
+		}
+
+		if( type ==  DSPACC_TYPE_SUBTOTAL )
+			text = _("Total");
+		else
+		if( type == DSPACC_TYPE_TOTAL )
+			text = _("Grand total");
+
+		format = (clipboard == TRUE) ? "%s%s\t%.2f\t%.2f\t%.2f\t%.2f\n" : "%s%s;%.2f;%.2f;%.2f;%.2f\n";
+		g_string_append_printf(node, format, sub, text, recon, clear, today, future);
+	}
+}
+
+
+GString *lst_accview_to_string(GtkTreeView *treeview, gboolean clipboard)
+{
+GString *node;
+GtkTreeModel *model;
+GtkTreeIter	iter, child;
+gboolean valid;
+guint32 nbcols, i;
+gchar sep;
+
+	DB( g_print("\n[lst_accview] to string\n") );
+
+	node = g_string_new(NULL);
+
+	sep = (clipboard == TRUE) ? '\t' : ';';
+
+	// header (nbcols-2 for icon column)
+	nbcols = gtk_tree_view_get_n_columns (treeview) - 1;
+	for( i=1 ; i < nbcols ; i++ )
+	{
+	GtkTreeViewColumn *column = gtk_tree_view_get_column (treeview, i);
+	
+		//todo: ? restrict to visibility
+		if( GTK_IS_TREE_VIEW_COLUMN(column) )
+		{
+			g_string_append(node, gtk_tree_view_column_get_title (column));
+			if( i < nbcols-1 )
+			{
+				g_string_append_c(node, sep);
+			}
+		}
+	}
+	g_string_append_c(node, '\n');
+
+
+
+	//lines
+	model = gtk_tree_view_get_model(treeview);
+	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
+	while (valid)
+	{
+		lst_accview_to_string_row(node, clipboard, model, &iter, "");
+		if( gtk_tree_model_iter_has_child(model, &iter) )
+		{
+			valid = gtk_tree_model_iter_children(model, &child, &iter);
+			while (valid)
+			{
+				lst_accview_to_string_row(node, clipboard, model, &child, "- ");
+				valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &child);
+			}		
+		}
+		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
+	}
+
+	//DB( g_print("text is:\n%s", node->str) );
+
+	return node;
+}
+
+
+
+
+
 /*
 ** draw some icons according to the stored data structure
 */

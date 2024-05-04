@@ -30,6 +30,7 @@
 #define DB(x);
 #endif
 
+
 /* our global datas */
 extern struct HomeBank *GLOBALS;
 extern struct Preferences *PREFS;
@@ -39,6 +40,7 @@ extern guint n_iso4217cur;
 
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
 
 /**
  * ui_cur_combobox_get_name:
@@ -799,7 +801,7 @@ gint crow, row;
 	content_grid = gtk_grid_new();
 	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
 	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
-	gtk_container_set_border_width (GTK_CONTAINER(content_grid), SPACING_MEDIUM);
+	hb_widget_set_margin(GTK_WIDGET(content_grid), SPACING_MEDIUM);
 	gtk_box_pack_start (GTK_BOX (content_area), content_grid, TRUE, TRUE, 0);
 
 	crow = 0;
@@ -857,7 +859,7 @@ gint crow, row;
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_container_add (GTK_CONTAINER (expander), group_grid);
+	gtk_expander_set_child (GTK_EXPANDER(expander), group_grid);
 
 	row = 1;
 	label = make_label_widget(_("_Symbol:"));
@@ -914,7 +916,7 @@ gint crow, row;
 	}
 
 	// cleanup and destroy
-	gtk_widget_destroy (dialog);
+	gtk_window_destroy (GTK_WINDOW(dialog));
 
 	g_free(data);
 }
@@ -1169,7 +1171,7 @@ gint crow, row;
 	content_grid = gtk_grid_new();
 	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
 	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
-	gtk_container_set_border_width (GTK_CONTAINER(content_grid), SPACING_MEDIUM);
+	hb_widget_set_margin(GTK_WIDGET(content_grid), SPACING_MEDIUM);
 	gtk_box_pack_start (GTK_BOX (content_area), content_grid, TRUE, TRUE, 0);
 
 	crow = 0;
@@ -1208,7 +1210,7 @@ gint crow, row;
 	//g_object_unref (model);
 	gtk_tree_view_set_grid_lines (GTK_TREE_VIEW (treeview), PREFS->grid_lines);
 
-	gtk_container_add(GTK_CONTAINER(scrollwin), treeview);
+	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
 	
 	// populate list
   GtkCellRenderer *renderer;
@@ -1292,7 +1294,7 @@ gint crow, row;
 	}
 
 	// cleanup and destroy
-	gtk_widget_destroy (dialog);
+	gtk_window_destroy (GTK_WINDOW(dialog));
 
 	g_free(data);
 	
@@ -1316,15 +1318,25 @@ gboolean retcode = FALSE;
 		DB( g_print(" abort: no currency\n") );
 		return TRUE;
 	}
+
 	//TODO: add a force option ?
 	// add 5.6.2 as the online currency only update every 24h
 	// avoid to call the API too often
 	// this set into hbfile_file_get_time_modified()
-	if( GLOBALS->xhb_obsoletecurr == FALSE )
+	// removed in 5.7
+	/*if( GLOBALS->xhb_obsoletecurr == FALSE )
 	{
 		DB( g_print(" abort: file saved less than 24h\n") );
+
+		//TODO maybe
+		ui_dialog_msg_infoerror(GTK_WINDOW(parent), GTK_MESSAGE_ERROR,
+			_("Update online error"),
+			_("Already been updated in last 24h"),
+			NULL
+			);
+		
 		return TRUE;
-	}
+	}*/
 
 	retcode = currency_online_sync(&error);
 	
@@ -1689,7 +1701,6 @@ GtkWidget *ui_cur_manage_dialog (void)
 struct ui_cur_manage_dialog_data *data;
 GtkWidget *dialog, *content_area, *content_grid, *group_grid, *vbox, *bbox, *tbar;
 GtkWidget *widget, *scrollwin, *treeview;
-GtkToolItem *toolitem;
 gint crow, row, w, h, dw, dh;
 
 	data = g_malloc0(sizeof(struct ui_cur_manage_dialog_data));
@@ -1724,7 +1735,7 @@ gint crow, row, w, h, dw, dh;
 	content_grid = gtk_grid_new();
 	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
 	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
-	gtk_container_set_border_width (GTK_CONTAINER(content_grid), SPACING_LARGE);
+	hb_widget_set_margin(GTK_WIDGET(content_grid), SPACING_LARGE);
 	gtk_box_pack_start (GTK_BOX (content_area), content_grid, TRUE, TRUE, 0);
 
 	crow = 0;
@@ -1740,12 +1751,12 @@ gint crow, row, w, h, dw, dh;
 	gtk_grid_attach (GTK_GRID(group_grid), bbox, 0, row, 1, 1);
 
 	widget = gtk_button_new_from_icon_name (ICONNAME_HB_REFRESH, GTK_ICON_SIZE_BUTTON);
-	gtk_container_add (GTK_CONTAINER (bbox), widget);
+	gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, TRUE, 0);
 	
 	g_signal_connect (G_OBJECT (widget), "clicked", G_CALLBACK (ui_cur_manage_dialog_sync), NULL);
 
 	widget = make_label_widget (_("Update online"));
-	gtk_container_add (GTK_CONTAINER (bbox), widget);
+	gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, TRUE, 0);
 
 	// list
 	row++;
@@ -1753,53 +1764,41 @@ gint crow, row, w, h, dw, dh;
 	gtk_grid_attach (GTK_GRID (group_grid), vbox, 0, row, 2, 1);
 	
 	scrollwin = gtk_scrolled_window_new(NULL,NULL);
-	gtk_container_add(GTK_CONTAINER(vbox), scrollwin);
+	gtk_box_pack_start(GTK_BOX(vbox), scrollwin, TRUE, TRUE, 0);
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scrollwin), HB_MINHEIGHT_LIST);
 	treeview = ui_cur_listview_new(FALSE);
  	data->LV_cur = treeview;
-	gtk_container_add(GTK_CONTAINER(scrollwin), treeview);
+	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
 	gtk_widget_set_vexpand (scrollwin, TRUE);
 	gtk_widget_set_hexpand (scrollwin, TRUE);
 
-	tbar = gtk_toolbar_new();
-	gtk_toolbar_set_icon_size (GTK_TOOLBAR(tbar), GTK_ICON_SIZE_MENU);
-	gtk_toolbar_set_style(GTK_TOOLBAR(tbar), GTK_TOOLBAR_ICONS);
+	tbar = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
 	gtk_box_pack_start (GTK_BOX (vbox), tbar, FALSE, FALSE, 0);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	toolitem = gtk_tool_item_new();
-	gtk_container_add (GTK_CONTAINER(toolitem), bbox);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+	gtk_box_pack_start (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
 
 		widget = make_image_button(ICONNAME_LIST_ADD, _("Add"));
 		data->BT_add = widget;
-		gtk_container_add (GTK_CONTAINER (bbox), widget);
+		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
 
 		widget = make_image_button(ICONNAME_LIST_DELETE, _("Delete"));
 		data->BT_del = widget;
-		gtk_container_add (GTK_CONTAINER (bbox), widget);
-
-	toolitem = gtk_separator_tool_item_new ();
-	//gtk_tool_item_set_expand (toolitem, TRUE);
-	gtk_separator_tool_item_set_draw(GTK_SEPARATOR_TOOL_ITEM(toolitem), FALSE);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	toolitem = gtk_tool_item_new();
-	gtk_container_add (GTK_CONTAINER(toolitem), bbox);
-	gtk_toolbar_insert(GTK_TOOLBAR(tbar), GTK_TOOL_ITEM(toolitem), -1);
+	gtk_box_pack_start (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
 
 		widget = make_image_button(ICONNAME_LIST_EDIT, _("Edit"));
 		data->BT_edit = widget;
-		gtk_container_add (GTK_CONTAINER (bbox), widget);
+		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
 
 		widget = gtk_button_new_with_mnemonic(_("Set as base"));
 		data->BT_base = widget;
-		gtk_container_add (GTK_CONTAINER (bbox), widget);
-
+		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
 
 	// connect dialog signals
 	g_signal_connect (dialog, "destroy", G_CALLBACK (gtk_widget_destroyed), &dialog);
@@ -1814,7 +1813,7 @@ gint crow, row, w, h, dw, dh;
 
 	// cleanup and destroy
 	GLOBALS->changes_count += data->change;
-	gtk_widget_destroy (dialog);
+	gtk_window_destroy (GTK_WINDOW(dialog));
 
 	g_free(data);
 	

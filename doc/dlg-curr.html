@@ -81,17 +81,41 @@
     <p>
     Your currencies may not be supported:<br>
     - as base currency: and nothing will update<br>
-    - as a target currency: this currency will not be updated<br>
-    See additional notes below</p>
+    - as a target currency: this currency will not be updated
+    </p>
 
-    <p>The current API is:<br>
-    - &#x29c9; <a href="https://frankfurter.app" target="_blank">frankfurter.app</a> which rely on All currencies quoted against the euro (base currency)<br>
-    - &#x29c9; <a href="https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html" target="_blank">list of supported currencies</a></p>
-    <p>
-    <p>Previous third party API service used in the past.<br>
-    - until 5.2:   https://api.fixer.io, see &#x29c9; <a href="https://bugs.launchpad.net/homebank/+bug/1785210" target="_blank">#1785210</a><br>
+   <h3>Current API (since 5.7)</h3>
+    <ul>
+    <li>&#x29c9; <a href="https://exchangerate.host" target="_blank">exchangerate.host</a><br>
+    (free): 170 world currencies, including Bitcoin, Gold and Silver rates. <a href="https://api.exchangerate.host/symbols" target="_blank">listed here</a>
+     </li>
+    </ul>
+
+  <h3>Compatible API</h3>
+   <ul>
+    <li>&#x29c9; <a href="https://frankfurter.app" target="_blank">frankfurter.app</a><br>
+    (free): 30 currencies, Euro limited <a href="https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html" target="_blank">listed here</a></li>
+    <li>&#x29c9; <a href="https://fixer.io" target="_blank">fixer.io</a><br>
+    (apikey): 170 world currencies, including Bitcoin, Gold and Silver rates. <a href="https://data.fixer.io/api/symbols?%20access_key=API_KEY" target="_blank">listed here</a></li>
+  </ul>
+
+
+  <h3>Previous used API</h3>
+  <p>
+    - until 5.7: https://frankfurter.app<br>
+    - until 5.2: https://api.fixer.io, see &#x29c9; <a href="https://bugs.launchpad.net/homebank/+bug/1785210" target="_blank">#1785210</a><br>
     - until 5.1.7: yahoo, see &#x29c9; <a href="https://bugs.launchpad.net/homebank/+bug/1730527" target="_blank">#1730527</a><br>
   </p>
+
+    <h3>Changing the API (with a compatible one)</h3>
+    <p>This is for advanced users only.<br>
+      It can be done into the preference file, with 2 parameters:<br>
+      <code>
+      - APIRateUrl=https://api.exchangerate.host<br>
+      - APIRateKey=sfp4btv2dksahegay66d4tx3w57wvzwj<br>
+    </code>
+  </p>
+
 
   </div>
   </div>
