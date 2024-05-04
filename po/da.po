@@ -7,15 +7,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: homebank\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2023-01-28 17:01+0100\n"
-"PO-Revision-Date: 2023-01-29 14:04+0000\n"
+"POT-Creation-Date: 2023-03-19 08:55+0100\n"
+"PO-Revision-Date: 2023-03-16 16:46+0000\n"
 "Last-Translator: Søren Halkier Christensen <Unknown>\n"
 "Language-Team: Danish <da@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2023-02-05 19:36+0000\n"
-"X-Generator: Launchpad (build 33dc2e2ab7f8e563f52b8c81cbdf9e3946d2097e)\n"
+"X-Launchpad-Export-Date: 2023-03-19 17:16+0000\n"
+"X-Generator: Launchpad (build 997ba17554f0ee82f56d9282fce82d3e09a43780)\n"
 
 #: ../data/homebank.desktop.in.in.h:1 ../src/dsp-mainwindow.c:702
 msgid "HomeBank"
@@ -156,11 +156,11 @@ msgstr ""
 "Vil du slette de valgte\n"
 "transaktioner?"
 
-#: ../src/dsp-account.c:1682 ../src/ui-account.c:1441 ../src/ui-archive.c:823
-#: ../src/ui-assign.c:1442 ../src/ui-budget-tabview.c:2300
-#: ../src/ui-category.c:1481 ../src/ui-category.c:2026
-#: ../src/ui-currency.c:1550 ../src/ui-payee.c:1040 ../src/ui-payee.c:1565
-#: ../src/ui-tag.c:922
+#: ../src/dsp-account.c:1682 ../src/ui-account.c:1486 ../src/ui-archive.c:835
+#: ../src/ui-assign.c:1445 ../src/ui-budget-tabview.c:2321
+#: ../src/ui-category.c:1480 ../src/ui-category.c:2025
+#: ../src/ui-currency.c:1554 ../src/ui-payee.c:1039 ../src/ui-payee.c:1564
+#: ../src/ui-tag.c:923
 msgid "_Delete"
 msgstr "_Slet"
 
@@ -241,7 +241,7 @@ msgstr "Se _Opdeling"
 
 #: ../src/dsp-account.c:2545
 msgid "Copy raw amount"
-msgstr ""
+msgstr "Kopier beløb"
 
 #: ../src/dsp-account.c:2547 ../src/dsp-account.c:2641
 msgid "Create template..."
@@ -284,11 +284,11 @@ msgid "Print..."
 msgstr "Udskriv…"
 
 #: ../src/dsp-account.c:2607 ../src/dsp-mainwindow.c:680
-#: ../src/dsp-mainwindow.c:1851 ../src/ui-account.c:1758
-#: ../src/ui-archive.c:1199 ../src/ui-assign.c:1688 ../src/ui-budget.c:1143
-#: ../src/ui-budget-tabview.c:2759 ../src/ui-category.c:2410
-#: ../src/ui-currency.c:1686 ../src/ui-dialogs.c:194 ../src/ui-payee.c:1764
-#: ../src/ui-split.c:833 ../src/ui-tag.c:1051 ../src/ui-transaction.c:1457
+#: ../src/dsp-mainwindow.c:1851 ../src/ui-account.c:1803
+#: ../src/ui-archive.c:1219 ../src/ui-assign.c:1691 ../src/ui-budget.c:1144
+#: ../src/ui-budget-tabview.c:2781 ../src/ui-category.c:2409
+#: ../src/ui-currency.c:1690 ../src/ui-dialogs.c:194 ../src/ui-payee.c:1763
+#: ../src/ui-split.c:833 ../src/ui-tag.c:1052 ../src/ui-transaction.c:1457
 msgid "_Close"
 msgstr "_Luk"
 
@@ -342,10 +342,10 @@ msgid "Convert to Euro..."
 msgstr "Konvertér til Euro"
 
 #: ../src/dsp-account.c:2671 ../src/dsp-mainwindow.c:1960
-#: ../src/ui-account.c:1814 ../src/ui-archive.c:1277 ../src/ui-assign.c:1752
-#: ../src/ui-assist-import.c:1573 ../src/ui-category.c:2524
-#: ../src/ui-currency.c:1762 ../src/ui-payee.c:1878 ../src/ui-split.c:1014
-#: ../src/ui-tag.c:1149
+#: ../src/ui-account.c:1859 ../src/ui-archive.c:1295 ../src/ui-assign.c:1755
+#: ../src/ui-assist-import.c:1576 ../src/ui-category.c:2523
+#: ../src/ui-currency.c:1766 ../src/ui-payee.c:1877 ../src/ui-split.c:1014
+#: ../src/ui-tag.c:1150
 msgid "Add"
 msgstr "Tilføj"
 
@@ -362,9 +362,9 @@ msgid "Inherit from the active transaction"
 msgstr "Arv fra den aktive transaktion"
 
 #. widget = gtk_button_new_with_mnemonic(_("_Edit"));
-#: ../src/dsp-account.c:2675 ../src/ui-archive.c:1296 ../src/ui-assign.c:1771
-#: ../src/ui-category.c:2543 ../src/ui-currency.c:1780 ../src/ui-payee.c:1896
-#: ../src/ui-split.c:973 ../src/ui-tag.c:1165
+#: ../src/dsp-account.c:2675 ../src/ui-archive.c:1314 ../src/ui-assign.c:1774
+#: ../src/ui-category.c:2542 ../src/ui-currency.c:1784 ../src/ui-payee.c:1895
+#: ../src/ui-split.c:973 ../src/ui-tag.c:1166
 msgid "Edit"
 msgstr "Rediger"
 
@@ -373,8 +373,8 @@ msgid "Edit the active transaction"
 msgstr "Rediger den aktive transaktion"
 
 #. Cleared
-#: ../src/dsp-account.c:2680 ../src/list-account.c:692 ../src/ui-filter.c:1172
-#: ../src/ui-widgets-data.c:164 ../src/ui-widgets-data.c:211
+#: ../src/dsp-account.c:2680 ../src/list-account.c:694 ../src/ui-filter.c:1172
+#: ../src/ui-widgets-data.c:206 ../src/ui-widgets-data.c:253
 msgid "Cleared"
 msgstr "Godkendt"
 
@@ -383,8 +383,8 @@ msgid "Toggle cleared for selected transaction(s)"
 msgstr "Marker som Godkendt for de valgte transaktioner"
 
 #. Reconciled
-#: ../src/dsp-account.c:2681 ../src/list-account.c:688 ../src/ui-filter.c:1177
-#: ../src/ui-widgets-data.c:165 ../src/ui-widgets-data.c:213
+#: ../src/dsp-account.c:2681 ../src/list-account.c:690 ../src/ui-filter.c:1177
+#: ../src/ui-widgets-data.c:207 ../src/ui-widgets-data.c:255
 msgid "Reconciled"
 msgstr "Afstemt"
 
@@ -404,10 +404,10 @@ msgstr "Redigér flere transaktioner"
 msgid "Create template"
 msgstr "Opret skabelon..."
 
-#: ../src/dsp-account.c:2687 ../src/ui-account.c:1818 ../src/ui-archive.c:1281
-#: ../src/ui-assign.c:1756 ../src/ui-assist-import.c:1577
-#: ../src/ui-category.c:2528 ../src/ui-currency.c:1766 ../src/ui-payee.c:1882
-#: ../src/ui-split.c:969 ../src/ui-tag.c:1152
+#: ../src/dsp-account.c:2687 ../src/ui-account.c:1863 ../src/ui-archive.c:1299
+#: ../src/ui-assign.c:1759 ../src/ui-assist-import.c:1580
+#: ../src/ui-category.c:2527 ../src/ui-currency.c:1770 ../src/ui-payee.c:1881
+#: ../src/ui-split.c:969 ../src/ui-tag.c:1153
 msgid "Delete"
 msgstr "Slet"
 
@@ -453,60 +453,62 @@ msgstr "Alle transaktioner"
 msgid "_Refresh"
 msgstr "_Opdater"
 
-#: ../src/dsp-account.c:2828 ../src/rep-balance.c:1068 ../src/rep-budget.c:1351
-#: ../src/rep-stats.c:1749 ../src/rep-time.c:1409 ../src/rep-vehicle.c:1000
+#: ../src/dsp-account.c:2828 ../src/rep-balance.c:1075 ../src/rep-budget.c:1351
+#: ../src/rep-stats.c:1737 ../src/rep-time.c:1389 ../src/rep-vehicle.c:1000
 #: ../src/ui-pref.c:1364 ../src/ui-pref.c:1725 ../src/ui-pref.c:2164
 msgid "_Range:"
 msgstr "Periode"
 
-#: ../src/dsp-account.c:2838
-msgid "Toggle show future transaction"
-msgstr "Vis fremtidige transaktioner"
+#. #2008521 set more accurate tooltip
+#: ../src/dsp-account.c:2842
+#, c-format
+msgid "Toggle show %d days ahead"
+msgstr ""
 
-#: ../src/dsp-account.c:2843 ../src/rep-budget.c:1326 ../src/rep-stats.c:1686
-#: ../src/ui-account.c:1870 ../src/ui-assist-start.c:536
+#: ../src/dsp-account.c:2847 ../src/rep-budget.c:1326 ../src/rep-stats.c:1674
+#: ../src/ui-account.c:1915 ../src/ui-assist-start.c:536
 msgid "_Type:"
 msgstr "_Type:"
 
-#: ../src/dsp-account.c:2850 ../src/ui-transaction.c:1714
+#: ../src/dsp-account.c:2854 ../src/ui-transaction.c:1714
 msgid "_Status:"
 msgstr "_Status:"
 
-#: ../src/dsp-account.c:2857
+#: ../src/dsp-account.c:2861
 msgid "Open the list filter"
 msgstr "Åben filter"
 
-#: ../src/dsp-account.c:2862 ../src/rep-balance.c:811 ../src/rep-budget.c:1033
-#: ../src/rep-stats.c:1394 ../src/rep-time.c:1080 ../src/rep-vehicle.c:786
+#: ../src/dsp-account.c:2866 ../src/rep-balance.c:818 ../src/rep-budget.c:1033
+#: ../src/rep-stats.c:1382 ../src/rep-time.c:1060 ../src/rep-vehicle.c:786
 msgid "Refresh results"
 msgstr "Opdater resultater"
 
 #. widget = gtk_button_new_with_mnemonic (_("Reset _filters"));
-#: ../src/dsp-account.c:2868 ../src/ui-filter.c:1226 ../src/ui-pref.c:2268
+#: ../src/dsp-account.c:2872 ../src/ui-filter.c:1226 ../src/ui-pref.c:2268
 #: ../src/ui-pref.c:2292
 msgid "_Reset"
 msgstr "_Reset"
 
 #. TRANSLATORS: this is for Euro specific users, a toggle to display in 'Minor' currency
-#: ../src/dsp-account.c:2874 ../src/rep-balance.c:1047 ../src/rep-budget.c:1338
-#: ../src/rep-stats.c:1728 ../src/rep-time.c:1388 ../src/rep-vehicle.c:987
+#: ../src/dsp-account.c:2878 ../src/rep-balance.c:1054 ../src/rep-budget.c:1338
+#: ../src/rep-stats.c:1716 ../src/rep-time.c:1368 ../src/rep-vehicle.c:987
 msgid "Euro _minor"
 msgstr "Euro sekundær"
 
 #. account name
-#: ../src/dsp-account.c:2933
+#: ../src/dsp-account.c:2937
 msgid "Reconciled:"
 msgstr "Afstemt:"
 
-#: ../src/dsp-account.c:2940
+#: ../src/dsp-account.c:2944
 msgid "Cleared:"
 msgstr "Godkendt"
 
-#: ../src/dsp-account.c:2947
+#: ../src/dsp-account.c:2951
 msgid "Today:"
 msgstr "I dag:"
 
-#: ../src/dsp-account.c:2954
+#: ../src/dsp-account.c:2958
 msgid "Future:"
 msgstr "Fremtidig:"
 
@@ -602,7 +604,7 @@ msgstr "_Åbn backup"
 msgid "Unable to open '%s', the file does not exist.\n"
 msgstr "Kunne ikke åbne filen \"%s\", filen eksisterer ikke.\n"
 
-#: ../src/dsp-mainwindow.c:1139 ../src/ui-currency.c:1325
+#: ../src/dsp-mainwindow.c:1139 ../src/ui-currency.c:1329
 msgid "Unknown error"
 msgstr "Ukendt fejl"
 
@@ -889,11 +891,11 @@ msgstr "Gem den aktuelle fil"
 #. gtk_assistant_set_page_title (GTK_ASSISTANT (data->assistant), page, _("Transaction"));
 #. gtk_assistant_set_page_title (GTK_ASSISTANT (data->assistant), page, genacc->name);
 #. header
-#: ../src/dsp-mainwindow.c:1950 ../src/list-operation.c:1657
-#: ../src/list-scheduled.c:678 ../src/rep-stats.c:67 ../src/rep-time.c:73
-#: ../src/ui-account.c:878 ../src/ui-archive.c:484
-#: ../src/ui-assist-import.c:2167 ../src/ui-dialogs.c:213
+#: ../src/dsp-mainwindow.c:1950 ../src/list-operation.c:1667
+#: ../src/list-scheduled.c:701 ../src/ui-account.c:923 ../src/ui-archive.c:488
+#: ../src/ui-assist-import.c:2170 ../src/ui-dialogs.c:213
 #: ../src/ui-filter.c:802 ../src/ui-filter.c:806 ../src/ui-filter.c:1291
+#: ../src/ui-widgets-data.c:60 ../src/ui-widgets-data.c:77
 msgid "Account"
 msgstr "Konto"
 
@@ -906,11 +908,12 @@ msgstr "Administrér konti"
 #. payee
 #. header
 #: ../src/dsp-mainwindow.c:1951 ../src/hb-export.c:443
-#: ../src/list-operation.c:1691 ../src/list-scheduled.c:593
-#: ../src/rep-stats.c:66 ../src/rep-time.c:75 ../src/ui-archive.c:461
-#: ../src/ui-assign.c:543 ../src/ui-assist-import.c:401 ../src/ui-dialogs.c:268
-#: ../src/ui-filter.c:891 ../src/ui-filter.c:896 ../src/ui-filter.c:1295
-#: ../src/ui-payee.c:942 ../src/ui-pref.c:132 ../src/ui-widgets-data.c:29
+#: ../src/list-operation.c:1702 ../src/list-scheduled.c:611
+#: ../src/ui-archive.c:464 ../src/ui-assign.c:546 ../src/ui-assist-import.c:403
+#: ../src/ui-dialogs.c:268 ../src/ui-filter.c:891 ../src/ui-filter.c:896
+#: ../src/ui-filter.c:1295 ../src/ui-payee.c:938 ../src/ui-pref.c:132
+#: ../src/ui-widgets-data.c:29 ../src/ui-widgets-data.c:59
+#: ../src/ui-widgets-data.c:79
 msgid "Payee"
 msgstr "Betaler/modtager"
 
@@ -923,14 +926,14 @@ msgstr "Administrér betaler/modtager"
 #. category
 #. header
 #: ../src/dsp-mainwindow.c:1952 ../src/hub-spending.c:435
-#: ../src/list-operation.c:1725 ../src/list-scheduled.c:614
-#: ../src/rep-budget.c:1491 ../src/rep-budget.c:1682 ../src/rep-stats.c:64
-#: ../src/rep-time.c:74 ../src/ui-archive.c:465 ../src/ui-assign.c:547
-#: ../src/ui-assist-import.c:405 ../src/ui-budget.c:263
-#: ../src/ui-budget-tabview.c:1543 ../src/ui-category.c:1378
+#: ../src/list-operation.c:1737 ../src/list-scheduled.c:633
+#: ../src/rep-budget.c:1491 ../src/rep-budget.c:1683 ../src/ui-archive.c:468
+#: ../src/ui-assign.c:550 ../src/ui-assist-import.c:407 ../src/ui-budget.c:263
+#: ../src/ui-budget-tabview.c:1544 ../src/ui-category.c:1376
 #: ../src/ui-dialogs.c:277 ../src/ui-filter.c:832 ../src/ui-filter.c:837
-#: ../src/ui-filter.c:1298 ../src/ui-payee.c:964 ../src/ui-split.c:203
+#: ../src/ui-filter.c:1298 ../src/ui-payee.c:961 ../src/ui-split.c:203
 #: ../src/ui-split.c:978 ../src/ui-widgets-data.c:42
+#: ../src/ui-widgets-data.c:57 ../src/ui-widgets-data.c:78
 msgid "Category"
 msgstr "kategori"
 
@@ -948,7 +951,7 @@ msgstr "Administrér planlagte/skabelon transaktioner"
 
 #. column: Income
 #: ../src/dsp-mainwindow.c:1954 ../src/dsp-mainwindow.c:1968
-#: ../src/rep-budget.c:655 ../src/rep-budget.c:1491 ../src/rep-budget.c:1696
+#: ../src/rep-budget.c:655 ../src/rep-budget.c:1491 ../src/rep-budget.c:1699
 msgid "Budget"
 msgstr "Budget"
 
@@ -956,7 +959,7 @@ msgstr "Budget"
 msgid "Manage the budget"
 msgstr "Administrér budget"
 
-#: ../src/dsp-mainwindow.c:1955 ../src/ui-assign.c:901 ../src/ui-dialogs.c:249
+#: ../src/dsp-mainwindow.c:1955 ../src/ui-assign.c:904 ../src/ui-dialogs.c:249
 msgid "Assignment"
 msgstr "Opgave"
 
@@ -994,8 +997,8 @@ msgstr "Åben trend rapporten"
 
 #. column: Balance
 #: ../src/dsp-mainwindow.c:1967 ../src/hb-export.c:447
-#: ../src/list-operation.c:1737 ../src/rep-balance.c:1395
-#: ../src/ui-widgets-data.c:59
+#: ../src/list-operation.c:1749 ../src/rep-balance.c:1405
+#: ../src/ui-widgets-data.c:101
 msgid "Balance"
 msgstr "Balance"
 
@@ -1027,18 +1030,18 @@ msgstr "Donér"
 msgid "Donate to HomeBank project"
 msgstr "Donér til HomeBank projektet"
 
-#: ../src/dsp-mainwindow.c:2087 ../src/ui-archive.c:1236
+#: ../src/dsp-mainwindow.c:2087 ../src/ui-archive.c:1254
 #: ../src/ui-dialogs.c:233
 msgid "Scheduled"
 msgstr "Planlagt"
 
 #. Future
-#: ../src/dsp-mainwindow.c:2091 ../src/list-account.c:700
+#: ../src/dsp-mainwindow.c:2091 ../src/list-account.c:702
 msgid "Future"
 msgstr "Fremtidig"
 
 #: ../src/dsp-mainwindow.c:2094 ../src/ui-filter.c:1188
-#: ../src/ui-widgets-data.c:166
+#: ../src/ui-widgets-data.c:208
 msgid "Remind"
 msgstr "Påmind"
 
@@ -1046,7 +1049,7 @@ msgstr "Påmind"
 msgid "_Today"
 msgstr "_Idag"
 
-#: ../src/hb-archive.c:215 ../src/ui-archive.c:815
+#: ../src/hb-archive.c:215 ../src/ui-archive.c:827
 msgid "(no memo)"
 msgstr "(intet notat)"
 
@@ -1054,7 +1057,7 @@ msgstr "(intet notat)"
 msgid "**PREFILLED**"
 msgstr "**FORUD UDFYLDT**"
 
-#: ../src/hb-category.c:492 ../src/hb-report.c:363 ../src/ui-budget.c:113
+#: ../src/hb-category.c:492 ../src/hb-report.c:378 ../src/ui-budget.c:113
 #: ../src/ui-category.c:220 ../src/ui-category.c:763
 msgid "(no category)"
 msgstr "(ingen kategori)"
@@ -1064,23 +1067,23 @@ msgid "invalid CSV format"
 msgstr "ugyldig CSV-format"
 
 #. header
-#: ../src/hb-export.c:441 ../src/list-operation.c:1679
-#: ../src/rep-balance.c:1376 ../src/rep-vehicle.c:167 ../src/rep-vehicle.c:1326
-#: ../src/ui-assist-import.c:373 ../src/ui-filter.c:949 ../src/ui-filter.c:1279
+#: ../src/hb-export.c:441 ../src/list-operation.c:1689
+#: ../src/rep-balance.c:1384 ../src/rep-vehicle.c:167 ../src/rep-vehicle.c:1330
+#: ../src/ui-assist-import.c:375 ../src/ui-filter.c:949 ../src/ui-filter.c:1279
 msgid "Date"
 msgstr "Dato"
 
-#: ../src/hb-export.c:442 ../src/list-operation.c:1449
-#: ../src/ui-assist-import.c:387 ../src/ui-pref.c:133 ../src/ui-pref.c:2533
+#: ../src/hb-export.c:442 ../src/list-operation.c:1457
+#: ../src/ui-assist-import.c:389 ../src/ui-pref.c:133 ../src/ui-pref.c:2533
 #: ../src/ui-pref.c:2541
 msgid "Info"
 msgstr "Info"
 
 #. column: Memo
 #. memo
-#: ../src/hb-export.c:444 ../src/list-operation.c:1694
-#: ../src/list-scheduled.c:635 ../src/ui-archive.c:469
-#: ../src/ui-assist-import.c:378 ../src/ui-pref.c:131 ../src/ui-split.c:223
+#: ../src/hb-export.c:444 ../src/list-operation.c:1705
+#: ../src/list-scheduled.c:655 ../src/ui-archive.c:472
+#: ../src/ui-assist-import.c:380 ../src/ui-pref.c:131 ../src/ui-split.c:223
 #: ../src/ui-split.c:982 ../src/ui-widgets-data.c:28
 msgid "Memo"
 msgstr "Note"
@@ -1088,14 +1091,14 @@ msgstr "Note"
 #. column: Amount
 #. amount
 #. header
-#: ../src/hb-export.c:445 ../src/list-operation.c:1716 ../src/rep-time.c:1620
-#: ../src/rep-time.c:1773 ../src/rep-vehicle.c:171 ../src/rep-vehicle.c:1371
-#: ../src/ui-archive.c:474 ../src/ui-assist-import.c:382 ../src/ui-filter.c:988
+#: ../src/hb-export.c:445 ../src/list-operation.c:1728 ../src/rep-time.c:1600
+#: ../src/rep-time.c:1758 ../src/rep-vehicle.c:171 ../src/rep-vehicle.c:1377
+#: ../src/ui-archive.c:477 ../src/ui-assist-import.c:384 ../src/ui-filter.c:988
 #: ../src/ui-split.c:239 ../src/ui-split.c:986
 msgid "Amount"
 msgstr "Beløb"
 
-#: ../src/hb-hbfile.c:611 ../src/ui-assist-import.c:2167
+#: ../src/hb-hbfile.c:615 ../src/ui-assist-import.c:2170
 msgid "Unknown"
 msgstr "Ukendt"
 
@@ -1115,13 +1118,13 @@ msgstr "km/l"
 msgid "mi./l"
 msgstr "mil/l"
 
-#: ../src/hb-report.c:375 ../src/ui-payee.c:644
+#: ../src/hb-report.c:390 ../src/ui-payee.c:644
 msgid "(no payee)"
 msgstr "(ingen betaler/modtager)"
 
 #. g_snprintf(s, slen, _("%d-w%d"), g_date_get_year(date), g_date_get_monday_week_of_year(date));
 #. TRANSLATORS: printf string for year of week W, ex. 2019-W52 for week 52 of 2019
-#: ../src/hb-report.c:990
+#: ../src/hb-report.c:1019
 #, c-format
 msgid "%d-w%02d"
 msgstr "%d-w%02d"
@@ -1129,10 +1132,17 @@ msgstr "%d-w%02d"
 #. g_snprintf(buffer, 63, "%d-%02d", g_date_get_year(date), g_date_get_month(date));
 #. todo: will be innacurrate here if fiscal year start not 1/jan
 #. TRANSLATORS: printf string for year of quarter Q, ex. 2019-Q4 for quarter 4 of 2019
-#: ../src/hb-report.c:1004
+#: ../src/hb-report.c:1040
 #, c-format
 msgid "%d-q%d"
 msgstr "%d-q%d"
+
+#. #2007712
+#. TRANSLATORS: printf string for half-year H, ex. 2019-H1 for 1st half-year of 2019
+#: ../src/hb-report.c:1047
+#, c-format
+msgid "%d-h%d"
+msgstr "%d-h%d"
 
 #: ../src/homebank.c:70
 msgid "Output version information and exit"
@@ -1167,14 +1177,14 @@ msgstr "(ingen gruppe)"
 msgid "Your accounts"
 msgstr "Dine konti"
 
-#: ../src/hub-account.c:550 ../src/ui-budget.c:1239
-#: ../src/ui-budget-tabview.c:2904 ../src/ui-category.c:2575
+#: ../src/hub-account.c:550 ../src/ui-budget.c:1241
+#: ../src/ui-budget-tabview.c:2935 ../src/ui-category.c:2574
 #: ../src/ui-filter.c:867
 msgid "Expand all"
 msgstr "Udfold alle"
 
-#: ../src/hub-account.c:554 ../src/ui-budget.c:1243
-#: ../src/ui-budget-tabview.c:2908 ../src/ui-category.c:2579
+#: ../src/hub-account.c:554 ../src/ui-budget.c:1245
+#: ../src/ui-budget-tabview.c:2939 ../src/ui-category.c:2578
 #: ../src/ui-filter.c:871
 msgid "Collapse all"
 msgstr "Sammenfold alle"
@@ -1195,46 +1205,48 @@ msgstr "Efter gruppe"
 msgid "By institution"
 msgstr "Efter institution"
 
-#: ../src/hub-scheduled.c:330
+#. TRANSLATORS: example 'sum: 3 (-1 + 4)'
+#: ../src/hub-scheduled.c:350
+#, c-format
+msgid "sum: %s (%s + %s)"
+msgstr ""
+
+#: ../src/hub-scheduled.c:394
 msgid "No transaction to add"
 msgstr "Der er ingen transaktion at tilføje"
 
-#: ../src/hub-scheduled.c:332
+#: ../src/hub-scheduled.c:396
 #, c-format
 msgid "transaction added: %d"
 msgstr "transaktion tilføjet: %d"
 
-#: ../src/hub-scheduled.c:335
+#: ../src/hub-scheduled.c:399
 msgid "Check scheduled transactions result"
 msgstr "Tjek resultatet af de planlagte transaktioner"
 
 #. column: Total
-#: ../src/hub-scheduled.c:477 ../src/list-account.c:123 ../src/list-report.c:56
-#: ../src/list-report.c:363 ../src/list-report.c:721 ../src/rep-stats.c:78
-#: ../src/rep-stats.c:885 ../src/rep-stats.c:986 ../src/rep-vehicle.c:1071
-#: ../src/ui-widgets-data.c:50 ../src/ui-widgets-data.c:57
+#: ../src/hub-scheduled.c:559 ../src/list-account.c:123 ../src/list-report.c:56
+#: ../src/list-report.c:368 ../src/list-report.c:729 ../src/rep-stats.c:869
+#: ../src/rep-stats.c:970 ../src/rep-vehicle.c:1071 ../src/ui-widgets-data.c:50
+#: ../src/ui-widgets-data.c:71 ../src/ui-widgets-data.c:99
 msgid "Total"
 msgstr "Totaler"
 
-#: ../src/hub-scheduled.c:521 ../src/ui-hbfile.c:278
-msgid "Scheduled transactions"
-msgstr "Planlagte transaktioner"
-
-#: ../src/hub-scheduled.c:537
+#: ../src/hub-scheduled.c:619
 msgid "_Skip"
 msgstr "_Udelad"
 
-#: ../src/hub-scheduled.c:541
+#: ../src/hub-scheduled.c:623
 msgid "Edit & P_ost"
 msgstr "Rediger og P_oster"
 
 #. TRANSLATORS: Posting a scheduled transaction is the action to materialize it into its target account.
 #. TRANSLATORS: Before that action the automated transaction occurrence is pending and not yet really existing.
-#: ../src/hub-scheduled.c:547 ../src/ui-transaction.c:1463
+#: ../src/hub-scheduled.c:629 ../src/ui-transaction.c:1463
 msgid "_Post"
 msgstr "_Postér"
 
-#: ../src/hub-scheduled.c:562
+#: ../src/hub-scheduled.c:644
 msgid "maximum post date"
 msgstr "maksimum post dato"
 
@@ -1257,11 +1269,12 @@ msgstr "Andet"
 msgid "Where your money goes"
 msgstr "Hvad dine penge går til"
 
-#: ../src/hub-spending.c:436 ../src/rep-stats.c:65 ../src/ui-widgets-data.c:43
+#: ../src/hub-spending.c:436 ../src/ui-widgets-data.c:43
+#: ../src/ui-widgets-data.c:58
 msgid "Subcategory"
 msgstr "Underkategori"
 
-#: ../src/hb-import.c:1408
+#: ../src/hb-import.c:1404
 msgid "imported account"
 msgstr "importeret konto"
 
@@ -1269,90 +1282,90 @@ msgstr "importeret konto"
 msgid "Grand total"
 msgstr "Samlet total"
 
-#: ../src/list-account.c:535
+#: ../src/list-account.c:536
 msgid "last reconciled"
 msgstr "sidst afstemt"
 
-#: ../src/list-account.c:549
+#: ../src/list-account.c:550
 msgid "until overdraft"
 msgstr "til maks. kredit"
 
-#: ../src/list-account.c:565
+#: ../src/list-account.c:566
 msgid "before maximum"
 msgstr "indtil maksimum"
 
-#: ../src/list-account.c:676
+#: ../src/list-account.c:677
 msgid "Accounts"
 msgstr "Konti"
 
 #. Today
-#: ../src/list-account.c:696 ../src/ui-widgets-data.c:97
+#: ../src/list-account.c:698 ../src/ui-widgets-data.c:139
 msgid "Today"
 msgstr "I dag"
 
-#: ../src/list-operation.c:703 ../src/list-scheduled.c:181
+#: ../src/list-operation.c:710 ../src/list-scheduled.c:195
 #: ../src/ui-archive.c:278
 msgid "- split -"
 msgstr "- del -"
 
-#: ../src/list-operation.c:719
+#: ../src/list-operation.c:726
 msgid "- this needs a category -"
 msgstr "- kategori mangler -"
 
-#: ../src/list-operation.c:1665
+#: ../src/list-operation.c:1675
 msgid "Match"
 msgstr "Match"
 
 #. header
-#: ../src/list-operation.c:1699 ../src/ui-filter.c:1155 ../src/ui-filter.c:1285
+#: ../src/list-operation.c:1710 ../src/ui-filter.c:1155 ../src/ui-filter.c:1285
 msgid "Status"
 msgstr "Status"
 
 #. column: Expense
-#: ../src/list-operation.c:1719 ../src/list-report.c:56
-#: ../src/list-report.c:351 ../src/list-scheduled.c:647
-#: ../src/rep-balance.c:1387 ../src/rep-stats.c:76
-#: ../src/ui-budget-tabview.c:88 ../src/ui-filter.c:1129
-#: ../src/ui-transaction.c:53 ../src/ui-widgets-data.c:35
-#: ../src/ui-widgets-data.c:193 ../src/ui-widgets-data.c:202
+#: ../src/list-operation.c:1731 ../src/list-report.c:56
+#: ../src/list-report.c:356 ../src/list-scheduled.c:668
+#: ../src/rep-balance.c:1397 ../src/ui-budget-tabview.c:89
+#: ../src/ui-filter.c:1129 ../src/ui-transaction.c:53
+#: ../src/ui-widgets-data.c:35 ../src/ui-widgets-data.c:69
+#: ../src/ui-widgets-data.c:235 ../src/ui-widgets-data.c:244
 msgid "Expense"
 msgstr "Udgift"
 
 #. column: Income
-#: ../src/list-operation.c:1722 ../src/list-report.c:56
-#: ../src/list-report.c:357 ../src/list-scheduled.c:658
-#: ../src/rep-balance.c:1391 ../src/rep-stats.c:77
-#: ../src/ui-budget-tabview.c:89 ../src/ui-filter.c:1134
-#: ../src/ui-transaction.c:54 ../src/ui-widgets-data.c:36
-#: ../src/ui-widgets-data.c:194 ../src/ui-widgets-data.c:203
+#: ../src/list-operation.c:1734 ../src/list-report.c:56
+#: ../src/list-report.c:362 ../src/list-scheduled.c:680
+#: ../src/rep-balance.c:1401 ../src/ui-budget-tabview.c:90
+#: ../src/ui-filter.c:1134 ../src/ui-transaction.c:54
+#: ../src/ui-widgets-data.c:36 ../src/ui-widgets-data.c:70
+#: ../src/ui-widgets-data.c:236 ../src/ui-widgets-data.c:245
 msgid "Income"
 msgstr "Indtægt"
 
-#: ../src/list-operation.c:1732
+#: ../src/list-operation.c:1744
 msgid "Tags"
 msgstr "Mærker (Tags)"
 
 #. column: Result
-#: ../src/list-report.c:56 ../src/list-report.c:340 ../src/rep-budget.c:655
-#: ../src/rep-budget.c:1491 ../src/rep-budget.c:1700
+#: ../src/list-report.c:56 ../src/list-report.c:343 ../src/rep-budget.c:655
+#: ../src/rep-budget.c:1491 ../src/rep-budget.c:1703
 msgid "Result"
 msgstr "Difference"
 
-#: ../src/list-report.c:717
+#: ../src/list-report.c:725
 msgid "Average"
 msgstr "Gennemsnit"
 
 #. TRANSLATORS: title of list column to inform the scheduled transaction is Late
-#: ../src/list-scheduled.c:544
+#: ../src/list-scheduled.c:558
 msgid "Late"
 msgstr "Udestår"
 
 #. TRANSLATORS: title of list column to inform how many occurence remain to post for limited scheduled txn
-#: ../src/list-scheduled.c:562
+#: ../src/list-scheduled.c:577
 msgid "Still"
 msgstr "Antal"
 
-#: ../src/list-scheduled.c:576 ../src/ui-archive.c:453
+#: ../src/list-scheduled.c:593 ../src/ui-archive.c:455
 msgid "Next date"
 msgstr "Næste dato"
 
@@ -1362,112 +1375,112 @@ msgstr "Næste dato"
 msgid "%d/%d under %s"
 msgstr "%d/%d under %s"
 
-#: ../src/rep-balance.c:791 ../src/rep-budget.c:1012 ../src/rep-stats.c:1332
-#: ../src/rep-time.c:1048
+#: ../src/rep-balance.c:798 ../src/rep-budget.c:1012 ../src/rep-stats.c:1320
+#: ../src/rep-time.c:1028
 msgid "List"
 msgstr "Liste"
 
-#: ../src/rep-balance.c:792 ../src/rep-budget.c:1013 ../src/rep-stats.c:1333
-#: ../src/rep-time.c:1049
+#: ../src/rep-balance.c:799 ../src/rep-budget.c:1013 ../src/rep-stats.c:1321
+#: ../src/rep-time.c:1029
 msgid "View results as list"
 msgstr "Vis resultater som en liste"
 
-#: ../src/rep-balance.c:797 ../src/rep-time.c:1054
+#: ../src/rep-balance.c:804 ../src/rep-time.c:1034
 msgid "Line"
 msgstr "Linje"
 
-#: ../src/rep-balance.c:798 ../src/rep-time.c:1055
+#: ../src/rep-balance.c:805 ../src/rep-time.c:1035
 msgid "View results as lines"
 msgstr "Vis resultatet som linier"
 
-#: ../src/rep-balance.c:805 ../src/rep-budget.c:1026 ../src/rep-stats.c:1364
-#: ../src/rep-time.c:1068
+#: ../src/rep-balance.c:812 ../src/rep-budget.c:1026 ../src/rep-stats.c:1352
+#: ../src/rep-time.c:1048
 msgid "Detail"
 msgstr "Detaljer"
 
-#: ../src/rep-balance.c:806 ../src/rep-budget.c:1027 ../src/rep-stats.c:1365
-#: ../src/rep-time.c:1069
+#: ../src/rep-balance.c:813 ../src/rep-budget.c:1027 ../src/rep-stats.c:1353
+#: ../src/rep-time.c:1049
 msgid "Toggle detail"
 msgstr "Vis detaljer"
 
-#: ../src/rep-balance.c:811 ../src/rep-budget.c:1033 ../src/rep-stats.c:1394
-#: ../src/rep-time.c:1080 ../src/rep-vehicle.c:786
+#: ../src/rep-balance.c:818 ../src/rep-budget.c:1033 ../src/rep-stats.c:1382
+#: ../src/rep-time.c:1060 ../src/rep-vehicle.c:786
 msgid "Refresh"
 msgstr "Opdatér"
 
-#: ../src/rep-balance.c:814 ../src/rep-budget.c:1076 ../src/rep-stats.c:1437
-#: ../src/rep-time.c:1123
+#: ../src/rep-balance.c:821 ../src/rep-budget.c:1076 ../src/rep-stats.c:1425
+#: ../src/rep-time.c:1103
 msgid "Print"
 msgstr "Print"
 
-#: ../src/rep-balance.c:1001
+#: ../src/rep-balance.c:1008
 msgid "Balance report"
 msgstr "Balancerapport"
 
-#: ../src/rep-balance.c:1021 ../src/rep-budget.c:1314 ../src/rep-stats.c:1667
-#: ../src/rep-time.c:1357 ../src/rep-vehicle.c:972
+#: ../src/rep-balance.c:1028 ../src/rep-budget.c:1314 ../src/rep-stats.c:1655
+#: ../src/rep-time.c:1337 ../src/rep-vehicle.c:972
 msgid "Display"
 msgstr "Visning"
 
-#: ../src/rep-balance.c:1034 ../src/rep-stats.c:1700 ../src/rep-time.c:1375
+#: ../src/rep-balance.c:1041 ../src/rep-stats.c:1688 ../src/rep-time.c:1355
 msgid "Inter_val:"
 msgstr "Inter_val:"
 
-#: ../src/rep-balance.c:1042 ../src/rep-time.c:1383
+#: ../src/rep-balance.c:1049 ../src/rep-time.c:1363
 msgid "Show empty line"
 msgstr "Vis tom linje"
 
-#: ../src/rep-balance.c:1052 ../src/rep-stats.c:1720 ../src/rep-time.c:1393
+#: ../src/rep-balance.c:1059 ../src/rep-stats.c:1708 ../src/rep-time.c:1373
 msgid "_Zoom X:"
 msgstr "_Zoom X:"
 
-#: ../src/rep-balance.c:1064 ../src/rep-budget.c:1347 ../src/rep-stats.c:1745
-#: ../src/rep-time.c:1405 ../src/rep-vehicle.c:996
+#: ../src/rep-balance.c:1071 ../src/rep-budget.c:1347 ../src/rep-stats.c:1733
+#: ../src/rep-time.c:1385 ../src/rep-vehicle.c:996
 msgid "Date filter"
 msgstr "Datofilter"
 
-#: ../src/rep-balance.c:1074 ../src/rep-budget.c:1357 ../src/rep-stats.c:1755
-#: ../src/rep-time.c:1415 ../src/rep-vehicle.c:1006 ../src/ui-filter.c:961
+#: ../src/rep-balance.c:1081 ../src/rep-budget.c:1357 ../src/rep-stats.c:1743
+#: ../src/rep-time.c:1395 ../src/rep-vehicle.c:1006 ../src/ui-filter.c:961
 #: ../src/ui-filter.c:999 ../src/ui-transaction.c:184
 #: ../src/ui-transaction.c:185
 msgid "_From:"
 msgstr "_Fra:"
 
-#: ../src/rep-balance.c:1080 ../src/rep-budget.c:1363 ../src/rep-stats.c:1761
-#: ../src/rep-time.c:1421 ../src/rep-vehicle.c:1012 ../src/ui-assign.c:1640
+#: ../src/rep-balance.c:1087 ../src/rep-budget.c:1363 ../src/rep-stats.c:1749
+#: ../src/rep-time.c:1401 ../src/rep-vehicle.c:1012 ../src/ui-assign.c:1643
 #: ../src/ui-filter.c:968 ../src/ui-filter.c:1006 ../src/ui-transaction.c:178
 #: ../src/ui-transaction.c:184 ../src/ui-transaction.c:185
 msgid "_To:"
 msgstr "_Til:"
 
-#: ../src/rep-balance.c:1090
+#: ../src/rep-balance.c:1097
 msgid "Account filter"
 msgstr "Kontofilter"
 
-#: ../src/rep-balance.c:1098 ../src/rep-time.c:1439
-#: ../src/ui-assist-import.c:1798 ../src/ui-filter.c:746
+#: ../src/rep-balance.c:1105 ../src/rep-time.c:1419
+#: ../src/ui-assist-import.c:1801 ../src/ui-filter.c:746
 msgid "Select:"
 msgstr "Vælg:"
 
-#: ../src/rep-balance.c:1102 ../src/rep-time.c:1443
-#: ../src/ui-assist-import.c:1801 ../src/ui-filter.c:750
-#: ../src/ui-widgets-data.c:144
+#: ../src/rep-balance.c:1109 ../src/rep-time.c:1423
+#: ../src/ui-assist-import.c:1804 ../src/ui-filter.c:750
+#: ../src/ui-widgets-data.c:186
 msgid "All"
 msgstr "Alle"
 
-#: ../src/rep-balance.c:1106 ../src/rep-time.c:1447
-#: ../src/ui-assist-import.c:1805 ../src/ui-filter.c:754
-#: ../src/ui-filter.c:1167 ../src/ui-pref.c:106 ../src/ui-widgets-data.c:163
+#: ../src/rep-balance.c:1113 ../src/rep-time.c:1427
+#: ../src/ui-assist-import.c:1808 ../src/ui-filter.c:754
+#: ../src/ui-filter.c:1167 ../src/ui-pref.c:106 ../src/ui-widgets-data.c:205
 msgid "None"
 msgstr "Ingen"
 
-#: ../src/rep-balance.c:1110 ../src/rep-time.c:1451
-#: ../src/ui-assist-import.c:1809 ../src/ui-filter.c:758
+#: ../src/rep-balance.c:1117 ../src/rep-time.c:1431
+#: ../src/ui-assist-import.c:1812 ../src/ui-filter.c:758
 msgid "Invert"
 msgstr "Invertér"
 
 #. update stack chart
-#: ../src/rep-budget.c:649 ../src/ui-budget.c:985
+#: ../src/rep-budget.c:649 ../src/ui-budget.c:986
 #, c-format
 msgid "Budget for %s"
 msgstr "Budget for %s"
@@ -1484,7 +1497,7 @@ msgstr " rest"
 msgid " under"
 msgstr " under"
 
-#: ../src/rep-budget.c:1018 ../src/rep-stats.c:1350
+#: ../src/rep-budget.c:1018 ../src/rep-stats.c:1338
 msgid "Stack"
 msgstr "Stak"
 
@@ -1493,19 +1506,19 @@ msgid "View results as stack bars"
 msgstr "Vis resultat som bjælker"
 
 #. gtk_widget_set_halign (menu, GTK_ALIGN_END);
-#: ../src/rep-budget.c:1041 ../src/rep-stats.c:1402 ../src/rep-time.c:1088
+#: ../src/rep-budget.c:1041 ../src/rep-stats.c:1390 ../src/rep-time.c:1068
 msgid "_Result to clipboard"
 msgstr "_Resultat til clipboard"
 
-#: ../src/rep-budget.c:1045 ../src/rep-stats.c:1406 ../src/rep-time.c:1092
+#: ../src/rep-budget.c:1045 ../src/rep-stats.c:1394 ../src/rep-time.c:1072
 msgid "_Result to CSV"
 msgstr "_Resultat til CSV"
 
-#: ../src/rep-budget.c:1049 ../src/rep-stats.c:1410 ../src/rep-time.c:1096
+#: ../src/rep-budget.c:1049 ../src/rep-stats.c:1398 ../src/rep-time.c:1076
 msgid "_Detail to clipboard"
 msgstr "_Detaljer til clipboard"
 
-#: ../src/rep-budget.c:1054 ../src/rep-stats.c:1415 ../src/rep-time.c:1101
+#: ../src/rep-budget.c:1054 ../src/rep-stats.c:1403 ../src/rep-time.c:1081
 msgid "_Detail to CSV"
 msgstr "_Detaljer til CSV"
 
@@ -1521,7 +1534,7 @@ msgstr "Du bør vælge nogle konti i kontodialogen."
 msgid "Budget report"
 msgstr "Budget rapport"
 
-#: ../src/rep-budget.c:1318 ../src/rep-stats.c:1678 ../src/rep-time.c:1361
+#: ../src/rep-budget.c:1318 ../src/rep-stats.c:1666 ../src/rep-time.c:1341
 msgid "_View by:"
 msgstr "Vis ved:"
 
@@ -1542,162 +1555,132 @@ msgid "Spent:"
 msgstr "Brugt:"
 
 #. column: Expense
-#: ../src/rep-budget.c:1491 ../src/rep-budget.c:1692
+#: ../src/rep-budget.c:1491 ../src/rep-budget.c:1695
 msgid "Spent"
 msgstr "Forbrug"
 
-#. header
-#: ../src/rep-stats.c:68 ../src/rep-time.c:76 ../src/ui-dialogs.c:286
-#: ../src/ui-filter.c:921 ../src/ui-filter.c:925 ../src/ui-filter.c:1301
-msgid "Tag"
-msgstr "Mærke"
-
-#: ../src/rep-stats.c:69 ../src/rep-time.c:84 ../src/ui-widgets-data.c:175
-msgid "Month"
-msgstr "Måned"
-
-#: ../src/rep-stats.c:70 ../src/rep-time.c:87 ../src/ui-widgets-data.c:176
-msgid "Year"
-msgstr "År"
-
 #. TRANSLATORS: example 'Expense by Category'
-#: ../src/rep-stats.c:345
+#: ../src/rep-stats.c:329
 #, c-format
 msgid "%s by %s"
 msgstr "%s efter %s"
 
-#: ../src/rep-stats.c:909
+#: ../src/rep-stats.c:893
 msgid "Too much columns to display"
 msgstr "For mange kolonner at vise"
 
-#: ../src/rep-stats.c:910
+#: ../src/rep-stats.c:894
 msgid "Please select a wider interval and / or a narrower date range"
 msgstr "Venligst vælg et bredere interval og/eller et mindre dato-område"
 
-#: ../src/rep-stats.c:1338 ../src/rep-time.c:1060
+#: ../src/rep-stats.c:1326 ../src/rep-time.c:1040
 msgid "Column"
 msgstr "Søjler"
 
-#: ../src/rep-stats.c:1339 ../src/rep-time.c:1061
+#: ../src/rep-stats.c:1327 ../src/rep-time.c:1041
 msgid "View results as column"
 msgstr "Vis resultat som søjler"
 
-#: ../src/rep-stats.c:1344
+#: ../src/rep-stats.c:1332
 msgid "Donut"
 msgstr "Krans"
 
-#: ../src/rep-stats.c:1345
+#: ../src/rep-stats.c:1333
 msgid "View results as donut"
 msgstr "Vis resultat som krans"
 
-#: ../src/rep-stats.c:1351
+#: ../src/rep-stats.c:1339
 msgid "View results as stack"
 msgstr "Vis resultater stakket"
 
-#: ../src/rep-stats.c:1356
+#: ../src/rep-stats.c:1344
 msgid "Stack 100%"
 msgstr "Stakket 100%"
 
-#: ../src/rep-stats.c:1357
+#: ../src/rep-stats.c:1345
 msgid "View results as stack 100%"
 msgstr "Vis resultat stakket 100%"
 
-#: ../src/rep-stats.c:1373
+#: ../src/rep-stats.c:1361
 msgid "Legend"
 msgstr "Signaturforklaring"
 
-#: ../src/rep-stats.c:1374
+#: ../src/rep-stats.c:1362
 msgid "Toggle legend"
 msgstr "Vis signaturforklaring"
 
-#: ../src/rep-stats.c:1382
+#: ../src/rep-stats.c:1370
 msgid "Rate"
 msgstr "Procent"
 
-#: ../src/rep-stats.c:1383
+#: ../src/rep-stats.c:1371
 msgid "Toggle rate"
 msgstr "Vis procentværdi"
 
-#: ../src/rep-stats.c:1391 ../src/rep-time.c:1076
+#: ../src/rep-stats.c:1379 ../src/rep-time.c:1056
 msgid "Filter"
 msgstr "Filter"
 
-#: ../src/rep-stats.c:1391 ../src/rep-time.c:1076 ../src/ui-filter.c:1218
+#: ../src/rep-stats.c:1379 ../src/rep-time.c:1056 ../src/ui-filter.c:1218
 msgid "Edit filter"
 msgstr "Rediger filter"
 
-#: ../src/rep-stats.c:1648
+#: ../src/rep-stats.c:1636
 msgid "Statistics Report"
 msgstr "Statistik Rapport"
 
-#: ../src/rep-stats.c:1671
+#: ../src/rep-stats.c:1659
 msgid "Mode:"
 msgstr "Visning:"
 
-#: ../src/rep-stats.c:1695
+#: ../src/rep-stats.c:1683
 msgid "_Balance mode"
 msgstr ""
 
-#: ../src/rep-stats.c:1710
+#: ../src/rep-stats.c:1698
 msgid "Sort by _amount"
 msgstr "Sorter efter _beløb"
 
-#: ../src/rep-stats.c:1715
+#: ../src/rep-stats.c:1703
 msgid "Compare Exp. & Inc."
 msgstr "Sammenlig Udg. & Indt."
 
-#: ../src/rep-stats.c:1826
+#: ../src/rep-stats.c:1814
 msgid "Total:"
 msgstr "I alt:"
 
-#: ../src/rep-stats.c:1832 ../src/ui-budget.c:1277
+#: ../src/rep-stats.c:1820 ../src/ui-budget.c:1279
 msgid "Income:"
 msgstr "Indtægt:"
 
-#: ../src/rep-stats.c:1839 ../src/ui-budget.c:1270
+#: ../src/rep-stats.c:1827 ../src/ui-budget.c:1272
 msgid "Expense:"
 msgstr "Udgift:"
 
-#: ../src/rep-time.c:82 ../src/ui-widgets-data.c:173
-msgid "Day"
-msgstr "Dag"
-
-#: ../src/rep-time.c:83 ../src/ui-widgets-data.c:174
-msgid "Week"
-msgstr "Uge"
-
-#: ../src/rep-time.c:85
-msgid "Quarter"
-msgstr "Kvartal"
-
-#: ../src/rep-time.c:86
-msgid "Half Year"
-msgstr "Halvårligt"
-
 #. TRANSLATORS: example 'Category Over Time'
-#: ../src/rep-time.c:293
+#: ../src/rep-time.c:273
 #, c-format
 msgid "%s Over Time"
 msgstr "%s Over Tid"
 
-#: ../src/rep-time.c:786
+#: ../src/rep-time.c:766
 #, c-format
 msgid "Average: %s"
 msgstr "Gennemsnit: %s"
 
-#: ../src/rep-time.c:1338
+#: ../src/rep-time.c:1318
 msgid "Trend Time Report"
 msgstr "Trend Rapport"
 
-#: ../src/rep-time.c:1370
+#: ../src/rep-time.c:1350
 msgid "_Cumulate"
 msgstr "_Kumuleret"
 
-#: ../src/rep-time.c:1431
+#: ../src/rep-time.c:1411
 msgid "Item filter"
 msgstr ""
 
-#: ../src/rep-time.c:1620 ../src/rep-time.c:1761
+#: ../src/rep-time.c:1600 ../src/rep-time.c:1742
 msgid "Time slice"
 msgstr "Tidsdel"
 
@@ -1723,22 +1706,22 @@ msgstr "Tidsdel"
 #. //gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
 #. 
 #. column: Meter
-#: ../src/rep-vehicle.c:168 ../src/rep-vehicle.c:1359
+#: ../src/rep-vehicle.c:168 ../src/rep-vehicle.c:1365
 msgid "Meter"
 msgstr "Tæller"
 
 #. column: Fuel load
-#: ../src/rep-vehicle.c:169 ../src/rep-vehicle.c:1363
+#: ../src/rep-vehicle.c:169 ../src/rep-vehicle.c:1369
 msgid "Fuel"
 msgstr "Benzin"
 
 #. column: Price by unit
-#: ../src/rep-vehicle.c:170 ../src/rep-vehicle.c:1367
+#: ../src/rep-vehicle.c:170 ../src/rep-vehicle.c:1373
 msgid "Price"
 msgstr "Pris"
 
 #. column: Distance done
-#: ../src/rep-vehicle.c:172 ../src/rep-vehicle.c:1375
+#: ../src/rep-vehicle.c:172 ../src/rep-vehicle.c:1381
 msgid "Dist."
 msgstr "Afstand"
 
@@ -1756,8 +1739,8 @@ msgstr "Biludgifter, rapport"
 
 #. label = make_label_widget(_("Vehi_cle:"));
 #. #2001566 make label consistent with properties dialog
-#: ../src/rep-vehicle.c:978 ../src/ui-assign.c:1059 ../src/ui-hbfile.c:340
-#: ../src/ui-payee.c:1287
+#: ../src/rep-vehicle.c:978 ../src/ui-assign.c:1062 ../src/ui-hbfile.c:340
+#: ../src/ui-payee.c:1286
 msgid "_Category:"
 msgstr "_Kategori:"
 
@@ -1785,49 +1768,49 @@ msgstr "Totale udgifter:"
 #. every insert the drop-down list size is re-computed.
 #. gtk_combo_box_set_wrap_width(GTK_COMBO_BOX(data->CY_template), 0);
 #. populate template
-#: ../src/ui-account.c:535 ../src/ui-account.c:1682 ../src/ui-assign.c:181
-#: ../src/ui-currency.c:245 ../src/ui-widgets.c:1340
+#: ../src/ui-account.c:580 ../src/ui-account.c:1727 ../src/ui-assign.c:181
+#: ../src/ui-currency.c:245 ../src/ui-widgets.c:1337
 msgid "(none)"
 msgstr "(ingen)"
 
-#: ../src/ui-account.c:861 ../src/ui-assign.c:510 ../src/ui-category.c:1312
-#: ../src/ui-currency.c:599 ../src/ui-payee.c:873 ../src/ui-tag.c:484
+#: ../src/ui-account.c:906 ../src/ui-assign.c:511 ../src/ui-category.c:1321
+#: ../src/ui-currency.c:599 ../src/ui-payee.c:881 ../src/ui-tag.c:484
 msgid "Visible"
 msgstr "Synlig"
 
 #. GTK_FILE_CHOOSER_ACTION_OPEN,
-#: ../src/ui-account.c:1022 ../src/ui-assign.c:904
-#: ../src/ui-assist-import.c:746 ../src/ui-budget-tabview.c:2101
-#: ../src/ui-budget-tabview.c:2354 ../src/ui-category.c:1723
-#: ../src/ui-category.c:1886 ../src/ui-currency.c:780 ../src/ui-currency.c:1150
+#: ../src/ui-account.c:1067 ../src/ui-assign.c:907
+#: ../src/ui-assist-import.c:749 ../src/ui-budget-tabview.c:2122
+#: ../src/ui-budget-tabview.c:2375 ../src/ui-category.c:1722
+#: ../src/ui-category.c:1885 ../src/ui-currency.c:784 ../src/ui-currency.c:1154
 #: ../src/ui-dialogs.c:81 ../src/ui-dialogs.c:386 ../src/ui-dialogs.c:504
 #: ../src/ui-dialogs.c:559 ../src/ui-dialogs.c:619 ../src/ui-dialogs.c:688
 #: ../src/ui-dialogs.c:752 ../src/ui-dialogs.c:829 ../src/ui-dialogs.c:957
 #: ../src/ui-dialogs.c:1125 ../src/ui-filter.c:1230 ../src/ui-hbfile.c:233
-#: ../src/ui-payee.c:1235 ../src/ui-payee.c:1434 ../src/ui-pref.c:2294
-#: ../src/ui-split.c:902 ../src/ui-tag.c:679 ../src/ui-tag.c:802
-#: ../src/ui-transaction.c:1451 ../src/ui-txn-multi.c:447
+#: ../src/ui-payee.c:1234 ../src/ui-payee.c:1433 ../src/ui-pref.c:2294
+#: ../src/ui-split.c:902 ../src/ui-tag.c:680 ../src/ui-tag.c:803
+#: ../src/ui-transaction.c:1451 ../src/ui-txn-multi.c:454
 msgid "_Cancel"
 msgstr "_Annuller"
 
-#: ../src/ui-account.c:1024 ../src/ui-assign.c:906 ../src/ui-category.c:1725
-#: ../src/ui-currency.c:782 ../src/ui-currency.c:1152 ../src/ui-dialogs.c:387
-#: ../src/ui-hbfile.c:235 ../src/ui-payee.c:1237 ../src/ui-pref.c:2296
-#: ../src/ui-split.c:915 ../src/ui-tag.c:681 ../src/ui-transaction.c:1452
-#: ../src/ui-txn-multi.c:449
+#: ../src/ui-account.c:1069 ../src/ui-assign.c:909 ../src/ui-category.c:1724
+#: ../src/ui-currency.c:786 ../src/ui-currency.c:1156 ../src/ui-dialogs.c:387
+#: ../src/ui-hbfile.c:235 ../src/ui-payee.c:1236 ../src/ui-pref.c:2296
+#: ../src/ui-split.c:915 ../src/ui-tag.c:682 ../src/ui-transaction.c:1452
+#: ../src/ui-txn-multi.c:456
 msgid "_OK"
 msgstr "_OK"
 
-#: ../src/ui-account.c:1363 ../src/ui-account.c:1477
+#: ../src/ui-account.c:1408 ../src/ui-account.c:1522
 msgid "Account name"
 msgstr "Kontonavn"
 
-#: ../src/ui-account.c:1369 ../src/ui-account.c:1483 ../src/ui-category.c:1815
-#: ../src/ui-payee.c:1354 ../src/ui-tag.c:747
+#: ../src/ui-account.c:1414 ../src/ui-account.c:1528 ../src/ui-category.c:1814
+#: ../src/ui-payee.c:1353 ../src/ui-tag.c:748
 msgid "Error"
 msgstr "Fejl"
 
-#: ../src/ui-account.c:1370
+#: ../src/ui-account.c:1415
 #, c-format
 msgid ""
 "Cannot add an account '%s',\n"
@@ -1836,29 +1819,29 @@ msgstr ""
 "Kan ikke tilføje en konto '%s'.\n"
 "Navnet eksisterer allerede."
 
-#: ../src/ui-account.c:1418
+#: ../src/ui-account.c:1463
 #, c-format
 msgid "Cannot delete account '%s'"
 msgstr "Kan ikke slette konto '%s'"
 
-#: ../src/ui-account.c:1422
+#: ../src/ui-account.c:1467
 msgid ""
 "This account contains transactions and/or is part of internal transfers."
 msgstr ""
 "Denne konto indeholder transaktioner og/eller dele af interne overførsler."
 
-#: ../src/ui-account.c:1433 ../src/ui-archive.c:815 ../src/ui-assign.c:1434
-#: ../src/ui-budget-tabview.c:2288 ../src/ui-category.c:2014
-#: ../src/ui-currency.c:1542 ../src/ui-payee.c:1553 ../src/ui-tag.c:910
+#: ../src/ui-account.c:1478 ../src/ui-archive.c:827 ../src/ui-assign.c:1437
+#: ../src/ui-budget-tabview.c:2309 ../src/ui-category.c:2013
+#: ../src/ui-currency.c:1546 ../src/ui-payee.c:1552 ../src/ui-tag.c:911
 #, c-format
 msgid "Are you sure you want to permanently delete '%s'?"
 msgstr "Er du sikker på, at du permanent vil slette '%s'?"
 
-#: ../src/ui-account.c:1435
+#: ../src/ui-account.c:1480
 msgid "If you delete an account, it will be permanently lost."
 msgstr "Hvis du sletter en konto, vil den permanent være fjernet."
 
-#: ../src/ui-account.c:1484
+#: ../src/ui-account.c:1529
 #, c-format
 msgid ""
 "Cannot rename this Account,\n"
@@ -1869,15 +1852,15 @@ msgstr ""
 "fra '%s' til '%s':\n"
 "Dette navn findes allerede."
 
-#: ../src/ui-account.c:1755
+#: ../src/ui-account.c:1800
 msgid "Manage Accounts"
 msgstr "Administrer konti"
 
-#: ../src/ui-account.c:1832
+#: ../src/ui-account.c:1877
 msgid "Rename"
 msgstr "Omdøb"
 
-#: ../src/ui-account.c:1843
+#: ../src/ui-account.c:1888
 msgid ""
 "Drag & drop to change the order\n"
 "Double-click to rename"
@@ -1885,136 +1868,136 @@ msgstr ""
 "Træk & slip for at ændre ordren\n"
 "Dobbelt-klik for at omdøbe"
 
-#: ../src/ui-account.c:1857 ../src/ui-hbfile.c:260 ../src/ui-pref.c:84
+#: ../src/ui-account.c:1902 ../src/ui-hbfile.c:260 ../src/ui-pref.c:84
 #: ../src/ui-pref.c:1465 ../src/ui-pref.c:1855
 msgid "General"
 msgstr "Generelt"
 
-#: ../src/ui-account.c:1878
+#: ../src/ui-account.c:1923
 msgid "_Group:"
 msgstr "Gruppe:"
 
-#: ../src/ui-account.c:1887
+#: ../src/ui-account.c:1932
 msgid "_Institution:"
 msgstr "Institution:"
 
-#: ../src/ui-account.c:1895
+#: ../src/ui-account.c:1940
 msgid "N_umber:"
 msgstr "N_ummer:"
 
-#: ../src/ui-account.c:1903
+#: ../src/ui-account.c:1948
 msgid "Start _balance:"
 msgstr "Start _balance:"
 
-#: ../src/ui-account.c:1910
+#: ../src/ui-account.c:1955
 msgid "_Currency:"
 msgstr "_Valuta:"
 
-#: ../src/ui-account.c:1917
+#: ../src/ui-account.c:1962
 msgid "this account was _closed"
 msgstr "denne konto er lukket"
 
-#: ../src/ui-account.c:1922 ../src/ui-assign.c:1097 ../src/ui-payee.c:1264
+#: ../src/ui-account.c:1967 ../src/ui-assign.c:1100 ../src/ui-payee.c:1263
 msgid "Notes:"
 msgstr "Noter:"
 
-#: ../src/ui-account.c:1943
+#: ../src/ui-account.c:1988
 msgid "Behaviour"
 msgstr "Adfærd"
 
-#: ../src/ui-account.c:1952
+#: ../src/ui-account.c:1997
 msgid "Automation"
 msgstr "Automatisering"
 
-#: ../src/ui-account.c:1956
+#: ../src/ui-account.c:2001
 msgid "Default _Template:"
 msgstr "Standard_Skabelon:"
 
-#: ../src/ui-account.c:1977
+#: ../src/ui-account.c:2022
 msgid "Report exclusion"
 msgstr "Rapporter eksklusion"
 
-#: ../src/ui-account.c:1981
+#: ../src/ui-account.c:2026
 msgid "exclude from account _summary"
 msgstr "udelad fra konto_oversigt"
 
-#: ../src/ui-account.c:1987
+#: ../src/ui-account.c:2032
 msgid "outflow into summary"
 msgstr ""
 
-#: ../src/ui-account.c:1992
+#: ../src/ui-account.c:2037
 msgid "exclude from the _budget"
 msgstr "udelad fra _budgettet"
 
-#: ../src/ui-account.c:1997
+#: ../src/ui-account.c:2042
 msgid "exclude from any _reports"
 msgstr "udelad fra alle _rapporter"
 
-#: ../src/ui-account.c:2007
+#: ../src/ui-account.c:2052
 msgid "Misc."
 msgstr "Diverse"
 
-#: ../src/ui-account.c:2016
+#: ../src/ui-account.c:2061
 msgid "Current check number"
 msgstr "Aktuelt checknummer"
 
-#: ../src/ui-account.c:2020
+#: ../src/ui-account.c:2065
 msgid "Checkbook _1:"
 msgstr "Checkhæfte_1"
 
-#: ../src/ui-account.c:2027
+#: ../src/ui-account.c:2072
 msgid "Checkbook _2:"
 msgstr "Checkhæfte_2"
 
-#: ../src/ui-account.c:2039
+#: ../src/ui-account.c:2084
 msgid "Balance limits"
 msgstr "Beløbsgrænser"
 
-#: ../src/ui-account.c:2043
+#: ../src/ui-account.c:2088
 msgid "_Overdraft at:"
 msgstr "_Overtræk ved:"
 
-#: ../src/ui-account.c:2050
+#: ../src/ui-account.c:2095
 msgid "Max_imum:"
 msgstr "Maks_imum:"
 
-#: ../src/ui-archive.c:817
+#: ../src/ui-archive.c:829
 msgid "If you delete a scheduled/template, it will be permanently lost."
 msgstr "Hvis du sletter en planlagt opgave/skabelon, er den permanent væk."
 
-#: ../src/ui-archive.c:1116
+#: ../src/ui-archive.c:1134
 msgid "Next _date:"
 msgstr "Næste _dato:"
 
-#: ../src/ui-archive.c:1124
+#: ../src/ui-archive.c:1142
 msgid "Ever_y:"
 msgstr "_Hver:"
 
-#: ../src/ui-archive.c:1139
+#: ../src/ui-archive.c:1157
 msgid "More options"
 msgstr "Flere valgmuligheder"
 
-#: ../src/ui-archive.c:1151
+#: ../src/ui-archive.c:1169
 msgid "Week end:"
 msgstr "Week-end:"
 
-#: ../src/ui-archive.c:1159
+#: ../src/ui-archive.c:1177
 msgid "_Stop after:"
 msgstr "_Stop efter:"
 
-#: ../src/ui-archive.c:1173
+#: ../src/ui-archive.c:1191
 msgid "posts"
 msgstr "postér"
 
-#: ../src/ui-archive.c:1196
+#: ../src/ui-archive.c:1216
 msgid "Manage scheduled/template transactions"
 msgstr "Administrer planlagte transaktioner og skabeloner"
 
-#: ../src/ui-archive.c:1240 ../src/ui-dialogs.c:241
+#: ../src/ui-archive.c:1258 ../src/ui-dialogs.c:241
 msgid "Template"
 msgstr "Skabelon"
 
-#: ../src/ui-archive.c:1310
+#: ../src/ui-archive.c:1328
 msgid "_Schedule"
 msgstr "_Planlagt"
 
@@ -2031,95 +2014,95 @@ msgid "Overwrite"
 msgstr "Overskriv"
 
 #. column : Search
-#: ../src/ui-assign.c:535
+#: ../src/ui-assign.c:538
 msgid "Search"
 msgstr "Søg"
 
 #. column : Notes
-#: ../src/ui-assign.c:539
+#: ../src/ui-assign.c:542
 msgid "Notes"
 msgstr "Noter"
 
-#: ../src/ui-assign.c:698
+#: ../src/ui-assign.c:701
 #, c-format
 msgid "This search text already exists at position %d"
 msgstr "Denne søgetekst findes allerede i  position %d"
 
-#: ../src/ui-assign.c:946
+#: ../src/ui-assign.c:949
 msgid "Condition"
 msgstr "Betingelser"
 
 #. label = make_label_widget(_("Con_tains:"));
-#: ../src/ui-assign.c:951
+#: ../src/ui-assign.c:954
 msgid "_Search:"
 msgstr "_Søg:"
 
-#: ../src/ui-assign.c:960
+#: ../src/ui-assign.c:963
 msgid "Case sensitive"
 msgstr "Forskel på store og små bogstaver"
 
-#: ../src/ui-assign.c:965
+#: ../src/ui-assign.c:968
 msgid "Regular expression"
 msgstr "Regulært udtryk"
 
-#: ../src/ui-assign.c:983
+#: ../src/ui-assign.c:986
 msgid "_In:"
 msgstr "_I:"
 
-#: ../src/ui-assign.c:1001
+#: ../src/ui-assign.c:1004
 msgid "_AND"
 msgstr ""
 
 #. gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
-#: ../src/ui-assign.c:1010 ../src/ui-transaction.c:1546
-#: ../src/ui-txn-multi.c:499
+#: ../src/ui-assign.c:1013 ../src/ui-transaction.c:1546
+#: ../src/ui-txn-multi.c:506
 msgid "Amou_nt:"
 msgstr "_Beløb:"
 
 #. label = make_label_group(_("Assign payee"));
-#: ../src/ui-assign.c:1029
+#: ../src/ui-assign.c:1032
 msgid "Assignments"
 msgstr "Opgaver"
 
-#: ../src/ui-assign.c:1039 ../src/ui-transaction.c:1666
-#: ../src/ui-txn-multi.c:564
+#: ../src/ui-assign.c:1042 ../src/ui-transaction.c:1666
+#: ../src/ui-txn-multi.c:571
 msgid "_Payee:"
 msgstr "_Betaler/modtager"
 
-#: ../src/ui-assign.c:1078
+#: ../src/ui-assign.c:1081
 msgid "Pay_ment:"
 msgstr "_Betaling:"
 
-#: ../src/ui-assign.c:1387
+#: ../src/ui-assign.c:1390
 #, c-format
 msgid "(rule %d)"
 msgstr "(regel %d)"
 
-#: ../src/ui-assign.c:1436
+#: ../src/ui-assign.c:1439
 msgid "If you delete an assignment, it will be permanently lost."
 msgstr "Hvis du sletter en opgave, vil den permanent være væk."
 
-#: ../src/ui-assign.c:1622
+#: ../src/ui-assign.c:1625
 msgid "Move to..."
 msgstr "Flyt til …"
 
-#: ../src/ui-assign.c:1631
+#: ../src/ui-assign.c:1634
 msgid "Move rule"
 msgstr ""
 
-#: ../src/ui-assign.c:1655
+#: ../src/ui-assign.c:1658
 msgid "Move"
 msgstr "Flyt"
 
-#: ../src/ui-assign.c:1685
+#: ../src/ui-assign.c:1688
 msgid "Manage Assignments"
 msgstr "Administrer opgaver"
 
-#: ../src/ui-assign.c:1785
+#: ../src/ui-assign.c:1788
 msgid "Move up"
 msgstr "Flyt op"
 
-#: ../src/ui-assign.c:1789
+#: ../src/ui-assign.c:1792
 msgid "Move down"
 msgstr "Flyt ned"
 
@@ -2211,8 +2194,8 @@ msgstr ""
 msgid "Create my first account"
 msgstr "Opret min første konto"
 
-#: ../src/ui-assist-start.c:529 ../src/ui-category.c:1740
-#: ../src/ui-currency.c:1231 ../src/ui-payee.c:1254 ../src/ui-tag.c:704
+#: ../src/ui-assist-start.c:529 ../src/ui-category.c:1739
+#: ../src/ui-currency.c:1235 ../src/ui-payee.c:1253 ../src/ui-tag.c:705
 msgid "_Name:"
 msgstr "_Navn:"
 
@@ -2250,81 +2233,81 @@ msgstr "Opret konto"
 msgid "Finish File Setup"
 msgstr "Afslut filoprettelse"
 
-#: ../src/ui-assist-import.c:487
+#: ../src/ui-assist-import.c:489
 msgid "<New account (global)>"
 msgstr "<Ny konto (global)>"
 
-#: ../src/ui-assist-import.c:492
+#: ../src/ui-assist-import.c:494
 msgid "<New account>"
 msgstr "<Ny konto>"
 
-#: ../src/ui-assist-import.c:513
+#: ../src/ui-assist-import.c:515
 msgid "<Skip this account>"
 msgstr "<Spring denne konto over>"
 
-#: ../src/ui-assist-import.c:656 ../src/ui-assist-import.c:1813
+#: ../src/ui-assist-import.c:658 ../src/ui-assist-import.c:1816
 msgid "Valid"
 msgstr "Gyldig"
 
-#: ../src/ui-assist-import.c:667 ../src/ui-currency.c:616
-#: ../src/ui-currency.c:1214
+#: ../src/ui-assist-import.c:670 ../src/ui-currency.c:616
+#: ../src/ui-currency.c:1218
 msgid "Name"
 msgstr "Navn"
 
-#: ../src/ui-assist-import.c:748 ../src/ui-dialogs.c:546
+#: ../src/ui-assist-import.c:751 ../src/ui-dialogs.c:546
 #: ../src/ui-dialogs.c:608 ../src/ui-dialogs.c:689
 msgid "_Open"
 msgstr "_Åben"
 
-#: ../src/ui-assist-import.c:758
+#: ../src/ui-assist-import.c:761
 msgid "Known files"
 msgstr "Kendte filer"
 
-#: ../src/ui-assist-import.c:769 ../src/ui-dialogs.c:510
+#: ../src/ui-assist-import.c:772 ../src/ui-dialogs.c:510
 msgid "QIF files"
 msgstr "QIF filer"
 
-#: ../src/ui-assist-import.c:777
+#: ../src/ui-assist-import.c:780
 msgid "OFX/QFX files"
 msgstr "OFX/QFX filer"
 
-#: ../src/ui-assist-import.c:785 ../src/ui-dialogs.c:568
+#: ../src/ui-assist-import.c:788 ../src/ui-dialogs.c:568
 msgid "CSV files"
 msgstr "CSV filer"
 
-#: ../src/ui-assist-import.c:792 ../src/ui-dialogs.c:511
+#: ../src/ui-assist-import.c:795 ../src/ui-dialogs.c:511
 #: ../src/ui-dialogs.c:569 ../src/ui-dialogs.c:629
 msgid "All files"
 msgstr "Alle filer"
 
-#: ../src/ui-assist-import.c:871
+#: ../src/ui-assist-import.c:874
 msgid "new global account"
 msgstr "ny global konto"
 
-#: ../src/ui-assist-import.c:874
+#: ../src/ui-assist-import.c:877
 msgid "new account"
 msgstr "ny konto"
 
-#: ../src/ui-assist-import.c:877
+#: ../src/ui-assist-import.c:880
 msgid "skipped"
 msgstr "sprunget over"
 
-#: ../src/ui-assist-import.c:896
+#: ../src/ui-assist-import.c:899
 #, c-format
 msgid ", %d of %d transactions"
 msgstr ", %d af %d transaktioner"
 
-#: ../src/ui-assist-import.c:1025
+#: ../src/ui-assist-import.c:1028
 #, c-format
 msgid "%d transaction(s), %d similar, %d existing, %d selected"
 msgstr "%d transaktion(er), %d ens, %d eksisterende, %d valgt"
 
-#: ../src/ui-assist-import.c:1027
+#: ../src/ui-assist-import.c:1030
 #, c-format
 msgid "%d transaction(s), %d selected"
 msgstr "%d transaktion(er), %d valgt"
 
-#: ../src/ui-assist-import.c:1195
+#: ../src/ui-assist-import.c:1198
 msgid ""
 "Some date cannot be converted. Please try to change the date order to "
 "continue."
@@ -2333,20 +2316,20 @@ msgstr ""
 "fortsætte."
 
 #. label = g_strdup_printf(_("'%s' - %s"), genacc->name, hb_import_filetype_char_get(genacc));
-#: ../src/ui-assist-import.c:1384
+#: ../src/ui-assist-import.c:1387
 #, c-format
 msgid "Import <b>%s</b> in_to:"
 msgstr "Importer <b>%s</b> _til:"
 
-#: ../src/ui-assist-import.c:1384
+#: ../src/ui-assist-import.c:1387
 msgid "this file"
 msgstr "denne fil"
 
-#: ../src/ui-assist-import.c:1384
+#: ../src/ui-assist-import.c:1387
 msgid "this account"
 msgstr "denne konto"
 
-#: ../src/ui-assist-import.c:1391
+#: ../src/ui-assist-import.c:1394
 #, c-format
 msgid ""
 "Name: %s\n"
@@ -2359,11 +2342,11 @@ msgstr ""
 "Fil: %s\n"
 "Kodning: %s"
 
-#: ../src/ui-assist-import.c:1441
+#: ../src/ui-assist-import.c:1444
 msgid "Import transactions from bank or credit card"
 msgstr "Importer transaktioner fra bank eller kreditkort"
 
-#: ../src/ui-assist-import.c:1449
+#: ../src/ui-assist-import.c:1452
 msgid ""
 "With this assistant you will be guided through the process of importing one "
 "or several\n"
@@ -2375,7 +2358,7 @@ msgstr ""
 "downloadede kontoudtog/udtræk fra din bank eller kreditkortgiver i følgende "
 "formater:"
 
-#: ../src/ui-assist-import.c:1455
+#: ../src/ui-assist-import.c:1458
 msgid ""
 "<b>Recommended:</b> .OFX or .QFX\n"
 "<i>(Sometimes named Money™ or Quicken™)</i>\n"
@@ -2391,7 +2374,7 @@ msgstr ""
 "<b>Kun for avancerede brugere:</b> .CSV\n"
 "<i>(formatet er specifikt for HomeBank, se dokumentationen)</i>"
 
-#: ../src/ui-assist-import.c:1475
+#: ../src/ui-assist-import.c:1478
 msgid ""
 "No changes will be made until you click \"Apply\" at the end of this "
 "assistant."
@@ -2399,11 +2382,11 @@ msgstr ""
 "Der vil ikke blive foretaget ændringer før end du trykker Anvend til slut i "
 "denne assistent."
 
-#: ../src/ui-assist-import.c:1479
+#: ../src/ui-assist-import.c:1482
 msgid "Don't show this again"
 msgstr "Vis ikke dette igen"
 
-#: ../src/ui-assist-import.c:1538
+#: ../src/ui-assist-import.c:1541
 msgid ""
 "Drag&Drop one or several files to import.\n"
 "You can also use the add/delete buttons of the list."
@@ -2411,7 +2394,7 @@ msgstr ""
 "Træk & Slip en eller flere filer for import.\n"
 "Du kan også bruge knapperne +/- til at tilføje/slette til/fra listen."
 
-#: ../src/ui-assist-import.c:1611
+#: ../src/ui-assist-import.c:1614
 msgid ""
 "There is too much account in the files you choose,\n"
 "please use the back button to select less files."
@@ -2419,53 +2402,53 @@ msgstr ""
 "Der er for mange konti i de filer, du har valgt.\n"
 "Venligst brug tilbageknappen for at vælge færre filer."
 
-#: ../src/ui-assist-import.c:1733
+#: ../src/ui-assist-import.c:1736
 msgid "Target account identification by name or number failed."
 msgstr "ID af målkonto ved navn eller nummer fejlede"
 
-#: ../src/ui-assist-import.c:1746 ../src/ui-pref.c:1231
+#: ../src/ui-assist-import.c:1749 ../src/ui-pref.c:1231
 msgid "Date order:"
 msgstr "Datoformat:"
 
-#: ../src/ui-assist-import.c:1762 ../src/ui-pref.c:1279
+#: ../src/ui-assist-import.c:1765 ../src/ui-pref.c:1279
 msgid "_Import memos"
 msgstr "_Importér noter"
 
-#: ../src/ui-assist-import.c:1766 ../src/ui-pref.c:1282
+#: ../src/ui-assist-import.c:1769 ../src/ui-pref.c:1282
 msgid "_Swap memos with payees"
 msgstr "_Ombyt noter med betaler/modtagere"
 
-#: ../src/ui-assist-import.c:1776 ../src/ui-pref.c:1254
+#: ../src/ui-assist-import.c:1779 ../src/ui-pref.c:1254
 msgid "OFX _Name:"
 msgstr "OFX _Navn:"
 
-#: ../src/ui-assist-import.c:1782 ../src/ui-pref.c:1262
+#: ../src/ui-assist-import.c:1785 ../src/ui-pref.c:1262
 msgid "OFX _Memo:"
 msgstr "OFX _Note:"
 
-#: ../src/ui-assist-import.c:1831 ../src/ui-pref.c:1239
+#: ../src/ui-assist-import.c:1834 ../src/ui-pref.c:1239
 msgid "Sentence _case memo/payee"
 msgstr "Behold store bogstaver"
 
-#: ../src/ui-assist-import.c:1835
+#: ../src/ui-assist-import.c:1838
 msgid "_Toggle amount"
 msgstr "Skift fortegn på beløb"
 
-#: ../src/ui-assist-import.c:1869
+#: ../src/ui-assist-import.c:1872
 msgid "Similar transaction in target account (possible duplicate)"
 msgstr "Lignende transaktioner er i den modtagende konto (muligvis dublet)"
 
-#: ../src/ui-assist-import.c:1892
+#: ../src/ui-assist-import.c:1895
 msgid "Date _gap:"
 msgstr "Dato _spænd:"
 
 #. TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days of date tolerance
 #. TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days in advance the current date
-#: ../src/ui-assist-import.c:1900 ../src/ui-hbfile.c:319 ../src/ui-pref.c:1791
+#: ../src/ui-assist-import.c:1903 ../src/ui-hbfile.c:319 ../src/ui-pref.c:1791
 msgid "days"
 msgstr "dage"
 
-#: ../src/ui-assist-import.c:1908
+#: ../src/ui-assist-import.c:1911
 msgid ""
 "The match is done in order: by account, amount and date.\n"
 "A date tolerance of 0 day means an exact match"
@@ -2473,46 +2456,46 @@ msgstr ""
 "Søgningen foretages efter : konto, beløb og dato.\n"
 "En datotolerance på 0 dage betyder et eksakt match"
 
-#: ../src/ui-assist-import.c:1979
+#: ../src/ui-assist-import.c:1982
 msgid "Run automation"
 msgstr "Kør automatik"
 
-#: ../src/ui-assist-import.c:1983
+#: ../src/ui-assist-import.c:1986
 msgid "1) Enrich with _payee default"
 msgstr "1) Påfør standard _betaler/modtager"
 
-#: ../src/ui-assist-import.c:1989
+#: ../src/ui-assist-import.c:1992
 msgid "2) Run automatic _assigment rules"
 msgstr "2) Kør automatisk _opgaveregler"
 
-#: ../src/ui-assist-import.c:1995
+#: ../src/ui-assist-import.c:1998
 msgid "Click \"Apply\" to update your accounts."
 msgstr "Klik Anvend for at opdatere dine konti."
 
-#: ../src/ui-assist-import.c:2329
+#: ../src/ui-assist-import.c:2332
 msgid "Welcome"
 msgstr "Velkommen"
 
-#: ../src/ui-assist-import.c:2335
+#: ../src/ui-assist-import.c:2338
 msgid "Select file(s)"
 msgstr "Vælg file(r)"
 
 #. gtk_assistant_set_page_type (GTK_ASSISTANT (assistant), page, GTK_ASSISTANT_PAGE_PROGRESS);
-#: ../src/ui-assist-import.c:2340
+#: ../src/ui-assist-import.c:2343
 msgid "Import"
 msgstr "Importér"
 
-#: ../src/ui-assist-import.c:2353
+#: ../src/ui-assist-import.c:2356
 msgid "Confirmation"
 msgstr "Bekræftelse"
 
-#: ../src/ui-budget.c:529 ../src/ui-category.c:1530 ../src/ui-payee.c:1088
-#: ../src/ui-tag.c:579
+#: ../src/ui-budget.c:530 ../src/ui-category.c:1529 ../src/ui-payee.c:1087
+#: ../src/ui-tag.c:580
 msgid "File format error"
 msgstr "Forkert filformat"
 
-#: ../src/ui-budget.c:530 ../src/ui-category.c:1531 ../src/ui-payee.c:1089
-#: ../src/ui-tag.c:580
+#: ../src/ui-budget.c:531 ../src/ui-category.c:1530 ../src/ui-payee.c:1088
+#: ../src/ui-tag.c:581
 msgid ""
 "The CSV file must contains the exact numbers of column,\n"
 "separated by a semi-colon, please see the help for more details."
@@ -2520,142 +2503,149 @@ msgstr ""
 "CSV-filen skal indeholde præcis det samme antal kolonner,\n"
 "adskilt af semi-colon. Se venligst Hjælp for yderligere detaljer."
 
-#: ../src/ui-budget.c:922
+#: ../src/ui-budget.c:923
 msgid "Are you sure you want to clear input?"
 msgstr "Er du sikker på, at du vil slette input?"
 
-#: ../src/ui-budget.c:924 ../src/ui-budget-tabview.c:2509
+#: ../src/ui-budget.c:925 ../src/ui-budget-tabview.c:2530
 msgid "If you proceed, every amount will be set to 0."
 msgstr "Hvis du fortsætter, vil alle beløb blive nulstillet."
 
-#: ../src/ui-budget.c:930 ../src/ui-budget-tabview.c:2515
+#: ../src/ui-budget.c:931 ../src/ui-budget-tabview.c:2536
 msgid "_Clear"
 msgstr "_Ryd"
 
-#: ../src/ui-budget.c:1140
+#. create window
+#: ../src/ui-budget.c:1141 ../src/ui-budget-tabview.c:2778
 msgid "Manage Budget"
 msgstr "Håndtér Budget"
 
-#: ../src/ui-budget.c:1186 ../src/ui-category.c:2463 ../src/ui-payee.c:1821
-#: ../src/ui-tag.c:1098
+#: ../src/ui-budget.c:1188 ../src/ui-category.c:2462 ../src/ui-payee.c:1820
+#: ../src/ui-tag.c:1099
 msgid "_Import CSV"
 msgstr "_Importér CSV"
 
-#: ../src/ui-budget.c:1190 ../src/ui-category.c:2467 ../src/ui-payee.c:1825
-#: ../src/ui-tag.c:1102
+#: ../src/ui-budget.c:1192 ../src/ui-category.c:2466 ../src/ui-payee.c:1824
+#: ../src/ui-tag.c:1103
 msgid "E_xport CSV"
 msgstr "E_ksportér CSV"
 
-#: ../src/ui-budget.c:1284
+#: ../src/ui-budget.c:1286
 msgid "Balance:"
 msgstr "Balance:"
 
-#: ../src/ui-budget.c:1305
+#: ../src/ui-budget.c:1307
 msgid "is the same each month"
 msgstr "er det samme hver måned"
 
-#: ../src/ui-budget.c:1319
+#: ../src/ui-budget.c:1321
 msgid "_Clear input"
 msgstr "Ryd input"
 
-#: ../src/ui-budget.c:1334
+#: ../src/ui-budget.c:1336
 msgid "is different per month"
 msgstr "er forskellig hver måned"
 
-#: ../src/ui-budget.c:1373 ../src/ui-dialogs.c:866
+#: ../src/ui-budget.c:1375 ../src/ui-dialogs.c:866
 msgid "Options"
 msgstr "Indstillinger"
 
-#: ../src/ui-budget.c:1378 ../src/ui-budget-tabview.c:2883
+#: ../src/ui-budget.c:1380 ../src/ui-budget-tabview.c:2914
 msgid "_Force monitoring this category"
 msgstr "_Tving overvågning af denne kategori"
 
-#: ../src/ui-budget-tabview.c:79 ../src/ui-widgets-data.c:277
+#: ../src/ui-budget-tabview.c:80 ../src/ui-widgets-data.c:319
 msgid "Jan"
 msgstr "Jan"
 
-#: ../src/ui-budget-tabview.c:79 ../src/ui-widgets-data.c:278
+#: ../src/ui-budget-tabview.c:80 ../src/ui-widgets-data.c:320
 msgid "Feb"
 msgstr "Feb"
 
-#: ../src/ui-budget-tabview.c:79 ../src/ui-widgets-data.c:279
+#: ../src/ui-budget-tabview.c:80 ../src/ui-widgets-data.c:321
 msgid "Mar"
 msgstr "Mar"
 
-#: ../src/ui-budget-tabview.c:80 ../src/ui-widgets-data.c:280
+#: ../src/ui-budget-tabview.c:81 ../src/ui-widgets-data.c:322
 msgid "Apr"
 msgstr "Apr"
 
-#: ../src/ui-budget-tabview.c:80 ../src/ui-widgets-data.c:261
-#: ../src/ui-widgets-data.c:281
+#: ../src/ui-budget-tabview.c:81 ../src/ui-widgets-data.c:303
+#: ../src/ui-widgets-data.c:323
 msgid "May"
 msgstr "Maj"
 
-#: ../src/ui-budget-tabview.c:80 ../src/ui-widgets-data.c:282
+#: ../src/ui-budget-tabview.c:81 ../src/ui-widgets-data.c:324
 msgid "Jun"
 msgstr "Jun"
 
-#: ../src/ui-budget-tabview.c:81 ../src/ui-widgets-data.c:283
+#: ../src/ui-budget-tabview.c:82 ../src/ui-widgets-data.c:325
 msgid "Jul"
 msgstr "Jul"
 
-#: ../src/ui-budget-tabview.c:81 ../src/ui-widgets-data.c:284
+#: ../src/ui-budget-tabview.c:82 ../src/ui-widgets-data.c:326
 msgid "Aug"
 msgstr "Aug"
 
-#: ../src/ui-budget-tabview.c:81
+#: ../src/ui-budget-tabview.c:82
 msgid "Sept"
 msgstr "Sep"
 
-#: ../src/ui-budget-tabview.c:82 ../src/ui-widgets-data.c:286
+#: ../src/ui-budget-tabview.c:83 ../src/ui-widgets-data.c:328
 msgid "Oct"
 msgstr "Okt"
 
-#: ../src/ui-budget-tabview.c:82 ../src/ui-widgets-data.c:287
+#: ../src/ui-budget-tabview.c:83 ../src/ui-widgets-data.c:329
 msgid "Nov"
 msgstr "Nov"
 
-#: ../src/ui-budget-tabview.c:82 ../src/ui-widgets-data.c:288
+#: ../src/ui-budget-tabview.c:83 ../src/ui-widgets-data.c:330
 msgid "Dec"
 msgstr "Dec"
 
-#: ../src/ui-budget-tabview.c:87
+#: ../src/ui-budget-tabview.c:88
 msgid "Summary"
 msgstr "Resultat"
 
-#: ../src/ui-budget-tabview.c:533 ../src/ui-budget-tabview.c:534
+#: ../src/ui-budget-tabview.c:534 ../src/ui-budget-tabview.c:535
 msgid "Totals"
 msgstr "Totaler"
 
-#: ../src/ui-budget-tabview.c:1561
-msgid "Annual Total"
-msgstr "Total/år"
+#. gtk_tree_view_column_set_title(col, _("Annual Total"));
+#: ../src/ui-budget-tabview.c:1575
+msgid ""
+"Annual\n"
+"Total"
+msgstr ""
 
-#: ../src/ui-budget-tabview.c:1572
-msgid "Monthly Average"
-msgstr "Gennemsnit/md."
+#. gtk_tree_view_column_set_title(col, _("Monthly Average"));
+#: ../src/ui-budget-tabview.c:1589
+msgid ""
+"Monthly\n"
+"Average"
+msgstr ""
 
-#: ../src/ui-budget-tabview.c:1583
+#: ../src/ui-budget-tabview.c:1602
 msgid "Monthly"
 msgstr "Månedligt"
 
-#: ../src/ui-budget-tabview.c:2098
+#: ../src/ui-budget-tabview.c:2119
 msgid "Add a category"
 msgstr "Tilføj en kategori"
 
-#: ../src/ui-budget-tabview.c:2107 ../src/ui-budget-tabview.c:2360
+#: ../src/ui-budget-tabview.c:2128 ../src/ui-budget-tabview.c:2381
 msgid "_Apply"
 msgstr "An_vend"
 
-#: ../src/ui-budget-tabview.c:2125
+#: ../src/ui-budget-tabview.c:2146
 msgid "Parent category"
 msgstr "Forældrekategori"
 
-#: ../src/ui-budget-tabview.c:2148
+#: ../src/ui-budget-tabview.c:2169
 msgid "Category name"
 msgstr "Kategorinavn"
 
-#: ../src/ui-budget-tabview.c:2292 ../src/ui-category.c:2018
+#: ../src/ui-budget-tabview.c:2313 ../src/ui-category.c:2017
 msgid ""
 "This category is used.\n"
 "Any transaction using that category will be set to (no category)"
@@ -2664,11 +2654,11 @@ msgstr ""
 "Alle transaktioner, som bruger den kategori vil blive sat til (ingen "
 "kategori)"
 
-#: ../src/ui-budget-tabview.c:2351
+#: ../src/ui-budget-tabview.c:2372
 msgid "Merge categories"
 msgstr "Flet katgorier"
 
-#: ../src/ui-budget-tabview.c:2378
+#: ../src/ui-budget-tabview.c:2399
 #, c-format
 msgid ""
 "Transactions assigned to category '%s', will be moved to the category "
@@ -2677,59 +2667,54 @@ msgstr ""
 "Transaktioner knyttet til kategori '%s', bliver flyttet til kategorien valgt "
 "nedenfor."
 
-#: ../src/ui-budget-tabview.c:2385
+#: ../src/ui-budget-tabview.c:2406
 msgid "Target category"
 msgstr "Målkategori"
 
-#: ../src/ui-budget-tabview.c:2417 ../src/ui-category.c:1910
+#: ../src/ui-budget-tabview.c:2438 ../src/ui-category.c:1909
 #, c-format
 msgid "_Delete the category '%s'"
 msgstr "_Slet kategorien '%s'"
 
-#: ../src/ui-budget-tabview.c:2508
+#: ../src/ui-budget-tabview.c:2529
 #, c-format
 msgid "Are you sure you want to clear inputs for '%s'?"
 msgstr "Er du sikker på, at du vel slette input for '%s'?"
 
-#. create window
-#: ../src/ui-budget-tabview.c:2756
-msgid "Budget (table view)"
-msgstr "Budget (tabelvisning)"
-
 #. Add / Remove / Merge
-#: ../src/ui-budget-tabview.c:2840
+#: ../src/ui-budget-tabview.c:2871
 msgid "Add category"
 msgstr "Tilføj kategori"
 
-#: ../src/ui-budget-tabview.c:2845
+#: ../src/ui-budget-tabview.c:2876
 msgid "Remove category"
 msgstr "Fjern kategori"
 
-#: ../src/ui-budget-tabview.c:2850 ../src/ui-category.c:1887
-#: ../src/ui-payee.c:1435 ../src/ui-tag.c:803
+#: ../src/ui-budget-tabview.c:2881 ../src/ui-category.c:1886
+#: ../src/ui-payee.c:1434 ../src/ui-tag.c:804
 msgid "Merge"
 msgstr "Flet"
 
-#: ../src/ui-budget-tabview.c:2867
+#: ../src/ui-budget-tabview.c:2898
 msgid "Clear input"
 msgstr "Ryd input"
 
 #. TRANSLATORS: 'txn' is abbrevation for transaction
-#: ../src/ui-category.c:1340 ../src/ui-payee.c:905
+#: ../src/ui-category.c:1338 ../src/ui-payee.c:901
 msgid "# txn"
 msgstr "# txn"
 
 #. TRANSLATORS: 'cfg' is abbrevation for configuration
 #. TRANSLATORS: 'txn' is abbrevation for configuration
-#: ../src/ui-category.c:1354 ../src/ui-payee.c:920
+#: ../src/ui-category.c:1352 ../src/ui-payee.c:916
 msgid "# cfg"
 msgstr "# cfg"
 
-#: ../src/ui-category.c:1479
+#: ../src/ui-category.c:1478
 msgid "Delete unused categories"
 msgstr "Slet ubrugte kategorier"
 
-#: ../src/ui-category.c:1480
+#: ../src/ui-category.c:1479
 msgid ""
 "Are you sure you want to permanently\n"
 "delete unused categories?"
@@ -2737,23 +2722,23 @@ msgstr ""
 "Er du sikker på, at du permanent vil\n"
 "slette ubrugte kategorier?"
 
-#: ../src/ui-category.c:1720
+#: ../src/ui-category.c:1719
 msgid "Edit Category"
 msgstr "Ret kategori"
 
-#: ../src/ui-category.c:1752
+#: ../src/ui-category.c:1751
 msgid "Change Type"
 msgstr "Ændre type"
 
-#: ../src/ui-category.c:1757
+#: ../src/ui-category.c:1756
 msgid "_Income"
 msgstr "_Indkomst"
 
-#: ../src/ui-category.c:1762
+#: ../src/ui-category.c:1761
 msgid "Propagate to _children"
 msgstr ""
 
-#: ../src/ui-category.c:1816
+#: ../src/ui-category.c:1815
 #, c-format
 msgid ""
 "Cannot rename this Category,\n"
@@ -2764,12 +2749,12 @@ msgstr ""
 "fra '%s' til '%s',\n"
 "da kategorien allerede eksisterer."
 
-#: ../src/ui-category.c:1875
+#: ../src/ui-category.c:1874
 #, c-format
 msgid "Merge category '%s'"
 msgstr "Flet kategori '%s'"
 
-#: ../src/ui-category.c:1896
+#: ../src/ui-category.c:1895
 msgid ""
 "Transactions assigned to this category,\n"
 "will be moved to the category selected below."
@@ -2777,41 +2762,41 @@ msgstr ""
 "Transaktioner knyttet til denne kategori\n"
 "bliver flyttet til kategorien valgt nedenfor."
 
-#: ../src/ui-category.c:1906
+#: ../src/ui-category.c:1905
 msgid "Include _subcategories"
 msgstr "Inkluder underkategorier"
 
-#: ../src/ui-category.c:2407
+#: ../src/ui-category.c:2406
 msgid "Manage Categories"
 msgstr "Administrer kategorier"
 
 #. test headerbar
 #. content = gtk_dialog_get_header_bar(GTK_DIALOG (dialog));
-#: ../src/ui-category.c:2447 ../src/ui-payee.c:1809
+#: ../src/ui-category.c:2446 ../src/ui-payee.c:1808
 msgid "Show Hidden"
 msgstr "Vis skjulte"
 
-#: ../src/ui-category.c:2451 ../src/ui-payee.c:1813
+#: ../src/ui-category.c:2450 ../src/ui-payee.c:1812
 msgid "Show Usage"
 msgstr "Vis brug"
 
-#: ../src/ui-category.c:2474 ../src/ui-payee.c:1832
+#: ../src/ui-category.c:2473 ../src/ui-payee.c:1831
 msgid "_Delete unused"
 msgstr "_Slet ubrugte"
 
-#: ../src/ui-category.c:2547 ../src/ui-payee.c:1900 ../src/ui-tag.c:1168
+#: ../src/ui-category.c:2546 ../src/ui-payee.c:1899 ../src/ui-tag.c:1169
 msgid "Move/Merge"
 msgstr "Flyt/Flet"
 
-#: ../src/ui-category.c:2561 ../src/ui-payee.c:1914
+#: ../src/ui-category.c:2560 ../src/ui-payee.c:1913
 msgid "Show/Hide"
 msgstr "Vis/skjul"
 
-#: ../src/ui-category.c:2593
+#: ../src/ui-category.c:2592
 msgid "new category"
 msgstr "Ny kategori"
 
-#: ../src/ui-category.c:2605
+#: ../src/ui-category.c:2604
 msgid "new subcategory"
 msgstr "Ny underkategori"
 
@@ -2819,87 +2804,87 @@ msgstr "Ny underkategori"
 msgid "Base currency"
 msgstr "Grundvaluta"
 
-#: ../src/ui-currency.c:627
+#: ../src/ui-currency.c:628
 msgid "Symbol"
 msgstr "Symbol"
 
-#: ../src/ui-currency.c:639 ../src/ui-currency.c:822 ../src/ui-pref.c:1505
+#: ../src/ui-currency.c:640 ../src/ui-currency.c:826 ../src/ui-pref.c:1505
 msgid "Exchange rate"
 msgstr "Vekselkurs"
 
-#: ../src/ui-currency.c:652
+#: ../src/ui-currency.c:655
 msgid "Last modified"
 msgstr "Sidst ændret"
 
-#: ../src/ui-currency.c:777
+#: ../src/ui-currency.c:781
 msgid "Edit currency"
 msgstr "Rediger valuta"
 
-#: ../src/ui-currency.c:808 ../src/ui-dialogs.c:295 ../src/ui-pref.c:1480
+#: ../src/ui-currency.c:812 ../src/ui-dialogs.c:295 ../src/ui-pref.c:1480
 msgid "Currency"
 msgstr "Valuta"
 
-#: ../src/ui-currency.c:841 ../src/ui-pref.c:1522
+#: ../src/ui-currency.c:845 ../src/ui-pref.c:1522
 msgid "Format"
 msgstr "Format"
 
-#: ../src/ui-currency.c:850 ../src/ui-pref.c:1531 ../src/ui-pref.c:1611
+#: ../src/ui-currency.c:854 ../src/ui-pref.c:1531 ../src/ui-pref.c:1611
 msgid "_Customize"
 msgstr "_Tilpas"
 
-#: ../src/ui-currency.c:859 ../src/ui-pref.c:1540
+#: ../src/ui-currency.c:863 ../src/ui-pref.c:1540
 msgid "_Symbol:"
 msgstr "_Symbol:"
 
-#: ../src/ui-currency.c:866 ../src/ui-pref.c:1547
+#: ../src/ui-currency.c:870 ../src/ui-pref.c:1547
 msgid "Is pre_fix"
 msgstr "Er pre_fix"
 
-#: ../src/ui-currency.c:871 ../src/ui-pref.c:1552
+#: ../src/ui-currency.c:875 ../src/ui-pref.c:1552
 msgid "_Decimal char:"
 msgstr "Decimalkarakter"
 
-#: ../src/ui-currency.c:878 ../src/ui-pref.c:1559
+#: ../src/ui-currency.c:882 ../src/ui-pref.c:1559
 msgid "_Frac digits:"
 msgstr "Decimalcifre"
 
-#: ../src/ui-currency.c:885 ../src/ui-pref.c:1566
+#: ../src/ui-currency.c:889 ../src/ui-pref.c:1566
 msgid "_Grouping char:"
 msgstr "Gruppekarakter:"
 
-#: ../src/ui-currency.c:1147
+#: ../src/ui-currency.c:1151
 msgid "Select base currency"
 msgstr "Vælg grundvaluta"
 
-#: ../src/ui-currency.c:1147
+#: ../src/ui-currency.c:1151
 msgid "Select currency"
 msgstr "Vælg valuta"
 
-#: ../src/ui-currency.c:1219
+#: ../src/ui-currency.c:1223
 msgid "ISO Code"
 msgstr "ISO kode"
 
-#: ../src/ui-currency.c:1225
+#: ../src/ui-currency.c:1229
 msgid "Add a custom _currency"
 msgstr "Tilføj en valgfri _valuta"
 
-#: ../src/ui-currency.c:1238
+#: ../src/ui-currency.c:1242
 msgid "_ISO:"
 msgstr "_ISO:"
 
-#: ../src/ui-currency.c:1333
+#: ../src/ui-currency.c:1337
 msgid "Update online error"
 msgstr "Fejl i online opdatering"
 
-#: ../src/ui-currency.c:1544
+#: ../src/ui-currency.c:1548
 msgid "If you delete a currency, it will be permanently lost."
 msgstr "Sletter du en valuta, vil den permanent være væk."
 
-#: ../src/ui-currency.c:1587
+#: ../src/ui-currency.c:1591
 msgid "Change the base currency"
 msgstr "Ændre grundvaluta"
 
-#: ../src/ui-currency.c:1588
+#: ../src/ui-currency.c:1592
 msgid ""
 "If you proceed, rates of other currencies\n"
 "will be set to 0, don't forget to update it"
@@ -2907,15 +2892,15 @@ msgstr ""
 "Hvis du fortsætter, bliver kursen for andre valutaer\n"
 "sat til 0. Husk at opdatere kurserne."
 
-#: ../src/ui-currency.c:1683
+#: ../src/ui-currency.c:1687
 msgid "Currencies"
 msgstr "Valutaer"
 
-#: ../src/ui-currency.c:1732
+#: ../src/ui-currency.c:1736
 msgid "Update online"
 msgstr "Opdatér online"
 
-#: ../src/ui-currency.c:1784
+#: ../src/ui-currency.c:1788
 msgid "Set as base"
 msgstr "Grundvaluta"
 
@@ -2926,6 +2911,13 @@ msgstr "Filstatistik"
 #: ../src/ui-dialogs.c:222
 msgid "Transaction"
 msgstr "Transaktion"
+
+#. header
+#: ../src/ui-dialogs.c:286 ../src/ui-filter.c:921 ../src/ui-filter.c:925
+#: ../src/ui-filter.c:1301 ../src/ui-tag.c:500 ../src/ui-widgets-data.c:61
+#: ../src/ui-widgets-data.c:80
+msgid "Tag"
+msgstr "Mærke"
 
 #: ../src/ui-dialogs.c:383
 msgid "Upgrade"
@@ -3085,7 +3077,7 @@ msgid "_Memo:"
 msgstr "Note:"
 
 #: ../src/ui-filter.c:1032 ../src/ui-transaction.c:1636
-#: ../src/ui-txn-multi.c:548
+#: ../src/ui-txn-multi.c:555
 msgid "_Info:"
 msgstr "_Info:"
 
@@ -3095,7 +3087,7 @@ msgstr "Vasalfølsom"
 
 #. header
 #. TRANSLATORS: this is abbreviation for Payment
-#: ../src/ui-filter.c:1057 ../src/ui-filter.c:1304 ../src/ui-payee.c:978
+#: ../src/ui-filter.c:1057 ../src/ui-filter.c:1304 ../src/ui-payee.c:977
 msgid "Payment"
 msgstr "Betaling"
 
@@ -3105,7 +3097,7 @@ msgid "Type"
 msgstr "Type"
 
 #: ../src/ui-filter.c:1139 ../src/ui-transaction.c:55
-#: ../src/ui-widgets-data.c:204
+#: ../src/ui-widgets-data.c:246
 msgid "Transfer"
 msgstr "Overfør"
 
@@ -3113,7 +3105,7 @@ msgstr "Overfør"
 msgid "Always show"
 msgstr "Vis altid"
 
-#: ../src/ui-filter.c:1192 ../src/ui-widgets-data.c:167
+#: ../src/ui-filter.c:1192 ../src/ui-widgets-data.c:209
 msgid "Void"
 msgstr "Annulleret"
 
@@ -3149,6 +3141,10 @@ msgstr "Forskud"
 msgid "File properties"
 msgstr "Programopsætning"
 
+#: ../src/ui-hbfile.c:278
+msgid "Scheduled transactions"
+msgstr "Planlagte transaktioner"
+
 #: ../src/ui-hbfile.c:282
 msgid "Automatic post:"
 msgstr "Automatisk postering:"
@@ -3161,11 +3157,11 @@ msgstr "af hver"
 msgid "month"
 msgstr "måned"
 
-#: ../src/ui-payee.c:1038
+#: ../src/ui-payee.c:1037
 msgid "Delete unused payee"
 msgstr "Slet ubrugt betaler/modtager"
 
-#: ../src/ui-payee.c:1039
+#: ../src/ui-payee.c:1038
 msgid ""
 "Are you sure you want to\n"
 "permanently delete unused payee?"
@@ -3173,20 +3169,20 @@ msgstr ""
 "Er du sikker på at du vil slette ubrugte\n"
 "betalere/modtagere permanent?"
 
-#: ../src/ui-payee.c:1232
+#: ../src/ui-payee.c:1231
 msgid "Edit Payee"
 msgstr "Rediger betaler/modtager"
 
-#: ../src/ui-payee.c:1282
+#: ../src/ui-payee.c:1281
 msgid "Default Fill"
 msgstr ""
 
-#: ../src/ui-payee.c:1296 ../src/ui-transaction.c:1624
-#: ../src/ui-txn-multi.c:534
+#: ../src/ui-payee.c:1295 ../src/ui-transaction.c:1624
+#: ../src/ui-txn-multi.c:541
 msgid "Pa_yment:"
 msgstr "Betaling:"
 
-#: ../src/ui-payee.c:1355
+#: ../src/ui-payee.c:1354
 #, c-format
 msgid ""
 "Cannot rename this Payee,\n"
@@ -3197,12 +3193,12 @@ msgstr ""
 "fra  '%s' til '%s'.\n"
 "Dette navn eksisterer allerede."
 
-#: ../src/ui-payee.c:1423
+#: ../src/ui-payee.c:1422
 #, c-format
 msgid "Merge payee '%s'"
 msgstr "Flet betaler/modtager '%s'"
 
-#: ../src/ui-payee.c:1444
+#: ../src/ui-payee.c:1443
 msgid ""
 "Transactions assigned to this payee,\n"
 "will be moved to the payee selected below."
@@ -3210,12 +3206,12 @@ msgstr ""
 "Transaktioner tilknyttet denne betaler/modtager,\n"
 "vil blive flyttet til betaleren/modtageren valgt nedenfor."
 
-#: ../src/ui-payee.c:1455
+#: ../src/ui-payee.c:1454
 #, c-format
 msgid "_Delete the payee '%s'"
 msgstr "_Slet betaler/modtager '%s'"
 
-#: ../src/ui-payee.c:1557
+#: ../src/ui-payee.c:1556
 msgid ""
 "This payee is used.\n"
 "Any transaction using that payee will be set to (no payee)"
@@ -3224,11 +3220,11 @@ msgstr ""
 "Enhver transaktion med denne betaler/modtager vil blive sat til (ingen "
 "betaler/modtager)"
 
-#: ../src/ui-payee.c:1761
+#: ../src/ui-payee.c:1760
 msgid "Manage Payees"
 msgstr "Håndter betaler/modtagere"
 
-#: ../src/ui-payee.c:1923
+#: ../src/ui-payee.c:1922
 msgid "new payee"
 msgstr "ny betaler/modtager"
 
@@ -3752,11 +3748,11 @@ msgstr "Advarsel: Sum af opsplitning vs. transaktionstype passer ikke"
 msgid "(no tag)"
 msgstr "(ingen mærke)"
 
-#: ../src/ui-tag.c:676
+#: ../src/ui-tag.c:677
 msgid "Edit Tag"
 msgstr "Redigér mærke"
 
-#: ../src/ui-tag.c:748
+#: ../src/ui-tag.c:749
 #, c-format
 msgid ""
 "Cannot rename this Tag,\n"
@@ -3767,12 +3763,12 @@ msgstr ""
 "fra '%s' til '%s',\n"
 "dette navn eksisterer allerede."
 
-#: ../src/ui-tag.c:791
+#: ../src/ui-tag.c:792
 #, c-format
 msgid "Merge tag '%s'"
 msgstr "Flet mærket '%s'"
 
-#: ../src/ui-tag.c:812
+#: ../src/ui-tag.c:813
 msgid ""
 "Transactions assigned to this tag,\n"
 "will be moved to the tag selected below."
@@ -3780,12 +3776,12 @@ msgstr ""
 "Transaktioner med dette mærke,\n"
 "vil blive flyttet til det nedenfor valgte mærke."
 
-#: ../src/ui-tag.c:822
+#: ../src/ui-tag.c:823
 #, c-format
 msgid "_Delete the tag '%s'"
 msgstr "_Slet mærket '%s'"
 
-#: ../src/ui-tag.c:914
+#: ../src/ui-tag.c:915
 msgid ""
 "This tag is used.\n"
 "That tag will be deleted from any transaction using it."
@@ -3793,16 +3789,16 @@ msgstr ""
 "Dette mærke er brugt.\n"
 "Mærket vil blive slettet alle transaktion der bruger det."
 
-#: ../src/ui-tag.c:1048
+#: ../src/ui-tag.c:1049
 msgid "Manage Tags"
 msgstr "Administrer Mærker"
 
-#: ../src/ui-tag.c:1176
+#: ../src/ui-tag.c:1177
 msgid "new tag"
 msgstr "nyt mærke"
 
 #: ../src/ui-transaction.c:177 ../src/ui-transaction.c:1597
-#: ../src/ui-txn-multi.c:513
+#: ../src/ui-txn-multi.c:520
 msgid "A_ccount:"
 msgstr "K_onto:"
 
@@ -3865,7 +3861,7 @@ msgstr "Rediger transaktion"
 msgid "Edit template"
 msgstr "Redigér skabelon"
 
-#: ../src/ui-transaction.c:1523 ../src/ui-txn-multi.c:481
+#: ../src/ui-transaction.c:1523 ../src/ui-txn-multi.c:488
 msgid "_Date:"
 msgstr "_Dato:"
 
@@ -3901,15 +3897,15 @@ msgstr ""
 "- skriv bogstaver for autoudførelse\n"
 "- skriv en ny tekst for at oprette denne"
 
-#: ../src/ui-transaction.c:1686 ../src/ui-txn-multi.c:581
+#: ../src/ui-transaction.c:1686 ../src/ui-txn-multi.c:588
 msgid "Cate_gory:"
 msgstr "Kate_gori:"
 
-#: ../src/ui-transaction.c:1725 ../src/ui-txn-multi.c:598
+#: ../src/ui-transaction.c:1725 ../src/ui-txn-multi.c:605
 msgid "M_emo:"
 msgstr "M_emo:"
 
-#: ../src/ui-transaction.c:1733 ../src/ui-txn-multi.c:614
+#: ../src/ui-transaction.c:1733 ../src/ui-txn-multi.c:621
 msgid "_Tags:"
 msgstr "_Mærker:"
 
@@ -3917,11 +3913,11 @@ msgstr "_Mærker:"
 msgid "Warning: amount and category sign don't match"
 msgstr "Advarsel: Fortegn og kategori matcher ikke"
 
-#: ../src/ui-txn-multi.c:466
+#: ../src/ui-txn-multi.c:473
 msgid "Multiple edit transactions"
 msgstr "Rediger flere transaktioner"
 
-#: ../src/ui-txn-multi.c:636
+#: ../src/ui-txn-multi.c:643
 msgid ""
 "Type as\n"
 "transfer"
@@ -3933,276 +3929,306 @@ msgstr ""
 msgid "Time"
 msgstr "Periode"
 
-#: ../src/ui-widgets-data.c:58
+#: ../src/ui-widgets-data.c:62 ../src/ui-widgets-data.c:89
+#: ../src/ui-widgets-data.c:217
+msgid "Month"
+msgstr "Måned"
+
+#: ../src/ui-widgets-data.c:63 ../src/ui-widgets-data.c:92
+#: ../src/ui-widgets-data.c:218
+msgid "Year"
+msgstr "År"
+
+#: ../src/ui-widgets-data.c:86 ../src/ui-widgets-data.c:215
+msgid "Day"
+msgstr "Dag"
+
+#: ../src/ui-widgets-data.c:87 ../src/ui-widgets-data.c:216
+msgid "Week"
+msgstr "Uge"
+
+#: ../src/ui-widgets-data.c:88
+msgid "Fortnight"
+msgstr ""
+
+#: ../src/ui-widgets-data.c:90
+msgid "Quarter"
+msgstr "Kvartal"
+
+#: ../src/ui-widgets-data.c:91
+msgid "Half Year"
+msgstr "Halvårligt"
+
+#: ../src/ui-widgets-data.c:100
 msgid "Trend"
 msgstr "Trend"
 
-#: ../src/ui-widgets-data.c:66
+#: ../src/ui-widgets-data.c:108
 msgid "Include"
 msgstr "Inkludér"
 
-#: ../src/ui-widgets-data.c:67
+#: ../src/ui-widgets-data.c:109
 msgid "Exclude"
 msgstr "Udelad"
 
-#: ../src/ui-widgets-data.c:77
+#: ../src/ui-widgets-data.c:119
 msgid "(no type)"
 msgstr "(ingen type)"
 
-#: ../src/ui-widgets-data.c:78
+#: ../src/ui-widgets-data.c:120
 msgid "Bank"
 msgstr "Bank"
 
-#: ../src/ui-widgets-data.c:79 ../src/ui-widgets.c:1343
+#: ../src/ui-widgets-data.c:121 ../src/ui-widgets.c:1340
 msgid "Cash"
 msgstr "Kontant"
 
-#: ../src/ui-widgets-data.c:80
+#: ../src/ui-widgets-data.c:122
 msgid "Asset"
 msgstr "Aktiv"
 
-#: ../src/ui-widgets-data.c:81 ../src/ui-widgets.c:1341
+#: ../src/ui-widgets-data.c:123 ../src/ui-widgets.c:1338
 msgid "Credit card"
 msgstr "Kreditkort"
 
-#: ../src/ui-widgets-data.c:82
+#: ../src/ui-widgets-data.c:124
 msgid "Liability"
 msgstr "Passiv"
 
-#: ../src/ui-widgets-data.c:83
+#: ../src/ui-widgets-data.c:125
 msgid "Checking"
 msgstr "Anfordring/Check"
 
-#: ../src/ui-widgets-data.c:84
+#: ../src/ui-widgets-data.c:126
 msgid "Savings"
 msgstr "Opsparing"
 
-#: ../src/ui-widgets-data.c:96
+#: ../src/ui-widgets-data.c:138
 msgid "Yesterday"
 msgstr "I går"
 
-#: ../src/ui-widgets-data.c:98
+#: ../src/ui-widgets-data.c:140
 msgid "Tomorrow"
 msgstr "I morgen"
 
-#: ../src/ui-widgets-data.c:100
+#: ../src/ui-widgets-data.c:142
 msgid "Last Week"
 msgstr "Sidste uge"
 
-#: ../src/ui-widgets-data.c:101
+#: ../src/ui-widgets-data.c:143
 msgid "This Week"
 msgstr "Denne uge"
 
-#: ../src/ui-widgets-data.c:102
+#: ../src/ui-widgets-data.c:144
 msgid "Next Week"
 msgstr "Næste uge"
 
-#: ../src/ui-widgets-data.c:104
+#: ../src/ui-widgets-data.c:146
 msgid "Last Fortnight"
 msgstr "Sidste to uger"
 
-#: ../src/ui-widgets-data.c:105
+#: ../src/ui-widgets-data.c:147
 msgid "This Fortnight"
 msgstr "Aktuelle to uger"
 
-#: ../src/ui-widgets-data.c:106
+#: ../src/ui-widgets-data.c:148
 msgid "Next Fortnight"
 msgstr "Næste to uger"
 
-#: ../src/ui-widgets-data.c:108
+#: ../src/ui-widgets-data.c:150
 msgid "Last Month"
 msgstr "Sidste måned"
 
-#: ../src/ui-widgets-data.c:109
+#: ../src/ui-widgets-data.c:151
 msgid "This Month"
 msgstr "Denne måned"
 
-#: ../src/ui-widgets-data.c:110
+#: ../src/ui-widgets-data.c:152
 msgid "Next Month"
 msgstr "Næste måned"
 
-#: ../src/ui-widgets-data.c:112
+#: ../src/ui-widgets-data.c:154
 msgid "Last Quarter"
 msgstr "Sidste kvartal"
 
-#: ../src/ui-widgets-data.c:113
+#: ../src/ui-widgets-data.c:155
 msgid "This Quarter"
 msgstr "Dette kvartal"
 
-#: ../src/ui-widgets-data.c:114
+#: ../src/ui-widgets-data.c:156
 msgid "Next Quarter"
 msgstr "Næste kvartal"
 
-#: ../src/ui-widgets-data.c:116
+#: ../src/ui-widgets-data.c:158
 msgid "Last Year"
 msgstr "Sidste år"
 
-#: ../src/ui-widgets-data.c:117
+#: ../src/ui-widgets-data.c:159
 msgid "This Year"
 msgstr "Dette år"
 
-#: ../src/ui-widgets-data.c:118
+#: ../src/ui-widgets-data.c:160
 msgid "Next Year"
 msgstr "Næste år"
 
-#: ../src/ui-widgets-data.c:124
+#: ../src/ui-widgets-data.c:166
 msgid "Last 30 Days"
 msgstr "Seneste 30 dage"
 
-#: ../src/ui-widgets-data.c:125
+#: ../src/ui-widgets-data.c:167
 msgid "Last 60 Days"
 msgstr "Seneste 60 dage"
 
-#: ../src/ui-widgets-data.c:126
+#: ../src/ui-widgets-data.c:168
 msgid "Last 90 Days"
 msgstr "Seneste 90 dage"
 
-#: ../src/ui-widgets-data.c:128
+#: ../src/ui-widgets-data.c:170
 msgid "Last 12 Months"
 msgstr "Seneste 12 måneder"
 
-#: ../src/ui-widgets-data.c:129
+#: ../src/ui-widgets-data.c:171
 msgid "30 Days Around"
 msgstr ""
 
-#: ../src/ui-widgets-data.c:130
+#: ../src/ui-widgets-data.c:172
 msgid "All Date"
 msgstr "Alle datoer"
 
-#: ../src/ui-widgets-data.c:137
+#: ../src/ui-widgets-data.c:179
 msgid "This month"
 msgstr "Denne måned"
 
-#: ../src/ui-widgets-data.c:138
+#: ../src/ui-widgets-data.c:180
 msgid "Next month"
 msgstr "Næste måned"
 
-#: ../src/ui-widgets-data.c:140
+#: ../src/ui-widgets-data.c:182
 msgid "Next 30 days"
 msgstr "Næste 30 dage"
 
-#: ../src/ui-widgets-data.c:141
+#: ../src/ui-widgets-data.c:183
 msgid "Next 60 days"
 msgstr "Næste 60 dage"
 
-#: ../src/ui-widgets-data.c:142
+#: ../src/ui-widgets-data.c:184
 msgid "Next 90 days"
 msgstr "Næste 90 dage"
 
-#: ../src/ui-widgets-data.c:182
+#: ../src/ui-widgets-data.c:224
 msgid "Possible"
 msgstr "Mulig"
 
-#: ../src/ui-widgets-data.c:183
+#: ../src/ui-widgets-data.c:225
 msgid "Before"
 msgstr "Før"
 
-#: ../src/ui-widgets-data.c:184
+#: ../src/ui-widgets-data.c:226
 msgid "After"
 msgstr "Efter"
 
 #. added 5.6
-#: ../src/ui-widgets-data.c:186
+#: ../src/ui-widgets-data.c:228
 msgid "Skip"
 msgstr "Udelad"
 
-#: ../src/ui-widgets-data.c:192
+#: ../src/ui-widgets-data.c:234
 msgid "Exp. & Inc."
 msgstr "Udg. & Indt."
 
-#: ../src/ui-widgets-data.c:200
+#: ../src/ui-widgets-data.c:242
 msgid "Any Type"
 msgstr "Type alle"
 
-#: ../src/ui-widgets-data.c:209
+#: ../src/ui-widgets-data.c:251
 msgid "Any Status"
 msgstr "Status alle"
 
-#: ../src/ui-widgets-data.c:212
+#: ../src/ui-widgets-data.c:254
 msgid "Uncleared"
 msgstr "Ej godkendt"
 
-#: ../src/ui-widgets-data.c:214
+#: ../src/ui-widgets-data.c:256
 msgid "Unreconciled"
 msgstr "Ej afstemt"
 
-#: ../src/ui-widgets-data.c:216
+#: ../src/ui-widgets-data.c:258
 msgid "Uncategorized"
 msgstr "Uden kategori"
 
-#: ../src/ui-widgets-data.c:243
+#: ../src/ui-widgets-data.c:285
 msgid "Mon"
 msgstr "Man"
 
-#: ../src/ui-widgets-data.c:244
+#: ../src/ui-widgets-data.c:286
 msgid "Tue"
 msgstr "Tir"
 
-#: ../src/ui-widgets-data.c:245
+#: ../src/ui-widgets-data.c:287
 msgid "Wed"
 msgstr "Ons"
 
-#: ../src/ui-widgets-data.c:246
+#: ../src/ui-widgets-data.c:288
 msgid "Thu"
 msgstr "Tor"
 
-#: ../src/ui-widgets-data.c:247
+#: ../src/ui-widgets-data.c:289
 msgid "Fri"
 msgstr "Fre"
 
-#: ../src/ui-widgets-data.c:248
+#: ../src/ui-widgets-data.c:290
 msgid "Sat"
 msgstr "Lør"
 
-#: ../src/ui-widgets-data.c:249
+#: ../src/ui-widgets-data.c:291
 msgid "Sun"
 msgstr "Søn"
 
-#: ../src/ui-widgets-data.c:257
+#: ../src/ui-widgets-data.c:299
 msgid "January"
 msgstr "Januar"
 
-#: ../src/ui-widgets-data.c:258
+#: ../src/ui-widgets-data.c:300
 msgid "February"
 msgstr "Februar"
 
-#: ../src/ui-widgets-data.c:259
+#: ../src/ui-widgets-data.c:301
 msgid "March"
 msgstr "Marts"
 
-#: ../src/ui-widgets-data.c:260
+#: ../src/ui-widgets-data.c:302
 msgid "April"
 msgstr "April"
 
-#: ../src/ui-widgets-data.c:262
+#: ../src/ui-widgets-data.c:304
 msgid "June"
 msgstr "Juni"
 
-#: ../src/ui-widgets-data.c:263
+#: ../src/ui-widgets-data.c:305
 msgid "July"
 msgstr "Juli"
 
-#: ../src/ui-widgets-data.c:264
+#: ../src/ui-widgets-data.c:306
 msgid "August"
 msgstr "August"
 
-#: ../src/ui-widgets-data.c:265
+#: ../src/ui-widgets-data.c:307
 msgid "September"
 msgstr "September"
 
-#: ../src/ui-widgets-data.c:266
+#: ../src/ui-widgets-data.c:308
 msgid "October"
 msgstr "Oktober"
 
-#: ../src/ui-widgets-data.c:267
+#: ../src/ui-widgets-data.c:309
 msgid "November"
 msgstr "November"
 
-#: ../src/ui-widgets-data.c:268
+#: ../src/ui-widgets-data.c:310
 msgid "December"
 msgstr "December"
 
-#: ../src/ui-widgets-data.c:285
+#: ../src/ui-widgets-data.c:327
 msgid "Sep"
 msgstr "Sep"
 
@@ -4210,35 +4236,47 @@ msgstr "Sep"
 msgid "Search..."
 msgstr "Søg …"
 
-#: ../src/ui-widgets.c:1342
+#: ../src/ui-widgets.c:1339
 msgid "Check"
 msgstr "Check"
 
-#: ../src/ui-widgets.c:1344
+#: ../src/ui-widgets.c:1341
 msgid "Bank Transfer"
 msgstr "Bankoverførsel"
 
-#: ../src/ui-widgets.c:1345
+#: ../src/ui-widgets.c:1342
 msgid "Debit card"
 msgstr "Dankort/Debitkort"
 
-#: ../src/ui-widgets.c:1346
+#: ../src/ui-widgets.c:1343
 msgid "Standing order"
 msgstr "Stående ordre"
 
-#: ../src/ui-widgets.c:1347
+#: ../src/ui-widgets.c:1344
 msgid "Electronic payment"
 msgstr "Elektronisk betaling/Giro"
 
-#: ../src/ui-widgets.c:1348
+#: ../src/ui-widgets.c:1345
 msgid "Deposit"
 msgstr "Indskud"
 
 #. TRANSLATORS: Financial institution fee
-#: ../src/ui-widgets.c:1350
+#: ../src/ui-widgets.c:1347
 msgid "FI fee"
 msgstr "BankGebyr"
 
-#: ../src/ui-widgets.c:1351
+#: ../src/ui-widgets.c:1348
 msgid "Direct Debit"
 msgstr "Bet.Service/Direkte Debitering"
+
+#~ msgid "Toggle show future transaction"
+#~ msgstr "Vis fremtidige transaktioner"
+
+#~ msgid "Annual Total"
+#~ msgstr "Total/år"
+
+#~ msgid "Monthly Average"
+#~ msgstr "Gennemsnit/md."
+
+#~ msgid "Budget (table view)"
+#~ msgstr "Budget (tabelvisning)"

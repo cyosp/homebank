@@ -1597,11 +1597,16 @@ struct ui_asg_manage_data *data;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
+	if( data->mapped_done == TRUE )
+		return FALSE;
+
 	DB( g_print("\n[ui-asg-manage] mapped\n") );
 
 	ui_asg_manage_setup(data);
 	ui_asg_manage_update(data->LV_rul, NULL);
 	gtk_widget_grab_focus(GTK_WIDGET(data->LV_rul));
+
+	data->mapped_done = TRUE;
 
 	return FALSE;
 }

@@ -863,11 +863,16 @@ struct repvehicle_data *data;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
+	if( data->mapped_done == TRUE )
+		return FALSE;
+
 	DB( g_print("\n[vehiclecost] window mapped\n") );
 
 	//setup, init and show window
 	repvehicle_window_setup(data);
 	repvehicle_compute(data->window, NULL);
+
+	data->mapped_done = TRUE;
 
 	return FALSE;
 }

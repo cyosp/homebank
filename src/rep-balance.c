@@ -615,12 +615,17 @@ gint usrnbacc, usrrange;
 		Transaction *txn = lnk_txn->data;
 
 			//5.5 forgot to filter...
-			if( !((txn->status == TXN_STATUS_REMIND) || (txn->status == TXN_STATUS_VOID)) )
+			//#1886123 include remind based on user prefs
+			if( (txn->status == TXN_STATUS_REMIND) && (PREFS->includeremind == FALSE) )
+				goto next_txn;
+
+			if( !(txn->status == TXN_STATUS_VOID) )
 			{
 				//5.3 append is damn slow
 				//list = g_list_append(list, txn);
 				data->ope_list = g_list_prepend(data->ope_list, txn);
 			}
+		next_txn:
 			lnk_txn = g_list_next(lnk_txn);
 		}
 
@@ -914,12 +919,17 @@ struct repbalance_data *data;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
+	if( data->mapped_done == TRUE )
+		return FALSE;
+
 	DB( g_print("\n[repbalance] window mapped\n") );
 
 	//setup, init and show window
 	repbalance_window_setup(data, data->accnum);
 	repbalance_update_quickdate(data->window, NULL);
 	repbalance_compute(data->window, NULL);
+
+	data->mapped_done = TRUE;
 
 	return FALSE;
 }

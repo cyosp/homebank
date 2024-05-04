@@ -2217,7 +2217,7 @@ GtkWidget *window;
 	g_signal_connect (G_OBJECT (data->BT_manpay), "clicked", G_CALLBACK (ui_mainwindow_action_defpayee), (gpointer)data);
 	g_signal_connect (G_OBJECT (data->BT_mancat), "clicked", G_CALLBACK (ui_mainwindow_action_defcategory), (gpointer)data);
 	g_signal_connect (G_OBJECT (data->BT_mantpl), "clicked", G_CALLBACK (ui_mainwindow_action_defarchive), (gpointer)data);
-	g_signal_connect (G_OBJECT (data->BT_manbud), "clicked", G_CALLBACK (ui_mainwindow_action_defbudget), (gpointer)data);
+	g_signal_connect (G_OBJECT (data->BT_manbud), "clicked", G_CALLBACK (ui_mainwindow_action_defbudgettable), (gpointer)data);
 	g_signal_connect (G_OBJECT (data->BT_manasg), "clicked", G_CALLBACK (ui_mainwindow_action_defassign), (gpointer)data);
 
 	g_signal_connect (G_OBJECT (data->BT_txnshow), "clicked", G_CALLBACK (ui_mainwindow_action_showtransactions), (gpointer)data);

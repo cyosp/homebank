@@ -62,6 +62,7 @@ struct repbalance_data
 	guint32		usrkcur;
 
 	GtkWidget	*window;
+	gboolean	mapped_done;
 
 	GtkWidget	*TB_bar;
 	GtkWidget	*BT_list;

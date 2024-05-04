@@ -53,6 +53,48 @@ gchar *CYA_REPORT_MODE[] =
 };
 
 
+HbKvData CYA_REPORT_SRC[] = {
+	{ REPORT_SRC_CATEGORY,		N_("Category") },
+	{ REPORT_SRC_SUBCATEGORY,	N_("Subcategory") },
+	{ REPORT_SRC_PAYEE,			N_("Payee") },
+	{ REPORT_SRC_ACCOUNT,		N_("Account") },
+	{ REPORT_SRC_TAG,			N_("Tag") },
+	{ REPORT_SRC_MONTH,			N_("Month") },
+	{ REPORT_SRC_YEAR,			N_("Year") },
+	{ 0, NULL }
+};
+
+
+HbKvData CYA_REPORT_TYPE[] = { 
+	{ REPORT_TYPE_EXPENSE,	N_("Expense") },
+	{ REPORT_TYPE_INCOME,	N_("Income") },
+	{ REPORT_TYPE_TOTAL,	N_("Total")} ,
+	{ 0, NULL }
+};
+
+
+HbKvData CYA_REPORT_SRC_TREND[] = {
+	{ REPORT_SRC_ACCOUNT, 	N_("Account") },
+	{ REPORT_SRC_CATEGORY,	N_("Category") },
+	{ REPORT_SRC_PAYEE,		N_("Payee") },
+	{ REPORT_SRC_TAG,		N_("Tag") },
+	{ 0, NULL }
+};
+
+
+HbKvData CYA_REPORT_INTVL[] = {
+	{ REPORT_INTVL_DAY,		  N_("Day") },
+	{ REPORT_INTVL_WEEK,	  N_("Week") },
+	{ REPORT_INTVL_FORTNIGHT, N_("Fortnight") },
+	{ REPORT_INTVL_MONTH,	  N_("Month") },
+	{ REPORT_INTVL_QUARTER,	  N_("Quarter") },
+	{ REPORT_INTVL_HALFYEAR,  N_("Half Year") },
+	{ REPORT_INTVL_YEAR,	  N_("Year") },
+	{ 0, NULL }
+};
+
+
+//soon obsolete for merged trendtime
 gchar *RA_REPORT_TIME_MODE[] = { 
 	N_("Total"), 
 	N_("Trend"), 

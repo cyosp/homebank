@@ -181,6 +181,7 @@ struct Preferences
 	struct WinGeometry	cst_wg;
 
 	struct WinGeometry	txn_wg;
+	struct WinGeometry	dbud_wg;
 
 	// main window stuffs 
 	gboolean	wal_toolbar;

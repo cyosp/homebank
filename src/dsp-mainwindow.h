@@ -89,6 +89,7 @@ struct hbfile_data
 	GtkWidget   *BT_sched_post;
 	GtkWidget   *BT_sched_editpost;
 	GtkWidget	*CY_sched_range;
+	GtkWidget	*TX_selection;
 
 	GtkWidget	*stack;
 	// max is 2=HUB_TXN_TYPE_REMIND, so 3 elt

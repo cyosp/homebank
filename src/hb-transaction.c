@@ -1019,6 +1019,7 @@ gboolean retval = TRUE;
 
 	if( (ope->status == TXN_STATUS_VOID) )
 		retval = FALSE;
+	//#1812598
 	else if( (ope->status == TXN_STATUS_REMIND) && (PREFS->includeremind == FALSE) )
 		retval = FALSE;
 

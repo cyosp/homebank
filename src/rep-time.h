@@ -68,6 +68,7 @@ struct reptime_data
 	guint32		accnum;
 
 	GtkWidget	*window;
+	gboolean	mapped_done;
 
 	GtkWidget	*TB_bar;
 	GtkWidget	*BT_list;

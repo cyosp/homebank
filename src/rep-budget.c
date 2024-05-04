@@ -1160,6 +1160,9 @@ struct repbudget_data *data;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
+	if( data->mapped_done == TRUE )
+		return FALSE;
+
 	DB( g_print("\n[repbudget] window mapped\n") );
 
 	//hb_window_run_pending();
@@ -1209,6 +1212,7 @@ struct repbudget_data *data;
 	
 	}
 
+	data->mapped_done = TRUE;
 
 	return FALSE;
 }

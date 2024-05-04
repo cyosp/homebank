@@ -1305,6 +1305,15 @@ GtkTreeViewColumn	*column;
 	#endif
 
 
+	// column: hide icon
+	//#1826360 wish: archive payee/category to lighten the lists
+	column = gtk_tree_view_column_new();
+	renderer = gtk_cell_renderer_pixbuf_new ();
+	//gtk_cell_renderer_set_fixed_size(renderer, GLOBALS->lst_pixbuf_maxwidth, -1);
+	gtk_tree_view_column_pack_start(column, renderer, TRUE);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_cat_listview_icon_cell_data_function, NULL, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+
 	// column: toggle
 	if( withtoggle == TRUE )
 	{
@@ -1319,17 +1328,6 @@ GtkTreeViewColumn	*column;
 			    G_CALLBACK (ui_cat_listview_fixed_toggled), store);
 
 		g_object_set_data(G_OBJECT(treeview), "togrdr_data", renderer);
-	}
-	// column: hide icon
-	else
-	{
-		//#1826360 wish: archive payee/category to lighten the lists
-		column = gtk_tree_view_column_new();
-		renderer = gtk_cell_renderer_pixbuf_new ();
-		//gtk_cell_renderer_set_fixed_size(renderer, GLOBALS->lst_pixbuf_maxwidth, -1);
-		gtk_tree_view_column_pack_start(column, renderer, TRUE);
-		gtk_tree_view_column_set_cell_data_func(column, renderer, ui_cat_listview_icon_cell_data_function, NULL, NULL);
-		gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 	}
 
 	// column: usage
@@ -2385,10 +2383,15 @@ struct ui_cat_manage_dialog_data *data;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
+	if( data->mapped_done == TRUE )
+		return FALSE;
+
 	DB( g_print("\n(defcategory) mapped\n") );
 
 	ui_cat_manage_dialog_setup(data);
 	ui_cat_manage_dialog_update(data->LV_cat, NULL);
+
+	data->mapped_done = TRUE;
 
 	return FALSE;
 }

@@ -228,15 +228,19 @@ GQueue *txn_queue;
 
 			if( txn->date < minjulian ) //no need to go below mindate
 				break;
+				
+			//#1886123 include remind based on user prefs
+			if( (txn->status == TXN_STATUS_REMIND) && (PREFS->includeremind == FALSE) )
+				goto prev_txn;
 
-			if( !((txn->status == TXN_STATUS_REMIND) || (txn->status == TXN_STATUS_VOID)) 
+			if( !(txn->status == TXN_STATUS_VOID) 
 				&& (txn->date >= minjulian) 
 				&& (txn->date <= maxjulian)
 			  )
 			{
 				g_queue_push_head (txn_queue, txn);
 			}
-			
+		prev_txn:
 			lnk_txn = g_list_previous(lnk_txn);
 		}
 	

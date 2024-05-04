@@ -68,6 +68,7 @@ struct ui_acc_manage_data
 	guint32	lastkey;
 
 	GtkWidget	*dialog;
+	gboolean	mapped_done;
 
 	GtkWidget	*LV_acc;
 	GtkWidget	*BT_add, *BT_edit, *BT_rem;

@@ -42,8 +42,21 @@
       <tr>
         <th>payment</th>
         <td>
-          <img src="images/d-warn.png">&nbsp;<span class="warning">You cannot import transaction with payment type=5 (internal xfer)</span><br>
-          from 0=none to 10=FI fee (in the same order of the list)<br>
+          
+           0 = none<br>
+           1 = credit card<br>
+           2 = check<br>
+           3 = cash<br>
+           4 = bank transfer<br>
+           <span class="warning"><img src="images/d-warn.png">&nbsp;not allowed because CSV do not support multiple accounts => will be imported as 4 = bank transfer<br>
+          5 = internal transfer<br></span>
+           6 = debit card<br>
+           7 = standing order<br>
+           8 = electronic payment<br>
+           9 = deposit<br>
+          10 = financial institution fee<br>
+          11 = direct debit
+          Please read the <a href="00-lexicon.html#payment">lexicon</a> for description of each payment
         </td>
       </tr>
       <tr>
@@ -74,6 +87,7 @@
 
     <p><img src="images/d-info.png" width="16" height="16" />&nbsp;Starting<br>
     v5.2.5 : you can change the separator for transaction import <a href="dlg-pref.html#tab5">into preferences</a>.<br>
+    v5.1.8 : bugfix: import of payment '5=internal transfer' will be imported as '4=bank transfer'<br>
     v4.5 : tag column is mandatory
     </p>
 

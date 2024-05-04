@@ -342,10 +342,17 @@ guint changes;
 		{
 			if( gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_tags)) )
 			{
+				//#2009277
+				if(txn->tags)
+				{
+					g_free(txn->tags);
+					txn->tags = NULL;
+					change = TRUE;
+				}
+
 				txt = (gchar *)gtk_entry_get_text(GTK_ENTRY(data->ST_tags));
 				if (txt && *txt)
 				{
-					g_free(txn->tags);
 					txn->tags = tags_parse(txt);
 					DB( g_print(" -> tags: '%s'\n", txt) );
 					change = TRUE;

@@ -54,6 +54,7 @@ struct repbudget_data
 
 
 	GtkWidget	*window;
+	gboolean	mapped_done;
 
 	GtkWidget	*TB_bar;
 	GtkWidget	*BT_list;

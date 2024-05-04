@@ -1312,13 +1312,19 @@ gboolean retcode = FALSE;
 
 	// do nothing if just the base currency
 	if(da_cur_length() <= 1)
+	{
+		DB( g_print(" abort: no currency\n") );
 		return TRUE;
-
+	}
 	//TODO: add a force option ?
 	// add 5.6.2 as the online currency only update every 24h
 	// avoid to call the API too often
+	// this set into hbfile_file_get_time_modified()
 	if( GLOBALS->xhb_obsoletecurr == FALSE )
+	{
+		DB( g_print(" abort: file saved less than 24h\n") );
 		return TRUE;
+	}
 
 	retcode = currency_online_sync(&error);
 	
@@ -1662,11 +1668,16 @@ struct ui_cur_manage_dialog_data *data;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
+	if( data->mapped_done == TRUE )
+		return FALSE;
+
 	DB( g_printf("\n[ui_cur_manage] mapped\n") );
 
 	ui_cur_manage_dialog_setup(data);
 	ui_cur_manage_dialog_update(data->LV_cur, NULL);
-	
+
+	data->mapped_done = TRUE;
+
 	return FALSE;
 }
 
