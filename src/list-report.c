@@ -757,8 +757,6 @@ static GtkTreeViewColumn *lst_rep_time_column_create_amount(gchar *name, gint id
 GtkTreeViewColumn  *column;
 GtkCellRenderer    *renderer;
 
-	DB( g_print(" create column '%s' id=%d\n", name, id) );
-
 	column = gtk_tree_view_column_new();
 	gtk_tree_view_column_set_title(column, name);
 	renderer = gtk_cell_renderer_text_new ();
@@ -776,7 +774,7 @@ GtkCellRenderer    *renderer;
 	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_rep_time_amount_cell_data_function, GINT_TO_POINTER(id), NULL);
 	//#2004631 date and column title alignement
 	gtk_tree_view_column_set_alignment (column, 1.0);
-	//gtk_tree_view_column_set_sort_column_id (column, id);
+	gtk_tree_view_column_set_sort_column_id (column, id);
 	return column;
 }
 
@@ -787,7 +785,17 @@ static gint lst_rep_time_compare_func (GtkTreeModel *model, GtkTreeIter *a, GtkT
 //gint sortcol = GPOINTER_TO_INT(userdata);
 gint retval = 0;
 DataRow *dr1, *dr2;
-	
+
+	//#2034625
+	gint csid;
+	GtkSortType cso;
+
+	gtk_tree_sortable_get_sort_column_id(GTK_TREE_SORTABLE(model), &csid, &cso);
+
+	//#2034625 should return
+	// > 0 if a sorts before b 
+	// = 0 if a sorts with b
+	// < 0 if a sorts after b
 	
 	gtk_tree_model_get(model, a,
 		LST_REPORT2_ROW, &dr1,
@@ -799,20 +807,42 @@ DataRow *dr1, *dr2;
 	//total always at bottom
 	if( dr1->pos == LST_REPORT_POS_TOTAL )
 	{
-		retval = -1;
+		retval = cso == GTK_SORT_ASCENDING ? 1 : -1;
 	}
 	else
 	{
 		if( dr2->pos == LST_REPORT_POS_TOTAL )
 		{
-			retval = 1;
+			retval = cso == GTK_SORT_ASCENDING ? -1 : 1;
 		}
 		else
 		{
-			retval = dr2->pos - dr1->pos;
+		gdouble val1, val2;
+		
+			switch(csid)
+			{
+				case LST_REP_COLID_POS:
+					retval = dr1->pos - dr2->pos;
+					break;
+				case LST_REP_COLID_AVERAGE:
+					val1 = (dr1->rowexp + dr1->rowinc) / dr1->nbcols;
+					val2 = (dr2->rowexp + dr2->rowinc) / dr2->nbcols;
+					retval = hb_amount_compare(val1, val2);
+					break;
+				case LST_REP_COLID_TOTAL:
+					val1 = (dr1->rowexp + dr1->rowinc);
+					val2 = (dr2->rowexp + dr2->rowinc);
+					retval = hb_amount_compare(val1, val2);
+					break;
+				default:
+					val1 = dr1->colexp[csid] + dr1->colinc[csid];
+					val2 = dr2->colexp[csid] + dr2->colinc[csid];
+					retval = hb_amount_compare(val1, val2);
+					break;					
+			}
 		}
 	}
-	
+
 	//DB( g_print(" sort %d=%d or %.2f=%.2f :: %d\n", pos1,pos2, val1, val2, ret) );
 
 	return retval;
@@ -839,13 +869,12 @@ gint pos;
 }
 
 
-
 // test new listview
 //TODO: optimise params
-void lst_rep_time_renewcol(GtkTreeView *treeview, DataTable *dt, guint32 nbintvl, guint32 jfrom, gint intvl, gboolean avg)
+void lst_rep_time_renewcol(GtkTreeView *treeview, GtkTreeModel *model, DataTable *dt, gboolean avg)
 {
-GtkCellRenderer    *renderer;
-GtkTreeViewColumn  *column;
+GtkTreeViewColumn *column;
+GtkCellRenderer *renderer;
 GList *columns, *list;
 guint i;
 
@@ -853,22 +882,22 @@ guint i;
 
 	// remove all columns
 	columns = gtk_tree_view_get_columns(GTK_TREE_VIEW(treeview));
-
-	//g_printf(" removing %d columns\n", g_list_length (columns));
-
+	i = 0;
 	list = g_list_first(columns);
 	while(list != NULL)
 	{
-	column = list->data;
-
-		//g_printf(" removing %p\n", column);
-		if(column)
-			gtk_tree_view_remove_column(treeview, column);
-
+		if( GTK_IS_TREE_VIEW_COLUMN(list->data) )
+		{
+			gtk_tree_view_remove_column(treeview, GTK_TREE_VIEW_COLUMN(list->data));
+		}
+		i++;
 		list = g_list_next(list);
 	}
+	DB( g_print(" removed %d columns\n", i) );
 	g_list_free(columns);
-	
+
+	//adding columns
+
 	// column: Name
 	column = gtk_tree_view_column_new();
 	//gtk_tree_view_column_set_title(column, _("Acc/Cat/Pay"));
@@ -885,34 +914,41 @@ guint i;
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_rep_time_name_cell_data_function, NULL, NULL);
 	//gtk_tree_view_column_add_attribute(column, renderer, "text", LST_REPORT2_LABEL);
-	//gtk_tree_view_column_set_sort_column_id (column, LST_REPTIME_NAME);
+	gtk_tree_view_column_set_sort_column_id (column, LST_REP_COLID_POS);
 	gtk_tree_view_column_set_resizable(column, TRUE);
 	//#2004631 date and column title alignement
 	//gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_column_set_min_width (column, HB_MINWIDTH_COLUMN);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+	DB( g_print (" create column id:%4d '<name>'\n", LST_REP_COLID_POS) );
 
 	// column: Amount * x
 	//TODO: useless with DataCol
-	for(i=0;i<nbintvl;i++)
+	for(i=0;i<dt->nbcols;i++)
 	{
-	gchar intvlname[64];
-	guint32 jdate = report_interval_snprint_name(intvlname, sizeof(intvlname)-1, intvl, jfrom, i);
-	gboolean forecast = (jdate > GLOBALS->today) ? TRUE : FALSE;
-		
-		DB( g_print (" create column '%s' %d\n", intvlname, forecast) );
-		column = lst_rep_time_column_create_amount(intvlname, i, forecast );
-		gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+	//gchar intvlname[64];
+	//guint32 jdate = report_interval_snprint_name(intvlname, sizeof(intvlname)-1, intvl, jfrom, i);
+	//gboolean forecast = (jdate > GLOBALS->today) ? TRUE : FALSE;
+	DataCol *dtcol = report_data_get_col(dt, i);
+
+		if ( dtcol )
+		{
+			column = lst_rep_time_column_create_amount(dtcol->label, i, (dtcol->flags & RF_FORECAST) );
+			gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+			DB( g_print (" create column id:%4d '%s' forecast:%d\n", i, dtcol->label, (dtcol->flags & RF_FORECAST)) );
+			gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(model), i, lst_rep_time_compare_func, NULL, NULL);
+		}
 	}
 
 	column = lst_rep_time_column_create_amount(_("Average"), LST_REP_COLID_AVERAGE, FALSE);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+	DB( g_print (" create column id:%4d '<average>'\n", LST_REP_COLID_AVERAGE) );
 	//#2012576 keep column but hide it
 	gtk_tree_view_column_set_visible(column, avg);
 
 	column = lst_rep_time_column_create_amount(_("Total"), LST_REP_COLID_TOTAL, FALSE);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
-
+	DB( g_print (" create column id:%4d '<total>'\n", LST_REP_COLID_TOTAL) );
 	
 	// column last: empty
 	column = gtk_tree_view_column_new();
@@ -982,8 +1018,11 @@ GtkWidget *treeview;
 	gtk_tree_selection_set_select_function(gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview)), lst_rep_time_selectionfunc, NULL, NULL);
 
 	// sort 
-	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_REPORT2_POS    , lst_rep_time_compare_func, GINT_TO_POINTER(LST_REPORT2_POS), NULL);
-	//gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_REPTIME_AMOUNT, ui_list_reptime_compare_func, GINT_TO_POINTER(LST_REPTIME_AMOUNT), NULL);
+	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_REP_COLID_POS, lst_rep_time_compare_func, NULL, NULL);
+	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_REP_COLID_AVERAGE, lst_rep_time_compare_func, NULL, NULL);
+	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_REP_COLID_TOTAL, lst_rep_time_compare_func, NULL, NULL);
+
+	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE(store), LST_REP_COLID_POS, GTK_SORT_ASCENDING);
 
 	gtk_widget_set_has_tooltip (GTK_WIDGET (treeview), TRUE);
 

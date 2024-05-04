@@ -2152,6 +2152,9 @@ GtkWidget *window;
 
 	gtk_widget_show_all (window);
 
+	//#2035401 hide necessary widget to enable paned correct size
+	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_VISUAL));
+
 	//#1662197/1660910 moved after resize/show
 	DB( g_print(" - vpaned=%d hpaned=%d\n", PREFS->wal_vpaned, PREFS->wal_hpaned) );
 

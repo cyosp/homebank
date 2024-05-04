@@ -935,7 +935,7 @@ gdouble tmpmin, tmpmax;
 guint nbrows, nbcols;
 guint rowid, colid;
 
-	DBDT( g_print("\n[chart] time data series\n") );
+	DBDT( g_print("------\n[chart] time data series\n") );
 
 	model  = chart->model;
 	nbcols = chart->nb_cols;
@@ -1039,6 +1039,8 @@ guint rowid, colid;
 				//add for drill down
 				item.n_child = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(model), &iter);		
 				g_array_append_vals(chart->items, &item, 1);
+				
+				DBDT( g_print("  append chartiem for colid0: '%s' n_child:%d\n", item.label, item.n_child) );
 			}
 
 			value = da_datarow_get_cell_sum (dr, colid);
@@ -1049,7 +1051,7 @@ guint rowid, colid;
 			}*/
 			chart->colsum[colid] += ABS(value);
 
-			DBDT( g_print("  row=%d '%s', amt=%.2f colsum=%.2f\n", pos, label, value, chart->colsum[colid]) );
+			DBDT( g_print("  row=%p pos(row)=%d col=%d '%s', amt=%.2f colsum=%.2f\n", dr, pos, colid, label, value, chart->colsum[colid]) );
 
 			if( value < 0.0 )
 				colmin += value;
@@ -1988,22 +1990,29 @@ gint i, n_legend;
 				//DBC( g_print(" %d '%s' %f\n", i, item->label, label_w) );
 			}
 
-			drawctx->label_w = label_w;
+			DBC( g_print(" raw label width:%f\n", label_w) );
 
 			drawctx->legend_font_h = (th / PANGO_SCALE);
 
 			//force ratio to avoid legend at bottom with too much items
 			if( floor(n_legend * drawctx->legend_font_h * CHART_LINE_SPACING) > drawctx->graph.height / 2 )
 			{
-				DBC( g_print(" ratio forced to horiz\n") );
 				ratio = GTK_ORIENTATION_HORIZONTAL;
+				DBC( g_print(" ratio forced to horiz\n") );
 			}
 
 			// labels not much than 1/4 of width graph
 			if( ratio == GTK_ORIENTATION_HORIZONTAL )
 			{
 				gdouble lw = floor(drawctx->graph.width / 4);
-				drawctx->legend_label_w = MIN(drawctx->label_w, lw);
+				drawctx->legend_label_w = MIN(label_w, lw);
+				DBC( g_print(" clamp label width:%f\n", drawctx->legend_label_w) );
+			}
+			//#2037597
+			else
+			{
+				gdouble lw = floor((drawctx->graph.width - drawctx->legend_font_h - CHART_SPACING)*3/4);
+				drawctx->legend_label_w = MIN(label_w, lw);
 			}
 
 			drawctx->legend.width  = drawctx->legend_font_h + CHART_SPACING + drawctx->legend_label_w;
@@ -2032,8 +2041,6 @@ gint i, n_legend;
 				label_wide_w = CHART_SPACING + drawctx->legend_value_w + CHART_SPACING + drawctx->legend_rate_w;
 				//drawctx->legend.width += CHART_SPACING + drawctx->legend_value_w + CHART_SPACING + drawctx->legend_rate_w;
 			}
-
-
 
 			//5.7 hide legend if not enough room
 			//#1964434 maximize chart size
@@ -2686,27 +2693,45 @@ gboolean retval = FALSE;
 			DataRow *dr;
 			gdouble value, rate = 0.0;
 
+				DBT( g_print("\n   rowid=%d colid=%d\n", chart->hover, colid) );
+
 				if( colid > -1 )
 				{
-					gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(chart->model), &iter, NULL, chart->hover);
-					
-					gtk_tree_model_get (GTK_TREE_MODEL(chart->model), &iter,
-						//LST_STORE_TRENDROW=6
-						LST_REPORT2_ROW, &dr,
-						-1);
+				GtkTreePath *path;
+				gboolean valid;
 
-					value = da_datarow_get_cell_sum (dr, colid);
-					strval = chart_print_double(chart, chart->buffer1, value);
-					
-					if( chart->show_mono == TRUE )
-						buffer = g_strdup_printf("%s\n%s", chart->collabel[colid], strval);
+					if( chart->colindice < 0 )
+						path = gtk_tree_path_new_from_indices(chart->hover, -1);
 					else
+						path = gtk_tree_path_new_from_indices(chart->colindice, chart->hover, -1);
+			
+					valid = gtk_tree_model_get_iter(chart->model, &iter, path);
+					gtk_tree_path_free(path);
+
+					DBT( g_print("\n   get iter %d:%d valid=%d\n", chart->colindice, chart->hover, valid) );
+					if( valid )
 					{
-						if( chart->colsum[colid] > 0 )
-							rate = (value * 100) / chart->colsum[colid];
-						buffer = g_strdup_printf("%s\n%s\n%s\n%.2f%%", chart->collabel[colid], item->label, strval, rate);
+						gtk_tree_model_get (GTK_TREE_MODEL(chart->model), &iter,
+							//LST_STORE_TRENDROW=6
+							LST_REPORT2_ROW, &dr,
+							-1);
+
+						DBT( g_print("   row=%p\n", dr) );
+
+						value = da_datarow_get_cell_sum (dr, colid);
+						strval = chart_print_double(chart, chart->buffer1, value);
+						
+						if( chart->show_mono == TRUE )
+							buffer = g_strdup_printf("%s\n%s", chart->collabel[colid], strval);
+						else
+						{
+							if( chart->colsum[colid] > 0 )
+								rate = (value * 100) / chart->colsum[colid];
+							buffer = g_strdup_printf("%s\n%s\n%s\n%.2f%%", chart->collabel[colid], item->label, strval, rate);
+						}
+						DBT( g_print(" colid=%d value=%.2f sum=%.2f rate=%.2f%%\n", colid, value, chart->colsum[colid], rate) );
+
 					}
-					DBT( g_print(" colid=%d value=%.2f sum=%.2f rate=%.2f%%\n", colid, value, chart->colsum[colid], rate) );
 				}
 			}
 		}

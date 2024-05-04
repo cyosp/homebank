@@ -980,8 +980,12 @@ guint id, i;
 				-1);
 
 nextins:
-			data->total_spent  += tmp_spent[pos];
-			data->total_budget += tmp_budget[pos];
+			//#2036703 only sum level1, as level are already into the sum
+			if(catitem->parent == 0 )
+			{
+				data->total_spent  += tmp_spent[pos];
+				data->total_budget += tmp_budget[pos];
+			}
 		}
 
 budnext:

@@ -6,11 +6,12 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: homebank\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2023-09-05 21:31+0200\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-10-07 08:49+0200\n"
 "PO-Revision-Date: 2023-04-24 10:05+0000\n"
 "Last-Translator: Palaniappan M <Unknown>\n"
 "Language-Team: Tamil <ta@li.org>\n"
+"Language: ta\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -39,28 +40,27 @@ msgid ""
 "HomeBank is a free software (as in \"free speech\" and also as in \"free "
 "beer\") that will assist you to manage your personal accounting."
 msgstr ""
-"இல்லவங்கி என்பது ஒரு இலவச மென்பொருளாகும் (\"இலவச பேச்சு\" மற்றும் \"இலவச "
-"பீர்\" போன்றது) இது உங்கள் தனிப்பட்ட கணக்கை நிர்வகிக்க உதவும்."
+"இல்லவங்கி என்பது ஒரு இலவச மென்பொருளாகும் (\"இலவச பேச்சு\" மற்றும் \"இலவச பீர்\" "
+"போன்றது) இது உங்கள் தனிப்பட்ட கணக்கை நிர்வகிக்க உதவும்."
 
 #: ../data/homebank.appdata.xml.in.h:2
 msgid ""
 "It is designed to easy to use and be able to analyse your personal finance "
 "in detail using powerful filtering tools and beautiful graphs."
 msgstr ""
-"இது பயன்படுத்த எளிதானது மற்றும் சக்திவாய்ந்த வடிகட்டுதல் கருவிகள் மற்றும் "
-"அழகான வரைபடங்களைப் பயன்படுத்தி உங்கள் தனிப்பட்ட நிதியை விரிவாக பகுப்பாய்வு "
-"செய்ய வடிவமைக்கப்பட்டுள்ளது."
+"இது பயன்படுத்த எளிதானது மற்றும் சக்திவாய்ந்த வடிகட்டுதல் கருவிகள் மற்றும் அழகான "
+"வரைபடங்களைப் பயன்படுத்தி உங்கள் தனிப்பட்ட நிதியை விரிவாக பகுப்பாய்வு செய்ய "
+"வடிவமைக்கப்பட்டுள்ளது."
 
 #: ../data/homebank.appdata.xml.in.h:3
 msgid ""
 "If you are looking for a completely free and easy way to manage your "
 "personal accounting then HomeBank should be the software of choice."
 msgstr ""
-"உங்கள் தனிப்பட்ட கணக்கியலை நிர்வகிக்க முற்றிலும் இலவச மற்றும் எளிதான வழியை "
-"நீங்கள் தேடுகிறீர்கள் என்றால், இல்லவங்கி விருப்பமான மென்பொருளாக இருக்க "
-"வேண்டும்."
+"உங்கள் தனிப்பட்ட கணக்கியலை நிர்வகிக்க முற்றிலும் இலவச மற்றும் எளிதான வழியை நீங்கள் "
+"தேடுகிறீர்கள் என்றால், இல்லவங்கி விருப்பமான மென்பொருளாக இருக்க வேண்டும்."
 
-#: ../src/dsp-account.c:175 ../src/dsp-account.c:2843
+#: ../src/dsp-account.c:175 ../src/dsp-account.c:2840
 msgid "All transactions"
 msgstr "அனைத்து பரிவர்த்தனைகள்"
 
@@ -120,7 +120,7 @@ msgstr "பரிவர்த்தனை மாற்றப்பட்டத�
 msgid "Automatic assignment result"
 msgstr "தானியங்கி ஒதுக்கீடு முடிவு"
 
-#: ../src/dsp-account.c:715
+#: ../src/dsp-account.c:716
 msgid ""
 "Do you want to create an assignment with\n"
 "each of the selected transaction?"
@@ -128,20 +128,20 @@ msgstr ""
 "தேர்ந்தெடுக்கப்பட்ட ஒவ்வொரு பரிவர்த்தனைக்கும்,\n"
 "நீங்கள் ஒரு பணியை உருவாக்க விரும்புகிறீர்களா?"
 
-#: ../src/dsp-account.c:716 ../src/dsp-account.c:792
+#: ../src/dsp-account.c:717 ../src/dsp-account.c:789
 msgid "_Create"
 msgstr "_உருவாக்கு"
 
-#: ../src/dsp-account.c:761
+#: ../src/dsp-account.c:759
 msgid "Create Assignment"
 msgstr "ஒதுக்கீட்டை உருவாக்கு"
 
-#: ../src/dsp-account.c:762 ../src/dsp-account.c:837
+#: ../src/dsp-account.c:760 ../src/dsp-account.c:834
 #, c-format
 msgid "%d created with a prefilled icon"
 msgstr ""
 
-#: ../src/dsp-account.c:791
+#: ../src/dsp-account.c:788
 msgid ""
 "Do you want to create a template with\n"
 "each of the selected transaction?"
@@ -149,11 +149,11 @@ msgstr ""
 "தேர்ந்தெடுக்கப்பட்ட ஒவ்வொரு பரிவர்த்தனைக்கும்\n"
 "நீங்கள் ஒரு வார்ப்புருவை உருவாக்க விரும்புகிறீர்களா?"
 
-#: ../src/dsp-account.c:836
+#: ../src/dsp-account.c:833
 msgid "Create Template"
 msgstr "வார்ப்புருவை உருவாக்கு"
 
-#: ../src/dsp-account.c:1743
+#: ../src/dsp-account.c:1740
 msgid ""
 "Do you want to delete\n"
 "each of the selected transaction?"
@@ -161,362 +161,360 @@ msgstr ""
 "தேர்ந்தெடுக்கப்பட்ட ஒவ்வொரு பரிவர்த்தனையையும்\n"
 "நீங்கள் நீக்க விரும்புகிறீர்களா?"
 
-#: ../src/dsp-account.c:1744 ../src/ui-account.c:1514 ../src/ui-archive.c:880
+#: ../src/dsp-account.c:1741 ../src/ui-account.c:1514 ../src/ui-archive.c:880
 #: ../src/ui-assign.c:1509 ../src/ui-budget-tabview.c:2322
 #: ../src/ui-category.c:1480 ../src/ui-category.c:2025
 #: ../src/ui-currency.c:1572 ../src/ui-payee.c:1039 ../src/ui-payee.c:1565
-#: ../src/ui-tag.c:925
+#: ../src/ui-split.c:554 ../src/ui-tag.c:925
 msgid "_Delete"
 msgstr "_நீக்கு"
 
-#: ../src/dsp-account.c:1825
+#: ../src/dsp-account.c:1822
 msgid "Are you sure you want to change the status to None?"
 msgstr "இல்லை என நிலையை மாற்ற நிச்சயமாக விரும்புகிறீர்களா?"
 
-#: ../src/dsp-account.c:1826 ../src/dsp-account.c:1886
+#: ../src/dsp-account.c:1823 ../src/dsp-account.c:1883
 msgid "Some transaction in your selection are already Reconciled."
 msgstr "உங்கள் தேர்வில் சில பரிவர்த்தனைகள் ஏற்கனவே இணக்கம் செய்யப்பட்டுள்ளன."
 
-#: ../src/dsp-account.c:1827 ../src/ui-assist-start.c:277
+#: ../src/dsp-account.c:1824 ../src/ui-assist-start.c:277
 #: ../src/ui-dialogs.c:430
 msgid "_Change"
 msgstr "_மாற்று"
 
-#: ../src/dsp-account.c:1885
+#: ../src/dsp-account.c:1882
 msgid "Are you sure you want to toggle the status Reconciled?"
-msgstr ""
-"கணக்கிணக்க நிலையில் மாற்றம் செய்ய நீங்கள் நிச்சயமாக விரும்புகிறீர்களா?"
+msgstr "கணக்கிணக்க நிலையில் மாற்றம் செய்ய நீங்கள் நிச்சயமாக விரும்புகிறீர்களா?"
 
-#: ../src/dsp-account.c:1887
+#: ../src/dsp-account.c:1884
 msgid "_Toggle"
 msgstr "_மாற்று"
 
-#: ../src/dsp-account.c:2299
+#: ../src/dsp-account.c:2296
 #, c-format
 msgid "%d transactions"
 msgstr "%d பரிவர்த்தனைகள்"
 
-#: ../src/dsp-account.c:2302
+#: ../src/dsp-account.c:2299
 #, c-format
 msgid "%d transactions, %d selected, avg: %s, sum: %s (%s - %s)"
-msgstr ""
-"%d பரிவர்த்தனைகள், %d தேர்வுகள், சராசரி: %s, கூட்டுத்தொகை: %s (%s - %s)"
+msgstr "%d பரிவர்த்தனைகள், %d தேர்வுகள், சராசரி: %s, கூட்டுத்தொகை: %s (%s - %s)"
 
-#: ../src/dsp-account.c:2315
+#: ../src/dsp-account.c:2312
 msgid "Locked. Click to unlock"
 msgstr "பூட்டப்பட்டது. திறக்க சொடுக்கவும்"
 
-#: ../src/dsp-account.c:2315
+#: ../src/dsp-account.c:2312
 msgid "Unlocked. Click to lock"
 msgstr "திறக்கப்பட்டது.  மூட சொடுக்கவும்"
 
-#: ../src/dsp-account.c:2594 ../src/dsp-account.c:2696
+#: ../src/dsp-account.c:2591 ../src/dsp-account.c:2693
 msgid "_Add..."
 msgstr "சேர் (_A)..."
 
-#: ../src/dsp-account.c:2596 ../src/dsp-account.c:2698
+#: ../src/dsp-account.c:2593 ../src/dsp-account.c:2695
 msgid "_Inherit..."
 msgstr "_மரபுவழிபெறு..."
 
-#: ../src/dsp-account.c:2598 ../src/dsp-account.c:2700
+#: ../src/dsp-account.c:2595 ../src/dsp-account.c:2697
 msgid "_Edit..."
 msgstr "_திருத்து..."
 
-#: ../src/dsp-account.c:2600 ../src/dsp-account.c:2714
+#: ../src/dsp-account.c:2597 ../src/dsp-account.c:2711
 msgid "_Multiple Edit..."
 msgstr "_பல திருத்தங்கள் ..."
 
-#: ../src/dsp-account.c:2605 ../src/dsp-account.c:2705
+#: ../src/dsp-account.c:2602 ../src/dsp-account.c:2702
 msgid "_Status"
 msgstr "_நிலை"
 
-#: ../src/dsp-account.c:2607 ../src/dsp-account.c:2707
+#: ../src/dsp-account.c:2604 ../src/dsp-account.c:2704
 msgid "_None"
 msgstr "_ஒன்றுமில்லை"
 
-#: ../src/dsp-account.c:2609 ../src/dsp-account.c:2709
+#: ../src/dsp-account.c:2606 ../src/dsp-account.c:2706
 msgid "_Cleared"
 msgstr "_அழிக்கப்பட்டது"
 
-#: ../src/dsp-account.c:2611 ../src/dsp-account.c:2711
+#: ../src/dsp-account.c:2608 ../src/dsp-account.c:2708
 msgid "_Reconciled"
 msgstr "_கணக்கிணக்கம் செய்யப்பட்டது."
 
-#: ../src/dsp-account.c:2616
+#: ../src/dsp-account.c:2613
 msgid "View _Split"
 msgstr "காண் _பிரி"
 
-#: ../src/dsp-account.c:2618
+#: ../src/dsp-account.c:2615
 msgid "Copy raw amount"
 msgstr "மூல தொகையை நகலெடுக்கவும்"
 
-#: ../src/dsp-account.c:2620 ../src/dsp-account.c:2715
+#: ../src/dsp-account.c:2617 ../src/dsp-account.c:2712
 msgid "Create template..."
 msgstr "வார்ப்புரு உருவாக்கு..."
 
-#: ../src/dsp-account.c:2622 ../src/dsp-account.c:2716
+#: ../src/dsp-account.c:2619 ../src/dsp-account.c:2713
 msgid "Create assignment..."
 msgstr "ஒதுக்கீட்டை உருவாக்கு..."
 
-#: ../src/dsp-account.c:2624 ../src/dsp-account.c:2717
+#: ../src/dsp-account.c:2621 ../src/dsp-account.c:2714
 msgid "_Delete..."
 msgstr "_நீக்கு..."
 
-#: ../src/dsp-account.c:2629
+#: ../src/dsp-account.c:2626
 msgid "_Up"
 msgstr "_மேலே"
 
-#: ../src/dsp-account.c:2631
+#: ../src/dsp-account.c:2628
 msgid "_Down"
 msgstr "_கீழே"
 
-#: ../src/dsp-account.c:2671
+#: ../src/dsp-account.c:2668
 msgid "A_ccount"
 msgstr "கணக்கு (_c)"
 
-#: ../src/dsp-account.c:2673
+#: ../src/dsp-account.c:2670
 msgid "Export QIF..."
 msgstr "QIF பதிவேற்று..."
 
-#: ../src/dsp-account.c:2674
+#: ../src/dsp-account.c:2671
 msgid "Export CSV..."
 msgstr "CSV பதிவேற்று..."
 
-#: ../src/dsp-account.c:2676 ../src/hub-account.c:592
+#: ../src/dsp-account.c:2673 ../src/hub-account.c:592
 msgid "Print..."
 msgstr "அச்சிடு..."
 
-#: ../src/dsp-account.c:2679
+#: ../src/dsp-account.c:2676 ../src/hub-account.c:638
 msgid "Browse Website"
 msgstr ""
 
-#: ../src/dsp-account.c:2681 ../src/dsp-mainwindow.c:696
+#: ../src/dsp-account.c:2678 ../src/dsp-mainwindow.c:696
 #: ../src/dsp-mainwindow.c:1885 ../src/ui-account.c:1865
 #: ../src/ui-archive.c:1268 ../src/ui-assign.c:1761 ../src/ui-budget.c:1148
 #: ../src/ui-budget-tabview.c:2782 ../src/ui-category.c:2413
 #: ../src/ui-currency.c:1712 ../src/ui-dialogs.c:194 ../src/ui-payee.c:1766
-#: ../src/ui-split.c:843 ../src/ui-tag.c:1058 ../src/ui-transaction.c:1491
+#: ../src/ui-split.c:868 ../src/ui-tag.c:1058 ../src/ui-transaction.c:1491
 msgid "_Close"
 msgstr "_மூடு"
 
 #. #1818052 wish: copy/paste one/multiple transaction(s)
-#: ../src/dsp-account.c:2685 ../src/dsp-mainwindow.c:1890
+#: ../src/dsp-account.c:2682 ../src/dsp-mainwindow.c:1890
 msgid "_Edit"
 msgstr "_திருத்து"
 
-#: ../src/dsp-account.c:2687
+#: ../src/dsp-account.c:2684
 msgid "Copy"
 msgstr "நகலெடு"
 
-#: ../src/dsp-account.c:2689
+#: ../src/dsp-account.c:2686
 msgid "Paste"
 msgstr "ஒட்டு"
 
-#: ../src/dsp-account.c:2691
+#: ../src/dsp-account.c:2688
 msgid "Paste (today)"
 msgstr "ஒட்டு (இன்றைய தேதி)"
 
-#: ../src/dsp-account.c:2694
+#: ../src/dsp-account.c:2691
 msgid "Transacti_on"
 msgstr "பரிவர்த்தனை"
 
-#: ../src/dsp-account.c:2722
+#: ../src/dsp-account.c:2719
 msgid "_Find"
 msgstr "_கண்டுபிடி"
 
-#: ../src/dsp-account.c:2725 ../src/dsp-mainwindow.c:1939
+#: ../src/dsp-account.c:2722 ../src/dsp-mainwindow.c:1939
 msgid "_Tools"
 msgstr "_கருவிகள்"
 
-#: ../src/dsp-account.c:2727
+#: ../src/dsp-account.c:2724
 msgid "Mark duplicate..."
 msgstr "நகலைக் குறிக்கவும்..."
 
-#: ../src/dsp-account.c:2728
+#: ../src/dsp-account.c:2725
 msgid "Check internal transfer"
 msgstr "உள் பரிமாற்றத்தை சரிபார்க்கவும்"
 
-#: ../src/dsp-account.c:2729
+#: ../src/dsp-account.c:2726
 msgid "Auto. assignments"
 msgstr "தானியங்கு பணிகள்"
 
-#: ../src/dsp-account.c:2730
+#: ../src/dsp-account.c:2727
 msgid "_Filter..."
 msgstr "_வடிகட்டு..."
 
-#: ../src/dsp-account.c:2731
+#: ../src/dsp-account.c:2728
 msgid "Convert to Euro..."
 msgstr "யூரோவுக்கு மாற்று..."
 
-#: ../src/dsp-account.c:2745 ../src/dsp-mainwindow.c:1996
+#: ../src/dsp-account.c:2742 ../src/dsp-mainwindow.c:1996
 #: ../src/ui-account.c:1925 ../src/ui-archive.c:1340 ../src/ui-assign.c:1821
 #: ../src/ui-assist-import.c:1572 ../src/ui-category.c:2523
-#: ../src/ui-currency.c:1784 ../src/ui-payee.c:1875 ../src/ui-split.c:1024
+#: ../src/ui-currency.c:1784 ../src/ui-payee.c:1875 ../src/ui-split.c:1059
 #: ../src/ui-tag.c:1151
 msgid "Add"
 msgstr "சேர்"
 
-#: ../src/dsp-account.c:2745
+#: ../src/dsp-account.c:2742
 msgid "Add a new transaction"
 msgstr "புதிய பரிவர்த்தனையை சேர்"
 
-#: ../src/dsp-account.c:2747
+#: ../src/dsp-account.c:2744
 msgid "Inherit"
 msgstr "மரபுவழி பெறு"
 
-#: ../src/dsp-account.c:2747
+#: ../src/dsp-account.c:2744
 msgid "Inherit from the active transaction"
 msgstr "செயலில் உள்ள பரிவர்த்தனையிலிருந்து மரபுவழி பெறு"
 
 #. widget = gtk_button_new_with_mnemonic(_("_Edit"));
-#: ../src/dsp-account.c:2749 ../src/ui-archive.c:1352 ../src/ui-assign.c:1832
+#: ../src/dsp-account.c:2746 ../src/ui-archive.c:1352 ../src/ui-assign.c:1832
 #: ../src/ui-category.c:2534 ../src/ui-currency.c:1795 ../src/ui-payee.c:1882
-#: ../src/ui-split.c:983 ../src/ui-tag.c:1158
+#: ../src/ui-split.c:1008 ../src/ui-tag.c:1158
 msgid "Edit"
 msgstr "திருத்து"
 
-#: ../src/dsp-account.c:2749
+#: ../src/dsp-account.c:2746
 msgid "Edit the active transaction"
 msgstr "செயலில் உள்ள பரிவர்த்தனையைத் திருத்தவும்"
 
 #. Cleared
-#: ../src/dsp-account.c:2754 ../src/list-account.c:811 ../src/ui-filter.c:1161
+#: ../src/dsp-account.c:2751 ../src/list-account.c:811 ../src/ui-filter.c:1161
 #: ../src/ui-widgets-data.c:232 ../src/ui-widgets-data.c:280
 msgid "Cleared"
 msgstr "நீக்கப்பட்டுவிட்டன"
 
-#: ../src/dsp-account.c:2754
+#: ../src/dsp-account.c:2751
 msgid "Toggle cleared for selected transaction(s)"
 msgstr "தேர்ந்தெடுக்கப்பட்ட நீக்கப்பட்ட  பரிவர்த்தனைகளை மாற்று"
 
 #. Reconciled
-#: ../src/dsp-account.c:2755 ../src/list-account.c:807 ../src/ui-filter.c:1166
+#: ../src/dsp-account.c:2752 ../src/list-account.c:807 ../src/ui-filter.c:1166
 #: ../src/ui-widgets-data.c:233 ../src/ui-widgets-data.c:282
 msgid "Reconciled"
 msgstr "கணக்கிணக்கம் செய்யப்பட்டது"
 
-#: ../src/dsp-account.c:2755
+#: ../src/dsp-account.c:2752
 msgid "Toggle reconciled for selected transaction(s)"
 msgstr "தேர்ந்தெடுக்கப்பட்ட கணக்கிணக்கம் செய்யப்பட்ட  பரிவர்த்தனைகளை மாற்று"
 
-#: ../src/dsp-account.c:2759
+#: ../src/dsp-account.c:2756
 msgid "Edit Multiple"
 msgstr "பல திருத்தம்"
 
-#: ../src/dsp-account.c:2759
+#: ../src/dsp-account.c:2756
 msgid "Edit multiple transaction"
 msgstr "பல பரிவர்த்தனைகளைத் திருத்தவும்"
 
-#: ../src/dsp-account.c:2760
+#: ../src/dsp-account.c:2757
 msgid "Create template"
 msgstr "முன் வடிவுகளை உருவாக்கு"
 
-#: ../src/dsp-account.c:2761 ../src/ui-account.c:1929 ../src/ui-archive.c:1344
+#: ../src/dsp-account.c:2758 ../src/ui-account.c:1929 ../src/ui-archive.c:1344
 #: ../src/ui-assign.c:1825 ../src/ui-assist-import.c:1576
 #: ../src/ui-category.c:2527 ../src/ui-currency.c:1788 ../src/ui-payee.c:1877
-#: ../src/ui-split.c:979 ../src/ui-tag.c:1153
+#: ../src/ui-split.c:1004 ../src/ui-tag.c:1153
 msgid "Delete"
 msgstr "நீக்கு"
 
-#: ../src/dsp-account.c:2761
+#: ../src/dsp-account.c:2758
 msgid "Delete selected transaction(s)"
 msgstr "தேர்ந்தெடுக்கப்பட்ட பரிவர்த்தனைகளை நீக்கு"
 
-#: ../src/dsp-account.c:2767
+#: ../src/dsp-account.c:2764
 msgid "Up"
 msgstr "மேலே"
 
-#: ../src/dsp-account.c:2767
+#: ../src/dsp-account.c:2764
 msgid "Move transaction up"
 msgstr "பரிவர்த்தனைகளை மேலே கொண்டு செல்"
 
-#: ../src/dsp-account.c:2768
+#: ../src/dsp-account.c:2765
 msgid "Down"
 msgstr "கீழே"
 
-#: ../src/dsp-account.c:2768
+#: ../src/dsp-account.c:2765
 msgid "Move transaction down"
 msgstr "பரிவர்த்தனைகளை கீழே கொண்டு செல்"
 
-#: ../src/dsp-account.c:2775
+#: ../src/dsp-account.c:2772
 msgid "Reconciled changes is"
 msgstr "கணக்கிணக்கம் மாற்றங்கள் என்பது"
 
-#: ../src/dsp-account.c:2836
+#: ../src/dsp-account.c:2833
 msgid "(closed)"
 msgstr "(மூடப்பட்டது)"
 
-#: ../src/dsp-account.c:2843
+#: ../src/dsp-account.c:2840
 #, c-format
 msgid "%s - HomeBank"
 msgstr "%s - இல்லவங்கி"
 
 #. info bar for duplicate
-#: ../src/dsp-account.c:2870
+#: ../src/dsp-account.c:2867
 msgid "_Refresh"
 msgstr "_புதுப்பி"
 
-#: ../src/dsp-account.c:2897 ../src/rep-balance.c:1089 ../src/rep-budget.c:1728
-#: ../src/rep-stats.c:1968 ../src/rep-time.c:1441 ../src/rep-vehicle.c:1003
+#: ../src/dsp-account.c:2894 ../src/rep-balance.c:1089 ../src/rep-budget.c:1732
+#: ../src/rep-stats.c:1985 ../src/rep-time.c:1441 ../src/rep-vehicle.c:1003
 #: ../src/ui-pref.c:1379 ../src/ui-pref.c:1795
 msgid "_Range:"
 msgstr "_வரிசை"
 
 #. #2008521 set more accurate tooltip
-#: ../src/dsp-account.c:2911
+#: ../src/dsp-account.c:2908
 #, c-format
 msgid "Toggle show %d days ahead"
 msgstr "%d எதிர்வரும் நாட்கள் காண்பிப்பதை மாற்று"
 
-#: ../src/dsp-account.c:2916 ../src/rep-budget.c:1689 ../src/rep-stats.c:1890
+#: ../src/dsp-account.c:2913 ../src/rep-budget.c:1693 ../src/rep-stats.c:1907
 #: ../src/ui-account.c:1976 ../src/ui-assist-start.c:536
 msgid "_Type:"
 msgstr "_வகை:"
 
-#: ../src/dsp-account.c:2923 ../src/ui-transaction.c:1752
+#: ../src/dsp-account.c:2920 ../src/ui-transaction.c:1752
 msgid "_Status:"
 msgstr "_நிலை:"
 
-#: ../src/dsp-account.c:2930
+#: ../src/dsp-account.c:2927
 msgid "Open the list filter"
 msgstr "பட்டியல் வடிகட்டியைத் திறக்கவும்"
 
-#: ../src/dsp-account.c:2935 ../src/rep-balance.c:828 ../src/rep-budget.c:1398
-#: ../src/rep-stats.c:1576 ../src/rep-time.c:1114 ../src/rep-vehicle.c:786
+#: ../src/dsp-account.c:2932 ../src/rep-balance.c:828 ../src/rep-budget.c:1402
+#: ../src/rep-stats.c:1593 ../src/rep-time.c:1114 ../src/rep-vehicle.c:786
 msgid "Refresh results"
 msgstr "முடிவுகளை புதுப்பி"
 
 #. widget = gtk_button_new_with_mnemonic (_("Reset _filters"));
-#: ../src/dsp-account.c:2941 ../src/ui-filter.c:1192 ../src/ui-pref.c:2320
+#: ../src/dsp-account.c:2938 ../src/ui-filter.c:1192 ../src/ui-pref.c:2320
 #: ../src/ui-pref.c:2344
 msgid "_Reset"
 msgstr "_மீட்டமை"
 
-#: ../src/dsp-account.c:2946 ../src/rep-balance.c:831 ../src/rep-budget.c:1441
-#: ../src/rep-stats.c:1619 ../src/rep-time.c:1157
+#: ../src/dsp-account.c:2943 ../src/rep-balance.c:831 ../src/rep-budget.c:1445
+#: ../src/rep-stats.c:1636 ../src/rep-time.c:1157
 msgid "Print"
 msgstr "அச்சிடு"
 
 #. TRANSLATORS: this is for Euro specific users, a toggle to display in 'Minor' currency
-#: ../src/dsp-account.c:2953 ../src/rep-balance.c:1068 ../src/rep-budget.c:1701
-#: ../src/rep-stats.c:1933 ../src/rep-time.c:1420 ../src/rep-vehicle.c:990
+#: ../src/dsp-account.c:2950 ../src/rep-balance.c:1068 ../src/rep-budget.c:1705
+#: ../src/rep-stats.c:1950 ../src/rep-time.c:1420 ../src/rep-vehicle.c:990
 msgid "Euro _minor"
 msgstr "யூரோ _சிற்றளவு"
 
 #. account name
-#: ../src/dsp-account.c:3012
+#: ../src/dsp-account.c:3009
 msgid "Reconciled:"
 msgstr "கணக்கிணக்கம் செய்யப்பட்டது:"
 
-#: ../src/dsp-account.c:3019
+#: ../src/dsp-account.c:3016
 msgid "Cleared:"
 msgstr "தீர்க்கப்பட்டவை:"
 
-#: ../src/dsp-account.c:3026
+#: ../src/dsp-account.c:3023
 msgid "Today:"
 msgstr "இன்று:"
 
-#: ../src/dsp-account.c:3033
+#: ../src/dsp-account.c:3030
 msgid "Future:"
 msgstr "எதிர்காலம்:"
 
@@ -644,11 +642,10 @@ msgid "The file has been modified since reading it."
 msgstr "கோப்பு படித்ததில் இருந்து மாற்றப்பட்டுள்ளது."
 
 #: ../src/dsp-mainwindow.c:1248
-msgid ""
-"If you save it, all the external changes could be lost. Save it anyway?"
+msgid "If you save it, all the external changes could be lost. Save it anyway?"
 msgstr ""
-"நீங்கள் அதை சேமித்தால், அனைத்து வெளிப்புற மாற்றங்களையும் இழக்க நேரிடும். "
-"எப்படியும் சேமிக்கலாமா?"
+"நீங்கள் அதை சேமித்தால், அனைத்து வெளிப்புற மாற்றங்களையும் இழக்க நேரிடும். எப்படியும் "
+"சேமிக்கலாமா?"
 
 #: ../src/dsp-mainwindow.c:1249
 msgid "S_ave Anyway"
@@ -946,13 +943,13 @@ msgstr "பணம் வாங்கிக் கொள்பவர்களை 
 #. = = = = = = = = = = = = = = = = = = = =
 #: ../src/dsp-mainwindow.c:1988 ../src/hub-reptotal.c:556
 #: ../src/list-operation.c:972 ../src/list-operation.c:1813
-#: ../src/list-scheduled.c:651 ../src/rep-budget.c:69 ../src/rep-budget.c:1930
-#: ../src/rep-budget.c:2201 ../src/ui-archive.c:511 ../src/ui-assign.c:575
+#: ../src/list-scheduled.c:651 ../src/rep-budget.c:69 ../src/rep-budget.c:1934
+#: ../src/rep-budget.c:2205 ../src/ui-archive.c:511 ../src/ui-assign.c:575
 #: ../src/ui-assist-import.c:407 ../src/ui-budget.c:263
 #: ../src/ui-budget-tabview.c:1544 ../src/ui-category.c:1376
 #: ../src/ui-dialogs.c:277 ../src/ui-filter.c:831 ../src/ui-filter.c:836
 #: ../src/ui-filter.c:1264 ../src/ui-payee.c:961 ../src/ui-split.c:203
-#: ../src/ui-split.c:988 ../src/ui-widgets-data.c:26
+#: ../src/ui-split.c:1013 ../src/ui-widgets-data.c:26
 #: ../src/ui-widgets-data.c:43 ../src/ui-widgets-data.c:58
 #: ../src/ui-widgets-data.c:79
 msgid "Category"
@@ -972,7 +969,7 @@ msgstr "அட்டவணைப்படுத்தப்பட்ட/மு�
 
 #. column: Income
 #: ../src/dsp-mainwindow.c:1990 ../src/dsp-mainwindow.c:2004
-#: ../src/rep-budget.c:746 ../src/rep-budget.c:1930 ../src/rep-budget.c:2217
+#: ../src/rep-budget.c:746 ../src/rep-budget.c:1934 ../src/rep-budget.c:2221
 msgid "Budget"
 msgstr "வரவு செலவு திட்டம்"
 
@@ -1068,7 +1065,7 @@ msgstr "எதிர்காலம்"
 msgid "Remind"
 msgstr "ஞாபகப்படுத்து"
 
-#: ../src/gtk-dateentry.c:677
+#: ../src/gtk-dateentry.c:704
 msgid "_Today"
 msgstr "_இன்று"
 
@@ -1076,11 +1073,11 @@ msgstr "_இன்று"
 msgid "(no memo)"
 msgstr "(குறிப்பாணை இல்லை)"
 
-#: ../src/hb-assign.c:217 ../src/ui-assign.c:1427
+#: ../src/hb-assign.c:221 ../src/ui-assign.c:1427
 msgid "(copy)"
 msgstr ""
 
-#: ../src/hb-category.c:492 ../src/hb-report.c:524 ../src/ui-budget.c:113
+#: ../src/hb-category.c:492 ../src/hb-report.c:547 ../src/ui-budget.c:113
 #: ../src/ui-category.c:220 ../src/ui-category.c:763
 msgid "(no category)"
 msgstr "(வகையினம் இல்லை)"
@@ -1109,50 +1106,50 @@ msgstr "km/l"
 msgid "mi./l"
 msgstr "mi./l"
 
-#: ../src/hb-report.c:567 ../src/ui-payee.c:644
+#: ../src/hb-report.c:590 ../src/ui-payee.c:644
 msgid "(no payee)"
 msgstr "(பணம் பெறுவோர்  யாருமில்லை)"
 
-#: ../src/hb-report.c:627 ../src/ui-tag.c:323
+#: ../src/hb-report.c:650 ../src/ui-tag.c:323
 msgid "(no tag)"
 msgstr "(குறி இல்லை)"
 
 #. TRANSLATORS: printf string for year of week W, ex. 2019-W52 for week 52 of 2019
-#: ../src/hb-report.c:654
+#: ../src/hb-report.c:677
 #, c-format
 msgid "w%02d"
 msgstr ""
 
 #. todo: will be innacurrate here if fiscal year start not 1/jan
 #. TRANSLATORS: printf string for year of quarter Q, ex. 2019-Q4 for quarter 4 of 2019
-#: ../src/hb-report.c:662
+#: ../src/hb-report.c:685
 #, c-format
 msgid "q%d"
 msgstr ""
 
 #. #2007712
 #. TRANSLATORS: printf string for half-year H, ex. 2019-H1 for 1st half-year of 2019
-#: ../src/hb-report.c:667
+#: ../src/hb-report.c:690
 #, c-format
 msgid "h%d"
 msgstr ""
 
 #. TRANSLATORS: printf string for year of week W, ex. 2019-W52 for week 52 of 2019
-#: ../src/hb-report.c:1428
+#: ../src/hb-report.c:1454
 #, c-format
 msgid "%d-w%02d"
 msgstr "%d-w%02d"
 
 #. todo: will be innacurrate here if fiscal year start not 1/jan
 #. TRANSLATORS: printf string for year of quarter Q, ex. 2019-Q4 for quarter 4 of 2019
-#: ../src/hb-report.c:1440
+#: ../src/hb-report.c:1466
 #, c-format
 msgid "%d-q%d"
 msgstr "%d-q%d"
 
 #. #2007712
 #. TRANSLATORS: printf string for half-year H, ex. 2019-H1 for 1st half-year of 2019
-#: ../src/hb-report.c:1445
+#: ../src/hb-report.c:1471
 #, c-format
 msgid "%d-h%d"
 msgstr "%d-h%d"
@@ -1214,13 +1211,13 @@ msgstr ""
 msgid "Show all"
 msgstr "எல்லாவற்றையும் காட்டு"
 
-#: ../src/hub-account.c:627 ../src/rep-budget.c:1711 ../src/rep-stats.c:1943
+#: ../src/hub-account.c:627 ../src/rep-budget.c:1715 ../src/rep-stats.c:1960
 #: ../src/ui-budget.c:1235 ../src/ui-budget-tabview.c:2902
 #: ../src/ui-category.c:2552 ../src/ui-filter.c:856
 msgid "Expand all"
 msgstr "எல்லாவற்றையும் விரி"
 
-#: ../src/hub-account.c:631 ../src/rep-budget.c:1715 ../src/rep-stats.c:1947
+#: ../src/hub-account.c:631 ../src/rep-budget.c:1719 ../src/rep-stats.c:1964
 #: ../src/ui-budget.c:1239 ../src/ui-budget-tabview.c:2906
 #: ../src/ui-category.c:2556 ../src/ui-filter.c:860
 msgid "Collapse all"
@@ -1264,7 +1261,7 @@ msgstr "இடுகை நாளிலிருந்து அதிகபட�
 #. column: Total
 #: ../src/hub-scheduled.c:581 ../src/hub-reptime.c:278 ../src/list-account.c:86
 #: ../src/list-account.c:240 ../src/list-report.c:90 ../src/list-report.c:479
-#: ../src/list-report.c:913 ../src/rep-stats.c:994 ../src/rep-stats.c:1122
+#: ../src/list-report.c:949 ../src/rep-stats.c:1014 ../src/rep-stats.c:1142
 #: ../src/rep-vehicle.c:1074 ../src/ui-widgets-data.c:51
 #: ../src/ui-widgets-data.c:72 ../src/ui-widgets-data.c:100
 msgid "Total"
@@ -1397,7 +1394,7 @@ msgstr "விவரம்"
 #: ../src/list-operation.c:957 ../src/list-operation.c:1781
 #: ../src/list-scheduled.c:673 ../src/ui-archive.c:515
 #: ../src/ui-assist-import.c:380 ../src/ui-pref.c:134 ../src/ui-split.c:223
-#: ../src/ui-split.c:992 ../src/ui-widgets-data.c:29
+#: ../src/ui-split.c:1017 ../src/ui-widgets-data.c:29
 msgid "Memo"
 msgstr "குறிப்பாணை"
 
@@ -1405,11 +1402,12 @@ msgstr "குறிப்பாணை"
 #. column: Amount
 #. amount
 #. header
+#. 5.7.1
 #: ../src/list-operation.c:961 ../src/list-operation.c:1804
 #: ../src/rep-time.c:1652 ../src/rep-time.c:1810 ../src/rep-vehicle.c:171
 #: ../src/rep-vehicle.c:1380 ../src/ui-archive.c:520
 #: ../src/ui-assist-import.c:384 ../src/ui-filter.c:977 ../src/ui-split.c:239
-#: ../src/ui-split.c:996
+#: ../src/ui-split.c:1022
 msgid "Amount"
 msgstr "தொகை"
 
@@ -1431,7 +1429,7 @@ msgstr "நிலை"
 #: ../src/list-operation.c:1807 ../src/list-report.c:90
 #: ../src/list-report.c:467 ../src/list-scheduled.c:686
 #: ../src/rep-balance.c:1266 ../src/rep-balance.c:1477
-#: ../src/ui-budget-tabview.c:89 ../src/ui-filter.c:1118
+#: ../src/ui-budget-tabview.c:89 ../src/ui-filter.c:1118 ../src/ui-split.c:1023
 #: ../src/ui-transaction.c:53 ../src/ui-widgets-data.c:36
 #: ../src/ui-widgets-data.c:70 ../src/ui-widgets-data.c:261
 #: ../src/ui-widgets-data.c:270
@@ -1442,7 +1440,7 @@ msgstr "செலவு"
 #: ../src/list-operation.c:1810 ../src/list-report.c:90
 #: ../src/list-report.c:473 ../src/list-scheduled.c:698
 #: ../src/rep-balance.c:1268 ../src/rep-balance.c:1481
-#: ../src/ui-budget-tabview.c:90 ../src/ui-filter.c:1123
+#: ../src/ui-budget-tabview.c:90 ../src/ui-filter.c:1123 ../src/ui-split.c:1025
 #: ../src/ui-transaction.c:54 ../src/ui-widgets-data.c:37
 #: ../src/ui-widgets-data.c:71 ../src/ui-widgets-data.c:262
 #: ../src/ui-widgets-data.c:271
@@ -1451,11 +1449,11 @@ msgstr "வருமானம்"
 
 #. column: Result
 #: ../src/list-report.c:90 ../src/list-report.c:454 ../src/rep-budget.c:746
-#: ../src/rep-budget.c:1930 ../src/rep-budget.c:2232
+#: ../src/rep-budget.c:1934 ../src/rep-budget.c:2236
 msgid "Result"
 msgstr "முடிவு"
 
-#: ../src/list-report.c:908
+#: ../src/list-report.c:943
 msgid "Average"
 msgstr "சராசரி"
 
@@ -1485,12 +1483,12 @@ msgstr ""
 msgid "%d/%d under %s"
 msgstr "%d/%d கீழ் %s"
 
-#: ../src/rep-balance.c:808 ../src/rep-budget.c:1377 ../src/rep-stats.c:1514
+#: ../src/rep-balance.c:808 ../src/rep-budget.c:1381 ../src/rep-stats.c:1531
 #: ../src/rep-time.c:1082
 msgid "List"
 msgstr "பட்டியல்"
 
-#: ../src/rep-balance.c:809 ../src/rep-budget.c:1378 ../src/rep-stats.c:1515
+#: ../src/rep-balance.c:809 ../src/rep-budget.c:1382 ../src/rep-stats.c:1532
 #: ../src/rep-time.c:1083
 msgid "View results as list"
 msgstr "முடிவுகளை பட்டியலாகப் பார்க்கவும்"
@@ -1503,17 +1501,17 @@ msgstr "வரி"
 msgid "View results as lines"
 msgstr "முடிவுகளை வரிகளாகப் பார்க்கவும்"
 
-#: ../src/rep-balance.c:822 ../src/rep-budget.c:1391 ../src/rep-stats.c:1546
+#: ../src/rep-balance.c:822 ../src/rep-budget.c:1395 ../src/rep-stats.c:1563
 #: ../src/rep-time.c:1102
 msgid "Detail"
 msgstr "விவரம்"
 
-#: ../src/rep-balance.c:823 ../src/rep-budget.c:1392 ../src/rep-stats.c:1547
+#: ../src/rep-balance.c:823 ../src/rep-budget.c:1396 ../src/rep-stats.c:1564
 #: ../src/rep-time.c:1103
 msgid "Toggle detail"
 msgstr "விவரத்தை மாற்று"
 
-#: ../src/rep-balance.c:828 ../src/rep-budget.c:1398 ../src/rep-stats.c:1576
+#: ../src/rep-balance.c:828 ../src/rep-budget.c:1402 ../src/rep-stats.c:1593
 #: ../src/rep-time.c:1114 ../src/rep-vehicle.c:786
 msgid "Refresh"
 msgstr "புதுப்பி"
@@ -1522,12 +1520,12 @@ msgstr "புதுப்பி"
 msgid "Balance report"
 msgstr "இருப்பு அறிக்கை"
 
-#: ../src/rep-balance.c:1042 ../src/rep-budget.c:1678 ../src/rep-stats.c:1866
+#: ../src/rep-balance.c:1042 ../src/rep-budget.c:1682 ../src/rep-stats.c:1883
 #: ../src/rep-time.c:1389 ../src/rep-vehicle.c:975
 msgid "Display"
 msgstr "காண்பி"
 
-#: ../src/rep-balance.c:1055 ../src/rep-stats.c:1899 ../src/rep-time.c:1407
+#: ../src/rep-balance.c:1055 ../src/rep-stats.c:1916 ../src/rep-time.c:1407
 msgid "Inter_val:"
 msgstr "இடை_மதிப்பு:"
 
@@ -1535,23 +1533,23 @@ msgstr "இடை_மதிப்பு:"
 msgid "Show empty line"
 msgstr "வெற்று வரியைக் காட்டு"
 
-#: ../src/rep-balance.c:1073 ../src/rep-stats.c:1925 ../src/rep-time.c:1425
+#: ../src/rep-balance.c:1073 ../src/rep-stats.c:1942 ../src/rep-time.c:1425
 msgid "_Zoom X:"
 msgstr "_பெரிதாக்கு X"
 
-#: ../src/rep-balance.c:1085 ../src/rep-budget.c:1724 ../src/rep-stats.c:1964
+#: ../src/rep-balance.c:1085 ../src/rep-budget.c:1728 ../src/rep-stats.c:1981
 #: ../src/rep-time.c:1437 ../src/rep-vehicle.c:999
 msgid "Date filter"
 msgstr "தேதி வடிகட்டி"
 
-#: ../src/rep-balance.c:1095 ../src/rep-budget.c:1747 ../src/rep-stats.c:1974
+#: ../src/rep-balance.c:1095 ../src/rep-budget.c:1751 ../src/rep-stats.c:1991
 #: ../src/rep-time.c:1447 ../src/rep-vehicle.c:1009 ../src/ui-filter.c:950
 #: ../src/ui-filter.c:988 ../src/ui-transaction.c:186
 #: ../src/ui-transaction.c:187
 msgid "_From:"
 msgstr "_இங்கிருந்து:"
 
-#: ../src/rep-balance.c:1101 ../src/rep-budget.c:1754 ../src/rep-stats.c:1980
+#: ../src/rep-balance.c:1101 ../src/rep-budget.c:1758 ../src/rep-stats.c:1997
 #: ../src/rep-time.c:1453 ../src/rep-vehicle.c:1015 ../src/ui-assign.c:1714
 #: ../src/ui-filter.c:957 ../src/ui-filter.c:995 ../src/ui-transaction.c:180
 #: ../src/ui-transaction.c:186 ../src/ui-transaction.c:187
@@ -1597,82 +1595,81 @@ msgstr ""
 msgid "Budget by month"
 msgstr ""
 
-#: ../src/rep-budget.c:936 ../src/rep-budget.c:1139
+#: ../src/rep-budget.c:936 ../src/rep-budget.c:1143
 msgid " over"
 msgstr " மேலுள்ள"
 
-#: ../src/rep-budget.c:942 ../src/rep-budget.c:1145
+#: ../src/rep-budget.c:942 ../src/rep-budget.c:1149
 msgid " left"
 msgstr " இடதுபக்கம்"
 
-#: ../src/rep-budget.c:945 ../src/rep-budget.c:1148
+#: ../src/rep-budget.c:945 ../src/rep-budget.c:1152
 msgid " under"
 msgstr " கீழே"
 
-#: ../src/rep-budget.c:1383 ../src/rep-stats.c:1532
+#: ../src/rep-budget.c:1387 ../src/rep-stats.c:1549
 msgid "Stack"
 msgstr "கூம்பாக குவி"
 
-#: ../src/rep-budget.c:1384
+#: ../src/rep-budget.c:1388
 msgid "View results as stack bars"
 msgstr "முடிவுகளை உருளை வடிவ பட்டிகளாகப் பார்"
 
 #. gtk_widget_set_halign (menu, GTK_ALIGN_END);
-#: ../src/rep-budget.c:1406 ../src/rep-stats.c:1584 ../src/rep-time.c:1122
+#: ../src/rep-budget.c:1410 ../src/rep-stats.c:1601 ../src/rep-time.c:1122
 msgid "_Result to clipboard"
 msgstr "_முடிவுகளை பிடிப்புப் பலகைக்கு அனுப்பு"
 
-#: ../src/rep-budget.c:1410 ../src/rep-stats.c:1588 ../src/rep-time.c:1126
+#: ../src/rep-budget.c:1414 ../src/rep-stats.c:1605 ../src/rep-time.c:1126
 msgid "_Result to CSV"
 msgstr "_CSVயாக முடிவு"
 
-#: ../src/rep-budget.c:1414 ../src/rep-stats.c:1592 ../src/rep-time.c:1130
+#: ../src/rep-budget.c:1418 ../src/rep-stats.c:1609 ../src/rep-time.c:1130
 msgid "_Detail to clipboard"
 msgstr "_பிடிப்புப் பலகைக்கு விவரம்"
 
-#: ../src/rep-budget.c:1419 ../src/rep-stats.c:1597 ../src/rep-time.c:1135
+#: ../src/rep-budget.c:1423 ../src/rep-stats.c:1614 ../src/rep-time.c:1135
 msgid "_Detail to CSV"
 msgstr "_CSVயாக விவரம்"
 
-#: ../src/rep-budget.c:1569
+#: ../src/rep-budget.c:1573
 msgid "No account is defined to be part of the budget."
-msgstr ""
-"எந்தக்  கணக்கும் வரவு செலவு திட்டத்தின் ஓர் அங்கமாக நிர்ணயிக்கப்படவில்லை."
+msgstr "எந்தக்  கணக்கும் வரவு செலவு திட்டத்தின் ஓர் அங்கமாக நிர்ணயிக்கப்படவில்லை."
 
-#: ../src/rep-budget.c:1570
+#: ../src/rep-budget.c:1574
 msgid "You should include some accounts from the account dialog."
 msgstr "கணக்கு உரையாடலில் இருந்து சில கணக்குகளை நீங்கள் சேர்க்க வேண்டும்."
 
-#: ../src/rep-budget.c:1660
+#: ../src/rep-budget.c:1664
 msgid "Budget report"
 msgstr "வரவு செலவு திட்ட அறிக்கை"
 
-#: ../src/rep-budget.c:1682 ../src/rep-stats.c:1870
+#: ../src/rep-budget.c:1686 ../src/rep-stats.c:1887
 msgid "Mode:"
 msgstr "முறைமை:"
 
-#: ../src/rep-budget.c:1696
+#: ../src/rep-budget.c:1700
 msgid "Only out of budget"
 msgstr "வரவு செலவு திட்டத்தில் இருந்து மட்டுமே"
 
-#: ../src/rep-budget.c:1796
+#: ../src/rep-budget.c:1800
 msgid "Result:"
 msgstr "முடிவு:"
 
-#: ../src/rep-budget.c:1802
+#: ../src/rep-budget.c:1806
 msgid "Budget:"
 msgstr "வரவு செலவு திட்டம்:"
 
-#: ../src/rep-budget.c:1808
+#: ../src/rep-budget.c:1812
 msgid "Spent:"
 msgstr "செலவு:"
 
 #. column: Expense
-#: ../src/rep-budget.c:1930 ../src/rep-budget.c:2213
+#: ../src/rep-budget.c:1934 ../src/rep-budget.c:2217
 msgid "Spent"
 msgstr "செலவு"
 
-#: ../src/rep-budget.c:1930 ../src/rep-budget.c:2224
+#: ../src/rep-budget.c:1934 ../src/rep-budget.c:2228
 msgid "Fulfilled"
 msgstr ""
 
@@ -1683,100 +1680,99 @@ msgstr ""
 msgid "%s by %s"
 msgstr "%s மூலம் %s"
 
-#: ../src/rep-stats.c:1019
+#: ../src/rep-stats.c:1039
 msgid "Too much columns to display"
 msgstr "காண்பிக்க அதிக நெடுவரிசைகள்"
 
-#: ../src/rep-stats.c:1020
+#: ../src/rep-stats.c:1040
 msgid "Please select a wider interval and / or a narrower date range"
-msgstr ""
-"ஒரு பரந்த இடைவெளி மற்றும் / அல்லது குறுகிய தேதி வரம்பைத் தேர்ந்தெடுக்கவும்"
+msgstr "ஒரு பரந்த இடைவெளி மற்றும் / அல்லது குறுகிய தேதி வரம்பைத் தேர்ந்தெடுக்கவும்"
 
-#: ../src/rep-stats.c:1520 ../src/rep-time.c:1094
+#: ../src/rep-stats.c:1537 ../src/rep-time.c:1094
 msgid "Column"
 msgstr "நெடுவரிசை"
 
-#: ../src/rep-stats.c:1521 ../src/rep-time.c:1095
+#: ../src/rep-stats.c:1538 ../src/rep-time.c:1095
 msgid "View results as column"
 msgstr "முடிவுகளை நெடுவரிசையாகக் காணவும்"
 
-#: ../src/rep-stats.c:1526
+#: ../src/rep-stats.c:1543
 msgid "Donut"
 msgstr "மோதிர வடிவிலான கேக் வகை"
 
-#: ../src/rep-stats.c:1527
+#: ../src/rep-stats.c:1544
 msgid "View results as donut"
 msgstr "மோதிர வடிவிலான கேக் போன்று முடிவுகளைப் பார்க்கவும்"
 
-#: ../src/rep-stats.c:1533
+#: ../src/rep-stats.c:1550
 msgid "View results as stack"
 msgstr "முடிவுகளை உருளை வடிவ பட்டிகளாகப் பார்க்கவும்"
 
-#: ../src/rep-stats.c:1538
+#: ../src/rep-stats.c:1555
 msgid "Stack 100%"
 msgstr "கூம்புக் குவியல் 100%"
 
-#: ../src/rep-stats.c:1539
+#: ../src/rep-stats.c:1556
 msgid "View results as stack 100%"
 msgstr "முடிவுகளை கூம்புக் குவியல் 100% ஆகப் பார்க்கவும்"
 
-#: ../src/rep-stats.c:1555
+#: ../src/rep-stats.c:1572
 msgid "Legend"
 msgstr "குறி விளக்கம்"
 
-#: ../src/rep-stats.c:1556
+#: ../src/rep-stats.c:1573
 msgid "Toggle legend"
 msgstr "குறி விளக்கத்தை மாற்று"
 
-#: ../src/rep-stats.c:1564
+#: ../src/rep-stats.c:1581
 msgid "Rate"
 msgstr "விகிதம்"
 
-#: ../src/rep-stats.c:1565
+#: ../src/rep-stats.c:1582
 msgid "Toggle rate"
 msgstr "விகிதத்தை மாற்று"
 
-#: ../src/rep-stats.c:1573 ../src/rep-time.c:1110
+#: ../src/rep-stats.c:1590 ../src/rep-time.c:1110
 msgid "Filter"
 msgstr "வடிகட்டி"
 
-#: ../src/rep-stats.c:1573 ../src/rep-time.c:1110 ../src/ui-filter.c:1184
+#: ../src/rep-stats.c:1590 ../src/rep-time.c:1110 ../src/ui-filter.c:1184
 msgid "Edit filter"
 msgstr "வடிப்பியை  திருத்துக"
 
-#: ../src/rep-stats.c:1847
+#: ../src/rep-stats.c:1864
 msgid "Statistics Report"
 msgstr "புள்ளி விவர அறிக்கை"
 
-#: ../src/rep-stats.c:1877 ../src/rep-time.c:1393
+#: ../src/rep-stats.c:1894 ../src/rep-time.c:1393
 msgid "_View by:"
 msgstr "_பார்வைப்படி:"
 
-#: ../src/rep-stats.c:1885
+#: ../src/rep-stats.c:1902
 msgid "_Balance mode"
 msgstr "_இருப்பு முறைமை"
 
-#: ../src/rep-stats.c:1910
+#: ../src/rep-stats.c:1927
 msgid "_Forecast"
 msgstr ""
 
-#: ../src/rep-stats.c:1915
+#: ../src/rep-stats.c:1932
 msgid "Sort by _amount"
 msgstr "தொகைப்படி வகைப்படுத்து"
 
-#: ../src/rep-stats.c:1920
+#: ../src/rep-stats.c:1937
 msgid "Compare Exp. & Inc."
 msgstr "வரவையும் செலவையும் ஒப்பிடு"
 
-#: ../src/rep-stats.c:2008
+#: ../src/rep-stats.c:2025
 msgid "Total:"
 msgstr "கூட்டுத் தொகை"
 
-#: ../src/rep-stats.c:2014 ../src/ui-budget.c:1272
+#: ../src/rep-stats.c:2031 ../src/ui-budget.c:1272
 msgid "Income:"
 msgstr "வரவு:"
 
-#: ../src/rep-stats.c:2021 ../src/ui-budget.c:1265
+#: ../src/rep-stats.c:2038 ../src/ui-budget.c:1265
 msgid "Expense:"
 msgstr "செலவு:"
 
@@ -1801,7 +1797,7 @@ msgstr "பொருள் வடிகட்டி"
 msgid "Time slice"
 msgstr "நேர துண்டு"
 
-#. 
+#.
 #. LST_CAR_DATE,
 #. LST_CAR_MEMO,
 #. LST_CAR_METER,
@@ -1810,10 +1806,10 @@ msgstr "நேர துண்டு"
 #. LST_CAR_AMOUNT,
 #. LST_CAR_DIST,
 #. LST_CAR_100KM
-#. 
-#. 
+#.
+#.
 #. column: Memo
-#. 
+#.
 #. column = gtk_tree_view_column_new();
 #. gtk_tree_view_column_set_title(column, _("Memo"));
 #. gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
@@ -1821,7 +1817,7 @@ msgstr "நேர துண்டு"
 #. gtk_tree_view_column_pack_start(column, renderer, TRUE);
 #. gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_MEMO);
 #. //gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
-#. 
+#.
 #. column: Meter
 #: ../src/rep-vehicle.c:168 ../src/rep-vehicle.c:1368
 msgid "Meter"
@@ -1905,7 +1901,7 @@ msgstr "பார்வையில் உள்ள"
 #: ../src/ui-dialogs.c:752 ../src/ui-dialogs.c:829 ../src/ui-dialogs.c:957
 #: ../src/ui-dialogs.c:1125 ../src/ui-filter.c:1196 ../src/ui-hbfile.c:234
 #: ../src/ui-payee.c:1234 ../src/ui-payee.c:1434 ../src/ui-pref.c:2346
-#: ../src/ui-split.c:912 ../src/ui-tag.c:681 ../src/ui-tag.c:805
+#: ../src/ui-split.c:937 ../src/ui-tag.c:681 ../src/ui-tag.c:805
 #: ../src/ui-transaction.c:1485 ../src/ui-txn-multi.c:454
 msgid "_Cancel"
 msgstr "_ரத்து செய்"
@@ -1913,7 +1909,7 @@ msgstr "_ரத்து செய்"
 #: ../src/ui-account.c:1042 ../src/ui-assign.c:934 ../src/ui-category.c:1724
 #: ../src/ui-currency.c:788 ../src/ui-currency.c:1158 ../src/ui-dialogs.c:387
 #: ../src/ui-hbfile.c:236 ../src/ui-payee.c:1236 ../src/ui-pref.c:2348
-#: ../src/ui-split.c:925 ../src/ui-tag.c:683 ../src/ui-transaction.c:1486
+#: ../src/ui-split.c:950 ../src/ui-tag.c:683 ../src/ui-transaction.c:1486
 #: ../src/ui-txn-multi.c:456
 msgid "_OK"
 msgstr "_சரி"
@@ -2250,17 +2246,14 @@ msgstr ""
 
 #: ../src/ui-assist-start.c:62
 msgid "All the elements you setup here can be changed later if required."
-msgstr ""
-"நீங்கள் இங்கு அமைக்கும் அனைத்து கூறுகளும் தேவைப்பட்டால் பின்னர் "
-"மாற்றப்படலாம்."
+msgstr "நீங்கள் இங்கு அமைக்கும் அனைத்து கூறுகளும் தேவைப்பட்டால் பின்னர் மாற்றப்படலாம்."
 
 #: ../src/ui-assist-start.c:67
 msgid ""
 "No changes will be made until you click \"Apply\"\n"
 "at the end of this assistant."
 msgstr ""
-"இந்த உதவியமைப்பின் முடிவில், நீங்கள் \"விண்ணப்பி\" என்பதைக் கிளிக் செய்யும் "
-"வரை \n"
+"இந்த உதவியமைப்பின் முடிவில், நீங்கள் \"விண்ணப்பி\" என்பதைக் கிளிக் செய்யும் வரை \n"
 "எந்த மாற்றமும் செய்யப்படாது"
 
 #. 123456789012345678901234567890123456789012345678901234567890
@@ -2324,8 +2317,7 @@ msgid ""
 "HomeBank enables to import your accounts from downloaded\n"
 "financial institution files, or you can create your account manually."
 msgstr ""
-"பதிவிறக்கம் செய்யப்பட்ட நிதி நிறுவன கோப்புகளிலிருந்து உங்கள் கணக்குகளை "
-"இறக்குமதி செய்ய \n"
+"பதிவிறக்கம் செய்யப்பட்ட நிதி நிறுவன கோப்புகளிலிருந்து உங்கள் கணக்குகளை இறக்குமதி செய்ய \n"
 "இல்லவங்கி உதவுகிறது அல்லது உங்கள் கணக்கை கைமுறையாக உருவாக்கலாம்."
 
 #: ../src/ui-assist-start.c:517
@@ -2438,8 +2430,7 @@ msgstr ", %d of %d பரிவர்த்தனைகள்"
 #: ../src/ui-assist-import.c:1029
 #, c-format
 msgid "%d transaction(s), %d similar, %d existing, %d selected"
-msgstr ""
-"%d பரிவர்த்தனை(கள்), %d போன்றவை, %d இருக்கும், %d தேர்ந்தெடுக்கப்பட்டவை"
+msgstr "%d பரிவர்த்தனை(கள்), %d போன்றவை, %d இருக்கும், %d தேர்ந்தெடுக்கப்பட்டவை"
 
 #: ../src/ui-assist-import.c:1031
 #, c-format
@@ -2450,8 +2441,7 @@ msgstr "%d பரிவர்த்தனை(கள்), %d தேர்ந்�
 msgid ""
 "Some date cannot be converted. Please try to change the date order to "
 "continue."
-msgstr ""
-"சில தேதிகள் மாற்ற முடியாதவை.  மேலும் தொடர, தயவுசெய்து நாள் வரிசையை மாற்றவும்."
+msgstr "சில தேதிகள் மாற்ற முடியாதவை.  மேலும் தொடர, தயவுசெய்து நாள் வரிசையை மாற்றவும்."
 
 #. label = g_strdup_printf(_("'%s' - %s"), genacc->name, hb_import_filetype_char_get(genacc));
 #: ../src/ui-assist-import.c:1388
@@ -2482,8 +2472,7 @@ msgstr ""
 
 #: ../src/ui-assist-import.c:1445
 msgid "Import transactions from bank or credit card"
-msgstr ""
-"வங்கியிலிருந்து அல்லது கடன் அட்டையிலிருந்து பரிவர்த்தனைகளை உள்ளீடு செய்"
+msgstr "வங்கியிலிருந்து அல்லது கடன் அட்டையிலிருந்து பரிவர்த்தனைகளை உள்ளீடு செய்"
 
 #: ../src/ui-assist-import.c:1453
 msgid ""
@@ -2492,9 +2481,9 @@ msgid ""
 "downloaded statements from your bank or credit card, in the following "
 "formats:"
 msgstr ""
-"இந்த உதவியமைப்பின் மூலம், பின்வரும் வடிவங்களில் உங்கள் வங்கி அல்லது கடன் "
-"அட்டையில் இருந்து பதிவிறக்கம் செய்யப்பட்ட அறிக்கைகளை, ஒன்று அல்லது பலவற்றை "
-"உள்ளீடு செய்யும் செயல்முறை மூலம் நீங்கள் வழிநடத்தப்படுவீர்கள் :"
+"இந்த உதவியமைப்பின் மூலம், பின்வரும் வடிவங்களில் உங்கள் வங்கி அல்லது கடன் அட்டையில் இருந்து "
+"பதிவிறக்கம் செய்யப்பட்ட அறிக்கைகளை, ஒன்று அல்லது பலவற்றை உள்ளீடு செய்யும் செயல்முறை மூலம் "
+"நீங்கள் வழிநடத்தப்படுவீர்கள் :"
 
 #: ../src/ui-assist-import.c:1459
 msgid ""
@@ -2517,8 +2506,8 @@ msgid ""
 "No changes will be made until you click \"Apply\" at the end of this "
 "assistant."
 msgstr ""
-"இந்த உதவியமைப்பின் முடிவில் உள்ள \"விண்ணப்பி\"யை சொடுக்கும் வரை எந்த "
-"மாற்றமும் செய்யப்படாது."
+"இந்த உதவியமைப்பின் முடிவில் உள்ள \"விண்ணப்பி\"யை சொடுக்கும் வரை எந்த மாற்றமும் "
+"செய்யப்படாது."
 
 #: ../src/ui-assist-import.c:1483
 msgid "Don't show this again"
@@ -2542,8 +2531,7 @@ msgstr ""
 
 #: ../src/ui-assist-import.c:1732
 msgid "Target account identification by name or number failed."
-msgstr ""
-"பெயர் அல்லது எண் மூலம் இலக்கு கணக்கினை அடையாளம் காண்பது தோல்வியுற்றது."
+msgstr "பெயர் அல்லது எண் மூலம் இலக்கு கணக்கினை அடையாளம் காண்பது தோல்வியுற்றது."
 
 #: ../src/ui-assist-import.c:1745 ../src/ui-pref.c:1246
 msgid "Date order:"
@@ -2639,8 +2627,7 @@ msgid ""
 "The CSV file must contains the exact numbers of column,\n"
 "separated by a semi-colon, please see the help for more details."
 msgstr ""
-"CSV கோப்பில் அரைப்புள்ளியால் பிரிக்கப்பட்ட நெடுவரிசையின் சரியான எண்கள் "
-"இருக்க வேண்டும்,\n"
+"CSV கோப்பில் அரைப்புள்ளியால் பிரிக்கப்பட்ட நெடுவரிசையின் சரியான எண்கள் இருக்க வேண்டும்,\n"
 "மேலும் விவரங்களுக்கு உதவியினைப் பார்க்கவும்."
 
 #: ../src/ui-budget.c:923
@@ -2801,8 +2788,7 @@ msgid ""
 "Any transaction using that category will be set to (no category)"
 msgstr ""
 "இந்த வகை பயன்படுத்தப்பட்டுள்ளது.\n"
-"அந்த வகையைப் பயன்படுத்தும் எந்தவொரு பரிவர்த்தனையும் (வகை இல்லை) என "
-"அமைக்கப்படும்"
+"அந்த வகையைப் பயன்படுத்தும் எந்தவொரு பரிவர்த்தனையும் (வகை இல்லை) என அமைக்கப்படும்"
 
 #: ../src/ui-budget-tabview.c:2373
 msgid "Merge categories"
@@ -2814,8 +2800,7 @@ msgid ""
 "Transactions assigned to category '%s', will be moved to the category "
 "selected below."
 msgstr ""
-"'%s' வகைக்கு ஒதுக்கப்பட்ட பரிவர்த்தனைகள், கீழே தேர்ந்தெடுக்கப்பட்ட வகைக்கு "
-"நகர்த்தப்படும்."
+"'%s' வகைக்கு ஒதுக்கப்பட்ட பரிவர்த்தனைகள், கீழே தேர்ந்தெடுக்கப்பட்ட வகைக்கு நகர்த்தப்படும்."
 
 #: ../src/ui-budget-tabview.c:2407
 msgid "Target category"
@@ -2869,9 +2854,7 @@ msgstr "உபயோகப்படுத்தப்படாத வகைக�
 msgid ""
 "Are you sure you want to permanently\n"
 "delete unused categories?"
-msgstr ""
-"நிச்சயாமாக நீங்கள் உபயோகப்படுத்தாத வகைகளை நிரந்தரமாக நீக்க "
-"விரும்புகின்றீர்களா?"
+msgstr "நிச்சயாமாக நீங்கள் உபயோகப்படுத்தாத வகைகளை நிரந்தரமாக நீக்க விரும்புகின்றீர்களா?"
 
 #: ../src/ui-category.c:1719
 msgid "Edit Category"
@@ -3168,9 +3151,8 @@ msgid ""
 "The file will not be in HomeBank CSV format, because you export\n"
 "from 'All transaction', or you selected an option."
 msgstr ""
-"'அனைத்து பரிவர்த்தனைக'ளிலிருந்து நீங்கள் ஏற்றுமதி செயவதால் அல்லது நீங்கள் "
-"ஒரு விருப்பத்தைத் தேர்ந்தெடுத்துள்ளதால், இந்த கோப்பு இல்லவங்கி CSV "
-"வடிவத்தில் இருக்காது."
+"'அனைத்து பரிவர்த்தனைக'ளிலிருந்து நீங்கள் ஏற்றுமதி செயவதால் அல்லது நீங்கள் ஒரு விருப்பத்தைத் "
+"தேர்ந்தெடுத்துள்ளதால், இந்த கோப்பு இல்லவங்கி CSV வடிவத்தில் இருக்காது."
 
 #: ../src/ui-dialogs.c:954
 msgid "Export as PDF"
@@ -3215,8 +3197,8 @@ msgid ""
 "HomeBank has found some transaction that may be the associated transaction "
 "for the internal transfer."
 msgstr ""
-"இல்லவங்கி சில பரிவர்த்தனைகளைக் கண்டறிந்துள்ளது, இது உள் பரிமாற்றம் "
-"தொடர்புடைய பரிவர்த்தனையாக இருக்கலாம்."
+"இல்லவங்கி சில பரிவர்த்தனைகளைக் கண்டறிந்துள்ளது, இது உள் பரிமாற்றம் தொடர்புடைய "
+"பரிவர்த்தனையாக இருக்கலாம்."
 
 #. header
 #: ../src/ui-filter.c:1002
@@ -3310,8 +3292,7 @@ msgstr "உபயோகிக்கப்படாத பணம் பெறு�
 msgid ""
 "Are you sure you want to\n"
 "permanently delete unused payee?"
-msgstr ""
-"நிச்சயம் நீங்கள், உபயோகிக்கப்படாத பணம் பெறுபவரை நீக்க விரும்புகிறீர்களா?"
+msgstr "நிச்சயம் நீங்கள், உபயோகிக்கப்படாத பணம் பெறுபவரை நீக்க விரும்புகிறீர்களா?"
 
 #: ../src/ui-payee.c:1231
 msgid "Edit Payee"
@@ -3360,8 +3341,8 @@ msgid ""
 "Any transaction using that payee will be set to (no payee)"
 msgstr ""
 "இந்த பணம் பெறுபவர் பயன்படுத்தப்படுகிறார்.\n"
-"அந்த பணம் பெறுபவரை எந்தப் பரிவர்த்தனையிலும் பயன்படுத்தினால் (பணம் பெறுபவர் "
-"இல்லை) என அமைக்கப்படும்"
+"அந்த பணம் பெறுபவரை எந்தப் பரிவர்த்தனையிலும் பயன்படுத்தினால் (பணம் பெறுபவர் இல்லை) என "
+"அமைக்கப்படும்"
 
 #: ../src/ui-payee.c:1763
 msgid "Manage Payees"
@@ -3632,8 +3613,8 @@ msgstr ""
 "%b இடத்தின் சுருக்கமான மாதப் பெயர்.\n"
 "%B இடத்தின் முழு மாதப் பெயர்.\n"
 "%c இடத்தின் பொருத்தமான தேதி மற்றும் நேர பிரதிநிதித்துவம்.\n"
-"%C நூற்றாண்டு எண் (ஆண்டு 100 ஆல் வகுக்கப்பட்டு ஒரு முழு எண்ணாக "
-"துண்டிக்கப்பட்டது) ஒரு தசம எண்ணாக [00-99].\n"
+"%C நூற்றாண்டு எண் (ஆண்டு 100 ஆல் வகுக்கப்பட்டு ஒரு முழு எண்ணாக துண்டிக்கப்பட்டது) ஒரு தசம "
+"எண்ணாக [00-99].\n"
 "%d மாதத்தின் நாள் தசம எண்ணாக [01,31]. \n"
 "%D அதுவே %மாதம்/%நாள்/%வருடம் ஆக. \n"
 "%e மாதத்தின் நாள் தசம எண்ணாக [1,31]; ஒரு இலக்கத்திற்கு முன்னால் ஒரு இடைவெளி "
@@ -3697,8 +3678,7 @@ msgstr ""
 
 #: ../src/ui-pref.c:1836
 msgid "Lock reconciled for any changes"
-msgstr ""
-"மாற்றங்கள் எதுவும் செய்ய இயலாதவாறு கணக்கிணக்கம் செய்யப்பட்டவற்றை பூட்டு"
+msgstr "மாற்றங்கள் எதுவும் செய்ய இயலாதவாறு கணக்கிணக்கம் செய்யப்பட்டவற்றை பூட்டு"
 
 #: ../src/ui-pref.c:1847
 msgid "Transaction dialog"
@@ -3836,7 +3816,7 @@ msgstr "முக்கிய சாளர அறிக்கைகள்"
 #. widget = make_daterange(label, DATE_RANGE_CUSTOM_HIDDEN);
 #. data->CY_daterange_wal = widget;
 #. gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-#. 
+#.
 #. row++;
 #: ../src/ui-pref.c:2223
 msgid "Max _items:"
@@ -3876,43 +3856,56 @@ msgstr ""
 "காப்பு கோப்பகம் மாறிவிட்டது,\n"
 "இந்தப் புதிய இடத்தில் நீங்கள் '.bak' கோப்பை சேமிக்கலாம்."
 
-#: ../src/ui-split.c:840 ../src/ui-split.c:909 ../src/ui-transaction.c:1595
+#: ../src/ui-split.c:553
+#, fuzzy
+msgid "Do you want to delete all split lines"
+msgstr ""
+"தேர்ந்தெடுக்கப்பட்ட ஒவ்வொரு பரிவர்த்தனையையும்\n"
+"நீங்கள் நீக்க விரும்புகிறீர்களா?"
+
+#: ../src/ui-split.c:865 ../src/ui-split.c:934 ../src/ui-transaction.c:1595
 msgid "Transaction splits"
 msgstr "பரிவர்த்தனை பிளவுகள்"
 
-#: ../src/ui-split.c:975
+#: ../src/ui-split.c:1000
 msgid "Delete all"
 msgstr "அனைத்தையும் அழி"
 
-#: ../src/ui-split.c:1028
+#: ../src/ui-split.c:1052
+msgid "Prefix with -/+ to force the sign"
+msgstr ""
+
+#: ../src/ui-split.c:1063
 msgid "Apply"
 msgstr "விண்ணப்பிக்கவும்"
 
-#: ../src/ui-split.c:1032
+#: ../src/ui-split.c:1067
 msgid "Cancel"
 msgstr "ரத்து செய்"
 
-#: ../src/ui-split.c:1040
+#: ../src/ui-split.c:1075
 msgid "Transaction amount:"
 msgstr "பரிவர்த்தனை தொகை:"
 
-#: ../src/ui-split.c:1049
+#: ../src/ui-split.c:1084
 msgid "Unassigned:"
 msgstr "ஒதுக்கபடாத:"
 
-#: ../src/ui-split.c:1064
+#: ../src/ui-split.c:1099
 msgid "Sum of splits:"
 msgstr "பிளவுகளின் கூட்டுத்தொகை:"
 
-#: ../src/ui-split.c:1076
-msgid "Warning: sum of splits and transaction amount don't match"
+#: ../src/ui-split.c:1111
+msgid "Number of splits limit is reached"
 msgstr ""
-"எச்சரிக்கை:  பிரிப்புகளின் தொகையும் பரிவர்த்தனை தொகையும் பொருந்தவில்லை"
 
-#: ../src/ui-split.c:1084
+#: ../src/ui-split.c:1119
 msgid "Warning: sum of splits and transaction type don't match"
-msgstr ""
-"எச்சரிக்கை:  பிரிப்புகளின் தொகையும் பரிவர்த்தனை வகையும் பொருந்தவில்லை"
+msgstr "எச்சரிக்கை:  பிரிப்புகளின் தொகையும் பரிவர்த்தனை வகையும் பொருந்தவில்லை"
+
+#: ../src/ui-split.c:1127
+msgid "Warning: sum of splits and transaction amount don't match"
+msgstr "எச்சரிக்கை:  பிரிப்புகளின் தொகையும் பரிவர்த்தனை தொகையும் பொருந்தவில்லை"
 
 #: ../src/ui-tag.c:678
 msgid "Edit Tag"
@@ -3953,8 +3946,7 @@ msgid ""
 "That tag will be deleted from any transaction using it."
 msgstr ""
 "இந்த குறிச்சொல் பயன்படுத்தப்பட்டுள்ளது.\n"
-"அந்தக் குறிச்சொல்லைப் பயன்படுத்தும் எந்தப் பரிமாற்றத்திலிருந்தும் அது "
-"நீக்கப்படும்."
+"அந்தக் குறிச்சொல்லைப் பயன்படுத்தும் எந்தப் பரிமாற்றத்திலிருந்தும் அது நீக்கப்படும்."
 
 #: ../src/ui-tag.c:1055
 msgid "Manage Tags"

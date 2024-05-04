@@ -1293,13 +1293,9 @@ gint w, h, dw, dh;
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start (GTK_BOX (content), hbox, FALSE, FALSE, 0);
 
-		box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+		box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 		gtk_box_pack_start (GTK_BOX (hbox), box, TRUE, TRUE, 0);
 
-		gtk_style_context_add_class (gtk_widget_get_style_context (box), GTK_STYLE_CLASS_LINKED);
-		gtk_style_context_add_class (gtk_widget_get_style_context (box), GTK_STYLE_CLASS_RAISED);
-		gtk_widget_set_halign(box, GTK_ALIGN_CENTER);
-	
 		widget = gtk_toggle_button_new_with_label(_("Scheduled"));
 		data->BT_typsch = widget;
 		gtk_box_pack_start (GTK_BOX (box), widget, FALSE, FALSE, 0);

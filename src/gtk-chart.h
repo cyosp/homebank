@@ -155,7 +155,6 @@ struct _HbtkDrawContext
 //	double item_x, item_y, item_w;
 
 	/* legend dimension */
-	double	label_w;
 	double  legend_font_h;
 	double  legend_label_w;
 	double	legend_value_w;

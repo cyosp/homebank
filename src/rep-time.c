@@ -285,9 +285,9 @@ gchar *title;
 
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_report));
 	//byamount = 0;
-	tmpsrc  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_src));
-	tmpintvl = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_intvl));
-	cumul     = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_cumul));
+	tmpsrc   = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_src));
+	tmpintvl = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_intvl));
+	cumul    = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_cumul));
 
 	// ensure not exp & inc for piechart
 	page = gtk_notebook_get_current_page(GTK_NOTEBOOK(data->GR_result));

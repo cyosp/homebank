@@ -46,6 +46,7 @@ struct ui_split_dialog_data
 
 	GtkWidget	*IB_wrnsum;
 	GtkWidget	*IB_errtype;
+	GtkWidget	*IB_inflimit;
 	 
 	//Transaction *ope;
 	GPtrArray	*src_splits;

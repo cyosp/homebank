@@ -411,12 +411,17 @@ guint count;
 	/*amount = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_amount));
 	tmpval = hb_amount_round(amount, 2) != 0.0 ? TRUE : FALSE;
 	gtk_widget_set_sensitive (data->BT_apply, tmpval);
-
-	if( count >= TXN_MAX_SPLIT )
-		tmpval = FALSE;
-	gtk_widget_set_sensitive (data->BT_add, tmpval);
 	*/
-	
+
+	//btn: add	
+	tmpval = ( count >= TXN_MAX_SPLIT ) ? FALSE : TRUE;
+	gtk_widget_set_sensitive (data->BT_add, tmpval);
+	if( data->isedited )
+		tmpval = TRUE;
+	gtk_widget_set_sensitive (data->PO_cat, tmpval);
+	gtk_widget_set_sensitive (data->ST_memo, tmpval);
+	gtk_widget_set_sensitive (data->ST_amount, tmpval);	
+
 	//btn: show/hide
 	gtk_widget_set_sensitive (data->LV_split, !data->isedited);
 
@@ -536,17 +541,29 @@ GtkTreeIter			 iter;
 static void ui_split_dialog_deleteall_cb(GtkWidget *widget, gpointer user_data)
 {
 struct ui_split_dialog_data *data;
+gint result;
 
 	DB( g_print("\n[ui_split_dialog] deleteall_cb\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(GTK_WIDGET(widget), GTK_TYPE_WINDOW)), "inst_data");
 
-	gtk_list_store_clear (GTK_LIST_STORE(gtk_tree_view_get_model (GTK_TREE_VIEW(data->LV_split))));
-	da_split_destroy(data->tmp_splits);
-	data->tmp_splits = da_split_new ();
-	
-	ui_split_dialog_compute (widget, data);
-	ui_split_dialog_update (widget, user_data);
+	result = ui_dialog_msg_confirm_alert(
+			GTK_WINDOW(data->dialog),
+			NULL,
+			_("Do you want to delete all split lines"),
+			_("_Delete"),
+			TRUE
+		);
+
+	if(result == GTK_RESPONSE_OK)
+	{
+		gtk_list_store_clear (GTK_LIST_STORE(gtk_tree_view_get_model (GTK_TREE_VIEW(data->LV_split))));
+		da_split_destroy(data->tmp_splits);
+		data->tmp_splits = da_split_new ();
+		
+		ui_split_dialog_compute (widget, data);
+		ui_split_dialog_update (widget, user_data);
+	}
 }
 
 
@@ -752,8 +769,16 @@ gboolean valid;
 	if( (count == 0) || nbvalid >= 2 )
 		sensitive = TRUE;
 
+	gtk_widget_hide(data->IB_inflimit);
 	gtk_widget_hide(data->IB_wrnsum);
 	gtk_widget_hide(data->IB_errtype);
+
+	if( count >= TXN_MAX_SPLIT )
+	{
+		gtk_widget_show_all(data->IB_inflimit);
+		//#GTK+710888: hack waiting a GTK fix 
+		gtk_widget_queue_resize (data->IB_inflimit);
+	}
 
 	if( data->mode == SPLIT_MODE_AMOUNT )
 	{
@@ -993,21 +1018,27 @@ gint row;
 	gimp_label_set_attributes (GTK_LABEL (label), PANGO_ATTR_SCALE, PANGO_SCALE_SMALL, -1);
 	gtk_grid_attach (GTK_GRID (table), label, 1, row, 1, 1);
 
-	label = gtk_label_new(_("Amount"));
+	//5.7.1
+	gchar *typelabel = _("Amount");
+	if( txntype == TXN_TYPE_EXPENSE ) typelabel = _("Expense");
+	else
+		if( txntype == TXN_TYPE_INCOME ) typelabel = _("Income");
+	label = gtk_label_new(typelabel);
 	gimp_label_set_attributes (GTK_LABEL (label), PANGO_ATTR_SCALE, PANGO_SCALE_SMALL, -1);
 	gtk_grid_attach (GTK_GRID (table), label, 2, row, 1, 1);
-
 
 	row++;
 	//widget = ui_cat_comboboxentry_new(NULL);
 	widget = ui_cat_entry_popover_new(NULL);
 	data->PO_cat = widget;
+	gtk_widget_set_hexpand(widget, TRUE);
 	gtk_grid_attach (GTK_GRID (table), widget, 0, row, 1, 1);
 
 	//1977686
 	//widget = make_string(NULL);
 	widget = make_memo_entry(NULL);
 	data->ST_memo= widget;
+	gtk_widget_set_hexpand(widget, TRUE);
 	gtk_grid_attach (GTK_GRID (table), widget, 1, row, 1, 1);
 
 	widget = make_amount(NULL);
@@ -1017,6 +1048,10 @@ gint row;
 	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_TINY);
 	gtk_grid_attach (GTK_GRID (table), box, 3, row, 1, 1);
 
+		widget = gtk_image_new_from_icon_name (ICONNAME_INFO, GTK_ICON_SIZE_BUTTON);
+		gtk_widget_set_tooltip_text(widget, _("Prefix with -/+ to force the sign"));
+		gtk_box_pack_start (GTK_BOX (box), widget, FALSE, FALSE, 0);
+		
 		widget = gtk_image_new_from_icon_name (ICONNAME_HB_OPE_EDIT, GTK_ICON_SIZE_BUTTON);
 		data->IM_edit = widget;
 		gtk_box_pack_start (GTK_BOX(box), widget, TRUE, TRUE, 0);
@@ -1071,9 +1106,9 @@ gint row;
 
 	row++;
 	bar = gtk_info_bar_new ();
-	data->IB_wrnsum = bar;
-	gtk_info_bar_set_message_type (GTK_INFO_BAR (bar), GTK_MESSAGE_ERROR);
-	label = gtk_label_new (_("Warning: sum of splits and transaction amount don't match"));
+	data->IB_inflimit = bar;
+	gtk_info_bar_set_message_type (GTK_INFO_BAR (bar), GTK_MESSAGE_INFO);
+	label = gtk_label_new (_("Number of splits limit is reached"));
 	gtk_box_pack_start (GTK_BOX (gtk_info_bar_get_content_area (GTK_INFO_BAR (bar))), label, TRUE, TRUE, 0);
 	gtk_grid_attach (GTK_GRID (table), bar, 0, row, 4, 1);
 
@@ -1084,7 +1119,15 @@ gint row;
 	label = gtk_label_new (_("Warning: sum of splits and transaction type don't match"));
 	gtk_box_pack_start (GTK_BOX (gtk_info_bar_get_content_area (GTK_INFO_BAR (bar))), label, TRUE, TRUE, 0);
 	gtk_grid_attach (GTK_GRID (table), bar, 0, row, 4, 1);
-	
+
+	row++;
+	bar = gtk_info_bar_new ();
+	data->IB_wrnsum = bar;
+	gtk_info_bar_set_message_type (GTK_INFO_BAR (bar), GTK_MESSAGE_ERROR);
+	label = gtk_label_new (_("Warning: sum of splits and transaction amount don't match"));
+	gtk_box_pack_start (GTK_BOX (gtk_info_bar_get_content_area (GTK_INFO_BAR (bar))), label, TRUE, TRUE, 0);
+	gtk_grid_attach (GTK_GRID (table), bar, 0, row, 4, 1);
+
 	//connect all our signals
 	g_signal_connect (gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_split)), "changed", G_CALLBACK (ui_split_selection), data);
 	g_signal_connect (GTK_TREE_VIEW(data->LV_split), "row-activated", G_CALLBACK (ui_split_rowactivated), data);

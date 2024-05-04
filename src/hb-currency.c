@@ -640,7 +640,7 @@ Currency *cur;
 */
 
 
-static gboolean api_fixerio_parse(const gchar *body, GError **error)
+static gboolean api_fixerio_parse(GBytes *body, GError **error)
 {
 gchar *rawjson;
 gchar *p;
@@ -655,7 +655,7 @@ guint count = 0;
 	if(body)
 	{
 		//there is no need of a complex JSON parser here, so let's hack !
-		rawjson = g_strdup(body);
+		rawjson = g_strdup(g_bytes_get_data(body, NULL));
 		hb_string_inline(rawjson);
 
 		DB( g_printf("\nbody: '%s'\n", rawjson ) );
@@ -753,7 +753,9 @@ gboolean currency_online_sync(GError **error)
 {
 SoupSession *session;
 SoupMessage *msg;
+GBytes *body;
 gchar *query;
+guint status;
 gboolean retval = TRUE;
 
 	DB( g_printf("\n[currency] sync online\n") );
@@ -770,24 +772,33 @@ gboolean retval = TRUE;
 	msg = soup_message_new ("GET", query);
 	if(msg != NULL)
 	{
-		soup_session_send_message (session, msg);
+		//soup_session_send_message (session, msg);
 
-		DB( g_print("status_code: %d %d\n", msg->status_code, SOUP_STATUS_IS_SUCCESSFUL(msg->status_code) ) );
-		DB( g_print("reason: %s\n", msg->reason_phrase) );
-		DB( g_print("datas: %s\n", msg->response_body->data) );
+		//DB( g_print("status_code: %d %d\n", msg->status_code, SOUP_STATUS_IS_SUCCESSFUL(msg->status_code) ) );
+		body = soup_session_send_and_read (session, msg, NULL, error);
+		status = soup_message_get_status (msg);
+		DB( g_print("status_code: %d %d\n", status, SOUP_STATUS_IS_SUCCESSFUL(status) ) );
 
-		if( SOUP_STATUS_IS_SUCCESSFUL(msg->status_code) == TRUE )
+
+		DB( g_print("reason: %s\n", soup_message_get_reason_phrase(msg)) );
+		DB( g_print("datas: %s\n", (gchar *)g_bytes_get_data(body, NULL)) );
+
+		//if( SOUP_STATUS_IS_SUCCESSFUL(msg->status_code) == TRUE )
+		if( SOUP_STATUS_IS_SUCCESSFUL(status) == TRUE )
 		{
 			//#1750426 ignore the retval here (false when no rate was found, as we don't care)
-			api_fixerio_parse(msg->response_body->data, error);
+			//api_fixerio_parse(msg->response_body->data, error);
+			api_fixerio_parse(body, error);
 		}
 		else
 		{
-			*error = g_error_new_literal(1, msg->status_code, msg->reason_phrase);
+			//*error = g_error_new_literal(1, msg->status_code, msg->reason_phrase);
+			*error = g_error_new_literal(1, status, soup_message_get_reason_phrase(msg) );
 			retval = FALSE;
 		}
 
-		g_object_unref(msg);
+		g_bytes_unref (body);
+		g_object_unref (msg);
 	}
 	else
 	{

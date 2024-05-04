@@ -61,7 +61,12 @@ G_DEFINE_TYPE_WITH_CODE(GtkDateEntry, gtk_date_entry, GTK_TYPE_BOX, G_ADD_PRIVAT
 
 gboolean using_twodigit_years = FALSE;
 
-/* order of these in the current locale */
+/* order of these in the current locale
+** https://calendars.fandom.com/wiki/Date_format_by_country
+** YMD: hungary
+** DMY: united-kingdom
+** MDY: united-states
+*/
 static GDateDMY dmy_order[3] = 
 {
    G_DATE_DAY, G_DATE_MONTH, G_DATE_YEAR
@@ -172,61 +177,98 @@ gint i;
 }
 
 
+static void
+hb_date_parse_token_reorder(GDateParseTokens *pt, GDateDay *nday, GDateMonth *nmonth, GDateYear *nyear)
+{
+	//DMY
+	if( dmy_order[0] == G_DATE_DAY )
+	{
+		*nday   = pt->n[0];
+		*nmonth = pt->n[1];
+		*nyear  = pt->n[2];
+	}
+	else
+	//MDY
+	if( dmy_order[0] == G_DATE_MONTH )
+	{
+		*nmonth = pt->n[0];
+		*nday   = pt->n[1];
+		*nyear  = pt->n[2];
+	}
+	else
+	//YMD
+	if( dmy_order[0] == G_DATE_YEAR )
+	{
+		*nyear  = pt->n[0];
+		*nmonth = pt->n[1];
+		*nday   = pt->n[2];
+	}
+
+	DB( g_print(" token converted dmy: %02d %02d %04d\n", *nday, *nmonth, *nyear) );
+
+}
+
+
 static void 
 hb_date_parse_tokens(GDate *date, const gchar *str)
 {
 GDateParseTokens pt;
 GDate tokendate;
-gboolean tokened = FALSE;
-
-	hb_date_fill_parse_tokens(str, &pt);
-
-	//DB( g_print(" > parsetoken return %d values: %d %d %d\n", pt.num_ints, pt.n[0], pt.n[1], pt.n[2]) );
+GDateDay nday;
+GDateMonth nmonth;
+GDateYear nyear;
 
 	// initialize with today's date
 	g_date_set_time_t(&tokendate, time(NULL));
-	
-	switch( pt.num_ints )
+	nday   = g_date_get_day(&tokendate);
+	nmonth = g_date_get_month(&tokendate);
+	nyear  = g_date_get_year(&tokendate);
+
+	hb_date_fill_parse_tokens(str, &pt);
+	DB( g_print(" token raw %d values: %d %d %d\n", pt.num_ints, pt.n[0], pt.n[1], pt.n[2]) );
+
+	// adjust necessary values
+	if( pt.num_ints == 3 )
 	{
-		case 1:
-			if(g_date_valid_day(pt.n[0]))
-			{
-				DB( g_print("  > set day to %02d\n", pt.n[0]) );
-				g_date_set_day(&tokendate, pt.n[0]);
-				tokened = TRUE;
-			}
-			break;
-		case 2:
-			if( dmy_order[0] != G_DATE_YEAR )
-			{
-				if( dmy_order[0] == G_DATE_DAY )
-				{
-					if( g_date_valid_day(pt.n[0]) && g_date_valid_month(pt.n[1]) )
-					{
-						DB( g_print("  > set day/month to %02d %02d\n", pt.n[0], pt.n[1]) );
-					    g_date_set_day(&tokendate, pt.n[0]);
-						g_date_set_month(&tokendate, pt.n[1]);
-						tokened = TRUE;
-					}
-				}
-				else
-				{
-					if( g_date_valid_day(pt.n[1]) && g_date_valid_month(pt.n[0]) )
-					{
-						DB( g_print("  > set day/month to %02d %02d\n", pt.n[1], pt.n[0]) );
-					    g_date_set_day(&tokendate, pt.n[1]);
-						g_date_set_month(&tokendate, pt.n[0]);
-						tokened = TRUE;
-					}
-				}
-			}
-			break;
-		default:
-			DB( g_print("  > nothing done\n") );
-			break;
+		hb_date_parse_token_reorder(&pt, &nday, &nmonth, &nyear);
+
+		//adjust 2digits year: windowing 40:60
+		if( nyear < 100 )
+		{
+		GDateYear thisyear = g_date_get_year(&tokendate);
+		GDateYear millenium = (gint)(thisyear/100) * 100;
+
+			if( nyear <= (( thisyear % 100 ) + 60 ) )
+				nyear += millenium;
+			else
+				nyear += (millenium - 100);
+		
+			DB( g_print(" token fixed year: %04d\n", nyear) );
+		}
+
+		g_date_set_day(&tokendate, nday);
+		g_date_set_month(&tokendate, nmonth);
+		g_date_set_year(&tokendate, nyear);
+	}
+	else
+	//user input day/month or month/day
+	if( pt.num_ints == 2 )
+	{
+		hb_date_parse_token_reorder(&pt, &nday, &nmonth, &nyear);
+
+		g_date_set_day(&tokendate, nday);
+		g_date_set_month(&tokendate, nmonth);
+	}
+	else
+	//user input day
+	if( pt.num_ints == 1 )
+	{
+		nday = pt.n[0];
+		g_date_set_day(&tokendate, nday);
 	}
 
-	if( tokened == TRUE && g_date_valid(&tokendate) )
+	//update output date if tokendate is valid 
+	if( g_date_valid(&tokendate) )
 	{
 		g_date_set_julian(date, g_date_get_julian(&tokendate));
 	}
@@ -241,13 +283,15 @@ update_text(GtkDateEntry *self)
 GtkDateEntryPrivate *priv = self->priv;
 gchar label[127];
 
-	DB( g_print("\n[dateentry] update text\n") );
+	DB( g_print("\n[dateentry] beg update text\n") );
 
 	//%x : The preferred date representation for the current locale without the time.
 	//5.7 added %a to display abbreviated weekday
 	g_date_strftime (label, 127 - 1, "%a %x", priv->date);
 	gtk_entry_set_text (GTK_ENTRY (priv->entry), label);
 	DB( g_print(" = %s\n", label) );
+	
+	DB( g_print("\n[dateentry] end update text\n") );
 }
 
 
@@ -256,14 +300,16 @@ eval_date(GtkDateEntry *self)
 {
 GtkDateEntryPrivate *priv = self->priv;
 
-	DB( g_print("\n[dateentry] eval date\n") );
+	DB( g_print("\n[dateentry] beg eval date\n") );
 
-	DB( g_print(" pre %d %d %d\n", g_date_get_day(priv->date), g_date_get_month(priv->date), g_date_get_year(priv->date)) );
+	DB( g_print(" pre %02d %02d %04d\n", g_date_get_day(priv->date), g_date_get_month(priv->date), g_date_get_year(priv->date)) );
 
 	g_date_clamp(priv->date, &priv->mindate, &priv->maxdate);
-	DB( g_print(" min %d %d %d\n", g_date_get_day(&priv->mindate), g_date_get_month(&priv->mindate), g_date_get_year(&priv->mindate)) );
-	DB( g_print(" max %d %d %d\n", g_date_get_day(&priv->maxdate), g_date_get_month(&priv->maxdate), g_date_get_year(&priv->maxdate)) );
-	
+	//DB( g_print(" min %02d %02d %04d\n", g_date_get_day(&priv->mindate), g_date_get_month(&priv->mindate), g_date_get_year(&priv->mindate)) );
+	//DB( g_print(" max %02d %02d %04d\n", g_date_get_day(&priv->maxdate), g_date_get_month(&priv->maxdate), g_date_get_year(&priv->maxdate)) );
+
+	DB( g_print(" post %02d %02d %04d\n", g_date_get_day(priv->date), g_date_get_month(priv->date), g_date_get_year(priv->date)) );
+
 	update_text(self);
 	
 	if(priv->lastdate != g_date_get_julian(priv->date))
@@ -274,7 +320,7 @@ GtkDateEntryPrivate *priv = self->priv;
 
 	priv->lastdate = g_date_get_julian(priv->date);
 
-	DB( g_print(" post %d %d %d\n", g_date_get_day(priv->date), g_date_get_month(priv->date), g_date_get_year(priv->date)) );
+	DB( g_print("\n[dateentry] end eval date\n") );
 }
 
 
@@ -287,39 +333,20 @@ const gchar *str;
 	DB( g_print("\n[dateentry] parse date\n") );
 
 	str = gtk_entry_get_text (GTK_ENTRY (priv->entry));
-
 	DB( g_print(" inputstr='%s'\n", str) );
 
-	//1) give a try to tokens = day, day/month, month/day
+	//1) my parse of d, dm, md, dmy, mdy, ymd 
 	hb_date_parse_tokens(priv->date, str);
-	DB( g_print(" 2/ hb_tokens :: valid=%d\n", g_date_valid(priv->date)) );
 
+	//2) invalid: glib failover
 	if(!g_date_valid(priv->date))
 	{
-		//2) we parse the string according to the locale
 		g_date_set_parse (priv->date, str);
-
-		DB( g_print(" 1/ glib parsed :: valid=%d\n", g_date_valid(priv->date)) );
-
-		//#1956185 adjust for 2 digits year, note: IBM is windowing 40, not 60
-		if( g_date_valid(priv->date) == TRUE )
-		{
-			if( g_date_get_year(priv->date) < 1970 )
-			{
-				DB( g_print(" > adjusting year %04d from 2 to 4 digits\n", g_date_get_year(priv->date)) );
-				if( g_date_get_year(priv->date) < 60 )
-					g_date_add_years(priv->date, 2000);
-				else
-					g_date_add_years(priv->date, 1900);
-				DB( g_print(" > year set to %d\n", g_date_get_year(priv->date)) );
-			}
-		}
 	}
 
-	//3) at last put today's date and warn the user
+	//3) invalid: warn user put today's
 	if(!g_date_valid(priv->date))
 	{
-		DB( g_print(" 3/ invalid, set today and warn\n") );
 		g_date_set_time_t(priv->date, time(NULL));
 		gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(priv->entry)), GTK_STYLE_CLASS_WARNING);
 	}
@@ -835,3 +862,5 @@ GtkDateEntryPrivate *priv = dateentry->priv;
 
 	return(g_date_get_weekday(priv->date));
 }
+
+

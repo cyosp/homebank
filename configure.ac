@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.71])
-AC_INIT([homebank],[5.7])
+AC_INIT([homebank],[5.7.1])
 #AC_INIT([homebank],[x.x-rc])
 
 AC_CONFIG_HEADERS(config.h)
@@ -29,7 +29,7 @@ AC_SUBST(DEPS_CFLAGS)
 AC_SUBST(DEPS_LIBS)
 AC_CHECK_LIB(m, pow)
 
-PKG_CHECK_MODULES(LIBSOUP, [libsoup-2.4 >= 2.65])
+PKG_CHECK_MODULES(LIBSOUP, [libsoup-3.0 >= 3.0])
 AC_SUBST(LIBSOUP_CFLAGS)
 AC_SUBST(LIBSOUP_LIBS)
 
