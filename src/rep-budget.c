@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2022 Maxime DOYEN
+ *  Copyright (C) 1995-2023 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -1113,8 +1113,7 @@ static void repbudget_window_setup(struct repbudget_data *data)
 	DB( g_print(" init data\n") );
 	
 	repbudget_filter_setup(data);
-	data->detail = PREFS->budg_showdetail;
-	data->legend = 1;
+
 
 	DB( g_print(" set widgets default\n") );
 	
@@ -1255,6 +1254,8 @@ static void repbudget_window_acquire(struct repbudget_data *data)
 
 	data->txn_queue = g_queue_new ();
 	data->filter = da_flt_malloc();
+	data->detail = PREFS->budg_showdetail;
+	data->legend = 1;
 }
 
 

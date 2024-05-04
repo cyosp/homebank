@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2022 Maxime DOYEN
+ *  Copyright (C) 1995-2023 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -771,11 +771,11 @@ gchar *string;
 	else
 	{
 		if( entry->parent == 0 )
-			//string = g_markup_printf_escaped("%s [%c]", name, type);
-			string = g_strdup_printf("%s [%c]", name, type);
+			string = g_markup_printf_escaped("%s [%c]", name, type);
+			//string = g_strdup_printf("%s [%c]", name, type);
 		else
-			//string = g_markup_printf_escaped("%c <i>%s</i>", type, name);
-			string = g_strdup_printf("%c <i>%s</i>", type, name);
+			string = g_markup_printf_escaped("%c <i>%s</i>", type, name);
+			//string = g_strdup_printf("%c <i>%s</i>", type, name);
 	}
 
 	//g_print(" txt = '%s'\n", string);

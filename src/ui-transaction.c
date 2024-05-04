@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2022 Maxime DOYEN
+ *  Copyright (C) 1995-2023 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -377,7 +377,7 @@ GDateWeekday weekday;
 
 	DB( g_print(" wd=%d %s\n", weekday, CYA_WEEKDAY[weekday]) );
 
-	gtk_label_set_label(GTK_LABEL(data->LB_wday), CYA_WEEKDAY[weekday]);
+	gtk_label_set_label(GTK_LABEL(data->LB_wday), _(CYA_WEEKDAY[weekday]));
 
 }
 

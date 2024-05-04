@@ -6,20 +6,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: homebank\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2022-11-13 09:58+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-12-22 19:09+0100\n"
 "PO-Revision-Date: 2021-10-18 20:32+0000\n"
 "Last-Translator: Artyom <Unknown>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
+"Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Launchpad-Export-Date: 2022-12-05 17:16+0000\n"
 "X-Generator: Launchpad (build 51cef3d08dff1e227b5ada709bd67280c567d4be)\n"
-
-#: ../src/dsp-account.c:2841
-msgid "Open the list filter"
-msgstr "Відкрити фільтр переліку"
 
 #: ../data/homebank.desktop.in.in.h:1 ../src/dsp-mainwindow.c:702
 msgid "HomeBank"
@@ -441,8 +438,8 @@ msgstr "Усі операції"
 msgid "_Refresh"
 msgstr "_Оновити"
 
-#: ../src/dsp-account.c:2812 ../src/rep-balance.c:1074 ../src/rep-budget.c:1350
-#: ../src/rep-stats.c:1754 ../src/rep-time.c:1415 ../src/rep-vehicle.c:1016
+#: ../src/dsp-account.c:2812 ../src/rep-balance.c:1068 ../src/rep-budget.c:1351
+#: ../src/rep-stats.c:1749 ../src/rep-time.c:1409 ../src/rep-vehicle.c:1009
 #: ../src/ui-pref.c:1364 ../src/ui-pref.c:1725 ../src/ui-pref.c:2164
 msgid "_Range:"
 msgstr "_Діапазон:"
@@ -451,7 +448,7 @@ msgstr "_Діапазон:"
 msgid "Toggle show future transaction"
 msgstr "Показати майбутні транзакції"
 
-#: ../src/dsp-account.c:2827 ../src/rep-budget.c:1325 ../src/rep-stats.c:1691
+#: ../src/dsp-account.c:2827 ../src/rep-budget.c:1326 ../src/rep-stats.c:1686
 #: ../src/ui-account.c:1870 ../src/ui-assist-start.c:536
 msgid "_Type:"
 msgstr "_Тип:"
@@ -459,6 +456,10 @@ msgstr "_Тип:"
 #: ../src/dsp-account.c:2834 ../src/ui-transaction.c:1714
 msgid "_Status:"
 msgstr "_Стан:"
+
+#: ../src/dsp-account.c:2841
+msgid "Open the list filter"
+msgstr "Відкрити фільтр переліку"
 
 #: ../src/dsp-account.c:2846 ../src/rep-balance.c:811 ../src/rep-budget.c:1033
 #: ../src/rep-stats.c:1394 ../src/rep-time.c:1080 ../src/rep-vehicle.c:797
@@ -472,8 +473,8 @@ msgid "_Reset"
 msgstr "С_кинути"
 
 #. TRANSLATORS: this is for Euro specific users, a toggle to display in 'Minor' currency
-#: ../src/dsp-account.c:2858 ../src/rep-balance.c:1053 ../src/rep-budget.c:1337
-#: ../src/rep-stats.c:1733 ../src/rep-time.c:1394 ../src/rep-vehicle.c:1003
+#: ../src/dsp-account.c:2858 ../src/rep-balance.c:1047 ../src/rep-budget.c:1338
+#: ../src/rep-stats.c:1728 ../src/rep-time.c:1388 ../src/rep-vehicle.c:996
 msgid "Euro _minor"
 msgstr "Евро _мінор"
 
@@ -617,8 +618,7 @@ msgid "The file has been modified since reading it."
 msgstr "З моменту відкриття файл було змінено"
 
 #: ../src/dsp-mainwindow.c:1229
-msgid ""
-"If you save it, all the external changes could be lost. Save it anyway?"
+msgid "If you save it, all the external changes could be lost. Save it anyway?"
 msgstr "Якщо Ви збережете його, всі зовнішні зміни буде втрачено. Зберегти?"
 
 #: ../src/dsp-mainwindow.c:1230
@@ -906,7 +906,7 @@ msgstr "Керування отримувачами"
 #. header
 #: ../src/dsp-mainwindow.c:1952 ../src/hub-spending.c:435
 #: ../src/list-operation.c:1717 ../src/list-scheduled.c:614
-#: ../src/rep-budget.c:1490 ../src/rep-budget.c:1681 ../src/rep-stats.c:64
+#: ../src/rep-budget.c:1491 ../src/rep-budget.c:1682 ../src/rep-stats.c:64
 #: ../src/rep-time.c:74 ../src/ui-archive.c:465 ../src/ui-assign.c:536
 #: ../src/ui-assist-import.c:405 ../src/ui-budget.c:263
 #: ../src/ui-budget-tabview.c:1543 ../src/ui-category.c:1378
@@ -930,7 +930,7 @@ msgstr "Керування запланованними/шаблоннми тр�
 
 #. column: Income
 #: ../src/dsp-mainwindow.c:1954 ../src/dsp-mainwindow.c:1968
-#: ../src/rep-budget.c:655 ../src/rep-budget.c:1490 ../src/rep-budget.c:1695
+#: ../src/rep-budget.c:655 ../src/rep-budget.c:1491 ../src/rep-budget.c:1696
 msgid "Budget"
 msgstr "Кошторис"
 
@@ -976,7 +976,7 @@ msgstr "Відкрити звіт Часової Тенденції"
 
 #. column: Balance
 #: ../src/dsp-mainwindow.c:1967 ../src/hb-export.c:447
-#: ../src/list-operation.c:1729 ../src/rep-balance.c:1401
+#: ../src/list-operation.c:1729 ../src/rep-balance.c:1395
 #: ../src/ui-widgets-data.c:59
 msgid "Balance"
 msgstr "Баланс"
@@ -1047,7 +1047,7 @@ msgstr "неправильний формат CSV"
 
 #. header
 #: ../src/hb-export.c:441 ../src/list-operation.c:1671
-#: ../src/rep-balance.c:1382 ../src/rep-vehicle.c:167 ../src/rep-vehicle.c:1342
+#: ../src/rep-balance.c:1376 ../src/rep-vehicle.c:167 ../src/rep-vehicle.c:1335
 #: ../src/ui-assist-import.c:373 ../src/ui-filter.c:949 ../src/ui-filter.c:1279
 msgid "Date"
 msgstr "Дата"
@@ -1070,8 +1070,8 @@ msgstr "Коментар"
 #. column: Amount
 #. amount
 #. header
-#: ../src/hb-export.c:445 ../src/list-operation.c:1708 ../src/rep-time.c:1626
-#: ../src/rep-time.c:1779 ../src/rep-vehicle.c:171 ../src/rep-vehicle.c:1387
+#: ../src/hb-export.c:445 ../src/list-operation.c:1708 ../src/rep-time.c:1620
+#: ../src/rep-time.c:1773 ../src/rep-vehicle.c:171 ../src/rep-vehicle.c:1380
 #: ../src/ui-archive.c:474 ../src/ui-assist-import.c:382 ../src/ui-filter.c:988
 #: ../src/ui-split.c:239 ../src/ui-split.c:986
 msgid "Amount"
@@ -1193,7 +1193,7 @@ msgstr "Перевірте заплановані транзакції"
 #. column: Total
 #: ../src/hub-scheduled.c:477 ../src/list-account.c:123 ../src/list-report.c:56
 #: ../src/list-report.c:363 ../src/list-report.c:721 ../src/rep-stats.c:78
-#: ../src/rep-stats.c:885 ../src/rep-stats.c:986 ../src/rep-vehicle.c:1087
+#: ../src/rep-stats.c:885 ../src/rep-stats.c:986 ../src/rep-vehicle.c:1080
 #: ../src/ui-widgets-data.c:50 ../src/ui-widgets-data.c:57
 msgid "Total"
 msgstr "Усього"
@@ -1268,7 +1268,7 @@ msgid "Accounts"
 msgstr "Рахунки"
 
 #. Today
-#: ../src/list-account.c:696
+#: ../src/list-account.c:696 ../src/ui-widgets-data.c:97
 msgid "Today"
 msgstr "Сьогодні"
 
@@ -1293,7 +1293,7 @@ msgstr "Статус"
 #. column: Expense
 #: ../src/list-operation.c:1711 ../src/list-report.c:56
 #: ../src/list-report.c:351 ../src/list-scheduled.c:647
-#: ../src/rep-balance.c:1393 ../src/rep-stats.c:76
+#: ../src/rep-balance.c:1387 ../src/rep-stats.c:76
 #: ../src/ui-budget-tabview.c:88 ../src/ui-filter.c:1129
 #: ../src/ui-transaction.c:53 ../src/ui-widgets-data.c:35
 #: ../src/ui-widgets-data.c:193 ../src/ui-widgets-data.c:202
@@ -1303,7 +1303,7 @@ msgstr "Витрати"
 #. column: Income
 #: ../src/list-operation.c:1714 ../src/list-report.c:56
 #: ../src/list-report.c:357 ../src/list-scheduled.c:658
-#: ../src/rep-balance.c:1397 ../src/rep-stats.c:77
+#: ../src/rep-balance.c:1391 ../src/rep-stats.c:77
 #: ../src/ui-budget-tabview.c:89 ../src/ui-filter.c:1134
 #: ../src/ui-transaction.c:54 ../src/ui-widgets-data.c:36
 #: ../src/ui-widgets-data.c:194 ../src/ui-widgets-data.c:203
@@ -1316,7 +1316,7 @@ msgstr "Теґи"
 
 #. column: Result
 #: ../src/list-report.c:56 ../src/list-report.c:340 ../src/rep-budget.c:655
-#: ../src/rep-budget.c:1490 ../src/rep-budget.c:1699
+#: ../src/rep-budget.c:1491 ../src/rep-budget.c:1700
 msgid "Result"
 msgstr "Результат"
 
@@ -1382,68 +1382,68 @@ msgstr "Оновити"
 msgid "Print"
 msgstr "Друк"
 
-#: ../src/rep-balance.c:1007
+#: ../src/rep-balance.c:1001
 msgid "Balance report"
 msgstr "Балансовий звіт"
 
-#: ../src/rep-balance.c:1027 ../src/rep-budget.c:1313 ../src/rep-stats.c:1672
-#: ../src/rep-time.c:1363 ../src/rep-vehicle.c:990
+#: ../src/rep-balance.c:1021 ../src/rep-budget.c:1314 ../src/rep-stats.c:1667
+#: ../src/rep-time.c:1357 ../src/rep-vehicle.c:983
 msgid "Display"
 msgstr "Показати"
 
-#: ../src/rep-balance.c:1040 ../src/rep-stats.c:1705 ../src/rep-time.c:1381
+#: ../src/rep-balance.c:1034 ../src/rep-stats.c:1700 ../src/rep-time.c:1375
 msgid "Inter_val:"
 msgstr "Інтер_вал:"
 
-#: ../src/rep-balance.c:1048 ../src/rep-time.c:1389
+#: ../src/rep-balance.c:1042 ../src/rep-time.c:1383
 msgid "Show empty line"
 msgstr "Показувати порожні рядки"
 
-#: ../src/rep-balance.c:1058 ../src/rep-stats.c:1725 ../src/rep-time.c:1399
+#: ../src/rep-balance.c:1052 ../src/rep-stats.c:1720 ../src/rep-time.c:1393
 msgid "_Zoom X:"
 msgstr "_Збільшення X:"
 
-#: ../src/rep-balance.c:1070 ../src/rep-budget.c:1346 ../src/rep-stats.c:1750
-#: ../src/rep-time.c:1411 ../src/rep-vehicle.c:1012
+#: ../src/rep-balance.c:1064 ../src/rep-budget.c:1347 ../src/rep-stats.c:1745
+#: ../src/rep-time.c:1405 ../src/rep-vehicle.c:1005
 msgid "Date filter"
 msgstr "Відібрати за датою"
 
-#: ../src/rep-balance.c:1080 ../src/rep-budget.c:1356 ../src/rep-stats.c:1760
-#: ../src/rep-time.c:1421 ../src/rep-vehicle.c:1022 ../src/ui-filter.c:961
+#: ../src/rep-balance.c:1074 ../src/rep-budget.c:1357 ../src/rep-stats.c:1755
+#: ../src/rep-time.c:1415 ../src/rep-vehicle.c:1015 ../src/ui-filter.c:961
 #: ../src/ui-filter.c:999 ../src/ui-transaction.c:184
 #: ../src/ui-transaction.c:185
 msgid "_From:"
 msgstr "_Від:"
 
-#: ../src/rep-balance.c:1086 ../src/rep-budget.c:1362 ../src/rep-stats.c:1766
-#: ../src/rep-time.c:1427 ../src/rep-vehicle.c:1028 ../src/ui-assign.c:1627
+#: ../src/rep-balance.c:1080 ../src/rep-budget.c:1363 ../src/rep-stats.c:1761
+#: ../src/rep-time.c:1421 ../src/rep-vehicle.c:1021 ../src/ui-assign.c:1627
 #: ../src/ui-filter.c:968 ../src/ui-filter.c:1006 ../src/ui-transaction.c:178
 #: ../src/ui-transaction.c:184 ../src/ui-transaction.c:185
 msgid "_To:"
 msgstr "_Кому:"
 
-#: ../src/rep-balance.c:1096
+#: ../src/rep-balance.c:1090
 msgid "Account filter"
 msgstr ""
 
-#: ../src/rep-balance.c:1104 ../src/rep-time.c:1445
+#: ../src/rep-balance.c:1098 ../src/rep-time.c:1439
 #: ../src/ui-assist-import.c:1798 ../src/ui-filter.c:746
 msgid "Select:"
 msgstr "Обрати:"
 
-#: ../src/rep-balance.c:1108 ../src/rep-time.c:1449
+#: ../src/rep-balance.c:1102 ../src/rep-time.c:1443
 #: ../src/ui-assist-import.c:1801 ../src/ui-filter.c:750
 #: ../src/ui-widgets-data.c:144
 msgid "All"
 msgstr "Усе"
 
-#: ../src/rep-balance.c:1112 ../src/rep-time.c:1453
+#: ../src/rep-balance.c:1106 ../src/rep-time.c:1447
 #: ../src/ui-assist-import.c:1805 ../src/ui-filter.c:754
 #: ../src/ui-filter.c:1167 ../src/ui-pref.c:106 ../src/ui-widgets-data.c:163
 msgid "None"
 msgstr "Відсутнє"
 
-#: ../src/rep-balance.c:1116 ../src/rep-time.c:1457
+#: ../src/rep-balance.c:1110 ../src/rep-time.c:1451
 #: ../src/ui-assist-import.c:1809 ../src/ui-filter.c:758
 msgid "Invert"
 msgstr "Спротилежнити"
@@ -1491,40 +1491,40 @@ msgstr "_Деталі у буфер обміну"
 msgid "_Detail to CSV"
 msgstr "_Деталі у CSV"
 
-#: ../src/rep-budget.c:1204
+#: ../src/rep-budget.c:1203
 msgid "No account is defined to be part of the budget."
 msgstr "Жоден рахунок не описано як частину кошторису."
 
-#: ../src/rep-budget.c:1205
+#: ../src/rep-budget.c:1204
 msgid "You should include some accounts from the account dialog."
 msgstr "Вам потрібно включити рахунки у Діалозі рахунків."
 
-#: ../src/rep-budget.c:1292
+#: ../src/rep-budget.c:1293
 msgid "Budget report"
 msgstr "Звіт по кошторису"
 
-#: ../src/rep-budget.c:1317 ../src/rep-stats.c:1683 ../src/rep-time.c:1367
+#: ../src/rep-budget.c:1318 ../src/rep-stats.c:1678 ../src/rep-time.c:1361
 msgid "_View by:"
 msgstr "_Перегляд за"
 
-#: ../src/rep-budget.c:1332
+#: ../src/rep-budget.c:1333
 msgid "Only out of budget"
 msgstr "Тільки які не входять у кошторис"
 
-#: ../src/rep-budget.c:1391
+#: ../src/rep-budget.c:1392
 msgid "Result:"
 msgstr "Результат:"
 
-#: ../src/rep-budget.c:1397
+#: ../src/rep-budget.c:1398
 msgid "Budget:"
 msgstr "Кошторис:"
 
-#: ../src/rep-budget.c:1403
+#: ../src/rep-budget.c:1404
 msgid "Spent:"
 msgstr "Витрачено:"
 
 #. column: Expense
-#: ../src/rep-budget.c:1490 ../src/rep-budget.c:1691
+#: ../src/rep-budget.c:1491 ../src/rep-budget.c:1692
 msgid "Spent"
 msgstr "Витрачено"
 
@@ -1608,35 +1608,35 @@ msgstr "Фільтр"
 msgid "Edit filter"
 msgstr "Змінити фільтр"
 
-#: ../src/rep-stats.c:1653
+#: ../src/rep-stats.c:1648
 msgid "Statistics Report"
 msgstr "Статистичний Звіт"
 
-#: ../src/rep-stats.c:1676
+#: ../src/rep-stats.c:1671
 msgid "Mode:"
 msgstr "Режим:"
 
-#: ../src/rep-stats.c:1700
+#: ../src/rep-stats.c:1695
 msgid "_Balance mode"
 msgstr ""
 
-#: ../src/rep-stats.c:1715
+#: ../src/rep-stats.c:1710
 msgid "Sort by _amount"
 msgstr "Ґатункувати за _сумою"
 
-#: ../src/rep-stats.c:1720
+#: ../src/rep-stats.c:1715
 msgid "Compare Exp. & Inc."
 msgstr "Порівняти витрати і надходження"
 
-#: ../src/rep-stats.c:1831
+#: ../src/rep-stats.c:1826
 msgid "Total:"
 msgstr "Усього:"
 
-#: ../src/rep-stats.c:1837 ../src/ui-budget.c:1277
+#: ../src/rep-stats.c:1832 ../src/ui-budget.c:1277
 msgid "Income:"
 msgstr "Прибуток:"
 
-#: ../src/rep-stats.c:1844 ../src/ui-budget.c:1270
+#: ../src/rep-stats.c:1839 ../src/ui-budget.c:1270
 msgid "Expense:"
 msgstr "Витрата:"
 
@@ -1667,23 +1667,23 @@ msgstr "%s З часом"
 msgid "Average: %s"
 msgstr "Середнє: %s"
 
-#: ../src/rep-time.c:1344
+#: ../src/rep-time.c:1338
 msgid "Trend Time Report"
 msgstr "Часова Тенденція"
 
-#: ../src/rep-time.c:1376
+#: ../src/rep-time.c:1370
 msgid "_Cumulate"
 msgstr "_Накопичуваний"
 
-#: ../src/rep-time.c:1437
+#: ../src/rep-time.c:1431
 msgid "Item filter"
 msgstr ""
 
-#: ../src/rep-time.c:1626 ../src/rep-time.c:1767
+#: ../src/rep-time.c:1620 ../src/rep-time.c:1761
 msgid "Time slice"
 msgstr "Часовий зріз"
 
-#. 
+#.
 #. LST_CAR_DATE,
 #. LST_CAR_MEMO,
 #. LST_CAR_METER,
@@ -1692,10 +1692,10 @@ msgstr "Часовий зріз"
 #. LST_CAR_AMOUNT,
 #. LST_CAR_DIST,
 #. LST_CAR_100KM
-#. 
-#. 
+#.
+#.
 #. column: Memo
-#. 
+#.
 #. column = gtk_tree_view_column_new();
 #. gtk_tree_view_column_set_title(column, _("Memo"));
 #. gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
@@ -1703,24 +1703,24 @@ msgstr "Часовий зріз"
 #. gtk_tree_view_column_pack_start(column, renderer, TRUE);
 #. gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_MEMO);
 #. //gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
-#. 
+#.
 #. column: Meter
-#: ../src/rep-vehicle.c:168 ../src/rep-vehicle.c:1375
+#: ../src/rep-vehicle.c:168 ../src/rep-vehicle.c:1368
 msgid "Meter"
 msgstr "Лічильник"
 
 #. column: Fuel load
-#: ../src/rep-vehicle.c:169 ../src/rep-vehicle.c:1379
+#: ../src/rep-vehicle.c:169 ../src/rep-vehicle.c:1372
 msgid "Fuel"
 msgstr "Пальне"
 
 #. column: Price by unit
-#: ../src/rep-vehicle.c:170 ../src/rep-vehicle.c:1383
+#: ../src/rep-vehicle.c:170 ../src/rep-vehicle.c:1376
 msgid "Price"
 msgstr "Ціна"
 
 #. column: Distance done
-#: ../src/rep-vehicle.c:172 ../src/rep-vehicle.c:1391
+#: ../src/rep-vehicle.c:172 ../src/rep-vehicle.c:1384
 msgid "Dist."
 msgstr "Відст."
 
@@ -1732,31 +1732,31 @@ msgstr "Експорт"
 msgid "Export as CSV"
 msgstr "Експортувати як CSV"
 
-#: ../src/rep-vehicle.c:971
+#: ../src/rep-vehicle.c:964
 msgid "Vehicle cost report"
 msgstr "Звіт видатків на авто"
 
-#: ../src/rep-vehicle.c:994
+#: ../src/rep-vehicle.c:987
 msgid "Vehi_cle:"
 msgstr "Авті_вка:"
 
-#: ../src/rep-vehicle.c:1054
+#: ../src/rep-vehicle.c:1047
 msgid "Meter:"
 msgstr "Лічильник:"
 
-#: ../src/rep-vehicle.c:1058
+#: ../src/rep-vehicle.c:1051
 msgid "Consumption:"
 msgstr "Споживання:"
 
-#: ../src/rep-vehicle.c:1062
+#: ../src/rep-vehicle.c:1055
 msgid "Fuel cost:"
 msgstr "Вартість палива:"
 
-#: ../src/rep-vehicle.c:1066
+#: ../src/rep-vehicle.c:1059
 msgid "Other cost:"
 msgstr "Инші видатки:"
 
-#: ../src/rep-vehicle.c:1070
+#: ../src/rep-vehicle.c:1063
 msgid "Total cost:"
 msgstr "Загальна вартість:"
 
@@ -1782,7 +1782,7 @@ msgstr "Видимий"
 #: ../src/ui-dialogs.c:81 ../src/ui-dialogs.c:386 ../src/ui-dialogs.c:504
 #: ../src/ui-dialogs.c:559 ../src/ui-dialogs.c:619 ../src/ui-dialogs.c:688
 #: ../src/ui-dialogs.c:752 ../src/ui-dialogs.c:829 ../src/ui-dialogs.c:957
-#: ../src/ui-dialogs.c:1126 ../src/ui-filter.c:1230 ../src/ui-hbfile.c:233
+#: ../src/ui-dialogs.c:1125 ../src/ui-filter.c:1230 ../src/ui-hbfile.c:233
 #: ../src/ui-payee.c:1235 ../src/ui-payee.c:1434 ../src/ui-pref.c:2294
 #: ../src/ui-split.c:902 ../src/ui-tag.c:679 ../src/ui-tag.c:802
 #: ../src/ui-transaction.c:1451 ../src/ui-txn-multi.c:447
@@ -1958,8 +1958,7 @@ msgstr "Щонай_більше:"
 
 #: ../src/ui-archive.c:813
 msgid "If you delete a scheduled/template, it will be permanently lost."
-msgstr ""
-"Якщо ви вилучите заплановане/шаблон, він буде втрачений безповоротно."
+msgstr "Якщо ви вилучите заплановане/шаблон, він буде втрачений безповоротно."
 
 #: ../src/ui-archive.c:1105
 msgid "Next _date:"
@@ -2372,8 +2371,8 @@ msgstr ""
 "<b>Підтримується:</b> .QIF\n"
 "<i>(застаріла версія Quicken™)</i>\n"
 "<b>Для джедаїв:</b> .CSV\n"
-"<i>(рідний формат збереження HomeBank, для подробиць дивіться "
-"документацію)</i>"
+"<i>(рідний формат збереження HomeBank, для подробиць дивіться документацію)</"
+"i>"
 
 #: ../src/ui-assist-import.c:1475
 msgid ""
@@ -3028,28 +3027,28 @@ msgstr ""
 "Homebank орієнтований на ековідповідальну поведінку, \n"
 "тому для друку використовується найрозповсюдженіший цифровий формат: PDF. "
 
-#: ../src/ui-dialogs.c:1123
+#: ../src/ui-dialogs.c:1122
 msgid "Select action for target creation"
 msgstr ""
 
-#: ../src/ui-dialogs.c:1127
+#: ../src/ui-dialogs.c:1126
 msgid "Create _New"
 msgstr ""
 
-#: ../src/ui-dialogs.c:1128
+#: ../src/ui-dialogs.c:1127
 msgid "Use _Selection"
 msgstr ""
 
-#: ../src/ui-dialogs.c:1156
+#: ../src/ui-dialogs.c:1155
 msgid "Source transfer"
 msgstr ""
 
 #. target listview
-#: ../src/ui-dialogs.c:1173
+#: ../src/ui-dialogs.c:1172
 msgid "Target association suggested"
 msgstr ""
 
-#: ../src/ui-dialogs.c:1178
+#: ../src/ui-dialogs.c:1177
 msgid ""
 "HomeBank has found some transaction that may be the associated transaction "
 "for the internal transfer."
@@ -3955,6 +3954,117 @@ msgstr "Перевірка"
 #: ../src/ui-widgets-data.c:84
 msgid "Savings"
 msgstr "Збереження"
+
+#: ../src/ui-widgets-data.c:96
+msgid "Yesterday"
+msgstr ""
+
+#: ../src/ui-widgets-data.c:98
+msgid "Tomorrow"
+msgstr ""
+
+#: ../src/ui-widgets-data.c:100
+#, fuzzy
+msgid "Last Week"
+msgstr "Тиждень"
+
+#: ../src/ui-widgets-data.c:101
+#, fuzzy
+msgid "This Week"
+msgstr "Тиждень"
+
+#: ../src/ui-widgets-data.c:102
+#, fuzzy
+msgid "Next Week"
+msgstr "Наступна дата"
+
+#: ../src/ui-widgets-data.c:104
+#, fuzzy
+msgid "Last Fortnight"
+msgstr "Наступний місяць"
+
+#: ../src/ui-widgets-data.c:105
+#, fuzzy
+msgid "This Fortnight"
+msgstr "Поточний місяць"
+
+#: ../src/ui-widgets-data.c:106
+#, fuzzy
+msgid "Next Fortnight"
+msgstr "Наступний місяць"
+
+#: ../src/ui-widgets-data.c:108
+#, fuzzy
+msgid "Last Month"
+msgstr "Місяць"
+
+#: ../src/ui-widgets-data.c:109
+#, fuzzy
+msgid "This Month"
+msgstr "Поточний місяць"
+
+#: ../src/ui-widgets-data.c:110
+#, fuzzy
+msgid "Next Month"
+msgstr "Наступний місяць"
+
+#: ../src/ui-widgets-data.c:112
+#, fuzzy
+msgid "Last Quarter"
+msgstr "Квартал"
+
+#: ../src/ui-widgets-data.c:113
+#, fuzzy
+msgid "This Quarter"
+msgstr "Квартал"
+
+#: ../src/ui-widgets-data.c:114
+#, fuzzy
+msgid "Next Quarter"
+msgstr "Наступна дата"
+
+#: ../src/ui-widgets-data.c:116
+#, fuzzy
+msgid "Last Year"
+msgstr "Пів року"
+
+#: ../src/ui-widgets-data.c:117
+#, fuzzy
+msgid "This Year"
+msgstr "Рік"
+
+#: ../src/ui-widgets-data.c:118
+#, fuzzy
+msgid "Next Year"
+msgstr "Наступна дата"
+
+#: ../src/ui-widgets-data.c:124
+#, fuzzy
+msgid "Last 30 Days"
+msgstr "Наступні 30 днів"
+
+#: ../src/ui-widgets-data.c:125
+#, fuzzy
+msgid "Last 60 Days"
+msgstr "Наступні 60 днів"
+
+#: ../src/ui-widgets-data.c:126
+#, fuzzy
+msgid "Last 90 Days"
+msgstr "Наступні 90 днів"
+
+#: ../src/ui-widgets-data.c:128
+msgid "Last 12 Months"
+msgstr ""
+
+#: ../src/ui-widgets-data.c:129
+msgid "30 Days Around"
+msgstr ""
+
+#: ../src/ui-widgets-data.c:130
+#, fuzzy
+msgid "All Date"
+msgstr "Дата"
 
 #: ../src/ui-widgets-data.c:137
 msgid "This month"

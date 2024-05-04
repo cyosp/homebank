@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2022 Maxime DOYEN
+ *  Copyright (C) 1995-2023 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -836,7 +836,7 @@ static void repbalance_window_setup(struct repbalance_data *data, guint32 accnum
 	DB( g_print(" init data\n") );
 
 	repbalance_filter_setup(data);
-	data->detail = 0;
+
 
 	DB( g_print(" populate\n") );
 	
@@ -960,8 +960,9 @@ static void repbalance_window_acquire(struct repbalance_data *data)
 	DB( g_print("\n[repbalance] acquire\n") );
 
 	data->ope_list = NULL;
-
 	data->filter = da_flt_malloc();
+	data->detail = 0;
+	
 }
 
 

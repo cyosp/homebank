@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2022 Maxime DOYEN
+ *  Copyright (C) 1995-2023 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -75,13 +75,13 @@
 
 #define HOMEBANK_MAJOR	5
 #define HOMEBANK_MINOR	6
-#define HOMEBANK_MICRO	0
+#define HOMEBANK_MICRO	1
 
-#define HB_VERSION		"5.6"
+#define HB_VERSION		"5.6.1"
 #define HB_VERSION_NUM	(HOMEBANK_MAJOR*10000) + (HOMEBANK_MINOR*100) + HOMEBANK_MICRO
 
 #define FILE_VERSION		1.4
-#define PREF_VERSION		560
+#define PREF_VERSION		561
 
 #if HB_UNSTABLE == FALSE
 	#define	PROGNAME		"HomeBank"

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2022 Maxime DOYEN
+ *  Copyright (C) 1995-2023 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -24,7 +24,7 @@
 enum {
 	LIST_TXN_TYPE_BOOK = 0,
 	LIST_TXN_TYPE_DETAIL,
-	LIST_TXN_TYPE_IMPOPE,
+	LIST_TXN_TYPE_OTHER,
 	LIST_TXN_TYPE_XFERSOURCE,
 	LIST_TXN_TYPE_XFERTARGET
 };

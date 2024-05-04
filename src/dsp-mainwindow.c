@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2022 Maxime DOYEN
+ *  Copyright (C) 1995-2023 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -189,7 +189,7 @@ gchar *version;
   };
 */
 
-	static const gchar *copyright = "Copyright \xc2\xa9 1995-2022 - Maxime DOYEN";
+	static const gchar *copyright = "Copyright \xc2\xa9 1995-2023 - Maxime DOYEN";
 
 
 

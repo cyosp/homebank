@@ -10,17 +10,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: homebank\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2022-11-13 09:58+0100\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-12-22 19:09+0100\n"
 "PO-Revision-Date: 2022-01-29 15:50+0000\n"
 "Last-Translator: Balázs Meskó <Unknown>\n"
 "Language-Team: Hungarian (https://www.transifex.com/fsf-hu/teams/77907/hu/)\n"
+"Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Launchpad-Export-Date: 2022-12-05 17:16+0000\n"
 "X-Generator: Launchpad (build 51cef3d08dff1e227b5ada709bd67280c567d4be)\n"
-"Language: hu\n"
 
 #: ../data/homebank.desktop.in.in.h:1 ../src/dsp-mainwindow.c:702
 msgid "HomeBank"
@@ -445,8 +445,8 @@ msgstr "Összes tranzakció"
 msgid "_Refresh"
 msgstr "_Frissítés"
 
-#: ../src/dsp-account.c:2812 ../src/rep-balance.c:1074 ../src/rep-budget.c:1350
-#: ../src/rep-stats.c:1754 ../src/rep-time.c:1415 ../src/rep-vehicle.c:1016
+#: ../src/dsp-account.c:2812 ../src/rep-balance.c:1068 ../src/rep-budget.c:1351
+#: ../src/rep-stats.c:1749 ../src/rep-time.c:1409 ../src/rep-vehicle.c:1009
 #: ../src/ui-pref.c:1364 ../src/ui-pref.c:1725 ../src/ui-pref.c:2164
 msgid "_Range:"
 msgstr "_Tartomány:"
@@ -455,7 +455,7 @@ msgstr "_Tartomány:"
 msgid "Toggle show future transaction"
 msgstr "Jövőbeli tranzakciók láthatósága be/ki"
 
-#: ../src/dsp-account.c:2827 ../src/rep-budget.c:1325 ../src/rep-stats.c:1691
+#: ../src/dsp-account.c:2827 ../src/rep-budget.c:1326 ../src/rep-stats.c:1686
 #: ../src/ui-account.c:1870 ../src/ui-assist-start.c:536
 msgid "_Type:"
 msgstr "_Típus:"
@@ -480,8 +480,8 @@ msgid "_Reset"
 msgstr "_Visszaállítás"
 
 #. TRANSLATORS: this is for Euro specific users, a toggle to display in 'Minor' currency
-#: ../src/dsp-account.c:2858 ../src/rep-balance.c:1053 ../src/rep-budget.c:1337
-#: ../src/rep-stats.c:1733 ../src/rep-time.c:1394 ../src/rep-vehicle.c:1003
+#: ../src/dsp-account.c:2858 ../src/rep-balance.c:1047 ../src/rep-budget.c:1338
+#: ../src/rep-stats.c:1728 ../src/rep-time.c:1388 ../src/rep-vehicle.c:996
 msgid "Euro _minor"
 msgstr "Euró _másod."
 
@@ -626,8 +626,7 @@ msgid "The file has been modified since reading it."
 msgstr "A fájl megváltozott a betöltése óta."
 
 #: ../src/dsp-mainwindow.c:1229
-msgid ""
-"If you save it, all the external changes could be lost. Save it anyway?"
+msgid "If you save it, all the external changes could be lost. Save it anyway?"
 msgstr ""
 "Ha most mentésre kerülne ez a változat, akkor minden külső módosítás "
 "elveszne. Mindenképp elmenti?"
@@ -917,7 +916,7 @@ msgstr "A kedvezményezettek kezelése"
 #. header
 #: ../src/dsp-mainwindow.c:1952 ../src/hub-spending.c:435
 #: ../src/list-operation.c:1717 ../src/list-scheduled.c:614
-#: ../src/rep-budget.c:1490 ../src/rep-budget.c:1681 ../src/rep-stats.c:64
+#: ../src/rep-budget.c:1491 ../src/rep-budget.c:1682 ../src/rep-stats.c:64
 #: ../src/rep-time.c:74 ../src/ui-archive.c:465 ../src/ui-assign.c:536
 #: ../src/ui-assist-import.c:405 ../src/ui-budget.c:263
 #: ../src/ui-budget-tabview.c:1543 ../src/ui-category.c:1378
@@ -941,7 +940,7 @@ msgstr "Az ütemezett/sablon tranzakciók kezelése"
 
 #. column: Income
 #: ../src/dsp-mainwindow.c:1954 ../src/dsp-mainwindow.c:1968
-#: ../src/rep-budget.c:655 ../src/rep-budget.c:1490 ../src/rep-budget.c:1695
+#: ../src/rep-budget.c:655 ../src/rep-budget.c:1491 ../src/rep-budget.c:1696
 msgid "Budget"
 msgstr "Költségvetés"
 
@@ -987,7 +986,7 @@ msgstr "Trendkimutatás megnyitása"
 
 #. column: Balance
 #: ../src/dsp-mainwindow.c:1967 ../src/hb-export.c:447
-#: ../src/list-operation.c:1729 ../src/rep-balance.c:1401
+#: ../src/list-operation.c:1729 ../src/rep-balance.c:1395
 #: ../src/ui-widgets-data.c:59
 msgid "Balance"
 msgstr "Egyenleg"
@@ -1058,7 +1057,7 @@ msgstr "érvénytelen CSV formátum"
 
 #. header
 #: ../src/hb-export.c:441 ../src/list-operation.c:1671
-#: ../src/rep-balance.c:1382 ../src/rep-vehicle.c:167 ../src/rep-vehicle.c:1342
+#: ../src/rep-balance.c:1376 ../src/rep-vehicle.c:167 ../src/rep-vehicle.c:1335
 #: ../src/ui-assist-import.c:373 ../src/ui-filter.c:949 ../src/ui-filter.c:1279
 msgid "Date"
 msgstr "Dátum"
@@ -1081,8 +1080,8 @@ msgstr "Feljegyzés"
 #. column: Amount
 #. amount
 #. header
-#: ../src/hb-export.c:445 ../src/list-operation.c:1708 ../src/rep-time.c:1626
-#: ../src/rep-time.c:1779 ../src/rep-vehicle.c:171 ../src/rep-vehicle.c:1387
+#: ../src/hb-export.c:445 ../src/list-operation.c:1708 ../src/rep-time.c:1620
+#: ../src/rep-time.c:1773 ../src/rep-vehicle.c:171 ../src/rep-vehicle.c:1380
 #: ../src/ui-archive.c:474 ../src/ui-assist-import.c:382 ../src/ui-filter.c:988
 #: ../src/ui-split.c:239 ../src/ui-split.c:986
 msgid "Amount"
@@ -1204,7 +1203,7 @@ msgstr "Ütemezett tranzakciók eredményeinek ellenőrzése"
 #. column: Total
 #: ../src/hub-scheduled.c:477 ../src/list-account.c:123 ../src/list-report.c:56
 #: ../src/list-report.c:363 ../src/list-report.c:721 ../src/rep-stats.c:78
-#: ../src/rep-stats.c:885 ../src/rep-stats.c:986 ../src/rep-vehicle.c:1087
+#: ../src/rep-stats.c:885 ../src/rep-stats.c:986 ../src/rep-vehicle.c:1080
 #: ../src/ui-widgets-data.c:50 ../src/ui-widgets-data.c:57
 msgid "Total"
 msgstr "Összesen"
@@ -1279,7 +1278,7 @@ msgid "Accounts"
 msgstr "Számlák"
 
 #. Today
-#: ../src/list-account.c:696
+#: ../src/list-account.c:696 ../src/ui-widgets-data.c:97
 msgid "Today"
 msgstr "Ma"
 
@@ -1304,7 +1303,7 @@ msgstr "Állapot"
 #. column: Expense
 #: ../src/list-operation.c:1711 ../src/list-report.c:56
 #: ../src/list-report.c:351 ../src/list-scheduled.c:647
-#: ../src/rep-balance.c:1393 ../src/rep-stats.c:76
+#: ../src/rep-balance.c:1387 ../src/rep-stats.c:76
 #: ../src/ui-budget-tabview.c:88 ../src/ui-filter.c:1129
 #: ../src/ui-transaction.c:53 ../src/ui-widgets-data.c:35
 #: ../src/ui-widgets-data.c:193 ../src/ui-widgets-data.c:202
@@ -1314,7 +1313,7 @@ msgstr "Kiadás"
 #. column: Income
 #: ../src/list-operation.c:1714 ../src/list-report.c:56
 #: ../src/list-report.c:357 ../src/list-scheduled.c:658
-#: ../src/rep-balance.c:1397 ../src/rep-stats.c:77
+#: ../src/rep-balance.c:1391 ../src/rep-stats.c:77
 #: ../src/ui-budget-tabview.c:89 ../src/ui-filter.c:1134
 #: ../src/ui-transaction.c:54 ../src/ui-widgets-data.c:36
 #: ../src/ui-widgets-data.c:194 ../src/ui-widgets-data.c:203
@@ -1327,7 +1326,7 @@ msgstr "Címkék"
 
 #. column: Result
 #: ../src/list-report.c:56 ../src/list-report.c:340 ../src/rep-budget.c:655
-#: ../src/rep-budget.c:1490 ../src/rep-budget.c:1699
+#: ../src/rep-budget.c:1491 ../src/rep-budget.c:1700
 msgid "Result"
 msgstr "Eredmény"
 
@@ -1393,68 +1392,68 @@ msgstr "Frissítés"
 msgid "Print"
 msgstr "Nyomtatás"
 
-#: ../src/rep-balance.c:1007
+#: ../src/rep-balance.c:1001
 msgid "Balance report"
 msgstr "Egyenlegkimutatás"
 
-#: ../src/rep-balance.c:1027 ../src/rep-budget.c:1313 ../src/rep-stats.c:1672
-#: ../src/rep-time.c:1363 ../src/rep-vehicle.c:990
+#: ../src/rep-balance.c:1021 ../src/rep-budget.c:1314 ../src/rep-stats.c:1667
+#: ../src/rep-time.c:1357 ../src/rep-vehicle.c:983
 msgid "Display"
 msgstr "Megjelenítés"
 
-#: ../src/rep-balance.c:1040 ../src/rep-stats.c:1705 ../src/rep-time.c:1381
+#: ../src/rep-balance.c:1034 ../src/rep-stats.c:1700 ../src/rep-time.c:1375
 msgid "Inter_val:"
 msgstr "Idő_köz:"
 
-#: ../src/rep-balance.c:1048 ../src/rep-time.c:1389
+#: ../src/rep-balance.c:1042 ../src/rep-time.c:1383
 msgid "Show empty line"
 msgstr "Üres sor megjelenítése"
 
-#: ../src/rep-balance.c:1058 ../src/rep-stats.c:1725 ../src/rep-time.c:1399
+#: ../src/rep-balance.c:1052 ../src/rep-stats.c:1720 ../src/rep-time.c:1393
 msgid "_Zoom X:"
 msgstr "_Nagyítás:"
 
-#: ../src/rep-balance.c:1070 ../src/rep-budget.c:1346 ../src/rep-stats.c:1750
-#: ../src/rep-time.c:1411 ../src/rep-vehicle.c:1012
+#: ../src/rep-balance.c:1064 ../src/rep-budget.c:1347 ../src/rep-stats.c:1745
+#: ../src/rep-time.c:1405 ../src/rep-vehicle.c:1005
 msgid "Date filter"
 msgstr "Dátum szűrése"
 
-#: ../src/rep-balance.c:1080 ../src/rep-budget.c:1356 ../src/rep-stats.c:1760
-#: ../src/rep-time.c:1421 ../src/rep-vehicle.c:1022 ../src/ui-filter.c:961
+#: ../src/rep-balance.c:1074 ../src/rep-budget.c:1357 ../src/rep-stats.c:1755
+#: ../src/rep-time.c:1415 ../src/rep-vehicle.c:1015 ../src/ui-filter.c:961
 #: ../src/ui-filter.c:999 ../src/ui-transaction.c:184
 #: ../src/ui-transaction.c:185
 msgid "_From:"
 msgstr "_Ettől:"
 
-#: ../src/rep-balance.c:1086 ../src/rep-budget.c:1362 ../src/rep-stats.c:1766
-#: ../src/rep-time.c:1427 ../src/rep-vehicle.c:1028 ../src/ui-assign.c:1627
+#: ../src/rep-balance.c:1080 ../src/rep-budget.c:1363 ../src/rep-stats.c:1761
+#: ../src/rep-time.c:1421 ../src/rep-vehicle.c:1021 ../src/ui-assign.c:1627
 #: ../src/ui-filter.c:968 ../src/ui-filter.c:1006 ../src/ui-transaction.c:178
 #: ../src/ui-transaction.c:184 ../src/ui-transaction.c:185
 msgid "_To:"
 msgstr "E_ddig:"
 
-#: ../src/rep-balance.c:1096
+#: ../src/rep-balance.c:1090
 msgid "Account filter"
 msgstr ""
 
-#: ../src/rep-balance.c:1104 ../src/rep-time.c:1445
+#: ../src/rep-balance.c:1098 ../src/rep-time.c:1439
 #: ../src/ui-assist-import.c:1798 ../src/ui-filter.c:746
 msgid "Select:"
 msgstr "Kijelölés:"
 
-#: ../src/rep-balance.c:1108 ../src/rep-time.c:1449
+#: ../src/rep-balance.c:1102 ../src/rep-time.c:1443
 #: ../src/ui-assist-import.c:1801 ../src/ui-filter.c:750
 #: ../src/ui-widgets-data.c:144
 msgid "All"
 msgstr "Összes"
 
-#: ../src/rep-balance.c:1112 ../src/rep-time.c:1453
+#: ../src/rep-balance.c:1106 ../src/rep-time.c:1447
 #: ../src/ui-assist-import.c:1805 ../src/ui-filter.c:754
 #: ../src/ui-filter.c:1167 ../src/ui-pref.c:106 ../src/ui-widgets-data.c:163
 msgid "None"
 msgstr "Semmi"
 
-#: ../src/rep-balance.c:1116 ../src/rep-time.c:1457
+#: ../src/rep-balance.c:1110 ../src/rep-time.c:1451
 #: ../src/ui-assist-import.c:1809 ../src/ui-filter.c:758
 msgid "Invert"
 msgstr "Megfordítás"
@@ -1502,40 +1501,40 @@ msgstr "_Részletek a vágólapra"
 msgid "_Detail to CSV"
 msgstr "_Részletek CSV-be"
 
-#: ../src/rep-budget.c:1204
+#: ../src/rep-budget.c:1203
 msgid "No account is defined to be part of the budget."
 msgstr "Egyetlen számla sem szerepel a költségvetésben."
 
-#: ../src/rep-budget.c:1205
+#: ../src/rep-budget.c:1204
 msgid "You should include some accounts from the account dialog."
 msgstr "A számla párbeszédablakban néhány számlát hozzá kell adni."
 
-#: ../src/rep-budget.c:1292
+#: ../src/rep-budget.c:1293
 msgid "Budget report"
 msgstr "Költségvetési kimutatás"
 
-#: ../src/rep-budget.c:1317 ../src/rep-stats.c:1683 ../src/rep-time.c:1367
+#: ../src/rep-budget.c:1318 ../src/rep-stats.c:1678 ../src/rep-time.c:1361
 msgid "_View by:"
 msgstr "_Nézet:"
 
-#: ../src/rep-budget.c:1332
+#: ../src/rep-budget.c:1333
 msgid "Only out of budget"
 msgstr "Csak a költségvetésen túliak"
 
-#: ../src/rep-budget.c:1391
+#: ../src/rep-budget.c:1392
 msgid "Result:"
 msgstr "Eredmény:"
 
-#: ../src/rep-budget.c:1397
+#: ../src/rep-budget.c:1398
 msgid "Budget:"
 msgstr "Tervezet:"
 
-#: ../src/rep-budget.c:1403
+#: ../src/rep-budget.c:1404
 msgid "Spent:"
 msgstr "Kiadás:"
 
 #. column: Expense
-#: ../src/rep-budget.c:1490 ../src/rep-budget.c:1691
+#: ../src/rep-budget.c:1491 ../src/rep-budget.c:1692
 msgid "Spent"
 msgstr "Kiadások"
 
@@ -1619,35 +1618,35 @@ msgstr "Szűrő"
 msgid "Edit filter"
 msgstr "Szűrő módosítása"
 
-#: ../src/rep-stats.c:1653
+#: ../src/rep-stats.c:1648
 msgid "Statistics Report"
 msgstr "Statisztikai kimutatás"
 
-#: ../src/rep-stats.c:1676
+#: ../src/rep-stats.c:1671
 msgid "Mode:"
 msgstr "Mód:"
 
-#: ../src/rep-stats.c:1700
+#: ../src/rep-stats.c:1695
 msgid "_Balance mode"
 msgstr ""
 
-#: ../src/rep-stats.c:1715
+#: ../src/rep-stats.c:1710
 msgid "Sort by _amount"
 msgstr "Rendezés _összeg szerint"
 
-#: ../src/rep-stats.c:1720
+#: ../src/rep-stats.c:1715
 msgid "Compare Exp. & Inc."
 msgstr "Összehasonlítás Kiadás és Bevétel"
 
-#: ../src/rep-stats.c:1831
+#: ../src/rep-stats.c:1826
 msgid "Total:"
 msgstr "Összegzés:"
 
-#: ../src/rep-stats.c:1837 ../src/ui-budget.c:1277
+#: ../src/rep-stats.c:1832 ../src/ui-budget.c:1277
 msgid "Income:"
 msgstr "Bevétel:"
 
-#: ../src/rep-stats.c:1844 ../src/ui-budget.c:1270
+#: ../src/rep-stats.c:1839 ../src/ui-budget.c:1270
 msgid "Expense:"
 msgstr "Kiadás:"
 
@@ -1678,23 +1677,23 @@ msgstr "%s az idő múlásával"
 msgid "Average: %s"
 msgstr "Átlag: %s"
 
-#: ../src/rep-time.c:1344
+#: ../src/rep-time.c:1338
 msgid "Trend Time Report"
 msgstr "Trendkimutatás"
 
-#: ../src/rep-time.c:1376
+#: ../src/rep-time.c:1370
 msgid "_Cumulate"
 msgstr "_Egybevetés"
 
-#: ../src/rep-time.c:1437
+#: ../src/rep-time.c:1431
 msgid "Item filter"
 msgstr ""
 
-#: ../src/rep-time.c:1626 ../src/rep-time.c:1767
+#: ../src/rep-time.c:1620 ../src/rep-time.c:1761
 msgid "Time slice"
 msgstr "Időszelet"
 
-#. 
+#.
 #. LST_CAR_DATE,
 #. LST_CAR_MEMO,
 #. LST_CAR_METER,
@@ -1703,10 +1702,10 @@ msgstr "Időszelet"
 #. LST_CAR_AMOUNT,
 #. LST_CAR_DIST,
 #. LST_CAR_100KM
-#. 
-#. 
+#.
+#.
 #. column: Memo
-#. 
+#.
 #. column = gtk_tree_view_column_new();
 #. gtk_tree_view_column_set_title(column, _("Memo"));
 #. gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
@@ -1714,24 +1713,24 @@ msgstr "Időszelet"
 #. gtk_tree_view_column_pack_start(column, renderer, TRUE);
 #. gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_MEMO);
 #. //gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
-#. 
+#.
 #. column: Meter
-#: ../src/rep-vehicle.c:168 ../src/rep-vehicle.c:1375
+#: ../src/rep-vehicle.c:168 ../src/rep-vehicle.c:1368
 msgid "Meter"
 msgstr "Út"
 
 #. column: Fuel load
-#: ../src/rep-vehicle.c:169 ../src/rep-vehicle.c:1379
+#: ../src/rep-vehicle.c:169 ../src/rep-vehicle.c:1372
 msgid "Fuel"
 msgstr "Üzemanyag"
 
 #. column: Price by unit
-#: ../src/rep-vehicle.c:170 ../src/rep-vehicle.c:1383
+#: ../src/rep-vehicle.c:170 ../src/rep-vehicle.c:1376
 msgid "Price"
 msgstr "Ár"
 
 #. column: Distance done
-#: ../src/rep-vehicle.c:172 ../src/rep-vehicle.c:1391
+#: ../src/rep-vehicle.c:172 ../src/rep-vehicle.c:1384
 msgid "Dist."
 msgstr "Táv"
 
@@ -1743,31 +1742,31 @@ msgstr "Exportálás"
 msgid "Export as CSV"
 msgstr "Exportálás CSV-be"
 
-#: ../src/rep-vehicle.c:971
+#: ../src/rep-vehicle.c:964
 msgid "Vehicle cost report"
 msgstr "Gépjárműköltség-kimutatás"
 
-#: ../src/rep-vehicle.c:994
+#: ../src/rep-vehicle.c:987
 msgid "Vehi_cle:"
 msgstr "_Gépjármű:"
 
-#: ../src/rep-vehicle.c:1054
+#: ../src/rep-vehicle.c:1047
 msgid "Meter:"
 msgstr "Út:"
 
-#: ../src/rep-vehicle.c:1058
+#: ../src/rep-vehicle.c:1051
 msgid "Consumption:"
 msgstr "Fogyasztás:"
 
-#: ../src/rep-vehicle.c:1062
+#: ../src/rep-vehicle.c:1055
 msgid "Fuel cost:"
 msgstr "Üzemanyagköltség:"
 
-#: ../src/rep-vehicle.c:1066
+#: ../src/rep-vehicle.c:1059
 msgid "Other cost:"
 msgstr "Egyéb költség:"
 
-#: ../src/rep-vehicle.c:1070
+#: ../src/rep-vehicle.c:1063
 msgid "Total cost:"
 msgstr "Teljes költség:"
 
@@ -1793,7 +1792,7 @@ msgstr "Látható"
 #: ../src/ui-dialogs.c:81 ../src/ui-dialogs.c:386 ../src/ui-dialogs.c:504
 #: ../src/ui-dialogs.c:559 ../src/ui-dialogs.c:619 ../src/ui-dialogs.c:688
 #: ../src/ui-dialogs.c:752 ../src/ui-dialogs.c:829 ../src/ui-dialogs.c:957
-#: ../src/ui-dialogs.c:1126 ../src/ui-filter.c:1230 ../src/ui-hbfile.c:233
+#: ../src/ui-dialogs.c:1125 ../src/ui-filter.c:1230 ../src/ui-hbfile.c:233
 #: ../src/ui-payee.c:1235 ../src/ui-payee.c:1434 ../src/ui-pref.c:2294
 #: ../src/ui-split.c:902 ../src/ui-tag.c:679 ../src/ui-tag.c:802
 #: ../src/ui-transaction.c:1451 ../src/ui-txn-multi.c:447
@@ -3037,28 +3036,28 @@ msgstr ""
 "A HomeBank a nyomtatás legkörnyezettudatosabb változatát támogatja,\n"
 "a széleskörűen támogatott digitális PDF-formátumot. "
 
-#: ../src/ui-dialogs.c:1123
+#: ../src/ui-dialogs.c:1122
 msgid "Select action for target creation"
 msgstr ""
 
-#: ../src/ui-dialogs.c:1127
+#: ../src/ui-dialogs.c:1126
 msgid "Create _New"
 msgstr ""
 
-#: ../src/ui-dialogs.c:1128
+#: ../src/ui-dialogs.c:1127
 msgid "Use _Selection"
 msgstr ""
 
-#: ../src/ui-dialogs.c:1156
+#: ../src/ui-dialogs.c:1155
 msgid "Source transfer"
 msgstr ""
 
 #. target listview
-#: ../src/ui-dialogs.c:1173
+#: ../src/ui-dialogs.c:1172
 msgid "Target association suggested"
 msgstr ""
 
-#: ../src/ui-dialogs.c:1178
+#: ../src/ui-dialogs.c:1177
 msgid ""
 "HomeBank has found some transaction that may be the associated transaction "
 "for the internal transfer."
@@ -3963,6 +3962,117 @@ msgstr "Egyeztetés"
 #: ../src/ui-widgets-data.c:84
 msgid "Savings"
 msgstr "Megtakarítás"
+
+#: ../src/ui-widgets-data.c:96
+msgid "Yesterday"
+msgstr ""
+
+#: ../src/ui-widgets-data.c:98
+msgid "Tomorrow"
+msgstr ""
+
+#: ../src/ui-widgets-data.c:100
+#, fuzzy
+msgid "Last Week"
+msgstr "Hét"
+
+#: ../src/ui-widgets-data.c:101
+#, fuzzy
+msgid "This Week"
+msgstr "Hét"
+
+#: ../src/ui-widgets-data.c:102
+#, fuzzy
+msgid "Next Week"
+msgstr "Következő dátum"
+
+#: ../src/ui-widgets-data.c:104
+#, fuzzy
+msgid "Last Fortnight"
+msgstr "Következő hónap"
+
+#: ../src/ui-widgets-data.c:105
+#, fuzzy
+msgid "This Fortnight"
+msgstr "Ebben a hónapban"
+
+#: ../src/ui-widgets-data.c:106
+#, fuzzy
+msgid "Next Fortnight"
+msgstr "Következő hónap"
+
+#: ../src/ui-widgets-data.c:108
+#, fuzzy
+msgid "Last Month"
+msgstr "Hónap"
+
+#: ../src/ui-widgets-data.c:109
+#, fuzzy
+msgid "This Month"
+msgstr "Ebben a hónapban"
+
+#: ../src/ui-widgets-data.c:110
+#, fuzzy
+msgid "Next Month"
+msgstr "Következő hónap"
+
+#: ../src/ui-widgets-data.c:112
+#, fuzzy
+msgid "Last Quarter"
+msgstr "Negyedév"
+
+#: ../src/ui-widgets-data.c:113
+#, fuzzy
+msgid "This Quarter"
+msgstr "Negyedév"
+
+#: ../src/ui-widgets-data.c:114
+#, fuzzy
+msgid "Next Quarter"
+msgstr "Következő dátum"
+
+#: ../src/ui-widgets-data.c:116
+#, fuzzy
+msgid "Last Year"
+msgstr "Félév"
+
+#: ../src/ui-widgets-data.c:117
+#, fuzzy
+msgid "This Year"
+msgstr "Év"
+
+#: ../src/ui-widgets-data.c:118
+#, fuzzy
+msgid "Next Year"
+msgstr "Következő dátum"
+
+#: ../src/ui-widgets-data.c:124
+#, fuzzy
+msgid "Last 30 Days"
+msgstr "Következő 30 nap"
+
+#: ../src/ui-widgets-data.c:125
+#, fuzzy
+msgid "Last 60 Days"
+msgstr "Következő 60 nap"
+
+#: ../src/ui-widgets-data.c:126
+#, fuzzy
+msgid "Last 90 Days"
+msgstr "Következő 90 nap"
+
+#: ../src/ui-widgets-data.c:128
+msgid "Last 12 Months"
+msgstr ""
+
+#: ../src/ui-widgets-data.c:129
+msgid "30 Days Around"
+msgstr ""
+
+#: ../src/ui-widgets-data.c:130
+#, fuzzy
+msgid "All Date"
+msgstr "Dátum"
 
 #: ../src/ui-widgets-data.c:137
 msgid "This month"

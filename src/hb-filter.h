@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2022 Maxime DOYEN
+ *  Copyright (C) 1995-2023 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -223,6 +223,7 @@ gchar *filter_daterange_text_get(Filter *flt);
 gboolean filter_txn_search_match(gchar *needle, Transaction *txn, gint flags);
 gboolean filter_tpl_search_match(gchar *needle, Archive *arc);
 
+gint filter_acc_match(Filter *flt, Account *acc);
 gint filter_txn_match(Filter *flt, Transaction *ope);
 
 #endif
