@@ -127,9 +127,6 @@ GError *err = NULL;
 }
 
 
-
-
-
 static void 
 da_import_context_gen_txn_destroy(ImportContext *context)
 {
@@ -976,6 +973,8 @@ gint count = 0;
 
 	DB( g_print("\n[import] gen xfer eval\n") );
 
+	DB( g_print(" n_txn=%d\n", g_list_length(list)) );
+
 	root = da_transaction_sort(list);
 	
 	root = list1 = g_list_first(list);
@@ -1218,10 +1217,10 @@ gint nsplit;
 
 	newope = NULL;
 
-	DB( g_print(" - gentxt %s %s %s\n", gentxn->account, gentxn->date, gentxn->memo) );
-	DB( g_print(" - genacc '%s' '%p'\n", gentxn->account, genacc) );
+	DB( g_print(" - gentxt '%s' %s %s\n", gentxn->account, gentxn->date, gentxn->memo) );
+	DB( g_print(" - genacc '%s' '%p' k=%d\n", gentxn->account, genacc, genacc->kacc) );
 
-	if( genacc != NULL)
+	if( genacc != NULL )
 	{
 		newope = da_transaction_malloc();
 	
@@ -1384,11 +1383,12 @@ hb_import_apply(ImportContext *ictx)
 {
 GList *list, *lacc;
 GList *txnlist;
-guint32 kcommon = 0;
 guint changes = 0;
 guint nbofxtxn = 0;
 
 	DB( g_print("\n[import] apply\n") );
+
+	DB( g_print("\n--1-- insert acc\n") );
 
 	//create accounts
 	list = g_list_first(ictx->gen_lst_acc);
@@ -1396,24 +1396,25 @@ guint nbofxtxn = 0;
 	{
 	GenAcc *genacc = list->data;
 
-		DB( g_print(" #1 genacc: %d %s %s => %d\n", genacc->key, genacc->name, genacc->number, genacc->kacc) );
+		DB( g_print(" genacc: %d %s %s => %d\n", genacc->key, genacc->name, genacc->number, genacc->kacc) );
 
 		//we do create the common account once
 		if( (genacc->kacc == DST_ACC_GLOBAL) )
 		{
-			if( kcommon == 0 )
+		gchar *globalname = _("imported account");
+		Account *acc = da_acc_get_by_name(globalname);
+		
+			if( acc == NULL )
 			{
-			Account *acc = da_acc_malloc ();
-				
-				acc->name = g_strdup(_("imported account"));
+				acc = da_acc_malloc ();
+				acc->name = g_strdup(globalname);
 				if( da_acc_append(acc) )
 				{
-					kcommon = acc->key;
-					changes++;						
+					changes++;
 				}
 			}
-
-			genacc->kacc = kcommon;
+			//store the target acc key
+			genacc->kacc = acc->key;
 		}
 		else
 		if( (genacc->kacc == DST_ACC_NEW) )
@@ -1423,12 +1424,17 @@ guint nbofxtxn = 0;
 			acc->name = g_strdup(genacc->name);
 			if( da_acc_append(acc) )
 			{
-				acc->number = g_strdup(genacc->number);
+				acc->number  = g_strdup(genacc->number);
 				acc->initial = genacc->initial;
 				
 				//store the target acc key
 				genacc->kacc = acc->key;
 				changes++;
+			}
+			//#5.6.2 fix leak
+			else
+			{
+				da_acc_free(acc);
 			}
 		}
 		
@@ -1437,13 +1443,15 @@ guint nbofxtxn = 0;
 
 	// also keep every transactions into a temporary list
 	// we do this to keep a finished real txn list for detect xfer below
-	DB( g_print(" #2 insert txn\n") );
+	DB( g_print("\n--2-- insert txn\n") );
 
 	txnlist = NULL;
 	lacc = g_list_first(ictx->gen_lst_acc);
 	while (lacc != NULL)
 	{
 	GenAcc *genacc = lacc->data;
+
+		DB( g_print(" => genacc='%s'\n", genacc->name) );
 
 		if(genacc->kacc != DST_ACC_SKIP)
 		{
@@ -1461,7 +1469,12 @@ guint nbofxtxn = 0;
 					{
 						dtxn = transaction_add(NULL, txn);
 						//perf must use preprend, see glib doc
-						txnlist = g_list_prepend(txnlist, dtxn);					
+						DB( g_print(" prepend %p to txnlist\n", dtxn) );
+						//#2000480 avoid insert null txn
+						if( dtxn != NULL )
+						{
+							txnlist = g_list_prepend(txnlist, dtxn);					
+						}
 						da_transaction_free(txn);
 						//#1820618 forgot to report changes count
 						changes++;
@@ -1473,31 +1486,35 @@ guint nbofxtxn = 0;
 				list = g_list_next(list);
 			}
 		}
+		else
+		{
+			DB( g_print(" marked as skipped\n") );
+		}
 		lacc = g_list_next(lacc);
 	}
 
 	//auto from payee
 	if( ictx->do_auto_payee == TRUE )
 	{
-		DB( g_print(" call auto payee\n") );
+		DB( g_print("\n--3-- call auto payee\n") );
 		transaction_auto_all_from_payee(txnlist);
 	}
 		
 	//auto assign
 	if( ictx->do_auto_assign == TRUE )
 	{
-		DB( g_print(" call auto assign\n") );
+		DB( g_print("\n--4-- call auto assign\n") );
 		transaction_auto_assign(txnlist, 0, FALSE);
 	}	
 
 	//check for ofx internal xfer
 	if( nbofxtxn > 0 )
 	{
-		DB( g_print(" call hb_import_gen_xfer_eval\n") );
+		DB( g_print("\n--5-- call hb_import_gen_xfer_eval\n") );
 		hb_import_gen_xfer_eval(ictx, txnlist);
 	}
 
-	DB( g_print(" adding %d changes\n", changes) );
+	DB( g_print("\n--end-- adding %d changes\n", changes) );
 	GLOBALS->changes_count += changes;
 
 	g_list_free(txnlist);

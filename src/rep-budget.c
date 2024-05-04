@@ -1632,7 +1632,8 @@ GtkCellRenderer    *renderer;
 	g_object_set(renderer, "xalign", 1.0, NULL);
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_repbud_cell_data_function_amount, GINT_TO_POINTER(id), NULL);
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	gtk_tree_view_column_set_alignment (column, 1.0);
 	gtk_tree_view_column_set_sort_column_id (column, id);
 	return column;
 }
@@ -1685,7 +1686,9 @@ GtkTreeViewColumn  *column;
 	gtk_tree_view_column_add_attribute(column, renderer, "text", LST_BUDGET_NAME);
 	gtk_tree_view_column_set_sort_column_id (column, LST_BUDGET_NAME);
 	gtk_tree_view_column_set_resizable(column, TRUE);
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	//gtk_tree_view_column_set_alignment (column, 0.5);
+	gtk_tree_view_column_set_min_width (column, HB_MINWIDTH_COLUMN);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
 
 	/* column: Expense */

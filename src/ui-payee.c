@@ -942,7 +942,8 @@ GtkTreeViewColumn	*column;
 	gtk_tree_view_column_set_title(column, _("Payee"));
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_pay_listview_name_cell_data_function, GINT_TO_POINTER(LST_DEFPAY_DATAS), NULL);
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	//gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_column_set_resizable(column, TRUE);
 	gtk_tree_view_column_set_min_width(column, HB_MINWIDTH_LIST);
 	gtk_tree_view_column_set_sort_column_id (column, LST_DEFPAY_SORT_NAME);
@@ -964,8 +965,10 @@ GtkTreeViewColumn	*column;
 		gtk_tree_view_column_set_title(column, _("Category"));
 		gtk_tree_view_column_pack_start(column, renderer, TRUE);
 		gtk_tree_view_column_set_cell_data_func(column, renderer, ui_pay_listview_defcat_cell_data_function, GINT_TO_POINTER(LST_DEFPAY_DATAS), NULL);
-		gtk_tree_view_column_set_alignment (column, 0.5);
+		//#2004631 date and column title alignement
+		//gtk_tree_view_column_set_alignment (column, 0.5);
 		gtk_tree_view_column_set_resizable(column, TRUE);
+		gtk_tree_view_column_set_min_width(column, HB_MINWIDTH_LIST);
 		gtk_tree_view_column_set_sort_column_id (column, LST_DEFPAY_SORT_DEFCAT);
 		gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 	}

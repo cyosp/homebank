@@ -6,17 +6,37 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: homebank\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-22 19:09+0100\n"
-"PO-Revision-Date: 2021-01-05 08:27+0000\n"
-"Last-Translator: Daniel Slavu <Unknown>\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2023-01-28 17:01+0100\n"
+"PO-Revision-Date: 2023-01-03 21:32+0000\n"
+"Last-Translator: Ciprian Rat <Unknown>\n"
 "Language-Team: Romanian <ro@li.org>\n"
-"Language: ro\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2022-12-05 17:16+0000\n"
-"X-Generator: Launchpad (build 51cef3d08dff1e227b5ada709bd67280c567d4be)\n"
+"X-Launchpad-Export-Date: 2023-02-05 19:36+0000\n"
+"X-Generator: Launchpad (build 33dc2e2ab7f8e563f52b8c81cbdf9e3946d2097e)\n"
+
+#: ../src/dsp-mainwindow.c:1862
+msgid "_Toolbar"
+msgstr "_Bară de Unelte"
+
+#: ../src/dsp-mainwindow.c:1919
+msgid "Report a Problem..."
+msgstr "Raportează o Problemă..."
+
+#: ../src/hub-scheduled.c:330
+msgid "No transaction to add"
+msgstr "Nici o tranzacție de adăugat"
+
+#: ../src/hub-scheduled.c:332
+#, c-format
+msgid "transaction added: %d"
+msgstr "tranzacție adaugată: %d"
+
+#: ../src/hub-spending.c:402
+msgid "Where your money goes"
+msgstr "Pe ce se duc banii dvs."
 
 #: ../data/homebank.desktop.in.in.h:1 ../src/dsp-mainwindow.c:702
 msgid "HomeBank"
@@ -84,21 +104,21 @@ msgid ""
 "Inconsistency were found: %d\n"
 "do you want to review and fix?"
 msgstr ""
-"Au fost găsite inconsistențe: %d\n"
-"Revizuiți și corectați?"
+"Au fost găsite inconsecvențe: %d\n"
+"Doriți să le revizuiți și să le corectați?"
 
 #: ../src/dsp-account.c:414
 #, c-format
 msgid "Every transaction amount will be divided by %.6f."
-msgstr "Fiecare sumă a unei tranzactii va fi impartită la %.6f."
+msgstr "Fiecare sumă a unei tranzacții va fi împarțită la %.6f."
 
 #: ../src/dsp-account.c:418
 msgid ""
 "Are you sure you want to convert this account\n"
 "to Euro as Major currency?"
 msgstr ""
-"Sunteti sigur ca doriti sa convertiti acest cont\n"
-"definind Euro ca monedă principala?"
+"Sunteți sigur că doriți să convertiți acest cont\n"
+"definind Euro ca monedă principală?"
 
 #: ../src/dsp-account.c:420
 msgid "_Convert"
@@ -115,29 +135,38 @@ msgstr "tranzacție modificată: %d"
 
 #: ../src/dsp-account.c:547
 msgid "Automatic assignment result"
-msgstr "Atribuire automată"
+msgstr "Rezultatul atribuirii automate"
 
 #: ../src/dsp-account.c:682
 msgid ""
 "Do you want to create an assignment with\n"
 "each of the selected transaction?"
 msgstr ""
-"Doriți să creați un proiect nou\n"
-"bazat pe tranzacțiile selectate?"
 
-#: ../src/dsp-account.c:683 ../src/dsp-account.c:751
+#: ../src/dsp-account.c:683 ../src/dsp-account.c:759
 msgid "_Create"
 msgstr "_Creează"
 
-#: ../src/dsp-account.c:750
+#: ../src/dsp-account.c:728
+msgid "Create Assignment"
+msgstr ""
+
+#: ../src/dsp-account.c:729 ../src/dsp-account.c:804
+#, c-format
+msgid "%d created and prefixed with **PREFILLED**"
+msgstr ""
+
+#: ../src/dsp-account.c:758
 msgid ""
 "Do you want to create a template with\n"
 "each of the selected transaction?"
 msgstr ""
-"Doriți să creați o machetă/șablon \n"
-"cu tranzacțiile selectate?"
 
-#: ../src/dsp-account.c:1665
+#: ../src/dsp-account.c:803
+msgid "Create Template"
+msgstr ""
+
+#: ../src/dsp-account.c:1681
 msgid ""
 "Do you want to delete\n"
 "each of the selected transaction?"
@@ -145,359 +174,360 @@ msgstr ""
 "Doriți să ștergeți \n"
 "tranzacțiile selectate?"
 
-#: ../src/dsp-account.c:1666 ../src/ui-account.c:1441 ../src/ui-archive.c:819
-#: ../src/ui-assign.c:1428 ../src/ui-budget-tabview.c:2300
+#: ../src/dsp-account.c:1682 ../src/ui-account.c:1441 ../src/ui-archive.c:823
+#: ../src/ui-assign.c:1442 ../src/ui-budget-tabview.c:2300
 #: ../src/ui-category.c:1481 ../src/ui-category.c:2026
-#: ../src/ui-currency.c:1544 ../src/ui-payee.c:1040 ../src/ui-payee.c:1565
+#: ../src/ui-currency.c:1550 ../src/ui-payee.c:1040 ../src/ui-payee.c:1565
 #: ../src/ui-tag.c:922
 msgid "_Delete"
-msgstr "Ş_terge"
+msgstr "_Șterge"
 
-#: ../src/dsp-account.c:1747
+#: ../src/dsp-account.c:1763
 msgid "Are you sure you want to change the status to None?"
-msgstr "Sunteti sigur ca doriți să schimbați statusul în Anonim?"
+msgstr "Sunteti sigur că doriți să schimbați statusul în Anonim?"
 
-#: ../src/dsp-account.c:1748 ../src/dsp-account.c:1807
+#: ../src/dsp-account.c:1764 ../src/dsp-account.c:1823
 msgid "Some transaction in your selection are already Reconciled."
-msgstr "Unele tranzactii din selecția dumneavoastra sunt deja Reconciliate."
+msgstr ""
+"Unele tranzacțiile selectate de dumneavoastră sunt deja Reconciliate."
 
-#: ../src/dsp-account.c:1749 ../src/ui-assist-start.c:277
+#: ../src/dsp-account.c:1765 ../src/ui-assist-start.c:277
 #: ../src/ui-dialogs.c:430
 msgid "_Change"
 msgstr "_Schimbă"
 
-#: ../src/dsp-account.c:1806
+#: ../src/dsp-account.c:1822
 msgid "Are you sure you want to toggle the status Reconciled?"
-msgstr "Sunteti sigur ca doriti sa comutați la statusul Reconciliat?"
+msgstr "Sunteti sigur că doriți să comutați la statusul Reconciliat?"
 
-#: ../src/dsp-account.c:1808
+#: ../src/dsp-account.c:1824
 msgid "_Toggle"
-msgstr "Comu_tă"
+msgstr "_Comută"
 
-#: ../src/dsp-account.c:2213
+#: ../src/dsp-account.c:2229
 #, c-format
 msgid "%d transactions"
 msgstr "%d tranzacții"
 
-#: ../src/dsp-account.c:2216
+#: ../src/dsp-account.c:2232
 #, c-format
 msgid "%d transactions, %d selected, avg: %s, sum: %s (%s - %s)"
-msgstr "%d tranzactii, %d selectate, medie: %s, suma: %s (%s - %s)"
+msgstr "%d tranzacții, %d selectate, medie: %s, sumă: %s (%s - %s)"
 
-#: ../src/dsp-account.c:2228
+#: ../src/dsp-account.c:2244
 msgid "Locked. Click to unlock"
-msgstr ""
+msgstr "Blocat. Faceți click pentru a debloca"
 
-#: ../src/dsp-account.c:2228
+#: ../src/dsp-account.c:2244
 msgid "Unlocked. Click to lock"
-msgstr ""
+msgstr "Deblocat. Faceți click pentru a  bloca"
 
-#: ../src/dsp-account.c:2505 ../src/dsp-account.c:2606
+#: ../src/dsp-account.c:2521 ../src/dsp-account.c:2622
 msgid "_Add..."
 msgstr "_Adaugă..."
 
-#: ../src/dsp-account.c:2507 ../src/dsp-account.c:2608
+#: ../src/dsp-account.c:2523 ../src/dsp-account.c:2624
 msgid "_Inherit..."
-msgstr "_Moştenire..."
+msgstr "_Păstrează..."
 
-#: ../src/dsp-account.c:2509 ../src/dsp-account.c:2610
+#: ../src/dsp-account.c:2525 ../src/dsp-account.c:2626
 msgid "_Edit..."
 msgstr "_Editează..."
 
-#: ../src/dsp-account.c:2511 ../src/dsp-account.c:2624
+#: ../src/dsp-account.c:2527 ../src/dsp-account.c:2640
 msgid "_Multiple Edit..."
 msgstr "_Editare Multiplă..."
 
-#: ../src/dsp-account.c:2516 ../src/dsp-account.c:2615
+#: ../src/dsp-account.c:2532 ../src/dsp-account.c:2631
 msgid "_Status"
 msgstr "_Stare"
 
-#: ../src/dsp-account.c:2518 ../src/dsp-account.c:2617
+#: ../src/dsp-account.c:2534 ../src/dsp-account.c:2633
 msgid "_None"
 msgstr "_Nimic"
 
-#: ../src/dsp-account.c:2520 ../src/dsp-account.c:2619
+#: ../src/dsp-account.c:2536 ../src/dsp-account.c:2635
 msgid "_Cleared"
 msgstr "_Suprimat"
 
-#: ../src/dsp-account.c:2522 ../src/dsp-account.c:2621
+#: ../src/dsp-account.c:2538 ../src/dsp-account.c:2637
 msgid "_Reconciled"
 msgstr "_Reconciliat"
 
-#: ../src/dsp-account.c:2527
+#: ../src/dsp-account.c:2543
 msgid "View _Split"
-msgstr "Vizualizează î_mpărțit"
+msgstr "View _împarte"
 
-#: ../src/dsp-account.c:2529
+#: ../src/dsp-account.c:2545
 msgid "Copy raw amount"
-msgstr ""
+msgstr "Copiază valoarea brută"
 
-#: ../src/dsp-account.c:2531 ../src/dsp-account.c:2626
+#: ../src/dsp-account.c:2547 ../src/dsp-account.c:2641
 msgid "Create template..."
 msgstr "Crează șablon..."
 
-#: ../src/dsp-account.c:2533 ../src/dsp-account.c:2625
+#: ../src/dsp-account.c:2549 ../src/dsp-account.c:2642
 msgid "Create assignment..."
 msgstr "Crează atribuire..."
 
-#: ../src/dsp-account.c:2535 ../src/dsp-account.c:2627
+#: ../src/dsp-account.c:2551 ../src/dsp-account.c:2643
 msgid "_Delete..."
-msgstr "Ș_terge..."
+msgstr "_Șterge..."
 
-#: ../src/dsp-account.c:2540
+#: ../src/dsp-account.c:2556
 msgid "_Up"
 msgstr "_Sus"
 
-#: ../src/dsp-account.c:2542
+#: ../src/dsp-account.c:2558
 msgid "_Down"
 msgstr "_Jos"
 
-#: ../src/dsp-account.c:2582
+#: ../src/dsp-account.c:2598
 msgid "A_ccount"
 msgstr "_Cont"
 
-#: ../src/dsp-account.c:2584
+#: ../src/dsp-account.c:2600
 msgid "Export QIF..."
-msgstr "Exporta QIF"
+msgstr "Exportă QIF..."
 
-#: ../src/dsp-account.c:2585
+#: ../src/dsp-account.c:2601
 msgid "Export CSV..."
 msgstr "Exportă CSV..."
 
-#: ../src/dsp-account.c:2587
+#: ../src/dsp-account.c:2603
 msgid "Export as PDF..."
-msgstr "Exporta PDF..."
+msgstr "Exportă PDF..."
 
-#: ../src/dsp-account.c:2589
+#: ../src/dsp-account.c:2605
 msgid "Print..."
 msgstr "Tipăreşte..."
 
-#: ../src/dsp-account.c:2591 ../src/dsp-mainwindow.c:680
+#: ../src/dsp-account.c:2607 ../src/dsp-mainwindow.c:680
 #: ../src/dsp-mainwindow.c:1851 ../src/ui-account.c:1758
-#: ../src/ui-archive.c:1188 ../src/ui-assign.c:1674 ../src/ui-budget.c:1143
+#: ../src/ui-archive.c:1199 ../src/ui-assign.c:1688 ../src/ui-budget.c:1143
 #: ../src/ui-budget-tabview.c:2759 ../src/ui-category.c:2410
-#: ../src/ui-currency.c:1680 ../src/ui-dialogs.c:194 ../src/ui-payee.c:1764
+#: ../src/ui-currency.c:1686 ../src/ui-dialogs.c:194 ../src/ui-payee.c:1764
 #: ../src/ui-split.c:833 ../src/ui-tag.c:1051 ../src/ui-transaction.c:1457
 msgid "_Close"
-msgstr "În_chide"
+msgstr "_Închide"
 
 #. #1818052 wish: copy/paste one/multiple transaction(s)
-#: ../src/dsp-account.c:2595 ../src/dsp-mainwindow.c:1856
+#: ../src/dsp-account.c:2611 ../src/dsp-mainwindow.c:1856
 msgid "_Edit"
 msgstr "_Editează"
 
-#: ../src/dsp-account.c:2597
+#: ../src/dsp-account.c:2613
 msgid "Copy"
 msgstr "Copiază"
 
-#: ../src/dsp-account.c:2599
+#: ../src/dsp-account.c:2615
 msgid "Paste"
-msgstr "Lipire"
+msgstr "Lipește"
 
-#: ../src/dsp-account.c:2601
+#: ../src/dsp-account.c:2617
 msgid "Paste (today)"
 msgstr "Lipește (astăzi)"
 
-#: ../src/dsp-account.c:2604
+#: ../src/dsp-account.c:2620
 msgid "Transacti_on"
-msgstr "_Tranzacţie"
+msgstr "Tranzacți_e"
 
-#: ../src/dsp-account.c:2632
+#: ../src/dsp-account.c:2648
 msgid "_Find"
 msgstr "_Caută"
 
-#: ../src/dsp-account.c:2635 ../src/dsp-mainwindow.c:1903
+#: ../src/dsp-account.c:2651 ../src/dsp-mainwindow.c:1903
 msgid "_Tools"
 msgstr "_Instrumente"
 
-#: ../src/dsp-account.c:2637
+#: ../src/dsp-account.c:2653
 msgid "Mark duplicate..."
-msgstr "Marchează dublurile"
+msgstr "Marchează dublurile..."
 
-#: ../src/dsp-account.c:2638
+#: ../src/dsp-account.c:2654
 msgid "Check internal transfer"
 msgstr "Verifică transferurile interne"
 
-#: ../src/dsp-account.c:2639
+#: ../src/dsp-account.c:2655
 msgid "Auto. assignments"
-msgstr "Auto.atribuire"
+msgstr "Auto. atribuiri"
 
-#: ../src/dsp-account.c:2640
+#: ../src/dsp-account.c:2656
 msgid "_Filter..."
 msgstr "_Filtrează..."
 
-#: ../src/dsp-account.c:2641
+#: ../src/dsp-account.c:2657
 msgid "Convert to Euro..."
-msgstr "Conversie in EURO"
+msgstr "Convertește în Euro..."
 
-#: ../src/dsp-account.c:2655 ../src/dsp-mainwindow.c:1960
-#: ../src/ui-account.c:1814 ../src/ui-archive.c:1266 ../src/ui-assign.c:1738
+#: ../src/dsp-account.c:2671 ../src/dsp-mainwindow.c:1960
+#: ../src/ui-account.c:1814 ../src/ui-archive.c:1277 ../src/ui-assign.c:1752
 #: ../src/ui-assist-import.c:1573 ../src/ui-category.c:2524
-#: ../src/ui-currency.c:1756 ../src/ui-payee.c:1878 ../src/ui-split.c:1014
+#: ../src/ui-currency.c:1762 ../src/ui-payee.c:1878 ../src/ui-split.c:1014
 #: ../src/ui-tag.c:1149
 msgid "Add"
 msgstr "Adaugă"
 
-#: ../src/dsp-account.c:2655
+#: ../src/dsp-account.c:2671
 msgid "Add a new transaction"
-msgstr "Adaugă o tranzacţie nouă"
+msgstr "Adaugă o tranzacție nouă"
 
-#: ../src/dsp-account.c:2657
+#: ../src/dsp-account.c:2673
 msgid "Inherit"
-msgstr "Moștenit"
+msgstr "Păstrat"
 
-#: ../src/dsp-account.c:2657
+#: ../src/dsp-account.c:2673
 msgid "Inherit from the active transaction"
-msgstr "Moşteneşte tranzacţia activă"
+msgstr "Păstrează din tranzația activă"
 
 #. widget = gtk_button_new_with_mnemonic(_("_Edit"));
-#: ../src/dsp-account.c:2659 ../src/ui-archive.c:1285 ../src/ui-assign.c:1757
-#: ../src/ui-category.c:2543 ../src/ui-currency.c:1774 ../src/ui-payee.c:1896
+#: ../src/dsp-account.c:2675 ../src/ui-archive.c:1296 ../src/ui-assign.c:1771
+#: ../src/ui-category.c:2543 ../src/ui-currency.c:1780 ../src/ui-payee.c:1896
 #: ../src/ui-split.c:973 ../src/ui-tag.c:1165
 msgid "Edit"
 msgstr "Editează"
 
-#: ../src/dsp-account.c:2659
+#: ../src/dsp-account.c:2675
 msgid "Edit the active transaction"
-msgstr "Editează tranzacţia activă"
+msgstr "Editează tranzacția activă"
 
 #. Cleared
-#: ../src/dsp-account.c:2664 ../src/list-account.c:692 ../src/ui-filter.c:1172
+#: ../src/dsp-account.c:2680 ../src/list-account.c:692 ../src/ui-filter.c:1172
 #: ../src/ui-widgets-data.c:164 ../src/ui-widgets-data.c:211
 msgid "Cleared"
-msgstr "Şters"
+msgstr "Șters"
 
-#: ../src/dsp-account.c:2664
+#: ../src/dsp-account.c:2680
 msgid "Toggle cleared for selected transaction(s)"
-msgstr "Comutati catre suprimat pentru tranzactiile selectionate"
+msgstr "Comutați către suprimat pentru tranzacția(iile) selectată(e)"
 
 #. Reconciled
-#: ../src/dsp-account.c:2665 ../src/list-account.c:688 ../src/ui-filter.c:1177
+#: ../src/dsp-account.c:2681 ../src/list-account.c:688 ../src/ui-filter.c:1177
 #: ../src/ui-widgets-data.c:165 ../src/ui-widgets-data.c:213
 msgid "Reconciled"
 msgstr "Reconciliat"
 
-#: ../src/dsp-account.c:2665
+#: ../src/dsp-account.c:2681
 msgid "Toggle reconciled for selected transaction(s)"
-msgstr "Comută către reconciliat tranzactiile selectionate"
+msgstr "Comutați reconciliat pentru tranzacția(iile) selectată(e)"
 
-#: ../src/dsp-account.c:2669
+#: ../src/dsp-account.c:2685
 msgid "Edit Multiple"
-msgstr "Editează multiplu"
+msgstr "Editează Multiple"
 
-#: ../src/dsp-account.c:2669
+#: ../src/dsp-account.c:2685
 msgid "Edit multiple transaction"
-msgstr "Editare mai multe tranzacții"
+msgstr "Editează tranzacții multiple"
 
-#: ../src/dsp-account.c:2670
+#: ../src/dsp-account.c:2686
 msgid "Create template"
-msgstr "Creare șablon"
+msgstr "Crează șablon"
 
-#: ../src/dsp-account.c:2671 ../src/ui-account.c:1818 ../src/ui-archive.c:1270
-#: ../src/ui-assign.c:1742 ../src/ui-assist-import.c:1577
-#: ../src/ui-category.c:2528 ../src/ui-currency.c:1760 ../src/ui-payee.c:1882
+#: ../src/dsp-account.c:2687 ../src/ui-account.c:1818 ../src/ui-archive.c:1281
+#: ../src/ui-assign.c:1756 ../src/ui-assist-import.c:1577
+#: ../src/ui-category.c:2528 ../src/ui-currency.c:1766 ../src/ui-payee.c:1882
 #: ../src/ui-split.c:969 ../src/ui-tag.c:1152
 msgid "Delete"
 msgstr "Șterge"
 
-#: ../src/dsp-account.c:2671
+#: ../src/dsp-account.c:2687
 msgid "Delete selected transaction(s)"
-msgstr "Șterge tranzacțiile selecționate"
+msgstr "Șterge tranzacția(iile) selectată(e)"
 
-#: ../src/dsp-account.c:2677
+#: ../src/dsp-account.c:2693
 msgid "Up"
 msgstr "Sus"
 
-#: ../src/dsp-account.c:2677
+#: ../src/dsp-account.c:2693
 msgid "Move transaction up"
-msgstr "Mută în sus"
+msgstr "Mută tranzacția în sus"
 
-#: ../src/dsp-account.c:2678
+#: ../src/dsp-account.c:2694
 msgid "Down"
 msgstr "Jos"
 
-#: ../src/dsp-account.c:2678
+#: ../src/dsp-account.c:2694
 msgid "Move transaction down"
-msgstr "Mută în jos"
+msgstr "Mută tranzacția în jos"
 
-#: ../src/dsp-account.c:2685
+#: ../src/dsp-account.c:2701
 msgid "Reconciled changes is"
 msgstr ""
 
-#: ../src/dsp-account.c:2746
+#: ../src/dsp-account.c:2762
 msgid "(closed)"
-msgstr "(inchis)"
+msgstr "(închis)"
 
-#: ../src/dsp-account.c:2753
+#: ../src/dsp-account.c:2769
 #, c-format
 msgid "%s - HomeBank"
 msgstr "%s - HomeBank"
 
-#: ../src/dsp-account.c:2753
+#: ../src/dsp-account.c:2769
 msgid "All transactions"
 msgstr "Toate tranzacțiile"
 
 #. info bar for duplicate
-#: ../src/dsp-account.c:2783
+#: ../src/dsp-account.c:2799
 msgid "_Refresh"
 msgstr "_Reîmprospătează"
 
-#: ../src/dsp-account.c:2812 ../src/rep-balance.c:1068 ../src/rep-budget.c:1351
-#: ../src/rep-stats.c:1749 ../src/rep-time.c:1409 ../src/rep-vehicle.c:1009
+#: ../src/dsp-account.c:2828 ../src/rep-balance.c:1068 ../src/rep-budget.c:1351
+#: ../src/rep-stats.c:1749 ../src/rep-time.c:1409 ../src/rep-vehicle.c:1000
 #: ../src/ui-pref.c:1364 ../src/ui-pref.c:1725 ../src/ui-pref.c:2164
 msgid "_Range:"
-msgstr "Domeniu:"
+msgstr "_Domeniu:"
 
-#: ../src/dsp-account.c:2822
+#: ../src/dsp-account.c:2838
 msgid "Toggle show future transaction"
-msgstr "Comutator: afișare tranzacții viitoare"
+msgstr "Comută arată tranzacțiile viitoare"
 
-#: ../src/dsp-account.c:2827 ../src/rep-budget.c:1326 ../src/rep-stats.c:1686
+#: ../src/dsp-account.c:2843 ../src/rep-budget.c:1326 ../src/rep-stats.c:1686
 #: ../src/ui-account.c:1870 ../src/ui-assist-start.c:536
 msgid "_Type:"
-msgstr "_Tip:"
+msgstr "_Scrie"
 
-#: ../src/dsp-account.c:2834 ../src/ui-transaction.c:1714
+#: ../src/dsp-account.c:2850 ../src/ui-transaction.c:1714
 msgid "_Status:"
 msgstr "_Status:"
 
-#: ../src/dsp-account.c:2841
+#: ../src/dsp-account.c:2857
 msgid "Open the list filter"
-msgstr "Deschide lista de filtre"
+msgstr "Deschide filtrul listei"
 
-#: ../src/dsp-account.c:2846 ../src/rep-balance.c:811 ../src/rep-budget.c:1033
-#: ../src/rep-stats.c:1394 ../src/rep-time.c:1080 ../src/rep-vehicle.c:797
+#: ../src/dsp-account.c:2862 ../src/rep-balance.c:811 ../src/rep-budget.c:1033
+#: ../src/rep-stats.c:1394 ../src/rep-time.c:1080 ../src/rep-vehicle.c:786
 msgid "Refresh results"
-msgstr "Rîmprospătează rezultate"
+msgstr "Reîmprospătează rezultatele"
 
 #. widget = gtk_button_new_with_mnemonic (_("Reset _filters"));
-#: ../src/dsp-account.c:2852 ../src/ui-filter.c:1226 ../src/ui-pref.c:2268
+#: ../src/dsp-account.c:2868 ../src/ui-filter.c:1226 ../src/ui-pref.c:2268
 #: ../src/ui-pref.c:2292
 msgid "_Reset"
 msgstr "_Resetează"
 
 #. TRANSLATORS: this is for Euro specific users, a toggle to display in 'Minor' currency
-#: ../src/dsp-account.c:2858 ../src/rep-balance.c:1047 ../src/rep-budget.c:1338
-#: ../src/rep-stats.c:1728 ../src/rep-time.c:1388 ../src/rep-vehicle.c:996
+#: ../src/dsp-account.c:2874 ../src/rep-balance.c:1047 ../src/rep-budget.c:1338
+#: ../src/rep-stats.c:1728 ../src/rep-time.c:1388 ../src/rep-vehicle.c:987
 msgid "Euro _minor"
 msgstr "Euro _minor"
 
 #. account name
-#: ../src/dsp-account.c:2917
+#: ../src/dsp-account.c:2933
 msgid "Reconciled:"
-msgstr "Acordat:"
+msgstr "Reconciliat:"
 
-#: ../src/dsp-account.c:2924
+#: ../src/dsp-account.c:2940
 msgid "Cleared:"
 msgstr "Șters:"
 
-#: ../src/dsp-account.c:2931
+#: ../src/dsp-account.c:2947
 msgid "Today:"
 msgstr "Astăzi:"
 
-#: ../src/dsp-account.c:2938
+#: ../src/dsp-account.c:2954
 msgid "Future:"
-msgstr "În viitor:"
+msgstr "Viitor:"
 
 #: ../src/dsp-mainwindow.c:126
 #, c-format
@@ -509,7 +539,7 @@ msgid ""
 "- Changes made to the file will be permanently lost\n"
 "- File will be reloaded from the last save (.xhb~)"
 msgstr ""
-"- Modificările realizate vor fi pierdute pentru totdeauna\n"
+"- Modificările efectuate în fișier for fi pierdute pentru totdeauna\n"
 "- Fișierul va fi reîncărcat de la ultima salvare (.xhb~)"
 
 #: ../src/dsp-mainwindow.c:136
@@ -518,15 +548,15 @@ msgstr "_Restaurează"
 
 #: ../src/dsp-mainwindow.c:325
 msgid "Are you sure you want to anonymize the file?"
-msgstr "Sunteti sigur ca doriti ca acest fisier sa devina Anonim?"
+msgstr "Sunteti sigur că doriți șp anonimizați fișierul?"
 
 #: ../src/dsp-mainwindow.c:328
 msgid ""
 "Proceeding will anonymize any text, \n"
 "like 'account x', 'payee y', 'memo z', ..."
 msgstr ""
-"Continuarea va face Anonim orice text, \n"
-"ca de exemplu 'cont x', 'platitor y', 'memo z', ..."
+"Continuând veți anonimiza orice\n"
+"ca de exemplu 'contul x', 'plătitor y', 'memo z', ..."
 
 #: ../src/dsp-mainwindow.c:335
 msgid "_Anonymize"
@@ -534,14 +564,14 @@ msgstr "_Anonimizează"
 
 #: ../src/dsp-mainwindow.c:677
 msgid "Welcome to HomeBank"
-msgstr "Bine ati venit in Home Bank"
+msgstr "Bine ați venit în Home Bank"
 
 #. label = make_label (_("What do you want to do:"), 0, 0);
 #. gimp_label_set_attributes(GTK_LABEL(label), PANGO_ATTR_WEIGHT, PANGO_WEIGHT_BOLD, -1);
 #. gtk_box_pack_start (GTK_BOX (mainvbox), label, FALSE, FALSE, 0);
 #: ../src/dsp-mainwindow.c:724
 msgid "Open _last opened file"
-msgstr "Deschde u_ltimul fișier deschis"
+msgstr "Deschide _ultimul fișier deschis"
 
 #: ../src/dsp-mainwindow.c:728
 msgid "Create a _new file"
@@ -590,7 +620,7 @@ msgstr "_Deschide  copia de siguranță"
 msgid "Unable to open '%s', the file does not exist.\n"
 msgstr "Nu s-a putut deschide '%s'. Fişierul nu există.\n"
 
-#: ../src/dsp-mainwindow.c:1139 ../src/ui-currency.c:1319
+#: ../src/dsp-mainwindow.c:1139 ../src/ui-currency.c:1325
 msgid "Unknown error"
 msgstr "Eroare necunoscută"
 
@@ -622,7 +652,8 @@ msgid "The file has been modified since reading it."
 msgstr "Fișierul a fost modificat in timp ce se citea"
 
 #: ../src/dsp-mainwindow.c:1229
-msgid "If you save it, all the external changes could be lost. Save it anyway?"
+msgid ""
+"If you save it, all the external changes could be lost. Save it anyway?"
 msgstr ""
 "Dacă îl salvați, toate modificările exterioare ar putea fi pierdute. Doriți "
 "să îl salvați oricum?"
@@ -691,10 +722,6 @@ msgstr "Preferinţe..."
 #: ../src/dsp-mainwindow.c:1860
 msgid "_View"
 msgstr "_Vizualizare"
-
-#: ../src/dsp-mainwindow.c:1862
-msgid "_Toolbar"
-msgstr "_Bară de Unelte"
 
 #: ../src/dsp-mainwindow.c:1864
 msgid "_Top spending"
@@ -832,10 +859,6 @@ msgstr "Verifică dacă există actualizări..."
 msgid "Release Notes"
 msgstr "Informații versiune"
 
-#: ../src/dsp-mainwindow.c:1919
-msgid "Report a Problem..."
-msgstr "Raportează o Problemă..."
-
 #: ../src/dsp-mainwindow.c:1920
 msgid "Translate this Application..."
 msgstr "Traduceți această aplicaţie..."
@@ -877,10 +900,10 @@ msgstr "Salvează fișierul curent"
 #. gtk_assistant_set_page_title (GTK_ASSISTANT (data->assistant), page, _("Transaction"));
 #. gtk_assistant_set_page_title (GTK_ASSISTANT (data->assistant), page, genacc->name);
 #. header
-#: ../src/dsp-mainwindow.c:1950 ../src/list-operation.c:1649
+#: ../src/dsp-mainwindow.c:1950 ../src/list-operation.c:1657
 #: ../src/list-scheduled.c:678 ../src/rep-stats.c:67 ../src/rep-time.c:73
 #: ../src/ui-account.c:878 ../src/ui-archive.c:484
-#: ../src/ui-assist-import.c:2168 ../src/ui-dialogs.c:213
+#: ../src/ui-assist-import.c:2167 ../src/ui-dialogs.c:213
 #: ../src/ui-filter.c:802 ../src/ui-filter.c:806 ../src/ui-filter.c:1291
 msgid "Account"
 msgstr "Cont"
@@ -894,9 +917,9 @@ msgstr "Gestionați conturile"
 #. payee
 #. header
 #: ../src/dsp-mainwindow.c:1951 ../src/hb-export.c:443
-#: ../src/list-operation.c:1683 ../src/list-scheduled.c:593
+#: ../src/list-operation.c:1691 ../src/list-scheduled.c:593
 #: ../src/rep-stats.c:66 ../src/rep-time.c:75 ../src/ui-archive.c:461
-#: ../src/ui-assign.c:532 ../src/ui-assist-import.c:401 ../src/ui-dialogs.c:268
+#: ../src/ui-assign.c:543 ../src/ui-assist-import.c:401 ../src/ui-dialogs.c:268
 #: ../src/ui-filter.c:891 ../src/ui-filter.c:896 ../src/ui-filter.c:1295
 #: ../src/ui-payee.c:942 ../src/ui-pref.c:132 ../src/ui-widgets-data.c:29
 msgid "Payee"
@@ -911,9 +934,9 @@ msgstr "Gestionați plățile"
 #. category
 #. header
 #: ../src/dsp-mainwindow.c:1952 ../src/hub-spending.c:435
-#: ../src/list-operation.c:1717 ../src/list-scheduled.c:614
+#: ../src/list-operation.c:1725 ../src/list-scheduled.c:614
 #: ../src/rep-budget.c:1491 ../src/rep-budget.c:1682 ../src/rep-stats.c:64
-#: ../src/rep-time.c:74 ../src/ui-archive.c:465 ../src/ui-assign.c:536
+#: ../src/rep-time.c:74 ../src/ui-archive.c:465 ../src/ui-assign.c:547
 #: ../src/ui-assist-import.c:405 ../src/ui-budget.c:263
 #: ../src/ui-budget-tabview.c:1543 ../src/ui-category.c:1378
 #: ../src/ui-dialogs.c:277 ../src/ui-filter.c:832 ../src/ui-filter.c:837
@@ -944,7 +967,7 @@ msgstr "Buget"
 msgid "Manage the budget"
 msgstr "Gestionați bugetul"
 
-#: ../src/dsp-mainwindow.c:1955 ../src/ui-assign.c:890 ../src/ui-dialogs.c:249
+#: ../src/dsp-mainwindow.c:1955 ../src/ui-assign.c:901 ../src/ui-dialogs.c:249
 msgid "Assignment"
 msgstr "Atribuire"
 
@@ -982,7 +1005,7 @@ msgstr "Deschide raportul Trend Time"
 
 #. column: Balance
 #: ../src/dsp-mainwindow.c:1967 ../src/hb-export.c:447
-#: ../src/list-operation.c:1729 ../src/rep-balance.c:1395
+#: ../src/list-operation.c:1737 ../src/rep-balance.c:1395
 #: ../src/ui-widgets-data.c:59
 msgid "Balance"
 msgstr "Sold"
@@ -1015,7 +1038,7 @@ msgstr "Donează"
 msgid "Donate to HomeBank project"
 msgstr "Doneaza pentru proiectul HomeBank"
 
-#: ../src/dsp-mainwindow.c:2087 ../src/ui-archive.c:1225
+#: ../src/dsp-mainwindow.c:2087 ../src/ui-archive.c:1236
 #: ../src/ui-dialogs.c:233
 msgid "Scheduled"
 msgstr "Programat"
@@ -1034,7 +1057,7 @@ msgstr "Reamintire"
 msgid "_Today"
 msgstr ""
 
-#: ../src/hb-archive.c:215 ../src/ui-archive.c:811
+#: ../src/hb-archive.c:215 ../src/ui-archive.c:815
 msgid "(no memo)"
 msgstr ""
 
@@ -1042,7 +1065,7 @@ msgstr ""
 msgid "**PREFILLED**"
 msgstr "**PRECOMPLETAT**"
 
-#: ../src/hb-category.c:492 ../src/hb-report.c:351 ../src/ui-budget.c:113
+#: ../src/hb-category.c:492 ../src/hb-report.c:363 ../src/ui-budget.c:113
 #: ../src/ui-category.c:220 ../src/ui-category.c:763
 msgid "(no category)"
 msgstr "(nicio categorie)"
@@ -1052,13 +1075,13 @@ msgid "invalid CSV format"
 msgstr "format CSV invalid"
 
 #. header
-#: ../src/hb-export.c:441 ../src/list-operation.c:1671
-#: ../src/rep-balance.c:1376 ../src/rep-vehicle.c:167 ../src/rep-vehicle.c:1335
+#: ../src/hb-export.c:441 ../src/list-operation.c:1679
+#: ../src/rep-balance.c:1376 ../src/rep-vehicle.c:167 ../src/rep-vehicle.c:1326
 #: ../src/ui-assist-import.c:373 ../src/ui-filter.c:949 ../src/ui-filter.c:1279
 msgid "Date"
 msgstr "Dată"
 
-#: ../src/hb-export.c:442 ../src/list-operation.c:1444
+#: ../src/hb-export.c:442 ../src/list-operation.c:1449
 #: ../src/ui-assist-import.c:387 ../src/ui-pref.c:133 ../src/ui-pref.c:2533
 #: ../src/ui-pref.c:2541
 msgid "Info"
@@ -1066,7 +1089,7 @@ msgstr "Informaţii"
 
 #. column: Memo
 #. memo
-#: ../src/hb-export.c:444 ../src/list-operation.c:1686
+#: ../src/hb-export.c:444 ../src/list-operation.c:1694
 #: ../src/list-scheduled.c:635 ../src/ui-archive.c:469
 #: ../src/ui-assist-import.c:378 ../src/ui-pref.c:131 ../src/ui-split.c:223
 #: ../src/ui-split.c:982 ../src/ui-widgets-data.c:28
@@ -1076,14 +1099,14 @@ msgstr "Notite"
 #. column: Amount
 #. amount
 #. header
-#: ../src/hb-export.c:445 ../src/list-operation.c:1708 ../src/rep-time.c:1620
-#: ../src/rep-time.c:1773 ../src/rep-vehicle.c:171 ../src/rep-vehicle.c:1380
+#: ../src/hb-export.c:445 ../src/list-operation.c:1716 ../src/rep-time.c:1620
+#: ../src/rep-time.c:1773 ../src/rep-vehicle.c:171 ../src/rep-vehicle.c:1371
 #: ../src/ui-archive.c:474 ../src/ui-assist-import.c:382 ../src/ui-filter.c:988
 #: ../src/ui-split.c:239 ../src/ui-split.c:986
 msgid "Amount"
 msgstr "Valoarea"
 
-#: ../src/hb-hbfile.c:597 ../src/ui-assist-import.c:2168
+#: ../src/hb-hbfile.c:611 ../src/ui-assist-import.c:2167
 msgid "Unknown"
 msgstr "Necunoscut"
 
@@ -1103,13 +1126,13 @@ msgstr "l/km"
 msgid "mi./l"
 msgstr "l/ml"
 
-#: ../src/hb-report.c:363 ../src/ui-payee.c:644
+#: ../src/hb-report.c:375 ../src/ui-payee.c:644
 msgid "(no payee)"
 msgstr "(fără beneficiar)"
 
 #. g_snprintf(s, slen, _("%d-w%d"), g_date_get_year(date), g_date_get_monday_week_of_year(date));
 #. TRANSLATORS: printf string for year of week W, ex. 2019-W52 for week 52 of 2019
-#: ../src/hb-report.c:970
+#: ../src/hb-report.c:990
 #, c-format
 msgid "%d-w%02d"
 msgstr ""
@@ -1117,7 +1140,7 @@ msgstr ""
 #. g_snprintf(buffer, 63, "%d-%02d", g_date_get_year(date), g_date_get_month(date));
 #. todo: will be innacurrate here if fiscal year start not 1/jan
 #. TRANSLATORS: printf string for year of quarter Q, ex. 2019-Q4 for quarter 4 of 2019
-#: ../src/hb-report.c:984
+#: ../src/hb-report.c:1004
 #, c-format
 msgid "%d-q%d"
 msgstr "%d-q%d"
@@ -1183,15 +1206,6 @@ msgstr "Pe grupuri"
 msgid "By institution"
 msgstr "Pe instituții"
 
-#: ../src/hub-scheduled.c:330
-msgid "No transaction to add"
-msgstr "Nici o tranzacție de adăugat"
-
-#: ../src/hub-scheduled.c:332
-#, c-format
-msgid "transaction added: %d"
-msgstr "tranzacție adaugată: %d"
-
 #: ../src/hub-scheduled.c:335
 msgid "Check scheduled transactions result"
 msgstr "Verifică rezultatul tranzacțiilor planificate"
@@ -1199,7 +1213,7 @@ msgstr "Verifică rezultatul tranzacțiilor planificate"
 #. column: Total
 #: ../src/hub-scheduled.c:477 ../src/list-account.c:123 ../src/list-report.c:56
 #: ../src/list-report.c:363 ../src/list-report.c:721 ../src/rep-stats.c:78
-#: ../src/rep-stats.c:885 ../src/rep-stats.c:986 ../src/rep-vehicle.c:1080
+#: ../src/rep-stats.c:885 ../src/rep-stats.c:986 ../src/rep-vehicle.c:1071
 #: ../src/ui-widgets-data.c:50 ../src/ui-widgets-data.c:57
 msgid "Total"
 msgstr "Total"
@@ -1240,10 +1254,6 @@ msgstr "Top %d cheltuieli"
 #: ../src/hub-spending.c:311
 msgid "Other"
 msgstr "Altele"
-
-#: ../src/hub-spending.c:402
-msgid "Where your money goes"
-msgstr "Pe ce se duc banii dvs."
 
 #: ../src/hub-spending.c:436 ../src/rep-stats.c:65 ../src/ui-widgets-data.c:43
 msgid "Subcategory"
@@ -1287,17 +1297,17 @@ msgstr "- separă-"
 msgid "- this needs a category -"
 msgstr "- este necesară o categorie -"
 
-#: ../src/list-operation.c:1657
+#: ../src/list-operation.c:1665
 msgid "Match"
 msgstr "Potrivire"
 
 #. header
-#: ../src/list-operation.c:1691 ../src/ui-filter.c:1155 ../src/ui-filter.c:1285
+#: ../src/list-operation.c:1699 ../src/ui-filter.c:1155 ../src/ui-filter.c:1285
 msgid "Status"
 msgstr "Stare"
 
 #. column: Expense
-#: ../src/list-operation.c:1711 ../src/list-report.c:56
+#: ../src/list-operation.c:1719 ../src/list-report.c:56
 #: ../src/list-report.c:351 ../src/list-scheduled.c:647
 #: ../src/rep-balance.c:1387 ../src/rep-stats.c:76
 #: ../src/ui-budget-tabview.c:88 ../src/ui-filter.c:1129
@@ -1307,7 +1317,7 @@ msgid "Expense"
 msgstr "Cheltuiala"
 
 #. column: Income
-#: ../src/list-operation.c:1714 ../src/list-report.c:56
+#: ../src/list-operation.c:1722 ../src/list-report.c:56
 #: ../src/list-report.c:357 ../src/list-scheduled.c:658
 #: ../src/rep-balance.c:1391 ../src/rep-stats.c:77
 #: ../src/ui-budget-tabview.c:89 ../src/ui-filter.c:1134
@@ -1316,7 +1326,7 @@ msgstr "Cheltuiala"
 msgid "Income"
 msgstr "Venituri"
 
-#: ../src/list-operation.c:1724
+#: ../src/list-operation.c:1732
 msgid "Tags"
 msgstr "Etichete"
 
@@ -1379,7 +1389,7 @@ msgid "Toggle detail"
 msgstr "Comutator detalii"
 
 #: ../src/rep-balance.c:811 ../src/rep-budget.c:1033 ../src/rep-stats.c:1394
-#: ../src/rep-time.c:1080 ../src/rep-vehicle.c:797
+#: ../src/rep-time.c:1080 ../src/rep-vehicle.c:786
 msgid "Refresh"
 msgstr "Reîmprospătează"
 
@@ -1393,7 +1403,7 @@ msgid "Balance report"
 msgstr "Raport sold"
 
 #: ../src/rep-balance.c:1021 ../src/rep-budget.c:1314 ../src/rep-stats.c:1667
-#: ../src/rep-time.c:1357 ../src/rep-vehicle.c:983
+#: ../src/rep-time.c:1357 ../src/rep-vehicle.c:972
 msgid "Display"
 msgstr "Ecran"
 
@@ -1410,19 +1420,19 @@ msgid "_Zoom X:"
 msgstr "_Zoom X:"
 
 #: ../src/rep-balance.c:1064 ../src/rep-budget.c:1347 ../src/rep-stats.c:1745
-#: ../src/rep-time.c:1405 ../src/rep-vehicle.c:1005
+#: ../src/rep-time.c:1405 ../src/rep-vehicle.c:996
 msgid "Date filter"
 msgstr "Filtrare dupa dată"
 
 #: ../src/rep-balance.c:1074 ../src/rep-budget.c:1357 ../src/rep-stats.c:1755
-#: ../src/rep-time.c:1415 ../src/rep-vehicle.c:1015 ../src/ui-filter.c:961
+#: ../src/rep-time.c:1415 ../src/rep-vehicle.c:1006 ../src/ui-filter.c:961
 #: ../src/ui-filter.c:999 ../src/ui-transaction.c:184
 #: ../src/ui-transaction.c:185
 msgid "_From:"
 msgstr "_De la:"
 
 #: ../src/rep-balance.c:1080 ../src/rep-budget.c:1363 ../src/rep-stats.c:1761
-#: ../src/rep-time.c:1421 ../src/rep-vehicle.c:1021 ../src/ui-assign.c:1627
+#: ../src/rep-time.c:1421 ../src/rep-vehicle.c:1012 ../src/ui-assign.c:1640
 #: ../src/ui-filter.c:968 ../src/ui-filter.c:1006 ../src/ui-transaction.c:178
 #: ../src/ui-transaction.c:184 ../src/ui-transaction.c:185
 msgid "_To:"
@@ -1689,7 +1699,7 @@ msgstr ""
 msgid "Time slice"
 msgstr "Segement de timp"
 
-#.
+#. 
 #. LST_CAR_DATE,
 #. LST_CAR_MEMO,
 #. LST_CAR_METER,
@@ -1698,10 +1708,10 @@ msgstr "Segement de timp"
 #. LST_CAR_AMOUNT,
 #. LST_CAR_DIST,
 #. LST_CAR_100KM
-#.
-#.
+#. 
+#. 
 #. column: Memo
-#.
+#. 
 #. column = gtk_tree_view_column_new();
 #. gtk_tree_view_column_set_title(column, _("Memo"));
 #. gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
@@ -1709,60 +1719,63 @@ msgstr "Segement de timp"
 #. gtk_tree_view_column_pack_start(column, renderer, TRUE);
 #. gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_MEMO);
 #. //gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
-#.
+#. 
 #. column: Meter
-#: ../src/rep-vehicle.c:168 ../src/rep-vehicle.c:1368
+#: ../src/rep-vehicle.c:168 ../src/rep-vehicle.c:1359
 msgid "Meter"
 msgstr "Metru"
 
 #. column: Fuel load
-#: ../src/rep-vehicle.c:169 ../src/rep-vehicle.c:1372
+#: ../src/rep-vehicle.c:169 ../src/rep-vehicle.c:1363
 msgid "Fuel"
 msgstr "Combustibil"
 
 #. column: Price by unit
-#: ../src/rep-vehicle.c:170 ../src/rep-vehicle.c:1376
+#: ../src/rep-vehicle.c:170 ../src/rep-vehicle.c:1367
 msgid "Price"
 msgstr "Preţ"
 
 #. column: Distance done
-#: ../src/rep-vehicle.c:172 ../src/rep-vehicle.c:1384
+#: ../src/rep-vehicle.c:172 ../src/rep-vehicle.c:1375
 msgid "Dist."
 msgstr "Dist."
 
-#: ../src/rep-vehicle.c:800
+#: ../src/rep-vehicle.c:789
 msgid "Export"
 msgstr "Export"
 
-#: ../src/rep-vehicle.c:800 ../src/ui-dialogs.c:551 ../src/ui-dialogs.c:826
+#: ../src/rep-vehicle.c:789 ../src/ui-dialogs.c:551 ../src/ui-dialogs.c:826
 msgid "Export as CSV"
 msgstr "Exportă ca CSV"
 
-#: ../src/rep-vehicle.c:964
+#: ../src/rep-vehicle.c:953
 msgid "Vehicle cost report"
 msgstr "Raport cost vehicul"
 
-#: ../src/rep-vehicle.c:987
-msgid "Vehi_cle:"
-msgstr "Vehi_cul:"
+#. label = make_label_widget(_("Vehi_cle:"));
+#. #2001566 make label consistent with properties dialog
+#: ../src/rep-vehicle.c:978 ../src/ui-assign.c:1059 ../src/ui-hbfile.c:340
+#: ../src/ui-payee.c:1287
+msgid "_Category:"
+msgstr "_Categorie:"
 
-#: ../src/rep-vehicle.c:1047
+#: ../src/rep-vehicle.c:1038
 msgid "Meter:"
 msgstr "Contor:"
 
-#: ../src/rep-vehicle.c:1051
+#: ../src/rep-vehicle.c:1042
 msgid "Consumption:"
 msgstr "Consum"
 
-#: ../src/rep-vehicle.c:1055
+#: ../src/rep-vehicle.c:1046
 msgid "Fuel cost:"
 msgstr "Cost combustibil:"
 
-#: ../src/rep-vehicle.c:1059
+#: ../src/rep-vehicle.c:1050
 msgid "Other cost:"
 msgstr "Alte costuri:"
 
-#: ../src/rep-vehicle.c:1063
+#: ../src/rep-vehicle.c:1054
 msgid "Total cost:"
 msgstr "Costuri totale:"
 
@@ -1771,17 +1784,17 @@ msgstr "Costuri totale:"
 #. gtk_combo_box_set_wrap_width(GTK_COMBO_BOX(data->CY_template), 0);
 #. populate template
 #: ../src/ui-account.c:535 ../src/ui-account.c:1682 ../src/ui-assign.c:181
-#: ../src/ui-currency.c:245 ../src/ui-widgets.c:1337
+#: ../src/ui-currency.c:245 ../src/ui-widgets.c:1340
 msgid "(none)"
 msgstr "(nimic)"
 
-#: ../src/ui-account.c:861 ../src/ui-assign.c:499 ../src/ui-category.c:1312
+#: ../src/ui-account.c:861 ../src/ui-assign.c:510 ../src/ui-category.c:1312
 #: ../src/ui-currency.c:599 ../src/ui-payee.c:873 ../src/ui-tag.c:484
 msgid "Visible"
 msgstr "Vizibil(ă)"
 
 #. GTK_FILE_CHOOSER_ACTION_OPEN,
-#: ../src/ui-account.c:1022 ../src/ui-assign.c:893
+#: ../src/ui-account.c:1022 ../src/ui-assign.c:904
 #: ../src/ui-assist-import.c:746 ../src/ui-budget-tabview.c:2101
 #: ../src/ui-budget-tabview.c:2354 ../src/ui-category.c:1723
 #: ../src/ui-category.c:1886 ../src/ui-currency.c:780 ../src/ui-currency.c:1150
@@ -1795,7 +1808,7 @@ msgstr "Vizibil(ă)"
 msgid "_Cancel"
 msgstr "_Anulează"
 
-#: ../src/ui-account.c:1024 ../src/ui-assign.c:895 ../src/ui-category.c:1725
+#: ../src/ui-account.c:1024 ../src/ui-assign.c:906 ../src/ui-category.c:1725
 #: ../src/ui-currency.c:782 ../src/ui-currency.c:1152 ../src/ui-dialogs.c:387
 #: ../src/ui-hbfile.c:235 ../src/ui-payee.c:1237 ../src/ui-pref.c:2296
 #: ../src/ui-split.c:915 ../src/ui-tag.c:681 ../src/ui-transaction.c:1452
@@ -1829,11 +1842,12 @@ msgstr "Nu se poate sterge contul '%s'"
 #: ../src/ui-account.c:1422
 msgid ""
 "This account contains transactions and/or is part of internal transfers."
-msgstr "Acest cont contine tranzactii si/sau este parte in transferuri interne"
+msgstr ""
+"Acest cont contine tranzactii si/sau este parte in transferuri interne"
 
-#: ../src/ui-account.c:1433 ../src/ui-archive.c:811 ../src/ui-assign.c:1420
+#: ../src/ui-account.c:1433 ../src/ui-archive.c:815 ../src/ui-assign.c:1434
 #: ../src/ui-budget-tabview.c:2288 ../src/ui-category.c:2014
-#: ../src/ui-currency.c:1536 ../src/ui-payee.c:1553 ../src/ui-tag.c:910
+#: ../src/ui-currency.c:1542 ../src/ui-payee.c:1553 ../src/ui-tag.c:910
 #, c-format
 msgid "Are you sure you want to permanently delete '%s'?"
 msgstr "Sigur vrei să ștergi definitiv '%s' ?"
@@ -1898,7 +1912,7 @@ msgstr "Valuta"
 msgid "this account was _closed"
 msgstr "acest cont a fost _inchis"
 
-#: ../src/ui-account.c:1922 ../src/ui-assign.c:1086 ../src/ui-payee.c:1264
+#: ../src/ui-account.c:1922 ../src/ui-assign.c:1097 ../src/ui-payee.c:1264
 msgid "Notes:"
 msgstr "Notițe:"
 
@@ -1962,44 +1976,44 @@ msgstr "Descoperit de cont la:"
 msgid "Max_imum:"
 msgstr "Ma_xim:"
 
-#: ../src/ui-archive.c:813
+#: ../src/ui-archive.c:817
 msgid "If you delete a scheduled/template, it will be permanently lost."
 msgstr ""
 "Dacă ștergeți o programare /un șablon, acestea se vor pierde definitiv."
 
-#: ../src/ui-archive.c:1105
+#: ../src/ui-archive.c:1116
 msgid "Next _date:"
 msgstr "Data _urmatoare:"
 
-#: ../src/ui-archive.c:1113
+#: ../src/ui-archive.c:1124
 msgid "Ever_y:"
 msgstr "Fi_ecare:"
 
-#: ../src/ui-archive.c:1128
+#: ../src/ui-archive.c:1139
 msgid "More options"
 msgstr "Mai multe opțiuni"
 
-#: ../src/ui-archive.c:1140
+#: ../src/ui-archive.c:1151
 msgid "Week end:"
 msgstr "Weekend"
 
-#: ../src/ui-archive.c:1148
+#: ../src/ui-archive.c:1159
 msgid "_Stop after:"
 msgstr "_Oprește după:"
 
-#: ../src/ui-archive.c:1162
+#: ../src/ui-archive.c:1173
 msgid "posts"
 msgstr "articole"
 
-#: ../src/ui-archive.c:1185
+#: ../src/ui-archive.c:1196
 msgid "Manage scheduled/template transactions"
 msgstr "Administrează tranzactiile programate/șablon"
 
-#: ../src/ui-archive.c:1229 ../src/ui-dialogs.c:241
+#: ../src/ui-archive.c:1240 ../src/ui-dialogs.c:241
 msgid "Template"
 msgstr "Șablon"
 
-#: ../src/ui-archive.c:1299
+#: ../src/ui-archive.c:1310
 msgid "_Schedule"
 msgstr "_Planifică"
 
@@ -2016,99 +2030,95 @@ msgid "Overwrite"
 msgstr "Suprascrie"
 
 #. column : Search
-#: ../src/ui-assign.c:524
+#: ../src/ui-assign.c:535
 msgid "Search"
 msgstr "Caută"
 
 #. column : Notes
-#: ../src/ui-assign.c:528
+#: ../src/ui-assign.c:539
 msgid "Notes"
 msgstr "Notițe"
 
-#: ../src/ui-assign.c:687
+#: ../src/ui-assign.c:698
 #, c-format
 msgid "This search text already exists at position %d"
 msgstr ""
 
-#: ../src/ui-assign.c:935
+#: ../src/ui-assign.c:946
 msgid "Condition"
 msgstr "Condiție"
 
 #. label = make_label_widget(_("Con_tains:"));
-#: ../src/ui-assign.c:940
+#: ../src/ui-assign.c:951
 msgid "_Search:"
 msgstr "_Caută:"
 
-#: ../src/ui-assign.c:949
+#: ../src/ui-assign.c:960
 msgid "Case sensitive"
 msgstr "Sensibil la majuscule"
 
-#: ../src/ui-assign.c:954
+#: ../src/ui-assign.c:965
 msgid "Regular expression"
 msgstr "Expresie regulată"
 
-#: ../src/ui-assign.c:972
+#: ../src/ui-assign.c:983
 msgid "_In:"
 msgstr "_În:"
 
-#: ../src/ui-assign.c:990
+#: ../src/ui-assign.c:1001
 msgid "_AND"
 msgstr ""
 
 #. gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
-#: ../src/ui-assign.c:999 ../src/ui-transaction.c:1546
+#: ../src/ui-assign.c:1010 ../src/ui-transaction.c:1546
 #: ../src/ui-txn-multi.c:499
 msgid "Amou_nt:"
 msgstr "_Suma"
 
 #. label = make_label_group(_("Assign payee"));
-#: ../src/ui-assign.c:1018
+#: ../src/ui-assign.c:1029
 msgid "Assignments"
 msgstr "Asignări"
 
-#: ../src/ui-assign.c:1028 ../src/ui-transaction.c:1666
+#: ../src/ui-assign.c:1039 ../src/ui-transaction.c:1666
 #: ../src/ui-txn-multi.c:564
 msgid "_Payee:"
 msgstr "_Beneficiar:"
 
-#: ../src/ui-assign.c:1048 ../src/ui-hbfile.c:340 ../src/ui-payee.c:1287
-msgid "_Category:"
-msgstr "_Categorie:"
-
-#: ../src/ui-assign.c:1067
+#: ../src/ui-assign.c:1078
 msgid "Pay_ment:"
 msgstr "P_lată"
 
-#: ../src/ui-assign.c:1373
+#: ../src/ui-assign.c:1387
 #, c-format
 msgid "(rule %d)"
 msgstr "(regula %d)"
 
-#: ../src/ui-assign.c:1422
+#: ../src/ui-assign.c:1436
 msgid "If you delete an assignment, it will be permanently lost."
 msgstr "Dacă ștergeți o asignare, aceasta se va pierde definitiv."
 
-#: ../src/ui-assign.c:1609
+#: ../src/ui-assign.c:1622
 msgid "Move to..."
 msgstr ""
 
-#: ../src/ui-assign.c:1618
+#: ../src/ui-assign.c:1631
 msgid "Move rule"
 msgstr ""
 
-#: ../src/ui-assign.c:1643
+#: ../src/ui-assign.c:1655
 msgid "Move"
 msgstr ""
 
-#: ../src/ui-assign.c:1671
+#: ../src/ui-assign.c:1685
 msgid "Manage Assignments"
 msgstr "Administreaza Asignările"
 
-#: ../src/ui-assign.c:1771
+#: ../src/ui-assign.c:1785
 msgid "Move up"
 msgstr ""
 
-#: ../src/ui-assign.c:1775
+#: ../src/ui-assign.c:1789
 msgid "Move down"
 msgstr ""
 
@@ -2446,17 +2456,17 @@ msgstr "_Modificați suma"
 msgid "Similar transaction in target account (possible duplicate)"
 msgstr "Tranzacție similară în contul destinație (posibil duplicat)"
 
-#: ../src/ui-assist-import.c:1893
+#: ../src/ui-assist-import.c:1892
 msgid "Date _gap:"
 msgstr "_Interval Dată:"
 
 #. TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days of date tolerance
 #. TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days in advance the current date
-#: ../src/ui-assist-import.c:1901 ../src/ui-hbfile.c:319 ../src/ui-pref.c:1791
+#: ../src/ui-assist-import.c:1900 ../src/ui-hbfile.c:319 ../src/ui-pref.c:1791
 msgid "days"
 msgstr "zile"
 
-#: ../src/ui-assist-import.c:1909
+#: ../src/ui-assist-import.c:1908
 msgid ""
 "The match is done in order: by account, amount and date.\n"
 "A date tolerance of 0 day means an exact match"
@@ -2464,36 +2474,36 @@ msgstr ""
 "Potrivirea se face în ordine: după cont, sumă şi dată.\n"
 "O toleranţă a datei de 0 zile însemna o potrivire exactă."
 
-#: ../src/ui-assist-import.c:1980
+#: ../src/ui-assist-import.c:1979
 msgid "Run automation"
 msgstr "Rulează automat"
 
-#: ../src/ui-assist-import.c:1984
+#: ../src/ui-assist-import.c:1983
 msgid "1) Enrich with _payee default"
 msgstr "1) Populați cu _beneficiarul implicit"
 
-#: ../src/ui-assist-import.c:1990
+#: ../src/ui-assist-import.c:1989
 msgid "2) Run automatic _assigment rules"
 msgstr "2) Rulați reguli automate de _asignare/atribuire"
 
-#: ../src/ui-assist-import.c:1996
+#: ../src/ui-assist-import.c:1995
 msgid "Click \"Apply\" to update your accounts."
 msgstr "Faceți clic pe „Aplicați” pentru a vă actualiza conturile."
 
-#: ../src/ui-assist-import.c:2330
+#: ../src/ui-assist-import.c:2329
 msgid "Welcome"
 msgstr "Bun venit!"
 
-#: ../src/ui-assist-import.c:2336
+#: ../src/ui-assist-import.c:2335
 msgid "Select file(s)"
 msgstr "Selectare fișier(e)"
 
 #. gtk_assistant_set_page_type (GTK_ASSISTANT (assistant), page, GTK_ASSISTANT_PAGE_PROGRESS);
-#: ../src/ui-assist-import.c:2341
+#: ../src/ui-assist-import.c:2340
 msgid "Import"
 msgstr "Import"
 
-#: ../src/ui-assist-import.c:2354
+#: ../src/ui-assist-import.c:2353
 msgid "Confirmation"
 msgstr "Confirmare"
 
@@ -2879,20 +2889,20 @@ msgstr "Adăugare _monedă particulară"
 msgid "_ISO:"
 msgstr "_ISO:"
 
-#: ../src/ui-currency.c:1327
+#: ../src/ui-currency.c:1333
 msgid "Update online error"
 msgstr "Actualizați/încărcați eroarea online"
 
-#: ../src/ui-currency.c:1538
+#: ../src/ui-currency.c:1544
 msgid "If you delete a currency, it will be permanently lost."
 msgstr ""
 "Dacă ștergeți o monedă, datele procesate cu aceasta se vor pierde definitiv."
 
-#: ../src/ui-currency.c:1581
+#: ../src/ui-currency.c:1587
 msgid "Change the base currency"
 msgstr "Schimbați moneda de bază"
 
-#: ../src/ui-currency.c:1582
+#: ../src/ui-currency.c:1588
 msgid ""
 "If you proceed, rates of other currencies\n"
 "will be set to 0, don't forget to update it"
@@ -2900,15 +2910,15 @@ msgstr ""
 "Dacă continuați, ratele de schimb ale altor valute\n"
 "vor fi setate la 0. Nu uitați să le re-actualizați."
 
-#: ../src/ui-currency.c:1677
+#: ../src/ui-currency.c:1683
 msgid "Currencies"
 msgstr "Valute"
 
-#: ../src/ui-currency.c:1726
+#: ../src/ui-currency.c:1732
 msgid "Update online"
 msgstr "Încărcare online"
 
-#: ../src/ui-currency.c:1778
+#: ../src/ui-currency.c:1784
 msgid "Set as base"
 msgstr "Setare ca imolicit"
 
@@ -3733,7 +3743,8 @@ msgstr "Suma părților:"
 
 #: ../src/ui-split.c:1066
 msgid "Warning: sum of splits and transaction amount don't match"
-msgstr "Avertisment: suma părților și suma totală a tranzacției nu sunt egale."
+msgstr ""
+"Avertisment: suma părților și suma totală a tranzacției nu sunt egale."
 
 #: ../src/ui-split.c:1074
 msgid "Warning: sum of splits and transaction type don't match"
@@ -3944,7 +3955,7 @@ msgstr "(fără tip)"
 msgid "Bank"
 msgstr "Banca"
 
-#: ../src/ui-widgets-data.c:79 ../src/ui-widgets.c:1340
+#: ../src/ui-widgets-data.c:79 ../src/ui-widgets.c:1343
 msgid "Cash"
 msgstr "Numerar"
 
@@ -3952,7 +3963,7 @@ msgstr "Numerar"
 msgid "Asset"
 msgstr "Active"
 
-#: ../src/ui-widgets-data.c:81 ../src/ui-widgets.c:1338
+#: ../src/ui-widgets-data.c:81 ../src/ui-widgets.c:1341
 msgid "Credit card"
 msgstr "Card de credit"
 
@@ -3977,94 +3988,76 @@ msgid "Tomorrow"
 msgstr ""
 
 #: ../src/ui-widgets-data.c:100
-#, fuzzy
 msgid "Last Week"
-msgstr "Săptămâna"
+msgstr ""
 
 #: ../src/ui-widgets-data.c:101
-#, fuzzy
 msgid "This Week"
-msgstr "Săptămâna"
+msgstr ""
 
 #: ../src/ui-widgets-data.c:102
-#, fuzzy
 msgid "Next Week"
-msgstr "Urmatoarea dată"
+msgstr ""
 
 #: ../src/ui-widgets-data.c:104
-#, fuzzy
 msgid "Last Fortnight"
-msgstr "Luna următoare"
+msgstr ""
 
 #: ../src/ui-widgets-data.c:105
-#, fuzzy
 msgid "This Fortnight"
-msgstr "În această lună"
+msgstr ""
 
 #: ../src/ui-widgets-data.c:106
-#, fuzzy
 msgid "Next Fortnight"
-msgstr "Luna următoare"
+msgstr ""
 
 #: ../src/ui-widgets-data.c:108
-#, fuzzy
 msgid "Last Month"
-msgstr "Lună"
+msgstr ""
 
 #: ../src/ui-widgets-data.c:109
-#, fuzzy
 msgid "This Month"
-msgstr "În această lună"
+msgstr ""
 
 #: ../src/ui-widgets-data.c:110
-#, fuzzy
 msgid "Next Month"
-msgstr "Luna următoare"
+msgstr ""
 
 #: ../src/ui-widgets-data.c:112
-#, fuzzy
 msgid "Last Quarter"
-msgstr "Trimestru"
+msgstr ""
 
 #: ../src/ui-widgets-data.c:113
-#, fuzzy
 msgid "This Quarter"
-msgstr "Trimestru"
+msgstr ""
 
 #: ../src/ui-widgets-data.c:114
-#, fuzzy
 msgid "Next Quarter"
-msgstr "Urmatoarea dată"
+msgstr ""
 
 #: ../src/ui-widgets-data.c:116
-#, fuzzy
 msgid "Last Year"
-msgstr "Semestru"
+msgstr ""
 
 #: ../src/ui-widgets-data.c:117
-#, fuzzy
 msgid "This Year"
-msgstr "An"
+msgstr ""
 
 #: ../src/ui-widgets-data.c:118
-#, fuzzy
 msgid "Next Year"
-msgstr "Urmatoarea dată"
+msgstr ""
 
 #: ../src/ui-widgets-data.c:124
-#, fuzzy
 msgid "Last 30 Days"
-msgstr "Următoarele 30 de zile"
+msgstr ""
 
 #: ../src/ui-widgets-data.c:125
-#, fuzzy
 msgid "Last 60 Days"
-msgstr "Următoarele 60 de zile"
+msgstr ""
 
 #: ../src/ui-widgets-data.c:126
-#, fuzzy
 msgid "Last 90 Days"
-msgstr "Următoarele 90 de zile"
+msgstr ""
 
 #: ../src/ui-widgets-data.c:128
 msgid "Last 12 Months"
@@ -4075,9 +4068,8 @@ msgid "30 Days Around"
 msgstr ""
 
 #: ../src/ui-widgets-data.c:130
-#, fuzzy
 msgid "All Date"
-msgstr "Dată"
+msgstr ""
 
 #: ../src/ui-widgets-data.c:137
 msgid "This month"
@@ -4220,35 +4212,35 @@ msgstr "Sep"
 msgid "Search..."
 msgstr "Caută..."
 
-#: ../src/ui-widgets.c:1339
+#: ../src/ui-widgets.c:1342
 msgid "Check"
 msgstr "Verifică"
 
-#: ../src/ui-widgets.c:1341
+#: ../src/ui-widgets.c:1344
 msgid "Bank Transfer"
 msgstr "Transfer Bancar"
 
-#: ../src/ui-widgets.c:1342
+#: ../src/ui-widgets.c:1345
 msgid "Debit card"
 msgstr "Card de debit"
 
-#: ../src/ui-widgets.c:1343
+#: ../src/ui-widgets.c:1346
 msgid "Standing order"
 msgstr "Ordin în vigoare"
 
-#: ../src/ui-widgets.c:1344
+#: ../src/ui-widgets.c:1347
 msgid "Electronic payment"
 msgstr "Plată electronică"
 
-#: ../src/ui-widgets.c:1345
+#: ../src/ui-widgets.c:1348
 msgid "Deposit"
 msgstr "Depozit"
 
 #. TRANSLATORS: Financial institution fee
-#: ../src/ui-widgets.c:1347
+#: ../src/ui-widgets.c:1350
 msgid "FI fee"
 msgstr "Fără comision"
 
-#: ../src/ui-widgets.c:1348
+#: ../src/ui-widgets.c:1351
 msgid "Direct Debit"
 msgstr "Debit Direct"

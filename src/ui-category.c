@@ -757,12 +757,12 @@ gchar *string;
 
 	gtk_tree_model_get(model, iter, 
 		LST_DEFCAT_DATAS, &entry,
-		LST_DEFCAT_NAME, &name,
+		//LST_DEFCAT_NAME, &name,
 		-1);
 	if(entry->key == 0)
 		name = _("(no category)");
-	//else
-	//	name = entry->name;
+	else
+		name = entry->name;
 
 	gchar type = category_get_type_char(entry);
 
@@ -892,7 +892,7 @@ GtkTreePath *path;
 		gtk_tree_store_set (GTK_TREE_STORE(model), &iter,
 			LST_DEFCAT_TOGGLE, FALSE,
 			LST_DEFCAT_DATAS, item,
-			LST_DEFCAT_NAME, item->name,
+			//LST_DEFCAT_NAME, item->name,
 			-1);
 
 		//select the added line
@@ -1111,7 +1111,7 @@ gboolean matchhidden = TRUE;
 		gtk_tree_store_insert_with_values (GTK_TREE_STORE(ctx->model), &toplevel, NULL, -1,
 			LST_DEFCAT_TOGGLE, FALSE,
 			LST_DEFCAT_DATAS, item,
-			LST_DEFCAT_NAME, item->name,
+			//LST_DEFCAT_NAME, item->name,
 			-1);
 	}
 	
@@ -1149,7 +1149,7 @@ gboolean matchhidden = TRUE;
 		gtk_tree_store_insert_with_values (GTK_TREE_STORE(ctx->model), &child, &toplevel, -1,
 			LST_DEFCAT_TOGGLE, FALSE,
 			LST_DEFCAT_DATAS, item,
-			LST_DEFCAT_NAME, item->name,
+			//LST_DEFCAT_NAME, item->name,
 			-1);
 	}
 
@@ -1285,8 +1285,8 @@ GtkTreeViewColumn	*column;
 	store = gtk_tree_store_new(
 		NUM_LST_DEFCAT,
 		G_TYPE_BOOLEAN,
-		G_TYPE_POINTER,
-		G_TYPE_STRING
+		G_TYPE_POINTER
+		//G_TYPE_STRING
 		);
 
 	treeview = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
@@ -1377,8 +1377,9 @@ GtkTreeViewColumn	*column;
 	column = gtk_tree_view_column_new();
 	gtk_tree_view_column_set_title(column, _("Category"));
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_cat_listview_text_cell_data_function, GINT_TO_POINTER(LST_DEFCAT_NAME), NULL);
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_cat_listview_text_cell_data_function, GINT_TO_POINTER(LST_DEFCAT_DATAS), NULL);
+	//#2004631 date and column title alignement
+	//gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_column_set_resizable(column, TRUE);
 	gtk_tree_view_column_set_min_width(column, HB_MINWIDTH_LIST);
 	gtk_tree_view_column_set_sort_column_id (column, LST_DEFCAT_SORT_NAME);

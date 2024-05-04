@@ -430,7 +430,8 @@ GtkCellRenderer    *renderer;
 	
 	column = gtk_tree_view_column_new_with_attributes(title, renderer, NULL);
 
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	//gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_column_set_resizable(column, TRUE);
 
 	gtk_tree_view_column_set_sort_column_id (column, sortcolumnid);
@@ -520,14 +521,16 @@ GtkTreeViewColumn	*column;
 
 	// column: position
 	renderer = gtk_cell_renderer_text_new ();
-	g_object_set(renderer, "xalign", 0.5, NULL);
+	//#2004631 date and column title alignement
+	g_object_set(renderer, "xalign", 1.0, NULL);
 	
 	column = gtk_tree_view_column_new();
 	gtk_tree_view_column_set_title(column, "#");
 	gtk_tree_view_column_set_sort_column_id (column, LST_DEFASG_SORT_POS);
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_asg_listview_cell_data_function_pos, GINT_TO_POINTER(LST_DEFASG_DATAS), NULL);
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	gtk_tree_view_column_set_alignment (column, 1.0);
 	gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 	

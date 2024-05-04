@@ -1132,10 +1132,14 @@ static void repstats_update_detail(GtkWidget *widget, gpointer user_data)
 {
 struct repstats_data *data;
 
+	DB( g_print("\n[repdist] update detail\n") );
+
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
 	if(GTK_IS_TREE_VIEW(data->LV_report))
 	{
+		DB( g_print(" showdetail=%d\n", data->detail) );
+		
 		if(data->detail)
 		{
 		GtkTreeSelection *treeselection;

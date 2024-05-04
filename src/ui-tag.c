@@ -497,6 +497,7 @@ GtkTreeViewColumn	*column;
 
 	// column 2: name
 	column = gtk_tree_view_column_new();
+	gtk_tree_view_column_set_title(column, _("Tag"));
 
 	renderer = gtk_cell_renderer_text_new ();
 	g_object_set(renderer, 
@@ -511,7 +512,7 @@ GtkTreeViewColumn	*column;
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
 	// treeviewattribute
-	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW(treeview), FALSE);
+	//gtk_tree_view_set_headers_visible (GTK_TREE_VIEW(treeview), FALSE);
 	gtk_tree_view_set_reorderable (GTK_TREE_VIEW(treeview), TRUE);
 	
 	gtk_tree_sortable_set_default_sort_func(GTK_TREE_SORTABLE(store), ui_tag_listview_compare_func, NULL, NULL);

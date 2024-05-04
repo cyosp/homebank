@@ -763,6 +763,8 @@ gint usrnbacc, usrrange;
 	gtk_tree_view_set_model(GTK_TREE_VIEW(data->LV_report), model);
 	g_object_unref(model);
 
+	gtk_tree_view_columns_autosize (GTK_TREE_VIEW(data->LV_report));
+
 	/* update bar chart */
 	gtk_chart_set_datas(GTK_CHART(data->RE_chart), model, LST_OVER_BALANCE, NULL, NULL);
 	//gtk_chart_set_line_datas(GTK_CHART(data->RE_chart), model, LST_OVER_BALANCE, LST_OVER_DATE);
@@ -1322,7 +1324,8 @@ GtkCellRenderer    *renderer;
 	g_object_set(renderer, "xalign", 1.0, NULL);
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_repbal_cell_cell_data_function_amount, GINT_TO_POINTER(id), NULL);
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	gtk_tree_view_column_set_alignment (column, 1.0);
 	//gtk_tree_view_column_set_sort_column_id (column, id);
 	return column;
 }
@@ -1376,10 +1379,12 @@ GtkTreeViewColumn  *column;
 	gtk_tree_view_column_set_title(column, _("Date"));
 	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
 	renderer = gtk_cell_renderer_text_new();
-	g_object_set(renderer, "xalign", 1.0, NULL);
+	//#2004631 date and column title alignement
+	//g_object_set(renderer, "xalign", 1.0, NULL);
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	//gtk_tree_view_column_add_attribute(column, renderer, "text", LST_OVER_DATE);
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	//gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_repbal_cell_data_function_date, NULL, NULL);
 
 

@@ -263,7 +263,8 @@ GtkTreeViewColumn  *column;
 	gtk_tree_view_column_set_title(column, _("Category"));
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_bud_listview_cell_data_function_text, GINT_TO_POINTER(1), NULL);
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	//gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_column_set_min_width(column, HB_MINWIDTH_LIST);
 	//gtk_tree_view_column_set_sort_column_id (column, LST_DEFACC_NAME);
 	gtk_tree_view_column_set_resizable(column, TRUE);

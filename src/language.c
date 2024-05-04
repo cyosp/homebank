@@ -37,10 +37,26 @@
 
 #include "language.h"
 
+/****************************************************************************/
+/* Debug macros																*/
+/****************************************************************************/
+#define MYDEBUG 0
+
+#if MYDEBUG
+#define DB(x) (x);
+#else
+#define DB(x);
+#endif
+
 
 void
 language_init (const gchar *language)
 {
+
+	DB( g_print ("\n[language] init\n") );
+
+	DB( g_print (" pref is '%s'\n", language) );
+
 #ifdef G_OS_WIN32
   if (! language)
     {
@@ -727,6 +743,9 @@ language_init (const gchar *language)
           language = NULL;
         }
     }
+
+	DB( g_print (" mswin detection is '%s'\n", language) );
+
 #endif
 
   /*  We already set the locale according to the environment, so just
@@ -735,6 +754,20 @@ language_init (const gchar *language)
   if (! language)
     return;
 
-  g_setenv ("LANGUAGE", language, TRUE);
-  setlocale (LC_ALL, "");
+	#if MYDEBUG == 1
+	const gchar * const *locales = g_get_language_names();
+	
+	g_print(" system LANGUAGE\n");
+	for (; locales != NULL && *locales != NULL; locales++)
+	{
+		g_print(" %s\n", *locales);
+	}
+	
+    
+   #endif
+
+	DB( g_print (" setenv to '%s' and LC_ALL to empty\n", language) );
+
+	g_setenv ("LANGUAGE", language, TRUE);
+	setlocale (LC_ALL, "");
 }

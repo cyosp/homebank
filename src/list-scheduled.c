@@ -553,7 +553,8 @@ GtkTreeViewColumn *column;
 	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_sch_cell_data_func_latetext, NULL, NULL);
 
 	//gtk_tree_view_column_set_sort_column_id (column, LST_DSPUPC_NB_LATE);
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	gtk_tree_view_column_set_alignment (column, 1.0);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
 	/* column : Still (for limited scheduled) */
@@ -566,18 +567,21 @@ GtkTreeViewColumn *column;
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_sch_cell_data_func_still, NULL, NULL);
 	//gtk_tree_view_column_set_sort_column_id (column, LST_DSPUPC_REMAINING);
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	gtk_tree_view_column_set_alignment (column, 1.0);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 	
 	/* column: Next on */
 	renderer = gtk_cell_renderer_text_new ();
-	g_object_set(renderer, "xalign", 1.0, NULL);
+	//#2004631 date and column title alignement
+	//g_object_set(renderer, "xalign", 1.0, NULL);
 	column = gtk_tree_view_column_new();
 	gtk_tree_view_column_set_title(column, _("Next date"));
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_sch_cell_data_func_date, NULL, NULL);
 	//gtk_tree_view_column_set_sort_column_id (column, LST_DSPUPC_DATE);
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	//gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
 	/* column: Payee */
@@ -596,7 +600,8 @@ GtkTreeViewColumn *column;
 	gtk_tree_view_column_set_resizable(column, TRUE);
 	//gtk_tree_view_column_add_attribute(column, renderer, "text", 1);
 	//gtk_tree_view_column_set_sort_column_id (column, LST_DSPACC_NAME);
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	//gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_column_set_min_width(column, HB_MINWIDTH_LIST/2);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
@@ -617,7 +622,8 @@ GtkTreeViewColumn *column;
 	gtk_tree_view_column_set_resizable(column, TRUE);
 	//gtk_tree_view_column_add_attribute(column, renderer, "text", 1);
 	//gtk_tree_view_column_set_sort_column_id (column, LST_DSPACC_NAME);
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	//gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_column_set_min_width(column, HB_MINWIDTH_LIST/2);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 	
@@ -638,7 +644,8 @@ GtkTreeViewColumn *column;
 	gtk_tree_view_column_set_resizable(column, TRUE);
 	//gtk_tree_view_column_add_attribute(column, renderer, "text", 2);
 	//gtk_tree_view_column_set_sort_column_id (column, LST_DSPACC_NAME);
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	//gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_column_set_min_width(column, HB_MINWIDTH_LIST/2);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
@@ -650,7 +657,8 @@ GtkTreeViewColumn *column;
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_sch_cell_data_func_amount, GINT_TO_POINTER(-1), NULL);
 	//gtk_tree_view_column_set_sort_column_id (column, LST_DSPACC_NAME);
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	gtk_tree_view_column_set_alignment (column, 1.0);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
 	/* column: Amount */
@@ -661,7 +669,8 @@ GtkTreeViewColumn *column;
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_sch_cell_data_func_amount, GINT_TO_POINTER(1), NULL);
 	//gtk_tree_view_column_set_sort_column_id (column, LST_DSPACC_NAME);
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	gtk_tree_view_column_set_alignment (column, 1.0);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
 	/* column: Account */
@@ -680,8 +689,9 @@ GtkTreeViewColumn *column;
 	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_sch_cell_data_func_account, NULL, NULL);
 	gtk_tree_view_column_set_resizable(column, TRUE);
 	//gtk_tree_view_column_set_sort_column_id (column, LST_DSPOPE_DATE);
-	gtk_tree_view_column_set_alignment (column, 0.5);
-	//gtk_tree_view_column_set_min_width(column, HB_MINWIDTH_LIST);
+	//#2004631 date and column title alignement
+	//gtk_tree_view_column_set_alignment (column, 0.5);
+	gtk_tree_view_column_set_min_width(column, HB_MINWIDTH_LIST);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
 	/* column: empty */

@@ -592,6 +592,9 @@ gchar *iconname = NULL;
 		}
 	}
 
+	//TODO 5.6 after switch to on the change prevent do not display, maybe gtk bug
+	//DB( g_print("\n[list_txn] clr lockrecon=%d, icon=%s", data->lockreconciled, iconname) );
+
 	//g_object_set(renderer, "text", c, NULL);
 	g_object_set(renderer, "icon-name", iconname, NULL);
 }
@@ -1380,7 +1383,8 @@ GtkCellRenderer    *renderer;
 
 	column = gtk_tree_view_column_new_with_attributes(title, renderer, NULL);
 	
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	gtk_tree_view_column_set_alignment (column, 1.0);
 	//gtk_tree_view_column_set_resizable(column, TRUE);
 	gtk_tree_view_column_set_sort_column_id (column, sortcolumnid);
 	if(list_type == LIST_TXN_TYPE_BOOK)
@@ -1420,8 +1424,8 @@ GtkCellRenderer    *renderer;
 	gtk_tree_view_column_pack_start(column, renderer, FALSE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, func, user_data, NULL);
 
-
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	//gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_column_set_resizable(column, TRUE);
 
 	gtk_tree_view_column_set_sort_column_id (column, sortcolumnid);
@@ -1462,7 +1466,8 @@ GtkCellRenderer    *renderer;
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, list_txn_cell_data_func_info, GINT_TO_POINTER(2), NULL);
 
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	//gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_column_set_resizable(column, TRUE);
 	gtk_tree_view_column_set_sort_column_id (column, LST_DSPOPE_INFO);
 
@@ -1640,7 +1645,8 @@ GtkTreeViewColumn *column, *col_acc = NULL, *col_status = NULL, *col_match = NUL
 
 	gtk_tree_view_column_set_sort_column_id (column, LST_DSPOPE_STATUS);
 	//gtk_tree_view_column_set_resizable(column, TRUE);
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	//gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
 	//add system icon to 1st column
@@ -1679,7 +1685,8 @@ GtkTreeViewColumn *column, *col_acc = NULL, *col_status = NULL, *col_match = NUL
 	gtk_tree_view_column_set_title(column, _("Date"));
 	renderer = gtk_cell_renderer_text_new ();
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	g_object_set(renderer, "xalign", 1.0, NULL);
+	//#2004631 date and column title alignement
+	//g_object_set(renderer, "xalign", 1.0, NULL);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, list_txn_cell_data_func_date, NULL, NULL);
 	gtk_tree_view_column_set_sort_column_id (column, LST_DSPOPE_DATE);
 	//gtk_tree_view_column_set_resizable(column, TRUE);
@@ -1710,7 +1717,8 @@ GtkTreeViewColumn *column, *col_acc = NULL, *col_status = NULL, *col_match = NUL
 	gtk_tree_view_column_set_sort_column_id (column, LST_DSPOPE_CLR);
 	//gtk_tree_view_column_set_sort_indicator (column, FALSE);
 	//gtk_tree_view_column_set_resizable(column, TRUE);
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	//gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 	
 	column = list_txn_column_amount_create(list_type, _("Amount"), LST_DSPOPE_AMOUNT, list_txn_cell_data_func_amount);

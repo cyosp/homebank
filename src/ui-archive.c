@@ -380,7 +380,8 @@ GtkCellRenderer    *renderer;
 	
 	column = gtk_tree_view_column_new_with_attributes(title, renderer, NULL);
 
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	//gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_column_set_resizable(column, TRUE);
 
 	gtk_tree_view_column_set_sort_column_id (column, sortcolumnid);
@@ -448,13 +449,15 @@ GtkTreeViewColumn  *column;
 
 	/* column: Next on */
 	renderer = gtk_cell_renderer_text_new ();
-	g_object_set(renderer, "xalign", 1.0, NULL);
+	//#2004631 date and column title alignement
+	//g_object_set(renderer, "xalign", 1.0, NULL);
 	column = gtk_tree_view_column_new();
 	gtk_tree_view_column_set_title(column, _("Next date"));
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_arc_listview_cell_data_function_date, NULL, NULL);
 	gtk_tree_view_column_set_sort_column_id (column, LST_DEFARC_SORT_DATE);
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	//gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 	
 	/* column: Payee */
@@ -477,7 +480,8 @@ GtkTreeViewColumn  *column;
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_arc_listview_cell_data_function_amount, NULL, NULL);
 	gtk_tree_view_column_set_sort_column_id (column, LST_DEFARC_SORT_AMOUNT);
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	gtk_tree_view_column_set_alignment (column, 1.0);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 	
 	/* column : Account */
@@ -517,17 +521,21 @@ GtkTreeIter iter;
 Archive *arc;
 gboolean selected, sensitive;
 
-	DB( g_print("\n[ui_scheduled] update\n") );
+	DB( g_print("\n[ui-scheduled] update\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
 	selected = gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_arc)), &model, &iter);
+
+	DB( g_print(" toolbutton sensitive\n") );
 
 	sensitive = (selected == TRUE) ? TRUE : FALSE;
 	gtk_widget_set_sensitive(data->BT_edit, sensitive);
 	gtk_widget_set_sensitive(data->BT_rem, sensitive);
 	gtk_widget_set_sensitive(data->MB_schedule, sensitive);
 	gtk_widget_set_sensitive(data->CM_auto, sensitive);
+
+	DB( g_print(" scheduled popover sensitive\n") );
 
 	sensitive = FALSE;
 	if(selected)
@@ -557,11 +565,13 @@ gboolean selected, sensitive;
 	sensitive = (sensitive == TRUE) ? gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_limit)) : sensitive;
 	gtk_widget_set_sensitive(data->NB_limit, sensitive);
 
+	DB( g_print(" row changed\n") );
+	
 	if(selected)
 	{
 	GtkTreePath *path;
 
-		/* redraw the row to display/hide the icon */
+		// redraw the row to display/hide the icon
 		path = gtk_tree_model_get_path(model, &iter);
 		gtk_tree_model_row_changed(model, path, &iter);
 		gtk_tree_path_free (path);
@@ -582,7 +592,7 @@ GtkTreeIter			 iter;
 
 gboolean selected, sensitive;
 
-	DB( g_print("\n[ui_scheduled] scheduled\n") );
+	DB( g_print("\n[ui-scheduled] cb schedule changed\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -617,7 +627,7 @@ gchar *needle;
 gboolean hastext;
 gint i, typsch, typtpl;
 	
-	DB( g_print("\n[ui_scheduled] populate listview\n") );
+	DB( g_print("\n[ui-scheduled] populate listview\n") );
 
 	typsch = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->BT_typsch));
 	typtpl = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->BT_typtpl));
@@ -626,7 +636,7 @@ gint i, typsch, typtpl;
 	hastext = (gtk_entry_get_text_length (GTK_ENTRY(data->ST_search)) >= 2) ? TRUE : FALSE;
 	needle = (gchar *)gtk_entry_get_text(GTK_ENTRY(data->ST_search));
 	
-	DB( g_print(" - typsch=%d / typtpl=%d\n", typsch, typtpl) );
+	DB( g_print(" typsch=%d / typtpl=%d\n", typsch, typtpl) );
 
 	gtk_list_store_clear (GTK_LIST_STORE(model));
 
@@ -685,7 +695,7 @@ Archive *item;
 gint typsch, typtpl;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-	DB( g_print("\n[ui_scheduled] add\n") );
+	DB( g_print("\n[ui-scheduled] cb add\n") );
 
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_arc));
 
@@ -721,7 +731,7 @@ gboolean result;
 		//GLOBALS->arc_list = g_list_append(GLOBALS->arc_list, item);
 		da_archive_append_new(item);
 
-		DB( g_print(" - kacc: '%d'\n", item->kacc) );
+		DB( g_print(" kacc: '%d'\n", item->kacc) );
 
 		
 		gtk_list_store_append (GTK_LIST_STORE(model), &iter);
@@ -754,6 +764,8 @@ Archive *arcitem;
 GtkWidget *dialog;
 Transaction *new_txn = da_transaction_malloc();
 gboolean result;
+
+	DB( g_print("\n[ui-scheduled] cb edit\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(GTK_WIDGET(widget), GTK_TYPE_WINDOW)), "inst_data");
 
@@ -799,7 +811,7 @@ Archive *item;
 gint result;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-	DB( g_print("\n[ui_scheduled] delete (data=%p)\n", data) );
+	DB( g_print("\n[ui-scheduled] cb delete (data=%p)\n", data) );
 
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_arc));
 	//if true there is a selected node
@@ -848,7 +860,7 @@ GtkTreeModel *model;
 GtkTreeIter iter;
 Archive *item;
 
-	DB( g_print("\n[ui_scheduled] set popover\n") );
+	DB( g_print("\n[ui-scheduled] set popover\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -856,14 +868,20 @@ Archive *item;
 	{
 		gtk_tree_model_get(model, &iter, LST_DEFARC_DATAS, &item, -1);
 
+		g_signal_handlers_block_by_func (G_OBJECT (data->CM_auto ), G_CALLBACK (ui_arc_manage_cb_schedule_changed), NULL);
+		g_signal_handlers_block_by_func (G_OBJECT (data->CM_limit), G_CALLBACK (ui_arc_manage_cb_schedule_changed), NULL);
+
 		gtk_switch_set_active(GTK_SWITCH(data->CM_auto), (item->flags & OF_AUTO) ? 1 : 0);
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_every), item->every);
 		gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_unit), item->unit);
 		gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_next), item->nextdate);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_limit), (item->flags & OF_LIMIT) ? 1 : 0);
-		DB( g_print("nb_limit = %d %g\n", item->limit, (gdouble)item->limit) );
+		DB( g_print(" nb_limit = %d %g\n", item->limit, (gdouble)item->limit) );
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_limit), (gdouble)item->limit);
 		gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_weekend), item->weekend);
+		
+		g_signal_handlers_unblock_by_func (G_OBJECT (data->CM_limit), G_CALLBACK (ui_arc_manage_cb_schedule_changed), NULL);
+		g_signal_handlers_unblock_by_func (G_OBJECT (data->CM_auto ), G_CALLBACK (ui_arc_manage_cb_schedule_changed), NULL);
 	}
 }
 
@@ -876,7 +894,7 @@ GtkTreeIter iter;
 Archive *item;
 gboolean active;
 
-	DB( g_print("\n[ui_scheduled] getlast\n") );
+	DB( g_print("\n[ui-scheduled] getlast\n") );
 
 	if (gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_arc)), &model, &iter))
 	{
@@ -918,7 +936,7 @@ GtkTreeIter			 iter;
 GtkTreePath			*path;
 gboolean selected;
 
-	DB( g_print("\n[ui_scheduled] cb popover closed\n") );
+	DB( g_print("\n[ui-scheduled] cb popover closed\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(popover, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -973,7 +991,7 @@ GtkTreeIter			 iter;
 gboolean selected;
 Archive *arcitem;
 
-	DB( g_print("\n[ui_scheduled] selection\n") );
+	DB( g_print("\n[ui-scheduled] selection\n") );
 
 	treeview = (GtkWidget *)gtk_tree_selection_get_tree_view (treeselection);
 
@@ -1014,7 +1032,7 @@ ui_arc_manage_cleanup(struct ui_arc_manage_data *data, gint result)
 {
 gboolean doupdate = FALSE;
 
-	DB( g_print("\n[ui_scheduled] cleanup\n") );
+	DB( g_print("\n[ui-scheduled] cleanup\n") );
 
 	da_archive_glist_sorted(1);
 
@@ -1028,7 +1046,7 @@ static void
 ui_arc_manage_setup(struct ui_arc_manage_data *data)
 {
 
-	DB( g_print("\n[ui_scheduled] setup\n") );
+	DB( g_print("\n[ui-scheduled] setup\n") );
 
 	DB( g_print(" init data\n") );
 
@@ -1082,7 +1100,7 @@ struct ui_arc_manage_data *data;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	DB( g_print("\n(ui_arc_manage_mapped)\n") );
+	DB( g_print("\n[ui-scheduled] mapped\n") );
 
 	ui_arc_manage_setup(data);
 	ui_arc_manage_update(data->LV_arc, NULL);
@@ -1190,6 +1208,8 @@ GtkWidget *widget, *content, *menubutton, *image, *label;
 GtkToolItem *toolitem;
 gint w, h, dw, dh;
 
+	DB( g_print("\n[ui-scheduled] dialog\n") );
+
 	data = g_malloc0(sizeof(struct ui_arc_manage_data));
 	if(!data) return NULL;
 
@@ -1211,10 +1231,8 @@ gint w, h, dw, dh;
 	DB( g_print(" main w=%d h=%d => diag w=%d h=%d\n", w, h, dw, dh) );
 	gtk_window_set_default_size (GTK_WINDOW(dialog), dw, dh);
 
-
 	//store our dialog private data
 	g_object_set_data(G_OBJECT(dialog), "inst_data", (gpointer)data);
-	DB( g_print("\n[ui_scheduled] dialog=%p, inst_data=%p\n", dialog, data) );
 
 	//dialog content
 	content_area = gtk_dialog_get_content_area(GTK_DIALOG (dialog));	 	// return a vbox

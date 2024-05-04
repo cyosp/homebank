@@ -364,8 +364,9 @@ GtkCellRenderer    *renderer;
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_accview_cell_data_func_amount, GINT_TO_POINTER(id), NULL);
 	gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
-	gtk_tree_view_column_set_alignment (column, 0.5);
-	gtk_tree_view_column_set_spacing( column, 16 );
+	//#2004631 date and column title alignement
+	gtk_tree_view_column_set_alignment (column, 1.0);
+	//gtk_tree_view_column_set_spacing( column, 16 );
 	//gtk_tree_view_column_set_sort_column_id (column, LST_DSPACC_BANK);
 
 	return column;
@@ -676,7 +677,8 @@ GtkTreeViewColumn  *column;
 	gtk_tree_view_column_set_title(column, _("Accounts"));
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_accview_cell_data_func_text, NULL, NULL);
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	//gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_column_set_min_width(column, HB_MINWIDTH_LIST/2);
 	gtk_tree_view_column_set_resizable(column, TRUE);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);

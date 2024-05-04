@@ -1268,6 +1268,9 @@ guint32 i;
 			}
 		}
 
+		g_print(" append text %s\n", _(tmp->name) );
+
+
 		hbtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(combobox), tmp->key, (*tmp->name != 0) ? (gchar *)_(tmp->name) : (gchar *)"");
 	}
 

@@ -263,27 +263,14 @@ gint len;
 }
 
 
-static guint32
-my_g_array_compare_guint32_func (gconstpointer a, gconstpointer b)
-{
-	const guint32 *_a = a;
-	const guint32 *_b = b;
-
-	return *_a - *_b;
-}
-
-
 static gboolean
 my_g_array_exists(GArray *array, guint32 kcat)
 {
 gboolean retval = FALSE;
-
-#if( (GLIB_MAJOR_VERSION == 2) && (GLIB_MINOR_VERSION >= 62) )
-	retval = g_array_binary_search(array, &kcat, (GCompareFunc)my_g_array_compare_guint32_func, NULL);
-#else
 Category *cat;
 guint32 *key, i;
 
+	//#2000452 removed binary_search
 	for(i=0;i<array->len;i++)
 	{
 		key = &g_array_index(array, guint32, i);
@@ -294,17 +281,19 @@ guint32 *key, i;
 			break;
 		}
 	}
-#endif
+
+	DB( g_print("  normal search %d ? %d\n", kcat, retval) );
 
 	return retval;
 }
-
 
 
 static void
 my_garray_add(GArray *array, guint32 key)
 {
 Category *cat;
+
+	DB( g_print("\n[vehiclecost] garray_add\n") );
 
 	cat = da_cat_get(key);
 
@@ -316,7 +305,7 @@ Category *cat;
 	{
 		if( my_g_array_exists(array, cat->parent) == FALSE )
 		{
-			DB( g_print("  mark kcat=%d (parent)\n", cat->parent) );
+			DB( g_print(" store kcat=%d '%s' (parent)\n", cat->parent, cat->fullname) );
 			g_array_append_vals(array, &cat->parent, 1);
 		}
 	}
@@ -324,7 +313,7 @@ Category *cat;
 	//add category
 	if( my_g_array_exists(array, cat->key) == FALSE )
 	{
-		DB( g_print("  mark kcat=%d\n", cat->key) );
+		DB( g_print(" store kcat=%d '%s'\n", cat->key, cat->name) );
 		g_array_append_vals(array, &cat->key, 1);
 	}
 }
@@ -1245,7 +1234,8 @@ GtkCellRenderer    *renderer;
 	g_object_set(renderer, "xalign", 1.0, NULL);
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, list_vehicle_cell_data_func_volume, GINT_TO_POINTER(id), NULL);
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	gtk_tree_view_column_set_alignment (column, 1.0);
 	//gtk_tree_view_column_set_sort_column_id (column, id);
 	return column;
 }
@@ -1262,7 +1252,8 @@ GtkCellRenderer    *renderer;
 	g_object_set(renderer, "xalign", 1.0, NULL);
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, list_vehicle_cell_data_func_distbyvol, GINT_TO_POINTER(id), NULL);
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	gtk_tree_view_column_set_alignment (column, 1.0);
 	//gtk_tree_view_column_set_sort_column_id (column, id);
 	return column;
 }
@@ -1279,7 +1270,8 @@ GtkCellRenderer    *renderer;
 	g_object_set(renderer, "xalign", 1.0, NULL);
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, list_vehicle_cell_data_func_distance, GINT_TO_POINTER(id), NULL);
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	gtk_tree_view_column_set_alignment (column, 1.0);
 	//gtk_tree_view_column_set_sort_column_id (column, id);
 	return column;
 }
@@ -1295,7 +1287,8 @@ GtkCellRenderer    *renderer;
 	g_object_set(renderer, "xalign", 1.0, NULL);
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, list_vehicle_cell_data_func_amount, GINT_TO_POINTER(id), NULL);
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	gtk_tree_view_column_set_alignment (column, 1.0);
 	//gtk_tree_view_column_set_sort_column_id (column, id);
 	return column;
 }
@@ -1337,10 +1330,12 @@ GtkTreeViewColumn  *column;
 	gtk_tree_view_column_set_title(column, _("Date"));
 	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
 	renderer = gtk_cell_renderer_text_new();
-	g_object_set(renderer, "xalign", 1.0, NULL);
+	//#2004631 date and column title alignement
+	//g_object_set(renderer, "xalign", 1.0, NULL);
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	//gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_DATE);
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	//gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, list_vehicle_cell_data_func_date, NULL, NULL);
 
 /*
