@@ -153,6 +153,10 @@ struct defpref_data
 	 
 	gint		country;
 
+	//advanced
+	GtkWidget	*ST_adv_apirate_url;
+	GtkWidget	*ST_adv_apirate_key;
+
 };
 
 

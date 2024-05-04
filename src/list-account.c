@@ -834,6 +834,8 @@ GtkTreeViewColumn  *column;
 
 	lst_accview_columns_prefs_set(GTK_TREE_VIEW(treeview), PREFS->lst_acc_columns);
 
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(treeview), FALSE);
+
 	GtkWidget *popmenu = lst_accview_popmenu_new(GTK_TREE_VIEW(treeview));
 	data->menu = popmenu;
 

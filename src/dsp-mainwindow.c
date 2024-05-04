@@ -1142,7 +1142,7 @@ gint r;
 			{
 				DB( g_print(" - auto: update currency\n") );
 				//TODO: currency_needs_online
-				ui_cur_manage_dialog_update_currencies(GTK_WINDOW(GLOBALS->mainwindow));
+				ui_cur_manage_dialog_update_currencies(GTK_WINDOW(GLOBALS->mainwindow), NULL);
 			}
 
 			homebank_lastopenedfiles_save();

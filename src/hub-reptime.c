@@ -164,6 +164,9 @@ guint i, n_inserted;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
+	if( data->hubtim_filter == NULL)
+		return;
+
 	tmpview = PREFS->hub_tim_view;
 	tmpsrc = REPORT_SRC_ACCOUNT;
 	//tmptype = REPORT_TYPE_EXPENSE;
@@ -333,6 +336,8 @@ void ui_hub_reptime_setup(struct hbfile_data *data)
 {
 GAction *action;
 GVariant *new_state;
+
+	DB( g_print("\n[hub-time] setup\n") );
 
 	data->hubtim_filter = da_flt_malloc();
 	filter_reset(data->hubtim_filter);

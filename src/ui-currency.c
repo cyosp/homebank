@@ -664,11 +664,13 @@ GtkTreeViewColumn	*column;
 
 	
 	// treeview attribute
-	gtk_tree_view_set_search_column(GTK_TREE_VIEW(treeview), 1);
+	//gtk_tree_view_set_search_column(GTK_TREE_VIEW(treeview), 1);
 	//gtk_tree_view_set_headers_visible (GTK_TREE_VIEW(treeview), TRUE);
 	//gtk_tree_view_set_reorderable (GTK_TREE_VIEW(view), TRUE);
 	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_DEFCUR_DATAS, ui_cur_listview_compare_func, NULL, NULL);
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), LST_DEFCUR_DATAS, GTK_SORT_ASCENDING);
+
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(treeview), FALSE);
 
 	return treeview;
 }
@@ -1305,7 +1307,7 @@ gint crow, row;
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 
-gint ui_cur_manage_dialog_update_currencies(GtkWindow *parent)
+gint ui_cur_manage_dialog_update_currencies(GtkWindow *parent, GString *node)
 {
 GError *error = NULL;
 gboolean retcode = FALSE;
@@ -1338,8 +1340,8 @@ gboolean retcode = FALSE;
 		return TRUE;
 	}*/
 
-	retcode = currency_online_sync(&error);
-	
+	retcode = currency_online_sync(&error, node);
+
 	DB( g_print("retcode: %d\n", retcode) );
 
 	if(!retcode)
@@ -1369,13 +1371,25 @@ static void
 ui_cur_manage_dialog_sync(GtkWidget *widget, gpointer user_data)
 {
 struct ui_cur_manage_dialog_data *data;
+GtkTextBuffer *buffer;
+GtkTextIter iter;
+GString *node;
 gboolean retcode;
 	
 	DB( g_printf("\n[ui_cur_manage] sync online\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	retcode = ui_cur_manage_dialog_update_currencies(GTK_WINDOW(data->dialog));
+	node = g_string_new(NULL);
+	buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (data->TB_log));
+	gtk_text_buffer_set_text (buffer, "", 0);
+
+	retcode = ui_cur_manage_dialog_update_currencies(GTK_WINDOW(data->dialog), node);
+	
+	gtk_text_buffer_get_iter_at_offset (buffer, &iter, 0);
+	gtk_text_buffer_insert (buffer, &iter, node->str, -1);	
+	
+	g_string_free(node, TRUE);
 
 	if(retcode == TRUE)
 	{
@@ -1700,7 +1714,7 @@ GtkWidget *ui_cur_manage_dialog (void)
 {
 struct ui_cur_manage_dialog_data *data;
 GtkWidget *dialog, *content_area, *content_grid, *group_grid, *vbox, *bbox, *tbar;
-GtkWidget *widget, *scrollwin, *treeview;
+GtkWidget *widget, *label, *scrollwin, *treeview, *expander;
 gint crow, row, w, h, dw, dh;
 
 	data = g_malloc0(sizeof(struct ui_cur_manage_dialog_data));
@@ -1757,6 +1771,24 @@ gint crow, row, w, h, dw, dh;
 
 	widget = make_label_widget (_("Update online"));
 	gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, TRUE, 0);
+
+	//5.7.2 log
+	row++;
+	expander = gtk_expander_new_with_mnemonic(_("Call log"));
+	gtk_widget_set_hexpand(expander, TRUE);
+	gtk_grid_attach (GTK_GRID (group_grid), expander, 0, row, 2, 1);
+
+	label = gtk_text_view_new();
+	data->TB_log = label;
+    scrollwin = gtk_scrolled_window_new (NULL, NULL);
+    gtk_widget_set_size_request (scrollwin, -1, 128);
+	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
+	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), label);
+	//gtk_widget_set_hexpand (scrollwin, TRUE);
+	//gtk_widget_set_vexpand (scrollwin, TRUE);
+	gtk_expander_set_child(GTK_EXPANDER(expander), scrollwin);
+	//hb_widget_set_margin(GTK_WIDGET(scrollwin), SPACING_MEDIUM);
 
 	// list
 	row++;

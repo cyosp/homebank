@@ -3241,7 +3241,8 @@ guint colid;
 	chart_clear(chart);
 
 	model = gtk_tree_view_get_model(treeview);
-	if( GTK_IS_TREE_MODEL(model) )
+	//#2039493 ensure datatable is set
+	if( (dt != NULL) && (nbrows > 0) && (nbcols > 0) && GTK_IS_TREE_MODEL(model) )
 	{
 		DBDT( g_print(" store model %p and n_cols=%d\n", model, nbcols) );
 

@@ -626,25 +626,6 @@ GtkTreeViewColumn	*column;
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 
-//todo move this
-static Assign *
-assign_rename(Assign *item, gchar *newname)
-{
-Assign *existitem;
-
-	existitem = da_asg_get_by_name(newname);
-	if( existitem == NULL )
-	{
-		g_free(item->search);
-		item->search = g_strdup(newname);
-		return NULL;
-	}
-
-	return existitem;
-}
-
-
-
 static void ui_asg_dialog_update(GtkWidget *widget, gpointer user_data)
 {
 struct ui_asg_dialog_data *data;
@@ -707,21 +688,18 @@ Assign *item;
 	txt = (gchar *)gtk_entry_get_text(GTK_ENTRY(data->ST_search));
 	if( txt == NULL || *txt == '\0' )
 	{
+		//#2042035
+		g_string_append_printf(errstr, _("Search cannot be empty"));
 		error = TRUE;
 		goto end;
 	}
 
 	if( strcmp(txt, item->search) )
 	{
-	Assign *existitem = assign_rename(item, txt);
+	//#2042035
+	Assign *existitem = da_asg_get_by_name(txt);
 
-		if( existitem == NULL )
-		{
-			//todo: review this count
-			data->change++;
-			//gtk_tree_view_columns_autosize (GTK_TREE_VIEW(data->LV_rul));
-		}
-		else
+		if( existitem != NULL )
 		{
 			g_string_append_printf(errstr, _("This search text already exists at position %d"), existitem->pos);
 			error = TRUE;
@@ -743,7 +721,7 @@ Assign *item;
 		g_strfreev(split);
 	}
 	
-
+end:
 	gtk_label_set_text(GTK_LABEL(data->LB_wrntxt), errstr->str);
 
 	if( errstr->len > 0 )
@@ -754,14 +732,15 @@ Assign *item;
 
 	g_string_free(errstr, TRUE);
 
-end:
-
 	if( error == TRUE )
 	{
 		gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(data->ST_search)), GTK_STYLE_CLASS_ERROR);
 	}
+	
+	//5.7.2 disable OK
+	gtk_dialog_set_response_sensitive(GTK_DIALOG (data->dialog), GTK_RESPONSE_ACCEPT, !error);
+	
 }
-
 
 
 static void ui_asg_dialog_get(GtkWidget *widget, gpointer user_data)
@@ -769,6 +748,7 @@ static void ui_asg_dialog_get(GtkWidget *widget, gpointer user_data)
 struct ui_asg_dialog_data *data;
 Assign *item;
 gint active;
+gchar *txt;
 
 	DB( g_print("\n[ui-asg-dialog] get\n") );
 
@@ -780,20 +760,13 @@ gint active;
 		data->change++;
 
 		item->field = hbtk_radio_button_get_active(GTK_CONTAINER(data->CY_field));
-		
-		/*txt = (gchar *)gtk_entry_get_text(GTK_ENTRY(data->ST_text));
+
+		//#2042035		
+		txt = (gchar *)gtk_entry_get_text(GTK_ENTRY(data->ST_search));
 		if (txt && *txt)
 		{
-			bool = assign_rename(item, txt);
-			if(bool)
-			{
-				gtk_tree_view_columns_autosize (GTK_TREE_VIEW(data->LV_rul));
-			}
-			else
-			{
-				hbtk_entry_set_text(GTK_ENTRY(data->ST_text), item->search);
-			}
-		}*/
+			hbtk_entry_replace_text(GTK_ENTRY(data->ST_search), &item->search);
+		}
 
 		item->flags = 0;
 

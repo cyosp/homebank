@@ -155,12 +155,7 @@ gint nbmonth;
 	date1 = g_date_new_julian(mindate);
 	date2 = g_date_new_julian(maxdate);
 
-	nbmonth = 0;
-	while(g_date_compare(date1, date2) < 0)
-	{
-		nbmonth++;
-		g_date_add_months(date1, 1);
-	}
+	nbmonth = ((g_date_get_year(date2) - g_date_get_year(date1)) * 12) + g_date_get_month(date2) - g_date_get_month(date1) + 1;
 
 	g_date_free(date2);
 	g_date_free(date1);
@@ -238,7 +233,6 @@ gchar *title;
 
 	return title;
 }
-
 
 
 /*static void repbudget_date_change(GtkWidget *widget, gpointer user_data)
@@ -564,14 +558,12 @@ gboolean hassplit, hasstatus;
 }
 
 
-
-
 static void repbudget_detail(GtkWidget *widget, gpointer user_data)
 {
 struct repbudget_data *data;
 guint active = GPOINTER_TO_INT(user_data);
 GList *list;
-guint tmpmode;
+guint tmpmode, tmptype;
 GtkTreeModel *model;
 GtkTreeIter  iter, child;
 
@@ -588,34 +580,54 @@ GtkTreeIter  iter, child;
 		gtk_tree_view_set_model(GTK_TREE_VIEW(data->LV_detail), NULL); /* Detach model from view */
 
 		tmpmode = hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_mode));
+		tmptype = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_type));
 
 		/* fill in the model */
 		list = g_queue_peek_head_link(data->txn_queue);
 		while (list != NULL)
 		{
-		Account *acc;
 		Transaction *ope = list->data;
 		gdouble dtlamt = ope->amount;
 		guint i, pos = 0;
 		gboolean match = FALSE;
 
-			//DB( g_print(" get %s\n", ope->ope_Word) );
-
-			//todo: already filtrered in collect txn no ?
-			acc = da_acc_get(ope->kacc);
-			if(acc != NULL)
-			{
-				if((acc->flags & AF_NOBUDGET)) goto next1;
-			}
-
+			DB( g_print(" ope: %s :: acc=%d, cat=%d, mnt=%.2f\n", ope->memo, ope->kacc, ope->kcat, ope->amount) );
 
 			//filter here
+			//#2039995 filter txn with type
+			// flt: expense
+			if( tmptype == 1 && (ope->flags & GF_INCOME) )
+				goto txnnext;
+			// flt: income
+			if( tmptype == 2 && !(ope->flags & GF_INCOME) )
+				goto txnnext;					
+
+			//month
 			if( tmpmode == 1 )
 			{
-				//month
 				pos = report_interval_get_pos(REPORT_INTVL_MONTH, data->filter->mindate, ope);
 				if( pos == active )
-					match = TRUE;
+				{
+					//filter on GF_BUDGET|GF_FORCED
+					if( ope->flags & OF_SPLIT )
+					{
+					guint nbsplit = da_splits_length(ope->splits);
+					guint i;
+
+						for(i=0;i<nbsplit;i++)
+						{
+						Split *split = da_splits_get(ope->splits, i);
+						
+							match = category_key_budget_active(split->kcat);
+							if(match)
+								break;	
+						}
+					}
+					else
+					{
+						match = category_key_budget_active(ope->kcat);
+					}					
+				}				
 			}
 			else
 			{
@@ -637,6 +649,7 @@ GtkTreeIter  iter, child;
 					dtlamt = 0.0;
 					for(i=0;i<nbsplit;i++)
 					{
+						//TODO: we should filter on GF_BUDGET|GF_FORCED
 						split = da_splits_get(ope->splits, i);
 						pos = category_report_id(split->kcat, is_subcat);
 						if( pos == active )
@@ -650,11 +663,13 @@ GtkTreeIter  iter, child;
 				}
 				else
 				{
+					//TODO: we should filter on GF_BUDGET|GF_FORCED
 					pos = category_report_id(ope->kcat, is_subcat);
 					if( pos == active )
 						match = TRUE;
 				}
 			}
+
 
 			//insert
 			if( match == TRUE )
@@ -673,6 +688,7 @@ GtkTreeIter  iter, child;
 
 					for(i=0;i<nbsplit;i++)
 					{
+						//TODO: we should filter on GF_BUDGET|GF_FORCED
 						split = da_splits_get(ope->splits, i);
 						pos = category_report_id(split->kcat, FALSE);
 						if( pos == active )
@@ -687,9 +703,7 @@ GtkTreeIter  iter, child;
 
 
 			}
-
-			
-next1:
+txnnext:
 			list = g_list_next(list);
 		}
 
@@ -700,10 +714,7 @@ next1:
 		gtk_tree_view_columns_autosize( GTK_TREE_VIEW(data->LV_detail) );
 
 	}
-
 }
-
-
 
 
 static void repbudget_update_total(GtkWidget *widget, gpointer user_data)
@@ -1073,11 +1084,21 @@ budnext:
 	while (list != NULL)
 	{
 	Transaction *ope = list->data;
-	Category *cat;
-
-		DB( g_print(" ope: %s :: acc=%d, cat=%d, mnt=%.2f\n", ope->memo, ope->kacc, ope->kcat, ope->amount) );
 
 		pos = report_interval_get_pos(REPORT_INTVL_MONTH, data->filter->mindate, ope);
+
+		DB( g_print(" ope: %s :: acc=%d, cat=%d, mnt=%.2f, pos=%d\n", ope->memo, ope->kacc, ope->kcat, ope->amount, pos) );
+
+		//#2039995 filter txn with type
+		if(
+			(tmptype == 1 &&  (ope->flags & GF_INCOME)) // flt: expense
+			||
+			(tmptype == 2 && !(ope->flags & GF_INCOME)) // flt: income txn
+		)
+		{	
+			DB( g_print("  skipped by type filter\n") );
+			goto txnnext;
+		}
 
 		if( ope->flags & OF_SPLIT )
 		{
@@ -1087,22 +1108,31 @@ budnext:
 			for(i=0;i<nbsplit;i++)
 			{
 				split = da_splits_get(ope->splits, i);
-				cat = da_cat_get(split->kcat);
-				if( cat != NULL && (cat->flags & (GF_BUDGET|GF_FORCED)) )
+				if( category_key_budget_active(split->kcat) == TRUE )
 				{
 					tmp_spent[pos] += hb_amount_base(split->amount, ope->kcur);
+				}
+				else
+				{
+					DB( g_print("  skipped not budget|forced\n") );
 				}
 			}
 		}
 		else
 		{
-			cat = da_cat_get(ope->kcat);
-			if( cat != NULL && (cat->flags & (GF_BUDGET|GF_FORCED)) )
+			if( category_key_budget_active(ope->kcat) == TRUE )
 			{
 				tmp_spent[pos] += hb_amount_base(ope->amount, ope->kcur);
-			}			
+			}
+			else
+			{
+				DB( g_print("  skipped not budget|forced\n") );
+			}
 		}
-	
+
+		DB( g_print(" spent[%d]=%.2f\n", pos, tmp_spent[pos]) );
+
+txnnext:
 		list = g_list_next(list);
 	}
 
@@ -2256,6 +2286,8 @@ GtkTreeViewColumn  *column;
 	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_BUDGET_BUDGET, budget_listview_compare_func, GINT_TO_POINTER(LST_BUDGET_BUDGET), NULL);
 	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_BUDGET_FULFILLED, budget_listview_compare_func, GINT_TO_POINTER(LST_BUDGET_FULFILLED), NULL);
 	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_BUDGET_RESULT, budget_listview_compare_func, GINT_TO_POINTER(LST_BUDGET_RESULT), NULL);
+
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(view), FALSE);
 
 	return(view);
 }

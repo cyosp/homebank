@@ -496,6 +496,8 @@ GtkTreeViewColumn  *column;
 
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), LST_REPORT_POS, GTK_SORT_ASCENDING);
 
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(treeview), FALSE);
+
 	return(treeview);
 }
 
@@ -1023,6 +1025,8 @@ GtkWidget *treeview;
 	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_REP_COLID_TOTAL, lst_rep_time_compare_func, NULL, NULL);
 
 	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE(store), LST_REP_COLID_POS, GTK_SORT_ASCENDING);
+
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(treeview), FALSE);
 
 	gtk_widget_set_has_tooltip (GTK_WIDGET (treeview), TRUE);
 

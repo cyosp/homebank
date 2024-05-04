@@ -1818,6 +1818,8 @@ GtkTreeViewColumn  *column;
 	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_HUBREPTIME_POS   , lst_reptime_compare_func, GINT_TO_POINTER(LST_HUBREPTIME_POS), NULL);
 	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_HUBREPTIME_AMOUNT, lst_reptime_compare_func, GINT_TO_POINTER(LST_HUBREPTIME_AMOUNT), NULL);
 
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(view), FALSE);
+
 	return(view);
 }
 

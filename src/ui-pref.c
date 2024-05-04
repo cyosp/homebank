@@ -63,6 +63,7 @@ enum
 	PREF_BACKUP,
 	PREF_FOLDERS,
 	PREF_EURO,
+	PREF_ADVANCED,
 	PREF_MAX
 };
 
@@ -79,6 +80,7 @@ static gchar *pref_iconname[PREF_MAX] = {
 "prf-backup",
 "prf-folder",
 "prf-euro",			// to be renamed
+"prf-advanced",
 //"prf_charts.svg"
 };
 
@@ -92,7 +94,8 @@ N_("Report"),
 N_("Forecast"),
 N_("Backup"),
 N_("Folders"),
-N_("Euro minor")
+N_("Euro minor"),
+N_("Advanced")
 //
 };
 
@@ -1085,6 +1088,11 @@ GdkRGBA rgba;
 	//gtk_entry_set_text(GTK_ENTRY(data->ST_euro_symbol), PREFS->euro_symbol);
 	//gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_euro_nbdec), PREFS->euro_nbdec);
 	//gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_euro_thsep), PREFS->euro_thsep);
+	
+	//advanced
+	gtk_entry_set_text(GTK_ENTRY(data->ST_adv_apirate_url), PREFS->api_rate_url);
+	gtk_entry_set_text(GTK_ENTRY(data->ST_adv_apirate_key), PREFS->api_rate_key);
+
 }
 
 
@@ -1220,7 +1228,58 @@ const gchar *datfmt;
 	hbtk_entry_replace_text(GTK_ENTRY(data->ST_euro_groupingchar), &PREFS->minor_cur.grouping_char);
 	PREFS->minor_cur.frac_digits = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->NB_euro_fracdigits));
 	//PREFS->chart_legend = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_chartlegend));
+	
+	//advanced
+	hbtk_entry_replace_text(GTK_ENTRY(data->ST_adv_apirate_url), &PREFS->api_rate_url);
+	hbtk_entry_replace_text(GTK_ENTRY(data->ST_adv_apirate_key), &PREFS->api_rate_key);
+
 }
+
+
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+
+static GtkWidget *defpref_page_advanced (struct defpref_data *data)
+{
+GtkWidget *content_grid, *group_grid, *label, *widget;
+gint crow, row;
+
+	content_grid = gtk_grid_new();
+	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
+	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
+
+	crow = 0;
+	// group :: Advanced options
+    group_grid = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
+	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+
+	label = make_label_group(_("Currency API"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
+
+	row = 1;
+	label = make_label_widget(_("Url:"));
+	//----------------------------------------- l, r, t, b
+	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
+	widget = make_string(label);
+	data->ST_adv_apirate_url = widget;
+	gtk_widget_set_hexpand(widget, TRUE);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+
+	row++;
+	label = make_label_widget(_("Key:"));
+	//----------------------------------------- l, r, t, b
+	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
+	widget = make_string(label);
+	data->ST_adv_apirate_key = widget;
+	gtk_widget_set_hexpand(widget, TRUE);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+
+
+	return content_grid;
+}
+
 
 
 static GtkWidget *defpref_page_import (struct defpref_data *data)
@@ -2429,18 +2488,6 @@ GtkWidget *hbox, *vbox, *scrollwin, *widget, *notebook, *page, *image, *label;
 	gtk_notebook_set_show_border(GTK_NOTEBOOK(notebook), FALSE);
     gtk_box_pack_start (GTK_BOX (vbox), notebook, TRUE, TRUE, 0);
 
-/*
-	PREF_GENERAL,
-	PREF_INTERFACE,
-	PREF_LOCALE,	//old DISPLAY
-	PREF_TXN,		//old COLUMNS
-	PREF_IMPORT,
-	PREF_REPORT,
-	PREF_BACKUP,
-	PREF_FOLDERS,
-	PREF_EURO,
-	PREF_MAX
-*/
 
 	//general
 	page = defpref_page_general(data);
@@ -2481,6 +2528,10 @@ GtkWidget *hbox, *vbox, *scrollwin, *widget, *notebook, *page, *image, *label;
 
 	//euro
 	page = defpref_page_euro(data);
+	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, NULL);
+
+	//advanced
+	page = defpref_page_advanced(data);
 	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, NULL);
 
 
@@ -2670,6 +2721,8 @@ gint i;
 			LST_PREF_PAGE, i,
 			-1);
 	}
+
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(view), FALSE);
 
 	return(view);
 }

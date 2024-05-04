@@ -230,8 +230,6 @@ void filter_preset_daterange_add_futuregap(Filter *filter, gint nbdays);
 void filter_set_tag_by_id(Filter *flt, guint32 key);
 void filter_preset_status_set(Filter *flt, gint value);
 
-void filter_group_import(Filter *flt, gint group, const gchar *text);
-gchar *filter_group_export(Filter *flt, gint group);
 gchar *filter_daterange_text_get(Filter *flt);
 
 gboolean filter_txn_search_match(gchar *needle, Transaction *txn, gint flags);

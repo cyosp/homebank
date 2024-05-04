@@ -452,7 +452,8 @@ GtkCellRenderer *renderer;
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(treeview), FALSE);
 	gtk_tree_view_set_activate_on_single_click(GTK_TREE_VIEW(treeview), TRUE);
 
-	
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(treeview), FALSE);
+
 	//gtk_tree_selection_set_mode(gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview)), GTK_SELECTION_BROWSE);
 	
 	

@@ -83,7 +83,7 @@ void currency_get_system_iso(void);
 gboolean currency_is_euro(guint32 key);
 gboolean currency_is_used(guint32 key);
 Currency *currency_add_from_user(Currency4217 *curfmt);
-gboolean currency_online_sync(GError **error);
+gboolean currency_online_sync(GError **error, GString *node);
 
 Currency4217 *iso4217format_get(gchar *code);
 
