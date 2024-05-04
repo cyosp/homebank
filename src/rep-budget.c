@@ -760,40 +760,6 @@ gchar *title;
 }
 
 
-static void repbudget_compute_cat_spent(guint32 key, gdouble amount, gdouble *tmp_spent, gdouble *tmp_budget)
-{
-Category *cat;
-
-	cat = da_cat_get(key);
-	if(cat)
-	{
-		DB( g_print(" cat %02d:%02d (sub=%d), bud=%.2f\n", cat->parent, cat->key, (cat->flags & GF_SUB), tmp_budget[cat->key]) );
-
-		if( (cat->flags & GF_FORCED) || (cat->flags & GF_BUDGET) )
-		{
-			DB( g_print("  + spend %.2f to cat %d\n", amount, cat->key) );
-			tmp_spent[cat->key] += amount;
-		}
-
-		//#1825653 subcat without budget must be computed
-		if( (cat->flags & GF_SUB) )
-		{
-		Category *pcat = da_cat_get(cat->parent);
-
-			if(pcat)
-			{
-				if( (cat->flags & GF_FORCED) || (cat->flags & GF_BUDGET) || (pcat->flags & GF_FORCED) || (pcat->flags & GF_BUDGET) )
-				{
-					DB( g_print("  + spend %.2f to parent %d\n", amount, cat->parent) );
-					tmp_spent[pcat->key] += amount;
-				}
-
-			}
-		}
-	}				
-}
-
-
 static void repbudget_fill_budget_for_category(Category *catitem, gdouble *tmp_budget, gint startmonth, gint nbmonth)
 {
 
@@ -847,6 +813,45 @@ static void repbudget_fill_budget_for_category(Category *catitem, gdouble *tmp_b
 }
 
 
+static void repbudget_compute_cat_spent(guint32 key, gint tmptype, gdouble amount, gdouble *tmp_spent)
+{
+Category *cat;
+
+	//5.7.3 filter on type
+	if( (tmptype == 1 && amount > 0) ||  (tmptype == 2 && amount< 0) )
+		return;
+
+	cat = da_cat_get(key);
+	if(cat)
+	{
+		DB( g_print(" cat %02d:%02d (sub=%d)\n", cat->parent, cat->key, (cat->flags & GF_SUB)) );
+
+		if( (cat->flags & GF_FORCED) || (cat->flags & GF_BUDGET) )
+		{
+			DB( g_print("  + spend %.2f to cat %d\n", amount, cat->key) );
+			tmp_spent[cat->key] += amount;
+		}
+
+		//#1825653 subcat without budget must be computed
+		if( (cat->flags & GF_SUB) )
+		{
+		Category *pcat = da_cat_get(cat->parent);
+
+			if(pcat)
+			{
+				if( (cat->flags & GF_FORCED) || (cat->flags & GF_BUDGET) || (pcat->flags & GF_FORCED) || (pcat->flags & GF_BUDGET) )
+				{
+					DB( g_print("  + spend %.2f to parent %d\n", amount, cat->parent) );
+					tmp_spent[pcat->key] += amount;
+				}
+
+			}
+		}
+	}
+				
+}
+
+
 static void budget_compute_category(struct repbudget_data *data, GtkTreeModel *model, gdouble *tmp_spent, gdouble *tmp_budget, guint startmonth, guint nbmonth, gboolean tmptype, gboolean tmponlyout)
 {
 GList *lcat, *list;
@@ -887,12 +892,12 @@ guint id, i;
 			for(i=0;i<nbsplit;i++)
 			{
 				split = da_splits_get(ope->splits, i);
-				repbudget_compute_cat_spent(split->kcat, hb_amount_base(split->amount, ope->kcur), tmp_spent, tmp_budget);
+				repbudget_compute_cat_spent(split->kcat, tmptype, hb_amount_base(split->amount, ope->kcur), tmp_spent);
 			}
 		}
 		else
 		{
-			repbudget_compute_cat_spent(ope->kcat, hb_amount_base(ope->amount, ope->kcur), tmp_spent, tmp_budget);
+			repbudget_compute_cat_spent(ope->kcat, tmptype, hb_amount_base(ope->amount, ope->kcur), tmp_spent);
 		}
 
 		list = g_list_next(list);
@@ -900,6 +905,8 @@ guint id, i;
 
 
 	DB( g_print("\n -- populate budget listview --\n") );
+
+	DB( g_printf(" type=%d, onlyout=%d\n", tmptype, tmponlyout) );
 	
 	id = 0;
 	list = lcat;
@@ -915,18 +922,26 @@ guint id, i;
 		name = catitem->key == 0 ? "(None)" : catitem->name;
 		guint pos = catitem->key;
 
+		DB( g_print(" eval %d: %d '%s' b:%d f:%d : spen=%.2f bud=%.2f \n", 
+			id, pos, name, (catitem->flags & GF_BUDGET), (catitem->flags & GF_FORCED), 
+			tmp_spent[pos], tmp_budget[pos] ) );
+
 		// display expense or income (filter on amount and not category hypothetical flag
-		if( tmptype == 1 && tmp_budget[pos] > 0 )
+		/*if( (tmptype == 1 && tmp_spent[pos] > 0)
+		||  (tmptype == 2 && tmp_spent[pos] < 0)
+		  )
+		{
+			DB( g_printf("  >skip: type filter\n") );
 			goto budnext;
+		}*/
 
-		if( tmptype == 2 && tmp_budget[pos] < 0 )
-			goto budnext;
 
-		DB( g_print(" eval %d '%s' : spen=%.2f bud=%.2f \n", pos, name, tmp_spent[pos], tmp_budget[pos] ) );
-
-		if( (catitem->flags & (GF_BUDGET|GF_FORCED)) || tmp_budget[pos] /*|| tmp_spent[pos]*/)
+		// display budget with forced/budget or budget value != 0.00
+		//if( (catitem->flags & (GF_BUDGET|GF_FORCED)) || tmp_budget[pos] || tmp_spent[pos] )
+		if( hb_amount_equal(tmp_budget[pos], 0.0) == FALSE || hb_amount_equal(tmp_spent[pos], 0.0) == FALSE )
 		{
 		gdouble result, rawrate;
+		gint fulfilled;
 		gchar *status;
 
 			result = budget_compute_result(tmp_budget[pos], tmp_spent[pos]);
@@ -959,8 +974,11 @@ guint id, i;
 				}
 			}
 
-			if(tmponlyout == TRUE && outofbudget == FALSE)
+			if((tmponlyout == TRUE && outofbudget == FALSE) && !(catitem->flags & GF_MIXED) )
+			{
+				DB( g_printf("  >skip: only out filter is on\n") );
 				goto nextins;
+			}
 
 			tmpparent = NULL;
 			Category *tmpcat = da_cat_get(pos);
@@ -977,7 +995,12 @@ guint id, i;
 				}
 			}
 
-			DB( g_print(" => insert '%s' s:%.2f b:%.2f r:%.2f (%%%.2f) '%s' '%d'\n\n", name, tmp_spent[pos], tmp_budget[pos], result, rawrate, status, outofbudget ) );
+			DB( g_print("  >insert '%s' s:%.2f b:%.2f r:%.2f (%%%.2f) '%s' '%d'\n", name, tmp_spent[pos], tmp_budget[pos], result, rawrate, status, outofbudget ) );
+
+			//5.7.3 dont fulfill if no budget
+			fulfilled = 0;
+			if( hb_amount_equal(tmp_budget[pos], 0.0) == FALSE )
+				fulfilled = (gint)hb_amount_round(rawrate*100, 0);
 
 			gtk_tree_store_insert_with_values (GTK_TREE_STORE(model), &iter, tmpparent, -1,
 				LST_BUDGET_POS, id++,
@@ -985,7 +1008,9 @@ guint id, i;
 				LST_BUDGET_NAME, name,
 				LST_BUDGET_SPENT, tmp_spent[pos],
 				LST_BUDGET_BUDGET, tmp_budget[pos],
-				LST_BUDGET_FULFILLED, (gint)(rawrate*100),
+				//#2043223
+				//LST_BUDGET_FULFILLED, (gint)(rawrate*100),
+				LST_BUDGET_FULFILLED, fulfilled,
 				LST_BUDGET_RESULT, result,
 				LST_BUDGET_STATUS, status,
 				-1);
@@ -999,8 +1024,7 @@ nextins:
 			}
 		}
 
-budnext:
-		DB( g_print(" -- next\n") );
+//budnext:
 		list = g_list_next(list);
 	}
 
@@ -2050,32 +2074,43 @@ GtkSortType sort_order;
 }
 
 
-
 static void 
 lst_repbud_cell_data_function_name (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
-GtkTreePath *path;
-gchar *text = NULL;
-gint style  = PANGO_STYLE_NORMAL;
+gint tmpmode;
 
-	gtk_tree_model_get(model, iter, 
-		LST_BUDGET_NAME, &text,
-		-1);
+	tmpmode = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(model), "mode-data"));
 
-	path = gtk_tree_model_get_path(model, iter);
-	if( gtk_tree_path_get_depth(path) > 1 )
+	if( tmpmode != 1 )
 	{
-		style = PANGO_STYLE_OBLIQUE;
+	Category *item;
+	guint32 key;
+	gchar *markup = NULL;
+
+		gtk_tree_model_get(model, iter, 
+			LST_BUDGET_KEY, &key,
+			-1);
+
+		item = da_cat_get(key);
+		if(item)
+		{
+			markup = item->typename;
+		}
+
+		g_object_set(renderer, "markup", markup, NULL);
 	}
-	gtk_tree_path_free(path);
+	else
+	{
+	gchar *name;
+	
+		gtk_tree_model_get(model, iter, 
+			LST_BUDGET_NAME, &name,
+			-1);	
 
-	g_object_set(renderer, 
-		//"style-set", TRUE,
-		"style" , style, 
-		"text", text, 
-		NULL);
+		g_object_set(renderer, "text", name, NULL);
+		g_free(name);
+	}
 
-	g_free(text);
 }
 
 
@@ -2153,15 +2188,17 @@ static void lst_repbud_cell_data_function_fulfilled (GtkTreeViewColumn *col,
                            GtkTreeModel      *model,
                            GtkTreeIter       *iter,
                            gpointer           user_data)
-   {
+{
+gdouble budget;
 gint rawrate;
 gchar buf[16];
 
-	gtk_tree_model_get(model, iter, 
+	gtk_tree_model_get(model, iter,
+		LST_BUDGET_BUDGET, &budget, 
 		LST_BUDGET_FULFILLED, &rawrate,
 		-1);
 
-	if(rawrate != 0.0)
+	if( hb_amount_equal(budget, 0.0) == FALSE )
 	{
 		g_snprintf(buf, sizeof(buf), "%d %%", rawrate);
 		g_object_set(renderer, "text", buf, NULL);

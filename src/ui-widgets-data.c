@@ -59,6 +59,7 @@ HbKvData CYA_REPORT_SRC[] = {
 	//{ REPORT_SRC_SUBCATEGORY,	N_("Subcategory") },
 	{ REPORT_SRC_PAYEE,			N_("Payee") },
 	{ REPORT_SRC_ACCOUNT,		N_("Account") },
+	{ REPORT_SRC_ACCGROUP,		N_("Account Group") },
 	{ REPORT_SRC_TAG,			N_("Tag") },
 	{ REPORT_SRC_MONTH,			N_("Month") },
 	{ REPORT_SRC_YEAR,			N_("Year") },

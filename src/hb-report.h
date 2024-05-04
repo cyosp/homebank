@@ -31,6 +31,8 @@ typedef enum
 	REPORT_SRC_TAG,
 	REPORT_SRC_MONTH,
 	REPORT_SRC_YEAR,
+	//5.7.3
+	REPORT_SRC_ACCGROUP,
 } HbReportSrc;
 
 

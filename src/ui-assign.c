@@ -893,6 +893,7 @@ GtkWidget *label, *entry1;
 GtkWidget *bbox;
 GtkWidget *widget;
 gint crow, row;
+gint w, h, dw, dh;
 
 	DB( g_print("\n[ui-asg-dialog] new\n") );
 
@@ -912,13 +913,13 @@ gint crow, row;
 	data->asgitem = item;
 
 	//set a nice dialog size
-/*	gtk_window_get_size(GTK_WINDOW(GLOBALS->mainwindow), &w, &h);
+	gtk_window_get_size(GTK_WINDOW(GLOBALS->mainwindow), &w, &h);
 	dh = (h*1.33/PHI);
-	//ratio 3:2
-	dw = (dh * 3) / 2;
+	//ratio 4:3
+	dw = (dh * 4) / 3;
 	DB( g_print(" main w=%d h=%d => diag w=%d h=%d\n", w, h, dw, dh) );
 	gtk_window_set_default_size (GTK_WINDOW(dialog), dw, dh);
-*/
+
 
 	//store our window private data
 	g_object_set_data(G_OBJECT(dialog), "inst_data", (gpointer)data);

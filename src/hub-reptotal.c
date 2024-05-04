@@ -123,17 +123,20 @@ gchar strbuffer[G_ASCII_DTOSTR_BUF_SIZE];
 
 	switch( PREFS->hub_tot_view )
 	{
-		case HUB_TOT_VIEW_CATEGORY: 
+		case HUB_TOT_VIEW_TOPCAT: 
 			title = g_strdup_printf(_("Top %d Spending / Category"), PREFS->rep_maxspenditems);
 			break;
-		case HUB_TOT_VIEW_PAYEE:
+		case HUB_TOT_VIEW_TOPPAY:
 			title = g_strdup_printf(_("Top %d Spending / Payee"), PREFS->rep_maxspenditems);
 			break;
-		case HUB_TOT_VIEW_ACCOUNT:
+		case HUB_TOT_VIEW_TOPACC:
 			title = g_strdup_printf(_("Top %d Spending / Account"), PREFS->rep_maxspenditems);
 			break;
-		case HUB_TOT_VIEW_BALANCE: 
+		case HUB_TOT_VIEW_ACCBAL: 
 			title = g_strdup_printf(_("Account Balance"));
+			break;
+		case HUB_TOT_VIEW_GRPBAL: 
+			title = g_strdup_printf(_("Account Group Balance"));
 			break;
 	}
 
@@ -189,11 +192,15 @@ gboolean tmpaccbal, valid;
 
 	switch( PREFS->hub_tot_view )
 	{
-		case HUB_TOT_VIEW_CATEGORY: tmpsrc = REPORT_SRC_CATEGORY; break;
-		case HUB_TOT_VIEW_PAYEE   : tmpsrc = REPORT_SRC_PAYEE; break;
-		case HUB_TOT_VIEW_ACCOUNT : tmpsrc = REPORT_SRC_ACCOUNT; break;
-		case HUB_TOT_VIEW_BALANCE : 
+		case HUB_TOT_VIEW_TOPCAT: tmpsrc = REPORT_SRC_CATEGORY; break;
+		case HUB_TOT_VIEW_TOPPAY: tmpsrc = REPORT_SRC_PAYEE; break;
+		case HUB_TOT_VIEW_TOPACC: tmpsrc = REPORT_SRC_ACCOUNT; break;
+		case HUB_TOT_VIEW_ACCBAL: 
 			tmpsrc = REPORT_SRC_ACCOUNT; 
+			tmpaccbal = TRUE;
+			break;
+		case HUB_TOT_VIEW_GRPBAL: 
+			tmpsrc = REPORT_SRC_ACCGROUP; 
 			tmpaccbal = TRUE;
 			break;
 	}
@@ -239,7 +246,7 @@ gboolean tmpaccbal, valid;
 		g_object_ref(model); /* Make sure the model stays with us after the tree view unrefs it */
 		gtk_tree_view_set_model(GTK_TREE_VIEW(data->LV_hubtot), NULL); /* Detach model from view */
 
-		DB( g_print("\n -- populate total listview %d rows --\n", dt->nbrows) );
+		DB( g_print(" rows=%d\n", dt->nbrows) );
 
 		// insert into the treeview
 		for(i=0 ; i<dt->nbrows ; i++)
@@ -252,11 +259,13 @@ gboolean tmpaccbal, valid;
 			reskey = dt->keylist[i];
 			dr = report_data_get_row(dt, reskey);
 
+			DB( g_printf(" eval %d: %d '%s' %.2f\n", i, reskey, dr->label, dr->rowexp + dr->rowinc ) );
+
 			//if( tmptype == REPORT_TYPE_EXPENSE && !dr->expense[0] ) continue;
 			//if( tmptype == REPORT_TYPE_INCOME && !dr->income[1] ) continue;
 			if( !dr->rowexp && !dr->rowinc )
 			{
-				DB( g_print(" - %d : %s k='%d' %.2f %.2f, skipped no data\n", i, dr->label, reskey, dr->rowexp, dr->rowinc) );
+				DB( g_printf("  >skip: no data\n") );
 				continue;
 			}
 
@@ -308,11 +317,11 @@ gboolean tmpaccbal, valid;
 					  //LST_TOPSPEND_RATE, (gint)(((ABS(value)*100)/ABS(total)) + 0.5),
 					  -1);
 
-				DB( g_print(" - %d : %s k='%d' v='%f' %f %f, added\n", i, dr->label, reskey, value, dr->rowexp, dr->rowinc) );
+				DB( g_printf("  >insert\n") );
 			}
 			else
 			{
-				DB( g_print(" - %d : %s k='%d' v='%f' %f %f, skipped\n", i, dr->label, reskey, value, dr->rowexp, dr->rowinc) );
+				DB( g_printf("  >skip: no data balance mode\n") );
 			}
 
 		}
@@ -419,17 +428,20 @@ GVariant *old_state, *new_state;
 
 	PREFS->hub_tot_view = HUB_TOT_VIEW_NONE;
 
-	if( !strcmp("cat", g_variant_get_string(new_state, NULL)) )
-		PREFS->hub_tot_view = HUB_TOT_VIEW_CATEGORY;
+	if( !strcmp("topcat", g_variant_get_string(new_state, NULL)) )
+		PREFS->hub_tot_view = HUB_TOT_VIEW_TOPCAT;
 	else	
-	if( !strcmp("pay", g_variant_get_string(new_state, NULL)) )
-		PREFS->hub_tot_view = HUB_TOT_VIEW_PAYEE;
+	if( !strcmp("toppay", g_variant_get_string(new_state, NULL)) )
+		PREFS->hub_tot_view = HUB_TOT_VIEW_TOPPAY;
 	else
-	if( !strcmp("acc", g_variant_get_string(new_state, NULL)) )
-		PREFS->hub_tot_view = HUB_TOT_VIEW_ACCOUNT;
+	if( !strcmp("topacc", g_variant_get_string(new_state, NULL)) )
+		PREFS->hub_tot_view = HUB_TOT_VIEW_TOPACC;
 	else
-	if( !strcmp("bal", g_variant_get_string(new_state, NULL)) )
-		PREFS->hub_tot_view = HUB_TOT_VIEW_BALANCE;
+	if( !strcmp("accbal", g_variant_get_string(new_state, NULL)) )
+		PREFS->hub_tot_view = HUB_TOT_VIEW_ACCBAL;
+	else
+	if( !strcmp("grpbal", g_variant_get_string(new_state, NULL)) )
+		PREFS->hub_tot_view = HUB_TOT_VIEW_GRPBAL;
 
 	g_simple_action_set_state (action, new_state);
 	g_variant_unref (old_state);
@@ -440,7 +452,7 @@ GVariant *old_state, *new_state;
 
 static const GActionEntry actions[] = {
 //	name, function(), type, state, 
-	{ "view", ui_hub_reptotal_activate_radio ,  "s", "'cat'", NULL, {0,0,0} }
+	{ "view", ui_hub_reptotal_activate_radio ,  "s", "'topcat'", NULL, {0,0,0} }
 };
 
 
@@ -470,10 +482,11 @@ GVariant *new_state;
 
 		switch( PREFS->hub_tot_view )
 		{
-			case HUB_TOT_VIEW_CATEGORY: value = "cat"; break;
-			case HUB_TOT_VIEW_PAYEE:    value = "pay"; break;
-			case HUB_TOT_VIEW_ACCOUNT:  value = "acc"; break;
-			case HUB_TOT_VIEW_BALANCE:  value = "bal"; break;
+			case HUB_TOT_VIEW_TOPCAT: value = "topcat"; break;
+			case HUB_TOT_VIEW_TOPPAY: value = "toppay"; break;
+			case HUB_TOT_VIEW_TOPACC: value = "topacc"; break;
+			case HUB_TOT_VIEW_ACCBAL: value = "accbal"; break;
+			case HUB_TOT_VIEW_GRPBAL: value = "grpbal"; break;
 		}
 		
 		new_state = g_variant_new_string (value);
@@ -559,12 +572,18 @@ GtkWidget *label, *widget, *image;
 GMenu *menu, *section;
 
 	menu = g_menu_new ();
+	
 	section = g_menu_new ();
-	g_menu_append (section, _("Category") , "actions.view::cat");
-	g_menu_append (section, _("Payee")    , "actions.view::pay");
-	g_menu_append (section, _("Account")  , "actions.view::acc");
-	g_menu_append (section, _("Balance")  , "actions.view::bal");
-	g_menu_append_section(menu, NULL, G_MENU_MODEL(section));
+	g_menu_append_section(menu, _("Top by"), G_MENU_MODEL(section));
+	g_menu_append (section, _("Category") , "actions.view::topcat");
+	g_menu_append (section, _("Payee")    , "actions.view::toppay");
+	g_menu_append (section, _("Account")  , "actions.view::topacc");
+	g_object_unref (section);
+
+	section = g_menu_new ();
+	g_menu_append_section (menu, _("Balance"), G_MENU_MODEL(section));	
+	g_menu_append (section, _("Account"), "actions.view::accbal");
+	g_menu_append (section, _("Account group"), "actions.view::grpbal");
 	g_object_unref (section);
 
 	gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (widget), G_MENU_MODEL (menu));

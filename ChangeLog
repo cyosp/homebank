@@ -1,5 +1,25 @@
 
 
+2023-12-08  Maxime Doyen
+
+ Made 5.7.3 release
+
+ * change: budget report added sign on categories like in manage dialog
+ * change: budget report only display fulfilled for budegt category
+ * bugfix: forecast was sometimes faultly done for excluded/closed account
+ * bugfix: date range 'last 12 months' start was not set to 1st day of -12 months
+ * bugfix: #2045299 'install for me only' end with error message when creating optional desktop shortcut
+ * bugfix: #2043886 portable version could prevent to store recent-file
+ * bugfix: #2043433 chart drill down Category link is not translated
+ * bugfix: #2043385 budget report forced displayed subcategories can have no parent
+ * bugfix: #2043366 budget forced category remains displayed with exp/inc filter
+ * bugfix: #2043223 budget report fulfilled column badly rounded display 99% vs 100%
+ * bugfix: #2042676 accound dialog exclude from any report do not refresh the graph after close
+ * bugfix: #2020181 mate: only french flag for payment icons 
+ * wish  : #2042699 chart drill down shows the cat total when drawing subat
+ * wish  : #2042683 assigment rule dialog to be wider and/or size saved
+
+
 2023-11-12  Maxime Doyen
 
  Made 5.7.2 release

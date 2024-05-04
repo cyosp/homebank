@@ -126,6 +126,10 @@ gboolean showmono = TRUE;
 			title = _("Account Balance");
 			showmono = FALSE;
 			break;
+		case HUB_TIM_VIEW_GRPBALANCE:
+			title = _("Account Group Balance");
+			showmono = FALSE;
+			break;
 		case HUB_TIM_VIEW_ALLBALANCE:
 			title = _("Global Balance");
 			break;
@@ -180,6 +184,9 @@ guint i, n_inserted;
 		case HUB_TIM_VIEW_ACCBALANCE:
 			tmpsrc = REPORT_SRC_ACCOUNT;
 			break;
+		case HUB_TIM_VIEW_GRPBALANCE:
+			tmpsrc = REPORT_SRC_ACCGROUP;
+			break;
 		case HUB_TIM_VIEW_ALLBALANCE:
 			tmpsrc = REPORT_SRC_NONE;
 			break;
@@ -223,7 +230,7 @@ guint i, n_inserted;
 	{
 		data->hubtim_dt = dt;
 
-		DB( g_print("\n -- populate time listview : %d rows --\n", dt->nbrows) );
+		DB( g_print(" rows=%d\n", dt->nbrows) );
 
 		// clear and detach our model
 		g_object_ref(model); // Make sure the model stays with us after the tree view unrefs it
@@ -240,12 +247,12 @@ guint i, n_inserted;
 			reskey = dt->keylist[i];
 			dr = report_data_get_row(dt, reskey);
 
-			DB( g_printf(" time eval item %4d:'%s' %.2f\n", i, dr->label, dr->rowexp + dr->rowinc ) );
+			DB( g_printf(" eval %d: %d '%s' %.2f\n", i, reskey, dr->label, dr->rowexp + dr->rowinc ) );
 
 			//#2024940 test on exp/inc individually
 			if( hb_amount_equal(dr->rowexp, 0.0) && hb_amount_equal(dr->rowinc, 0.0))
 			{
-				DB( g_printf("  hide because no data\n") );
+				DB( g_printf("  >skip: no data\n") );
 				continue;
 			}
 
@@ -254,7 +261,7 @@ guint i, n_inserted;
 
 			n_inserted++;
 
-			DB( g_printf(" --> insert\n") );
+			DB( g_printf("  >insert\n") );
 
 			gtk_tree_store_insert_with_values(GTK_TREE_STORE(model), &iter, NULL, -1,
 				LST_REPTIME_POS, n_inserted,
@@ -287,11 +294,21 @@ guint i, n_inserted;
 		g_object_unref(model);
 
 		gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), LST_REPTIME_POS, GTK_SORT_DESCENDING);
+
+		//5.7.3 update chart and widgets
+		{
+		gchar *daterange;
+
+			//data->hubtim_total = total;
+			ui_hub_reptime_update(widget, data);
+			
+			daterange = filter_daterange_text_get(data->hubtim_filter);
+			gtk_widget_set_tooltip_markup(GTK_WIDGET(data->CY_hubtim_range), daterange);
+			g_free(daterange);
+		}
+
+		//we don't free dt here as it it used by graph
 	}
-
-	//dont forget to dispose dt !!
-	ui_hub_reptime_update(widget, data);
-
 }
 
 
@@ -315,6 +332,9 @@ GVariant *old_state, *new_state;
 	else	
 	if( !strcmp("accbal", g_variant_get_string(new_state, NULL)) )
 		PREFS->hub_tim_view = HUB_TIM_VIEW_ACCBALANCE;
+	else
+	if( !strcmp("grpbal", g_variant_get_string(new_state, NULL)) )
+		PREFS->hub_tim_view = HUB_TIM_VIEW_GRPBALANCE;
 	else
 	if( !strcmp("allbal", g_variant_get_string(new_state, NULL)) )
 		PREFS->hub_tim_view = HUB_TIM_VIEW_ALLBALANCE;
@@ -356,6 +376,7 @@ GVariant *new_state;
 		{
 			case HUB_TIM_VIEW_SPENDING  : value = "expmon"; break;
 			case HUB_TIM_VIEW_ACCBALANCE: value = "accbal"; break;
+			case HUB_TIM_VIEW_GRPBALANCE: value = "grpbal"; break;
 			case HUB_TIM_VIEW_ALLBALANCE: value = "allbal"; break;
 		}
 		
@@ -443,10 +464,15 @@ GMenu *menu, *section;
 
 	menu = g_menu_new ();
 	section = g_menu_new ();
-	g_menu_append (section, _("Spending/Month")  , "actions.view::expmon");
-	g_menu_append (section, _("Account Balance") , "actions.view::accbal");
-	g_menu_append (section, _("Global Balance")  , "actions.view::allbal");
 	g_menu_append_section(menu, NULL, G_MENU_MODEL(section));
+	g_menu_append (section, _("Spending/Month")  , "actions.view::expmon");
+	g_object_unref (section);
+	
+	section = g_menu_new ();
+	g_menu_append_section(menu, _("Balance"), G_MENU_MODEL(section));
+	g_menu_append (section, _("Account")      , "actions.view::accbal");
+	g_menu_append (section, _("Account group"), "actions.view::grpbal");
+	g_menu_append (section, _("Global")       , "actions.view::allbal");
 	g_object_unref (section);
 
 	GSimpleActionGroup *group = g_simple_action_group_new ();

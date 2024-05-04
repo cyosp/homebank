@@ -48,6 +48,7 @@ Category *new_item = g_memdup(src_item, sizeof(Category));
 		//duplicate the string
 		new_item->name = g_strdup(src_item->name);
 		new_item->fullname = g_strdup(src_item->fullname);
+		new_item->typename = g_strdup(src_item->typename);
 	}
 	return new_item;
 }
@@ -63,6 +64,7 @@ da_cat_free(Category *item)
 
 		g_free(item->name);
 		g_free(item->fullname);
+		g_free(item->typename);
 		g_free(item);
 	}
 }
@@ -97,6 +99,7 @@ Category *item;
 	item->key = 0;
 	item->name = g_strdup("");
 	item->fullname = g_strdup("");
+	item->typename = g_strdup("");
 	da_cat_insert(item);
 }
 
@@ -167,6 +170,35 @@ da_cat_delete(guint32 key)
 
 
 static void
+da_cat_build_typename(Category *item)
+{
+gchar *newname = NULL;
+gchar type;
+
+	type = category_get_type_char(item);
+
+	if(item->key == 0)
+		newname = g_strdup(item->name);
+	else
+	{
+		if( item->parent == 0 )
+			newname = g_markup_printf_escaped("%s [%c]", item->name, type);
+			//string = g_strdup_printf("%s [%c]", name, type);
+		else
+			newname = g_markup_printf_escaped(" %c <i>%s</i>", type, item->name);
+			//string = g_strdup_printf("%c <i>%s</i>", type, name);
+	}
+
+	if( newname )
+	{
+		g_free(item->typename);
+		item->typename = newname;
+		DB( g_print("- updated %d:'%s' typename='%s'\n", item->key, item->name, item->typename) );
+	}
+}
+
+
+static void
 da_cat_build_fullname(Category *item)
 {
 Category *parent;
@@ -216,6 +248,7 @@ da_cat_rename(Category *item, gchar *newname)
 	//#1889659: ensure name != null/empty
 	da_cat_ensure_name(item);
 	da_cat_build_fullname(item);
+	da_cat_build_typename(item);
 
 	if( item->parent == 0 )
 	{
@@ -260,6 +293,7 @@ guint32 *new_key;
 	//#1889659: ensure name != null/empty
 	da_cat_ensure_name(item);
 	da_cat_build_fullname(item);
+	da_cat_build_typename(item);
 
 	g_hash_table_insert(GLOBALS->h_cat, new_key, item);
 
@@ -285,6 +319,9 @@ Category *existitem;
 
 	if( !cat->fullname )
 		da_cat_build_fullname(cat);
+
+	if( !cat->typename )
+		da_cat_build_typename(cat);
 
 	existitem = da_cat_get_by_fullname( cat->fullname );
 	if( existitem == NULL )
@@ -1190,8 +1227,9 @@ gint changes = 0;
 
 	DB( g_print("\n[category] category_change_type\n") );
 
-	// reset & set income
-	DB( g_print(" set '%s' %d\n", item->fullname, isIncome) );
+	DB( g_print(" set '%s' inc=%d dochild=%d\n", item->fullname, isIncome, doChild) );
+
+	//flag reset & set income
 	changes += category_change_type_eval(item, isIncome);
 	item->flags &= ~(GF_INCOME);
 	if(isIncome == TRUE)
@@ -1220,6 +1258,9 @@ gint changes = 0;
 					if(isIncome == TRUE)
 						child->flags |= GF_INCOME;
 				}
+				
+				da_cat_build_typename(child);
+				
 				// set mixed if child has != sign
 				if((item->flags & GF_INCOME) != (child->flags & GF_INCOME) )
 					item->flags |= GF_MIXED;
@@ -1228,6 +1269,8 @@ gint changes = 0;
 		}
 		g_list_free(lcat);
 	}
+	
+	da_cat_build_typename(item);
 
 	return changes;
 }

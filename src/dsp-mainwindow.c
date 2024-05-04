@@ -56,17 +56,18 @@
 #include "gtk-chart.h"
 
 //old url prior 2019
-//#define HOMEBANK_URL_HELP           "http://homebank.free.fr/help/"
+//#define HOMEBANK_URL_HELP           "httpq://www.gethomebank.org/help/"
 //#define HOMEBANK_URL_HELP_ONLINE    "https://launchpad.net/homebank/+addquestion"
 //#define HOMEBANK_URL_HELP_PROBLEM   "https://launchpad.net/homebank/+filebug"
 //#define HOMEBANK_URL_HELP_TRANSLATE "https://launchpad.net/homebank/+translations"
 
 #define HOMEBANK_URL_HELP           "index.html"
-#define HOMEBANK_URL_HELP_ONLINE    "http://homebank.free.fr/support.php"
-#define HOMEBANK_URL_HELP_DONATE    "http://homebank.free.fr/donate.php"
-#define HOMEBANK_URL_HELP_UPDATES   "http://homebank.free.fr/downloads.php"
-#define HOMEBANK_URL_HELP_PROBLEM   "http://homebank.free.fr/development.php#bug"
-#define HOMEBANK_URL_HELP_TRANSLATE "http://homebank.free.fr/development.php#translate"
+#define HOMEBANK_URL_BASE			"https://www.gethomebank.org"
+#define HOMEBANK_URL_HELP_ONLINE    HOMEBANK_URL_BASE "/support.php"
+#define HOMEBANK_URL_HELP_DONATE    HOMEBANK_URL_BASE "/donate.php"
+#define HOMEBANK_URL_HELP_UPDATES   HOMEBANK_URL_BASE "/downloads.php"
+#define HOMEBANK_URL_HELP_PROBLEM   HOMEBANK_URL_BASE "/development.php#bug"
+#define HOMEBANK_URL_HELP_TRANSLATE HOMEBANK_URL_BASE "/development.php#translate"
 
 
 /****************************************************************************/
@@ -211,7 +212,7 @@ gchar *version;
 	gtk_about_dialog_set_license_type (GTK_ABOUT_DIALOG(dialog), GTK_LICENSE_GPL_2_0);
 	
 	//gtk_about_dialog_set_wrap_license(GTK_ABOUT_DIALOG(dialog), );
-	gtk_about_dialog_set_website(GTK_ABOUT_DIALOG(dialog), "http://homebank.free.fr");
+	gtk_about_dialog_set_website(GTK_ABOUT_DIALOG(dialog), HOMEBANK_URL_BASE);
 	gtk_about_dialog_set_website_label(GTK_ABOUT_DIALOG(dialog), "Visit the HomeBank website");
 
 	gtk_about_dialog_set_logo_icon_name(GTK_ABOUT_DIALOG(dialog), "homebank");
@@ -359,9 +360,9 @@ static void ui_mainwindow_action_defaccount(void)
 	//our global list has changed, so update the treeview
 	//todo: optimize this, should not call compute balance here
 	account_compute_balances ();
+	
 	ui_hub_account_populate(GLOBALS->mainwindow, NULL);
-
-	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE));
+	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_REFRESHALL));
 }
 
 static void ui_mainwindow_action_defpayee(void)

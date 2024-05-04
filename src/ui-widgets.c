@@ -1608,18 +1608,18 @@ enum
 
 HbKivData CYA_TXN_PAYMODE[NUM_PAYMODE_MAX] = 
 {
-	{ PAYMODE_NONE,		"pm-none",		N_("(none)") },
-	{ PAYMODE_CCARD,		"pm-ccard", N_("Credit card") },
-	{ PAYMODE_CHECK,		"pm-check", N_("Check") },
-	{ PAYMODE_CASH,		"pm-cash" , N_("Cash") },
-	{ PAYMODE_XFER,		"pm-transfer", N_("Bank Transfer") },
-	{ PAYMODE_DCARD,		"pm-dcard", N_("Debit card") },
-	{ PAYMODE_REPEATPMT,		"pm-standingorder",	N_("Standing order") },
-	{ PAYMODE_EPAYMENT,		"pm-epayment", 	N_("Electronic payment") },
-	{ PAYMODE_DEPOSIT,		"pm-deposit", N_("Deposit") },
+	{ PAYMODE_NONE,			"hb-pm-none",		N_("(none)") },
+	{ PAYMODE_CCARD,		"hb-pm-ccard", N_("Credit card") },
+	{ PAYMODE_CHECK,		"hb-pm-check", N_("Check") },
+	{ PAYMODE_CASH,			"hb-pm-cash" , N_("Cash") },
+	{ PAYMODE_XFER,			"hb-pm-transfer", N_("Bank Transfer") },
+	{ PAYMODE_DCARD,		"hb-pm-dcard", N_("Debit card") },
+	{ PAYMODE_REPEATPMT,	"hb-pm-standingorder",	N_("Standing order") },
+	{ PAYMODE_EPAYMENT,		"hb-pm-epayment", 	N_("Electronic payment") },
+	{ PAYMODE_DEPOSIT,		"hb-pm-deposit", N_("Deposit") },
 	//TRANSLATORS: Financial institution fee
-	{ PAYMODE_FEE,		"pm-fifee", N_("FI fee") },
-	{ PAYMODE_DIRECTDEBIT,		"pm-directdebit", 	N_("Direct Debit") },
+	{ PAYMODE_FEE,			"hb-pm-fifee", N_("FI fee") },
+	{ PAYMODE_DIRECTDEBIT,	"hb-pm-directdebit", 	N_("Direct Debit") },
 	{ 0, NULL , NULL }
 };
 

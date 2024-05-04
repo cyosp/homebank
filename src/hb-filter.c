@@ -715,14 +715,18 @@ GDateWeekday wday;
 
 		case FLT_RANGE_LAST_12MONTHS:
 			g_date_set_julian (tmpdate, jtoday);
-			g_date_subtract_months(tmpdate, 12);
+			//5.7.3 set 1st day of month
+			g_date_subtract_months(tmpdate, 11);
+			g_date_set_day(tmpdate, 1);
 			flt->mindate = g_date_get_julian(tmpdate);
 			flt->maxdate = jtoday;
 			break;
 
 		case FLT_RANGE_LAST_6MONTHS:
 			g_date_set_julian (tmpdate, jtoday);
-			g_date_subtract_months(tmpdate, 6);
+			//5.7.3 set 1st day of month
+			g_date_subtract_months(tmpdate, 5);
+			g_date_set_day(tmpdate, 1);
 			flt->mindate = g_date_get_julian(tmpdate);
 			flt->maxdate = jtoday;
 			break;

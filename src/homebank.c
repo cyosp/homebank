@@ -925,6 +925,10 @@ GtkWidget *splash = NULL;
 
 	g_set_application_name (APPLICATION_NAME);
 
+	#ifdef PORTABLE_APP
+	g_object_set (gtk_settings_get_default (), "gtk-recent-files-enabled", FALSE, NULL);
+	#endif
+
 	if( homebank_setup() )
 	{
 		/*  change the locale if a language is specified  */

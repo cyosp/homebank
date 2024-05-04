@@ -312,19 +312,19 @@ private_icons = \
 	hicolor_status_16x16_hb-ope-remind.png \
 	hicolor_status_16x16_hb-ope-similar.png \
 	hicolor_status_16x16_hb-ope-void.png \
-	hicolor_status_16x16_pm-none.png \
-	hicolor_status_16x16_pm-ccard.png \
-	hicolor_status_16x16_pm-dcard.png \
-	hicolor_status_16x16_pm-check.png \
-	hicolor_status_16x16_pm-cash.png \
-	hicolor_status_16x16_pm-transfer.png \
-	hicolor_status_16x16_pm-intransfer.png \
-	hicolor_status_16x16_pm-none.png \
-	hicolor_status_16x16_pm-standingorder.png \
-	hicolor_status_16x16_pm-epayment.png \
-	hicolor_status_16x16_pm-deposit.png \
-	hicolor_status_16x16_pm-fifee.png \
-	hicolor_status_16x16_pm-directdebit.png \
+	hicolor_status_16x16_hb-pm-none.png \
+	hicolor_status_16x16_hb-pm-ccard.png \
+	hicolor_status_16x16_hb-pm-dcard.png \
+	hicolor_status_16x16_hb-pm-check.png \
+	hicolor_status_16x16_hb-pm-cash.png \
+	hicolor_status_16x16_hb-pm-transfer.png \
+	hicolor_status_16x16_hb-pm-intransfer.png \
+	hicolor_status_16x16_hb-pm-none.png \
+	hicolor_status_16x16_hb-pm-standingorder.png \
+	hicolor_status_16x16_hb-pm-epayment.png \
+	hicolor_status_16x16_hb-pm-deposit.png \
+	hicolor_status_16x16_hb-pm-fifee.png \
+	hicolor_status_16x16_hb-pm-directdebit.png \
 	hicolor_status_48x48_prf-advanced.png \
 	hicolor_status_48x48_prf-backup.png \
 	hicolor_status_48x48_prf-columns.png \
