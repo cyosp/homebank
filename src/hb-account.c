@@ -437,24 +437,24 @@ GList *lst_acc, *lnk_acc;
  *
  * Return value: TRUE if used, FALSE, otherwise
  */
-gboolean
+guint
 account_is_used(guint32 key)
 {
 Account *acc;
 GList *list;
 GList *lst_acc, *lnk_acc;
 GList *lnk_txn;
-gboolean retval;
+guint retval;
 
 	DB( g_print("\n[account] is used\n") );
 
-	retval = FALSE;
+	retval = ACC_USAGE_NONE;
 	lst_acc = NULL;
 
 	acc = da_acc_get(key);
 	if( g_queue_get_length(acc->txn_queue) > 0 )
 	{
-		retval = TRUE;
+		retval = ACC_USAGE_TXN;
 		goto end;
 	}
 
@@ -471,9 +471,9 @@ gboolean retval;
 			{
 			Transaction *entry = lnk_txn->data;
 			
-				if( key == entry->kxferacc)
+				if(key == entry->kxferacc)
 				{
-					retval = TRUE;
+					retval = ACC_USAGE_TXN_XFER;
 					goto end;
 				}
 
@@ -488,9 +488,15 @@ gboolean retval;
 	{
 	Archive *entry = list->data;
 
-		if( key == entry->kacc || key == entry->kxferacc)
+		if(key == entry->kacc) 
 		{
-			retval = TRUE;
+			retval = ACC_USAGE_ARC;
+			goto end;
+		}
+		
+		if(key == entry->kxferacc)
+		{
+			retval = ACC_USAGE_ARC_XFER;
 			goto end;
 		}
 

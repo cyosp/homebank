@@ -57,7 +57,7 @@ struct ui_split_dialog_data
 	Currency	*cur;
 	 
 	gdouble		amount;
-	gboolean	isopposite;	
+	gint		amountsign;	
 
 	gdouble		sumsplit;
 	gdouble		remsplit;
@@ -70,6 +70,10 @@ struct ui_split_dialog_data
 
 #define SPLIT_MODE_EMPTY	0
 #define SPLIT_MODE_AMOUNT	1
+
+#define SPLIT_AMT_SIGN_EXP -1
+#define SPLIT_AMT_SIGN_OFF 0
+#define SPLIT_AMT_SIGN_INC 1
 
 
 void ui_split_dialog_line_sensitive(guint line, gboolean sensitive, gpointer user_data);

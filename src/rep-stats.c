@@ -31,6 +31,8 @@
 #include "ui-filter.h"
 #include "ui-transaction.h"
 
+#define HB_STATS_DO_TOTAL 1
+#define HB_STATS_DO_TIME  1
 
 
 /****************************************************************************/
@@ -213,9 +215,7 @@ gint response_id;
 }
 
 
-/*
-** ============================================================================
-*/
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 
 
@@ -355,7 +355,7 @@ gchar *title;
 	if( (tmptype == REPORT_TYPE_TOTAL) && (usrcomp == TRUE) ) //dual exp/inc
 	{
 		DB( g_print(" set bar to dual exp %d/inc %d\n\n", LST_REPDIST_EXPENSE, LST_REPDIST_INCOME) );
-		gtk_chart_set_dualdatas(GTK_CHART(data->RE_chart), model, LST_REPDIST_EXPENSE, LST_REPDIST_INCOME, title, NULL);
+		gtk_chart_set_datas_total(GTK_CHART(data->RE_chart), model, LST_REPDIST_EXPENSE, LST_REPDIST_INCOME, title, NULL);
 	}
 	else
 	{
@@ -374,13 +374,13 @@ gchar *title;
 		} 
 		
 		DB( g_print(" set bar to %d\n\n", column) );
-		gtk_chart_set_datas(GTK_CHART(data->RE_chart), model, column, title, NULL);
+		gtk_chart_set_datas_total(GTK_CHART(data->RE_chart), model, column, column, title, NULL);
 	}
 
 	//time chart
 	gtk_chart_set_color_scheme(GTK_CHART(data->RE_chart2), PREFS->report_color_scheme);
 	gtk_chart_show_xval(GTK_CHART(data->RE_chart2), TRUE);
-	chart_data_series(GTK_CHART(data->RE_chart2), GTK_TREE_VIEW(data->LV_report2), data->trendrows, data->trendcols);
+	gtk_chart_set_datas_time(GTK_CHART(data->RE_chart2), GTK_TREE_VIEW(data->LV_report2), data->trendrows, data->trendcols, NULL, NULL);
 
 	g_free(title);
 	
@@ -687,7 +687,6 @@ GtkTreeIter  iter, child;
 						MODEL_TXN_SPLITAMT, dtlamt,
 						-1);
 
-
 					//#1875801 show split detail
 					if( ope->flags & OF_SPLIT )
 					{
@@ -774,6 +773,7 @@ GtkTreeIter  iter;
 	n_cols   = report_interval_count(tmpintvl, data->filter->mindate, data->filter->maxdate);
 	DB( g_print(" %s :: n_result=%d, n_cols=%d\n", hbtk_get_label(CYA_REPORT_SRC,tmpsrc), n_result, n_cols) );
 
+	#if HB_STATS_DO_TOTAL == 1
 //TODO: add if mode==0
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_report));
 	n_inserted = 0;
@@ -862,8 +862,6 @@ GtkTreeIter  iter;
 
 	da_datatable_free (dt);
 
-	repstats_update_total(widget, NULL);
-
 	//insert total
 	if( n_inserted > 1 )
 	{
@@ -881,11 +879,12 @@ GtkTreeIter  iter;
 			LST_REPDIST_TOTRATE, hb_rate(-totexp + totinc, -data->total_expense + data->total_income),
 			-1);
 	}
+	#endif
 
-	
-	/* trend with test multi to remove */
+	/* ---- trend with test multi to remove ---- */
+
 	//TODO: add if mode==1 && choose a better max column value
-
+	#if HB_STATS_DO_TIME == 1
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_report2));
 	gtk_tree_store_clear (GTK_TREE_STORE(model));
 	n_inserted = 0;
@@ -988,10 +987,12 @@ GtkTreeIter  iter;
 
 		/* test multi end */
 
-		repstats_update(widget, user_data);
-
-
 	}
+	#endif
+
+	//here we use data->total_expense/income
+	repstats_update_total(widget, NULL);
+	repstats_update(widget, user_data);
 		
 }
 
@@ -1128,7 +1129,10 @@ struct repstats_data *data;
 	if(GTK_IS_TREE_VIEW(data->LV_report))
 	{
 		DB( g_print(" showdetail=%d\n", data->detail) );
-		
+
+		//#2018039
+		list_txn_set_lockreconciled(GTK_TREE_VIEW(data->LV_detail), PREFS->lockreconciled);
+
 		if(data->detail)
 		{
 		GtkTreeSelection *treeselection;

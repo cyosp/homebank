@@ -35,13 +35,27 @@
 /****************************************************************************/
 #define MYDEBUG 0
 
-
+#if MYDEBUG
+#define DB(x) (x);
+#else
 #define DB(x);
-//#define DB(x) (x);
+#endif
+
+//data
+#define DBDT(x);
+//#define DBDT(x) (x);
 
 //calculation
 #define DBC(x);
 //#define DBC(x) (x);
+
+//scale
+#define DBS(x);
+//#define DBS(x) (x);
+
+//legend
+#define DBL(x);
+//#define DBL(x) (x);
 
 //graph
 #define DBG(x);
@@ -72,7 +86,7 @@ static GtkBoxClass *gtk_chart_parent_class = NULL;
 const double dashed3[] = {3.0};
 
 
-static void chart_set_font_size(GtkChart *chart, PangoLayout *layout, gint font_size);
+//static void chart_set_font_size(GtkChart *chart, PangoLayout *layout, gint font_size);
 static gchar *chart_print_int(GtkChart *chart, gint value);
 static gchar *chart_print_scalerate(GtkChart *chart, gdouble value);
 static gboolean drawarea_full_redraw(GtkWidget *widget, gpointer user_data);
@@ -80,6 +94,26 @@ static void chart_clear(GtkChart *chart);
 
 
 /* = = = = = = = = = = = = = = = = */
+
+
+//5.7 to secure &g_array_index(chart->items, ChartItem, i);
+static ChartItem *chart_chartitem_get(GtkChart *chart, guint index)
+{
+GArray *array;
+ChartItem *retval = NULL;
+
+	g_return_val_if_fail (GTK_IS_CHART (chart), NULL);
+
+	array = chart->items;
+	if( index < array->len )
+	{
+		retval = &g_array_index(array, ChartItem, index);
+	}
+	else
+		g_warning(" chartitem out of bound %d of %d", index, array->len);
+
+	return retval;
+}
 
 
 static void chart_set_font_size(GtkChart *chart, PangoLayout *layout, gint font_size)
@@ -272,7 +306,7 @@ PangoLayout *layout;
 gchar *valstr;
 int tw, th;
 
-	DBG( g_print("\n[column] draw scale\n") );
+	DBS( g_print("\n[column] draw scale\n") );
 
 	first = gtk_adjustment_get_value(GTK_ADJUSTMENT(chart->adjustment));
 
@@ -286,7 +320,7 @@ int tw, th;
 	cairo_set_line_width(cr, 1.0);
 
 	// Y-scale element (horiz lines + labels (amounts))
-	DBG( g_print("\n -- scale-y: [%d - %d]\n", 0, drawctx->div) );
+	DBS( g_print("\n -- scale-y: [%d - %d]\n", 0, drawctx->div) );
 
 	curxval = drawctx->max;
 	cairo_set_dash(cr, 0, 0, 0);
@@ -329,12 +363,12 @@ int tw, th;
 	if( chart->dual == TRUE || chart->show_xval == TRUE )
 	{
 	gint lstr = drawctx->l;
-	gint tx;
+	double tx;
 
 		x = drawctx->graph.x + (drawctx->blkw/2);
 		y = drawctx->t + drawctx->h - drawctx->font_h;
 
-		DBG( g_print("\n -- scale-x: [%d - %d] visi %d\n", first, first+drawctx->visible, drawctx->visible) );
+		DBS( g_print("\n -- scale-x: [%d - %d] visi %d\n", first, first+drawctx->visible, drawctx->visible) );
 
 		for(i=first ; i<(first+drawctx->visible) ; i++)
 		{
@@ -357,9 +391,11 @@ int tw, th;
 				{
 					case CHART_TYPE_COL:
 					case CHART_TYPE_LINE:
-					case CHART_TYPE_PIE:
+					//case CHART_TYPE_PIE:
 						{
-							ChartItem *item = &g_array_index(chart->items, ChartItem, i);
+						//ChartItem *item = &g_array_index(chart->items, ChartItem, i);
+						ChartItem *item = chart_chartitem_get(chart, i);
+
 							valstr = item->label;
 						}
 						break;
@@ -369,14 +405,14 @@ int tw, th;
 						break;
 				}
 
-				DBG( g_print(" x: %2d '%s'", i, valstr) );
+				DBS( g_print(" x: %2d '%s'", i, valstr) );
 
 				pango_layout_set_text (layout, valstr, -1);
 				pango_layout_get_size (layout, &tw, &th);
 				tx = x - ((tw / PANGO_SCALE)/2);
 				if( tx >= lstr )
 				{
-					DBG( g_print(" drawed") );
+					DBS( g_print(" drawed") );
 
 					if(!drawctx->isprint)
 						cairo_user_set_rgbacol(cr, &global_colors[THTEXT], 0.78);
@@ -385,16 +421,18 @@ int tw, th;
 	
 					cairo_move_to(cr, tx, y);
 					pango_cairo_show_layout (cr, layout);
+
 					lstr = x + ((tw / PANGO_SCALE)/2) + CHART_SPACING;
 
 					// draw a marker
-					cairo_move_to(cr, x, drawctx->graph.y + drawctx->graph.height+3);
-					cairo_line_to(cr, x, drawctx->graph.y + drawctx->graph.height);
+					tx = 0.5 + x;
+					cairo_move_to(cr, tx, drawctx->graph.y + drawctx->graph.height+3);
+					cairo_line_to(cr, tx, drawctx->graph.y + drawctx->graph.height);
 					cairo_stroke(cr);
 
 				}
 
-				DBG( g_print("\n") );
+				DBS( g_print("\n") );
 			}
 
 			x += drawctx->blkw;
@@ -415,7 +453,7 @@ int tw, th;
 			y  = 0.5 + drawctx->oy - (ABS(chart->average)/drawctx->range) * drawctx->graph.height;
 		}
 
-		DBG( g_print(" -- average: x%d, y%f, w%d\n", drawctx->l, y, drawctx->w) );
+		DBS( g_print(" -- average: x%d, y%f, w%d\n", drawctx->l, y, drawctx->w) );
 
 		if(!drawctx->isprint)
 			cairo_user_set_rgbacol(cr, &global_colors[THTEXT], 1.0);
@@ -436,7 +474,7 @@ int tw, th;
 		if(chart->minimum >= drawctx->min)
 		{
 
-			DBG( g_print(" -- minimum: min=%.2f range=%.2f\n", drawctx->min, drawctx->range) );
+			DBS( g_print(" -- minimum: min=%.2f range=%.2f\n", drawctx->min, drawctx->range) );
 
 
 			if( chart->minimum < 0 )
@@ -452,7 +490,7 @@ int tw, th;
 
 			cairo_set_source_rgba(cr, COLTOCAIRO(255), COLTOCAIRO(0), COLTOCAIRO(0), AREA_ALPHA / 2);
 
-			DBG( g_print(" draw over: x%d, y%f, w%d, h%f\n", drawctx->l, y, drawctx->w, y2) );
+			DBS( g_print(" draw over: x%d, y%f, w%d, h%f\n", drawctx->l, y, drawctx->w, y2) );
 
 			cairo_rectangle(cr, drawctx->graph.x, y, drawctx->graph.width, y2 );
 			cairo_fill(cr);
@@ -541,27 +579,31 @@ gint first, i;
 
 	for(i=first; i<(first+drawctx->visible) ;i++)
 	{
-	ChartItem *item = &g_array_index(chart->items, ChartItem, i);
+	//ChartItem *item = &g_array_index(chart->items, ChartItem, i);
+	ChartItem *item = chart_chartitem_get(chart, i);
 
-		x2 = x + (drawctx->blkw)/2;
-		y2 = drawctx->oy - (item->serie1 / drawctx->range) * drawctx->graph.height;
-		if( i == first)
+		if( item)
 		{
-			firstx = x2;
-			cairo_move_to(cr, x2, y2);
-		}
-		else
-		{
-			if( i < (chart->nb_items) )
+			x2 = x + (drawctx->blkw)/2;
+			y2 = drawctx->oy - (item->serie1 / drawctx->range) * drawctx->graph.height;
+			if( i == first)
 			{
-				cairo_line_to(cr, x2, y2);
-				lastx = x2;
+				firstx = x2;
+				cairo_move_to(cr, x2, y2);
 			}
 			else
-				lastx = x2 - drawctx->barw;
-		}
+			{
+				if( i < (chart->nb_items) )
+				{
+					cairo_line_to(cr, x2, y2);
+					lastx = x2;
+				}
+				else
+					lastx = x2 - drawctx->barw;
+			}
 
-		x += drawctx->blkw;
+			x += drawctx->blkw;
+		}
 	}
 
 	cairo_user_set_rgbcol(cr, &chart->color_scheme.colors[chart->color_scheme.cs_blue]);
@@ -581,32 +623,34 @@ gint first, i;
 	// draw plots
 	for(i=first; i<(first+drawctx->visible) ;i++)
 	{
-	ChartItem *item = &g_array_index(chart->items, ChartItem, i);
+	//ChartItem *item = &g_array_index(chart->items, ChartItem, i);
+	ChartItem *item = chart_chartitem_get(chart, i);
 
-		x2 = x + (drawctx->blkw)/2;
-		y2 = drawctx->oy - (item->serie1 / drawctx->range) * drawctx->graph.height;
-
-		//test draw vertical selection line
-		if( i == chart->hover )
+		if( item)
 		{
+			x2 = x + (drawctx->blkw)/2;
+			y2 = drawctx->oy - (item->serie1 / drawctx->range) * drawctx->graph.height;
 
-			if(!drawctx->isprint)
-				cairo_user_set_rgbacol(cr, &global_colors[THTEXT], 0.1);
-			else
-				cairo_user_set_rgbacol(cr, &global_colors[BLACK], 0.1);
+			//test draw vertical selection line
+			if( i == chart->hover )
+			{
 
-			//cairo_set_source_rgb(cr, 1.0, 0.0, 0.0); //blue
-			cairo_set_line_width(cr, 1.0);
-			cairo_move_to(cr, x2, drawctx->graph.y);
-			cairo_line_to(cr, x2, drawctx->t + drawctx->h - drawctx->font_h);
-			cairo_stroke(cr);
+				if(!drawctx->isprint)
+					cairo_user_set_rgbacol(cr, &global_colors[THTEXT], 0.1);
+				else
+					cairo_user_set_rgbacol(cr, &global_colors[BLACK], 0.1);
+
+				//cairo_set_source_rgb(cr, 1.0, 0.0, 0.0); //blue
+				cairo_set_line_width(cr, 1.0);
+				cairo_move_to(cr, x2, drawctx->graph.y);
+				cairo_line_to(cr, x2, drawctx->t + drawctx->h - drawctx->font_h);
+				cairo_stroke(cr);
+			}
+
+			linechart_draw_plot(cr,  x2, y2, i == chart->hover ? linew+1 : linew, chart, drawctx->isprint);
+
+			x += drawctx->blkw;
 		}
-
-
-		linechart_draw_plot(cr,  x2, y2, i == chart->hover ? linew+1 : linew, chart, drawctx->isprint);
-
-
-		x += drawctx->blkw;
 	}
 }
 
@@ -645,55 +689,59 @@ gint i, first;
 
 	for(i=first; i<(first+drawctx->visible) ;i++)
 	{
-	ChartItem *item = &g_array_index(chart->items, ChartItem, i);
+	//ChartItem *item = &g_array_index(chart->items, ChartItem, i);
+	ChartItem *item = chart_chartitem_get(chart, i);
 	gint color;
 	gint barw = drawctx->barw;
 
 		//if(!chart->datas1[i]) goto nextbar;
 
-		if(!chart->show_mono)
-			color = i % chart->color_scheme.nb_cols;
-		else
-			color = chart->color_scheme.cs_green;
-
-		cairo_user_set_rgbcol_over(cr, &chart->color_scheme.colors[color], i == chart->hover);
-
-		x2 = x + (drawctx->blkw/2) - 1;
-		x2 = !chart->dual ? x2 - (barw/2) : x2 - barw - 1;
-
-		//exp/inc/bal
-		if(item->serie1)
+		if( item )
 		{
-			h = floor((item->serie1 / drawctx->range) * drawctx->graph.height);
-			y2 = drawctx->oy - h;
-			if(item->serie1 < 0.0)
+			if(!chart->show_mono)
+				color = i % chart->color_scheme.nb_cols;
+			else
+				color = chart->color_scheme.cs_green;
+
+			cairo_user_set_rgbcol_over(cr, &chart->color_scheme.colors[color], i == chart->hover);
+
+			x2 = x + (drawctx->blkw/2) - 1;
+			x2 = !chart->dual ? x2 - (barw/2) : x2 - barw - 1;
+
+			//exp/inc/bal
+			if(item->serie1)
 			{
-				y2 += 1;
-				if(chart->show_mono)
+				h = floor((item->serie1 / drawctx->range) * drawctx->graph.height);
+				y2 = drawctx->oy - h;
+				if(item->serie1 < 0.0)
 				{
-					color = chart->color_scheme.cs_red;
-					cairo_user_set_rgbcol_over(cr, &chart->color_scheme.colors[color], i == chart->hover);
+					y2 += 1;
+					if(chart->show_mono)
+					{
+						color = chart->color_scheme.cs_red;
+						cairo_user_set_rgbcol_over(cr, &chart->color_scheme.colors[color], i == chart->hover);
+					}
 				}
+				//DBG( g_print(" + i=%d :: y2=%f h=%f (%f / %f) * %f\n", i, y2, h, chart->datas1[i], chart->range, chart->graph.height ) );
+
+				cairo_rectangle(cr, x2+2, y2, barw, h);
+				cairo_fill(cr);
+
 			}
-			//DBG( g_print(" + i=%d :: y2=%f h=%f (%f / %f) * %f\n", i, y2, h, chart->datas1[i], chart->range, chart->graph.height ) );
 
-			cairo_rectangle(cr, x2+2, y2, barw, h);
-			cairo_fill(cr);
+			if( chart->dual && item->serie2)
+			{
+				x2 = x2 + barw + 1;
+				h = floor((item->serie2 / drawctx->range) * drawctx->graph.height);
+				y2 = drawctx->oy - h;
 
+				cairo_rectangle(cr, x2+2, y2, barw, h);
+				cairo_fill(cr);
+
+			}
+
+			x += drawctx->blkw;
 		}
-
-		if( chart->dual && item->serie2)
-		{
-			x2 = x2 + barw + 1;
-			h = floor((item->serie2 / drawctx->range) * drawctx->graph.height);
-			y2 = drawctx->oy - h;
-
-			cairo_rectangle(cr, x2+2, y2, barw, h);
-			cairo_fill(cr);
-
-		}
-
-		x += drawctx->blkw;
 	}
 }
 
@@ -705,10 +753,8 @@ static gint colchart_get_hover(GtkWidget *widget, gint x, gint y, gpointer user_
 {
 GtkChart *chart = GTK_CHART(user_data);
 HbtkDrawContext *drawctx = &chart->context;
-gint retval;
+gint retval = -1;
 gint index, first, px;
-
-	retval = -1;
 
 	if( x <= (drawctx->l+drawctx->w) && x >= drawctx->graph.x && y >= drawctx->graph.y && y <= (drawctx->t+drawctx->h) )
 	{
@@ -804,106 +850,95 @@ gint first, nb_items;
 
 
 // used for stack chart
-void chart_data_series(GtkChart *chart, GtkTreeView *treeview, gint nbrows, gint nbcols)
+static void chart_data_series(GtkChart *chart, gint indice)
 {
 GtkTreeModel *model;
 GtkTreeIter iter;
 gboolean valid;
 gdouble tmpmin, tmpmax;
-gint rowid, colid;
+guint nbrows, nbcols;
+guint rowid, colid;
 
-	DB( g_print("\n[chart] data series (col graph)\n") );
+	DBDT( g_print("\n[chart] time data series\n") );
 
-	g_return_if_fail(GTK_IS_CHART(chart));
-	g_return_if_fail(GTK_IS_TREE_VIEW(treeview));
+	model  = chart->model;
+	nbcols = chart->nb_cols;
 
-	chart_clear(chart);
+	chart->nb_items = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(model), NULL);
+	nbrows = chart->nb_items;
+	chart->colsum = g_malloc0(sizeof(gdouble)*nbcols);
 
-	model  = gtk_tree_view_get_model (treeview);
-
-	DB( g_print(" nbrows=%d nbcols=%d struct=%ld\n", nbrows, nbcols, sizeof(ChartItem)) );
-
-	if( nbrows <=0 || nbcols <= 0 )
-		goto end;
-
-	DB( g_print(" nbrows=%d nbcols=%d\n", nbrows, nbcols) );
-
-	chart->model = model;
-	chart->nb_items = nbrows;
-
-	//TODO temp test - allocate data for sum
-	chart->colsum   = g_malloc0(sizeof(gdouble)*nbcols);
-	chart->collabel = g_malloc0(sizeof(gpointer)*nbcols);
-	chart->nb_cols = nbcols;
 
 	chart->items = g_array_sized_new(FALSE, FALSE, sizeof(ChartItem), chart->nb_items);
+	DBDT( g_print(" time: malloc for %d rows\n", chart->nb_items) );
 
-	valid = gtk_tree_model_get_iter_first (GTK_TREE_MODEL(model), &iter);
-	rowid = 0;
-	while (valid && rowid < nbrows)
+	tmpmin = tmpmax = 0.0;
+
+	// foreach column
+	for(colid=0 ; colid<nbcols ; colid++)
 	{
 	ChartItem item;
-	gchar *label;
+	gdouble colmin, colmax;
+			
+		DBDT( g_print(" time: col=%d\n", colid) );
 
-		gtk_tree_model_get (GTK_TREE_MODEL(model), &iter,
-			LST_REPDIST2_LABEL, &label,
-			-1);
-
-		//column total
-		//TODO: this is useless, as last row already has the column sum !
-		for(colid=0;colid<nbcols;colid++)
+		//foreach row of column
+		valid = gtk_tree_model_get_iter_first (GTK_TREE_MODEL(model), &iter);
+		rowid = 0;
+		colmin = colmax = 0.0;
+		while (valid && rowid < nbrows)
 		{
+		gint pos;
+		gchar *label;
 		DataRow *dr;
 		gdouble value;
-		
+
 			gtk_tree_model_get (GTK_TREE_MODEL(model), &iter,
-				//LST_STORE_TRENDROW=6
+				LST_REPDIST2_POS, &pos,
+				LST_REPDIST2_LABEL, &label,
 				LST_REPDIST2_ROW, &dr,
 				-1);
 
+			//#1870390 add total into listview & exclude from charts
+			if( pos == LST_REPDIST_POS_TOTAL )
+				goto next;
+
+			// append row (chartitem) only once
+			if( colid == 0 )
+			{
+				memset(&item, 0, sizeof(item));
+				item.label = label;
+				//add for drill down
+				//item.n_child = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(model), &iter);		
+				g_array_append_vals(chart->items, &item, 1);
+			}
+
 			value = da_datarow_get_cell_sum (dr, colid);
+			
+			/*if( chart->type == CHART_TYPE_STACK100 )
+			{
+				value = ABS(value);
+			}*/
 			chart->colsum[colid] += ABS(value);
 
-			DB( g_print(" col %3d row %3d val=%.2f\n", colid, rowid, value) );
+			DBDT( g_print("  row=%d '%s', amt=%.2f colsum=%.2f\n", pos, label, value, chart->colsum[colid]) );
+
+			if( value < 0.0 )
+				colmin += value;
+			else
+				colmax += value;
+
+		next:
+			valid = gtk_tree_model_iter_next (model, &iter);
+			rowid++;
 		}
 
-		memset(&item, 0, sizeof(item));
-		item.label = label;
-		g_array_append_vals(chart->items, &item, 1);
-
-		valid = gtk_tree_model_iter_next (model, &iter);
-		rowid++;
+		DBDT( g_print("   col colmin=%.2f colmax=%.2f\n", colmin, colmax) );
+		
+		tmpmin = MIN(tmpmin, colmin);
+		tmpmax = MAX(tmpmax, colmax);
+	
 	}
-
-	//debug colsum
-	//get minmax
-	tmpmin = 0.0;
-	tmpmax = 0.0;
-
-	DB( g_print(" colsum: ") );
-	for(colid=0;colid<nbcols;colid++)
-	{
-		tmpmax = MAX(tmpmax, ABS(chart->colsum[colid]));
-		DB( g_print("%.2f|", chart->colsum[colid]) );
-	}
-	DB( g_print("\n") );
-
-
-
-	DB( g_print(" collabel: ") );
-	for(colid=0;colid<nbcols;colid++)
-	{
-	GtkTreeViewColumn *column;
-
-		if( (column = gtk_tree_view_get_column (treeview, colid+1) ))
-		{
-			chart->collabel[colid] = (gchar *)gtk_tree_view_column_get_title(column);
-		}
-
-		DB( g_print("%s|", chart->collabel[colid]) );
-	}
-	DB( g_print("\n") );
-
 
 	// ensure rawmin rawmax not equal
 	if(tmpmin == tmpmax)
@@ -912,21 +947,17 @@ gint rowid, colid;
 		tmpmax = 100;
 	}
 
-	DB( g_print(" rawmin=%.2f rawmax=%.2f\n", tmpmin, tmpmax) );
+	DBDT( g_print(" time: rawmin=%.2f rawmax=%.2f\n", tmpmin, tmpmax) );
 
 	chart->rawmin = tmpmin;
 	chart->rawmax = tmpmax;
-
-	DB( g_print("[chart] end data series (col graph)\n") );
-end:
-	gtk_chart_queue_redraw(chart);
 }
 
 
 
 static void colchart_draw_stacks(cairo_t *cr, GtkChart *chart, HbtkDrawContext *drawctx)
 {
-double x, x2, y2, h, rate, srate;
+double x, x2, y2, h, ypos, yneg, rate, srate;
 gint i, r, first;
 GtkTreeModel *model = chart->model;
 GtkTreeIter iter;
@@ -943,7 +974,7 @@ gboolean valid;
 	DBG( g_print(" x=%.2f first=%d, blkw=%.2f, barw=%.2f\n", x, first, drawctx->blkw, drawctx->barw ) );
 	DBG( g_print(" mono=%d\n", chart->show_mono ) );
 
-	x2 = 0.5 + floor(x + (drawctx->blkw - drawctx->barw)/2);
+	x2 = floor(x + (drawctx->blkw - drawctx->barw)/2);
 
 	DBG( g_print(" x2=%.0f, height=%.0f\n", x2, drawctx->graph.height) );
 
@@ -951,14 +982,13 @@ gboolean valid;
 	for(i=first; i<(first+drawctx->visible) ;i++)
 	//for(i=0; i<chart->nb_items ;i++)
 	{
-//		ChartItem *item = &g_array_index(chart->items, ChartItem, i);
+		y2 = floor(drawctx->oy);
+		ypos = y2;
+		yneg = y2;
 
+		DBG( g_print("\ndraw blk/col %d\n", i) );
 
-		y2 = 0.5 + floor(drawctx->oy);
-
-		DBG( g_print(" draw blk %d\n", i) );
-
-		//Each rows
+		//foreach rows
 		valid = gtk_tree_model_get_iter_first (GTK_TREE_MODEL(model), &iter);
 		r = 0;
 		srate = 0;
@@ -977,19 +1007,21 @@ gboolean valid;
 			if( id != LST_REPDIST_POS_TOTAL )
 			{
 				value = da_datarow_get_cell_sum (dr, i);
-
-				hover = (i == chart->colhover) && (r == chart->hover) ? TRUE : FALSE;
-
-				color = r % chart->color_scheme.nb_cols;
-				cairo_user_set_rgbcol_over(cr, &chart->color_scheme.colors[color], hover);
+				if( value == 0.0 )
+					goto nextrow;
 
 				//for stacked
-
+				//pre 5.7
+				//rate = ABS(value/drawctx->range);
 				if(chart->type == CHART_TYPE_STACK)
-					rate = ABS(value/drawctx->range);
+					rate = value/drawctx->range;
 				else if(chart->type == CHART_TYPE_STACK100)
-					//for stacked100
-					rate = ABS(value/chart->colsum[i]);
+				{
+					value = ABS(value);
+					rate = value / chart->colsum[i];
+				
+					DBG( g_print("  row=%2d value=%7.2f / %7.2f = %7.2f\n", r, value, chart->colsum[i], rate) );
+				}
 
 				//h = 0.5 + floor(rate * drawctx->graph.height);
 				h = rate * drawctx->graph.height;
@@ -997,14 +1029,27 @@ gboolean valid;
 				//debug sum of rate 
 				srate += h;
 
-				DBG( g_print("  row %2d value=%7.2f x2=%7.2f, y2=%7.2f rate=%f height=%7.2f sheight=%f\n", r, value, x2+2, y2, 100*rate, h, srate) );
+				if( value > 0 )
+				{
+					DBG( g_print("  row %2d value=%7.2f x2=%7.2f, ypos=%7.2f rate=%f height=%7.2f sheight=%f\n", r, value, x2+2, ypos, 100*rate, h, srate) );
+					cairo_rectangle(cr, x2+2, ypos-h, drawctx->barw, h);
+					ypos = ypos - h;
+				}
+				else
+				{
+					DBG( g_print("  row %2d value=%7.2f x2=%7.2f, yneg=%7.2f rate=%f height=%7.2f sheight=%f\n", r, value, x2+2, yneg, 100*rate, h, srate) );
+					cairo_rectangle(cr, x2+2, yneg-h+1, drawctx->barw, h);
+					yneg = yneg - h;
+				}
 
-				cairo_rectangle(cr, x2+2, y2-h, drawctx->barw, h);
+				color = r % chart->color_scheme.nb_cols;
+				hover = (i == chart->colhover) && (r == chart->hover) ? TRUE : FALSE;
+				cairo_user_set_rgbcol_over(cr, &chart->color_scheme.colors[color], hover);
+
 				cairo_fill(cr);
 
-				y2 = y2 - h;
 			}
-
+nextrow:
 			valid = gtk_tree_model_iter_next (model, &iter);
 			r++;
 		}
@@ -1016,8 +1061,6 @@ gboolean valid;
 }
 
 
-
-
 /*
 ** get the bar under the mouse pointer
 */
@@ -1026,8 +1069,8 @@ static gint colchart_stack_get_hover(GtkWidget *widget, gint x, gint y, gpointer
 GtkChart *chart = GTK_CHART(user_data);
 HbtkDrawContext *drawctx = &chart->context;
 gint retval;
-gint index, first, px, py, r;
-double y2, h, rate;
+gint index, first, px, r;
+double y2, h, ypos, yneg, rate;
 GtkTreeModel *model = chart->model;
 GtkTreeIter iter;
 gboolean valid;
@@ -1037,17 +1080,19 @@ gboolean valid;
 	if( x <= (drawctx->l+drawctx->w) && x >= drawctx->graph.x && y >= drawctx->graph.y && y <= (drawctx->t+drawctx->h) )
 	{
 		px = (x - drawctx->graph.x);
-		py = (drawctx->oy - y);
+		//py = (drawctx->oy - y);
 		first = gtk_adjustment_get_value(GTK_ADJUSTMENT(chart->adjustment));
 		index = first + (px / drawctx->blkw);
 		rate = 0;
 
-		DBD( g_print(" x=%d y=%d px=%d py=%d oy=%f\n", x, y, px, py, drawctx->oy) );
+		DBD( g_print(" x=%d y=%d px=%d oy=%f\n", x, y, px, drawctx->oy) );
 
 		//we are hover column 'index'
 		if(index < chart->nb_cols)
 		{
-			y2 = 0;
+			y2 = 0.5 + floor(drawctx->oy);
+			ypos = y2;
+			yneg = y2+1;
 
 			chart->colhover = index;
 
@@ -1068,42 +1113,60 @@ gboolean valid;
 				if( id != LST_REPDIST_POS_TOTAL )
 				{
 					value = da_datarow_get_cell_sum (dr, index);
+					
+					if( value == 0.0 )
+						goto nextrow;
 
+					//for stacked
+					//pre 5.7
+					//rate = ABS(value/drawctx->range);
 					if(chart->type == CHART_TYPE_STACK)
-						rate = ABS(value/drawctx->range);
+						rate = value/drawctx->range;
 					else if(chart->type == CHART_TYPE_STACK100)
-					//for stacked100
-						rate = ABS(value/chart->colsum[index]);
+					{
+						value = ABS(value);
+						rate = value/chart->colsum[index];
+					}
 
 
 					//h = 0.5 + floor(rate * drawctx->graph.height);
 					h = rate * drawctx->graph.height;
 
-					DBD( g_print("  col=%02d row=%2d value=%.0f y2=%.0f rate=%f height=%.0f\n", index, r, value, y2, rate, h) );
-
-					if( py < y2+h )
+					if( value > 0 )
 					{
-						retval = r;
-						break;
+						DBD( g_print("  col=%02d row=%2d ymin=%.0f ymax=%.0f height=%.0f\n", index, r, ypos-h, ypos, h) );
+						if( y > ypos - h && y < ypos )
+						{
+							retval = r;
+							DBD( g_print("  ** match\n") );
+							break;
+						}
+						ypos = ypos - h;
+					}
+					else
+					{
+						DBD( g_print("  col=%02d row=%2d ymin=%.0f ymax=%.0f height=%.0f\n", index, r, yneg, yneg-h, h) );
+						if( y > yneg && y < yneg - h)
+						{
+							retval = r;
+							DBD( g_print("  ** match\n") );
+							break;
+						}
+						yneg = yneg - h;
 					}
 
-					y2 = y2 + h;
 				}
-
+		nextrow:
 				valid = gtk_tree_model_iter_next (model, &iter);
 				r++;
 			}
-
 		}
-
 	}
 
 	DBD( g_print("  stack active=%d\n", retval) );
 
 	return(retval);
 }
-
-
 
 
 /* = = = = = = = = = = = = = = = = */
@@ -1118,28 +1181,31 @@ static void piechart_draw_slices(cairo_t *cr, GtkChart *chart, HbtkDrawContext *
 	DBG( g_print("\n[pie] draw slices\n") );
 
 
-		//cairo drawing
+	//cairo drawing
 
-		double a1 = 0 * (M_PI / 180);
-		double a2 = 360 * (M_PI / 180);
+	double a1 = 0 * (M_PI / 180);
+	double a2 = 360 * (M_PI / 180);
 
-		//g_print("angle1=%.2f angle2=%.2f\n", a1, a2);
+	//g_print("angle1=%.2f angle2=%.2f\n", a1, a2);
 
-		double cx = drawctx->ox;
-		double cy = drawctx->oy;
-		double radius = drawctx->rayon/2;
-		gint i;
-		double dx, dy;
-		double sum = 0.0;
-		gint color;
+	double cx = drawctx->ox;
+	double cy = drawctx->oy;
+	double radius = drawctx->rayon/2;
+	gint i;
+	double dx, dy;
+	double sum = 0.0;
+	gint color;
 
-		DBG( g_print("rayon=%d\n", drawctx->rayon) );
-		DBG( g_print("total=%.f\n", chart->total) );
+	DBG( g_print("rayon=%d\n", drawctx->rayon) );
+	DBG( g_print("total=%.f\n", chart->total) );
 
-		for(i=0; i< chart->nb_items ;i++)
+	for(i=0; i< chart->nb_items ;i++)
+	{
+	//ChartItem *item = &g_array_index(chart->items, ChartItem, i);
+	ChartItem *item = chart_chartitem_get(chart, i);
+	
+		if( item )
 		{
-		ChartItem *item = &g_array_index(chart->items, ChartItem, i);
-
 			a1 = ((360 * (sum / chart->total)) - 90) * (M_PI / 180);
 			sum += ABS(item->serie1);
 			a2 = ((360 * (sum / chart->total)) - 90) * (M_PI / 180);
@@ -1149,7 +1215,6 @@ static void piechart_draw_slices(cairo_t *cr, GtkChart *chart, HbtkDrawContext *
 			dy = cy;
 
 			DBG( g_print("- s%2d: %.2f%% a1=%.2f a2=%.2f | %s %.f\n", i, sum / chart->total, a1, a2, item->label, item->serie1) );
-
 
 			cairo_move_to(cr, dx, dy);
 			cairo_arc(cr, dx, dy, radius, a1, a2);
@@ -1167,7 +1232,7 @@ static void piechart_draw_slices(cairo_t *cr, GtkChart *chart, HbtkDrawContext *
 			cairo_user_set_rgbcol_over(cr, &chart->color_scheme.colors[color], i == chart->hover);
 			cairo_fill(cr);
 		}
-
+	}
 
 
 #if CHART_PARAM_PIE_DONUT == TRUE
@@ -1225,16 +1290,19 @@ double radius, h;
 		gdouble cumul = 0;
 		for(index=0; index< chart->nb_items ;index++)
 		{
-		ChartItem *item = &g_array_index(chart->items, ChartItem, index);
+		//ChartItem *item = &g_array_index(chart->items, ChartItem, index);
+		ChartItem *item = chart_chartitem_get(chart, index);
 
-			cumul += ABS(item->serie1/chart->total)*360;
-			if( cumul > angle )
+			if( item )
 			{
-				retval = index;
-				break;
+				cumul += ABS(item->serie1/chart->total)*360;
+				if( cumul > angle )
+				{
+					retval = index;
+					break;
+				}
 			}
 		}
-
 		//DBD( g_print(" inside: x=%d, y=%d\n", x, y) );
 		//DBD( g_print(" inside: b=%f angle=%f, slice is %d\n", b, angle, index) );
 	}
@@ -1313,15 +1381,54 @@ static gchar *chart_print_double(GtkChart *chart, gchar *buffer, gdouble value)
 }
 
 
+static void chart_clear_items(GtkChart *chart)
+{
+GArray *array = chart->items;
+guint i;
+
+	DBDT( g_print("\n[gtkchart] %p clear items\n", chart) );
+
+	if(array != NULL)
+	{
+		DBDT( g_print(" n_items: %d\n", array->len) );
+		for(i=0;i<array->len;i++)
+		{
+		//no need to secure access here
+		ChartItem *item = &g_array_index(array, ChartItem, i);
+
+			DBDT( g_print(" free item %3d: %p: '%s'\n", i, item, item->label) );
+
+			g_free(item->label);	//we free label as it comes from a model_get into setup_with_model
+		}
+		g_array_free(chart->items, TRUE);
+		chart->items =  NULL;
+	}
+
+	g_free(chart->colsum);
+	chart->colsum = NULL;
+
+	chart->nb_items = 0;
+
+	chart->total = 0;
+
+	chart->rawmin = 0;
+	chart->rawmax = 0;
+
+}
+
+
+extern HbKvData CYA_REPORT_SRC[];
+
 /*
 ** clear any allocated memory
 */
 static void chart_clear(GtkChart *chart)
 {
 HbtkDrawContext *drawctx = &chart->context;
-gint i;
 
-	DB( g_print("\n[gtkchart] clear\n") );
+	DBDT( g_print("\n[gtkchart] %p clear\n", chart) );
+
+	DBDT( g_print(" type: %d %s\n", chart->type, hbtk_get_label(CYA_REPORT_SRC, chart->type)) );
 
 	//free & clear any previous allocated datas
 	if(chart->title != NULL)
@@ -1336,31 +1443,12 @@ gint i;
 		chart->subtitle = NULL;
 	}
 
-	if(chart->items != NULL)
-	{
-		for(i=0;i<chart->nb_items;i++)
-		{
-		ChartItem *item = &g_array_index(chart->items, ChartItem, i);
+	chart_clear_items(chart);
 
-			g_free(item->label);	//we free label as it comes from a model_get into setup_with_model
-			g_free(item->legend);
-		}
-		g_array_free(chart->items, TRUE);
-		chart->items =  NULL;
-	}
-
-	chart->nb_items = 0;
-
-	chart->total = 0;
+	chart->totmodel = NULL;
 
 	drawctx->range = 0;
-	chart->rawmin = 0;
-	chart->rawmax = 0;
 
-
-	//TODO: temp test
-	g_free(chart->colsum);
-	chart->colsum = NULL;
 	g_free(chart->collabel);
 	chart->collabel = NULL;
 
@@ -1376,19 +1464,24 @@ gint i;
 /*
 ** setup our chart with a model and column
 */
-static void chart_setup_with_model(GtkChart *chart, GtkTreeModel *list_store, guint column1, guint column2)
+static void chart_setup_with_model(GtkChart *chart, gint indice)
 {
-gint rowid, i;
-gboolean valid;
+GtkTreeModel *totmodel;
 GtkTreeIter iter;
+guint column1;
+guint column2;
+gint rowid, i;
+gboolean valid = FALSE;
 
-	DB( g_print("\n[chart] setup with model\n") );
+	DBDT( g_print("\n[chart] total data series\n") );
 
-	chart_clear(chart);
+	totmodel = chart->totmodel;
+	column1  = chart->column1;
+	column2  = chart->column2;
 
 	//#1870390 add total into listview & exclude from charts
 	//chart->nb_items = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(list_store), NULL);
-	chart->nb_items = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(list_store), NULL);
+	chart->nb_items = gtk_tree_model_iter_n_children(GTK_TREE_MODEL(totmodel), NULL);
 
 	chart->items = g_array_sized_new(FALSE, FALSE, sizeof(ChartItem), chart->nb_items);
 
@@ -1397,11 +1490,11 @@ GtkTreeIter iter;
 	chart->dual = (column1 == column2) ? FALSE : TRUE;
 
 	/* Get the first iter in the list */
-	valid = gtk_tree_model_get_iter_first (GTK_TREE_MODEL(list_store), &iter);
+	valid = gtk_tree_model_get_iter_first (GTK_TREE_MODEL(totmodel), &iter);
 	rowid = 0;
 	while (valid)
     {
-	gint id;
+	gint pos;
 	gchar *label;
 	gdouble value1, value2;
 	ChartItem item;
@@ -1411,15 +1504,15 @@ GtkTreeIter iter;
 		/* column 2: label (gchar) */
 		/* column x: values (double) */
 
-		gtk_tree_model_get (GTK_TREE_MODEL(list_store), &iter,
-			0, &id,	//useless now
+		gtk_tree_model_get (GTK_TREE_MODEL(totmodel), &iter,
+			0, &pos,	//useless now
 			2, &label,
 			column1, &value1,
 			column2, &value2,
 			-1);
 
 		//#1870390 add total into listview & exclude from charts
-		if( id == LST_REPDIST_POS_TOTAL )
+		if( pos == LST_REPDIST_POS_TOTAL )
 		{
 			//subtract the LST_REPDIST_POS_TOTAL line not to be drawed
 			chart->nb_items--;
@@ -1431,8 +1524,6 @@ GtkTreeIter iter;
 			value1 = ABS(value1);
 			value2 = ABS(value2);
 		}
-
-		DB( g_print("%d: '%s' %.2f %2f\n", rowid, label, value1, value2) );
 
 		/* data1 value storage & min, max compute */
 		chart->rawmin = MIN(chart->rawmin, value1);
@@ -1463,19 +1554,25 @@ GtkTreeIter iter;
 		//leak
 		//don't g_free(label); here done into chart_clear
 next:
-		valid = gtk_tree_model_iter_next (list_store, &iter);
+		valid = gtk_tree_model_iter_next (totmodel, &iter);
 		rowid++;
 	}
 
 	// compute rate for legend for bar/pie
 	for(i=0;i<chart->nb_items;i++)
 	{
-	ChartItem *item = &g_array_index(chart->items, ChartItem, i);
-	gchar *strval;
+	//ChartItem *item = &g_array_index(chart->items, ChartItem, i);
+	ChartItem *item = chart_chartitem_get(chart, i);
+	//gchar *strval;
 
-		strval = chart_print_double(chart, chart->buffer1, item->serie1);
-		item->rate = ABS(item->serie1*100/chart->total);
-		item->legend = g_markup_printf_escaped("%s\n%s (%.f%%)", item->label, strval, item->rate);
+		if( item )
+		{
+			DBDT( g_print(" total: preset legend %3d: %p : item '%s'\n", i, item, item->label) );
+
+			//strval = chart_print_double(chart, chart->buffer1, item->serie1);
+			item->rate = ABS(item->serie1*100/chart->total);
+			//item->legend = g_markup_printf_escaped("%s\n%s (%.f%%)", item->label, strval, item->rate);
+		}
 	}
 
 	//g_print("total is %.2f\n", total);
@@ -1490,18 +1587,18 @@ static void chart_layout_area(cairo_t *cr, GtkChart *chart, HbtkDrawContext *dra
 PangoLayout *layout;
 gchar *valstr;
 int tw, th;
-gint i;
+gint i, n_legend;
 
-	DBC( g_print("\n[gtkchart] layout area\n") );
+	DBC( g_print("----------\n[gtkchart] layout area\n") );
 
 	DBC( g_print(" drawctx: %p\n", drawctx) );
-
 	DBC( g_print(" area    : %d %d %d %d\n", drawctx->l, drawctx->t, drawctx->w, drawctx->h ) );
+	DBC( g_print(" is print: %d\n", drawctx->isprint) );
 
 	/* Create a PangoLayout, set the font and text */
 	layout = pango_cairo_create_layout (cr);
 
-	DBC( g_print(" is print: %d\n", drawctx->isprint) );
+	DBC( g_print(" -- compute header\n") );
 
 	// compute title
 	drawctx->title_zh = 0;
@@ -1522,8 +1619,9 @@ gint i;
 		pango_layout_set_text (layout, chart->subtitle, -1);
 		pango_layout_get_size (layout, &tw, &th);
 		drawctx->subtitle_zh = (th / PANGO_SCALE);
-		DBC( g_print(" - title: %s w=%d h=%d\n", chart->subtitle, tw, th) );
+		DBC( g_print(" - subtitle: %s w=%d h=%d\n", chart->subtitle, tw, th) );
 	}
+
 	drawctx->subtitle_y = drawctx->t + drawctx->title_zh;
 
 	drawctx->graph.y = drawctx->t + drawctx->title_zh + drawctx->subtitle_zh;
@@ -1537,6 +1635,8 @@ gint i;
 
 	// compute other text
 	chart_set_font_size(chart, layout, CHART_FONT_SIZE_NORMAL);
+
+	DBC( g_print(" -- compute y-scale\n") );
 
 	// y-axis labels (amounts)
 	drawctx->scale_w = 0;
@@ -1553,21 +1653,6 @@ gint i;
 	drawctx->scale_w = MAX(drawctx->scale_w, (tw / PANGO_SCALE));
 
 	DBC( g_print(" scale   : %d,%d %g,%g\n", drawctx->l, 0, drawctx->scale_w, 0.0) );
-
-	// todo: compute maxwidth of item labels
-	double label_w = 0;
-	for(i=0;i<chart->nb_items;i++)
-	{
-	ChartItem *item = &g_array_index(chart->items, ChartItem, i);
-
-		//DBC( g_print(" legend width for %d '%s'\n", i, item->label) );
-
-		// label width
-		pango_layout_set_text (layout, item->label, -1);
-		pango_layout_get_size (layout, &tw, &th);
-		label_w = MAX(label_w, (tw / PANGO_SCALE));
-	}
-	drawctx->label_w = label_w;
 
 	// compute font height
 	drawctx->font_h = (th / PANGO_SCALE);
@@ -1600,50 +1685,78 @@ gint i;
 			drawctx->graph.height -= (drawctx->font_h + CHART_SPACING);
 	}
 
-	// compute: each legend column width, and legend width
-	if(chart->show_legend)
+	DBC( g_print(" -- compute legend (if > 1 item)\n") );
+
+	//TODO: should not happen check why ?
+	if( chart->items )
 	{
-		chart_set_font_size(chart, layout, CHART_FONT_SIZE_SMALL);
 
-		//we compute the rate text here to get the font height
-		pango_layout_set_text (layout, "00.00 %", -1);
-		pango_layout_get_size (layout, &tw, &th);
-
-		drawctx->legend_font_h = (th / PANGO_SCALE);
-
-		// labels not much than 1/4 of graph
-		gdouble lw = floor(drawctx->graph.width / 4);
-		drawctx->legend_label_w = MIN(drawctx->label_w, lw);
-
-		drawctx->legend.width = drawctx->legend_font_h + CHART_SPACING + drawctx->legend_label_w;
-		drawctx->legend.height = MIN(floor(chart->nb_items * drawctx->legend_font_h * CHART_LINE_SPACING), drawctx->graph.height);
-
-		if(chart->show_legend_wide )
+		// compute: each legend column width, and legend width
+		if(chart->show_legend)
 		{
-			//get rate width
-			drawctx->legend_rate_w = (tw / PANGO_SCALE);
+		double label_w = 0;
 
-			//#1921741 text overlap
-			//get value width		
-			drawctx->legend_value_w = 0;
-			valstr = chart_print_double(chart, chart->buffer1, drawctx->min);
-			pango_layout_set_text (layout, valstr, -1);
-			pango_layout_get_size (layout, &tw, &th);
-			drawctx->legend_value_w = (tw / PANGO_SCALE);
+			chart_set_font_size(chart, layout, CHART_FONT_SIZE_SMALL);
 
-			valstr = chart_print_double(chart, chart->buffer1, drawctx->max);
-			pango_layout_set_text (layout, valstr, -1);
+			n_legend = chart->items->len;
+			for(i=0 ; i < n_legend ; i++)
+			{
+			//ChartItem *item = &g_array_index(chart->items, ChartItem, i);
+			ChartItem *item = chart_chartitem_get(chart, i);
+				
+				if( item )
+				{
+					// label width
+					pango_layout_set_text (layout, item->label, -1);
+					pango_layout_get_size (layout, &tw, &th);
+					label_w = MAX(label_w, (tw / PANGO_SCALE));
+				}
+				
+				//DBC( g_print(" %d '%s' %f\n", i, item->label, label_w) );
+			}
+
+			drawctx->label_w = label_w;
+
+			//we compute the rate text here to get the font height
+			pango_layout_set_text (layout, "00.00 %", -1);
 			pango_layout_get_size (layout, &tw, &th);
-			drawctx->legend_value_w = MAX(drawctx->legend_value_w, (tw / PANGO_SCALE));
-			
-			drawctx->legend.width += CHART_SPACING + drawctx->legend_value_w + CHART_SPACING + drawctx->legend_rate_w;
+
+			drawctx->legend_font_h = (th / PANGO_SCALE);
+
+			// labels not much than 1/4 of graph
+			gdouble lw = floor(drawctx->graph.width / 4);
+			drawctx->legend_label_w = MIN(drawctx->label_w, lw);
+
+			drawctx->legend.width = drawctx->legend_font_h + CHART_SPACING + drawctx->legend_label_w;
+			drawctx->legend.height = MIN(floor(chart->nb_items * drawctx->legend_font_h * CHART_LINE_SPACING), drawctx->graph.height);
+
+			if(chart->show_legend_wide )
+			{
+				//get rate width
+				drawctx->legend_rate_w = (tw / PANGO_SCALE);
+
+				//#1921741 text overlap
+				//get value width		
+				drawctx->legend_value_w = 0;
+				valstr = chart_print_double(chart, chart->buffer1, drawctx->min);
+				pango_layout_set_text (layout, valstr, -1);
+				pango_layout_get_size (layout, &tw, &th);
+				drawctx->legend_value_w = (tw / PANGO_SCALE);
+
+				valstr = chart_print_double(chart, chart->buffer1, drawctx->max);
+				pango_layout_set_text (layout, valstr, -1);
+				pango_layout_get_size (layout, &tw, &th);
+				drawctx->legend_value_w = MAX(drawctx->legend_value_w, (tw / PANGO_SCALE));
+				
+				drawctx->legend.width += CHART_SPACING + drawctx->legend_value_w + CHART_SPACING + drawctx->legend_rate_w;
+			}
+
+			//if legend visible, substract
+			drawctx->graph.width -= (drawctx->legend.width + CHART_MARGIN);
+
+			drawctx->legend.x = drawctx->graph.x + drawctx->graph.width + CHART_MARGIN;
+			drawctx->legend.y = drawctx->graph.y;
 		}
-
-		//if legend visible, substract
-		drawctx->graph.width -= (drawctx->legend.width + CHART_MARGIN);
-
-		drawctx->legend.x = drawctx->graph.x + drawctx->graph.width + CHART_MARGIN;
-		drawctx->legend.y = drawctx->graph.y;
 	}
 
 	DBC( g_print(" graph   : %g %g %g %g\n", drawctx->graph.x, drawctx->graph.y, drawctx->graph.width, drawctx->graph.height ) );
@@ -1704,13 +1817,12 @@ GtkAllocation allocation;
 	drawctx->w = allocation.width - (CHART_MARGIN*2);
 	drawctx->h = allocation.height - (CHART_MARGIN*2);
 
+	DB( g_print(" raw dimension: l=%d, t=%d : w=%d, h=%d\n", drawctx->l, drawctx->t, drawctx->w, drawctx->h) );
+
 	chart_layout_area(cr, chart, drawctx);
 
 	cairo_destroy(cr);
 	cairo_surface_destroy(surf);
-
-
-
 
 	//TODO: simplify this
 	switch(chart->type)
@@ -1737,6 +1849,7 @@ GtkAllocation allocation;
 static void chart_draw_part_static(cairo_t *cr, GtkChart *chart, HbtkDrawContext *drawctx)
 {
 PangoLayout *layout;
+guint n_legend;
 int tw, th;
 
 
@@ -1789,16 +1902,19 @@ int tw, th;
 
 	g_object_unref (layout);
 
-	//test legend
+	// draw legend
+	n_legend = chart->items->len;
+
+
 	if(chart->show_legend)
 	{
-	gint i;
+	guint i;
 	gchar *valstr;
 	gint x, y;
 	gint radius;
 	gint color;
 
-		DBG( g_print("\n[chart] draw legend\n") );
+		DBL( g_print("\n[chart] draw legend\n") );
 
 		layout = pango_cairo_create_layout (cr);
 		chart_set_font_size(chart, layout, CHART_FONT_SIZE_SMALL);
@@ -1818,13 +1934,14 @@ int tw, th;
 			cairo_stroke(cr);
 		#endif
 
-		for(i=0; i< chart->nb_items ;i++)
+		for(i=0; i< n_legend ;i++)
 		{
-		ChartItem *item = &g_array_index(chart->items, ChartItem, i);
+		//ChartItem *item = &g_array_index(chart->items, ChartItem, i);
+		ChartItem *item = chart_chartitem_get(chart, i);
 
 			if(item)
 			{
-				DBG( g_print(" draw %2d of (%d) '%s' y=%d\n", i, chart->nb_items, item->label, y) );
+				DBL( g_print(" draw %2d of (%d) '%s' y=%d\n", i, n_legend, item->label, y) );
 
 				#if DBGDRAW_TEXT == 1
 					double dashlength;
@@ -1838,12 +1955,12 @@ int tw, th;
 					cairo_stroke(cr);
 				#endif
 
-				// check if enought height to draw
+				// check if enough height to draw
 				if( chart->nb_items - i > 1 )
 				{
 					if( (y + floor(2 * radius * CHART_LINE_SPACING)) > (drawctx->t + drawctx->h) )
 					{
-						DBG( g_print(" print ...\n\n") );
+						DBL( g_print(" print ...\n\n") );
 						pango_layout_set_text (layout, "...", -1);
 						cairo_move_to(cr, x + radius + CHART_SPACING, y);
 						pango_cairo_show_layout (cr, layout);
@@ -2158,6 +2275,14 @@ GtkChart *chart = GTK_CHART(user_data);
 	cairo_set_source_surface (cr, chart->surface, 0, 0);
 	cairo_paint (cr);
 
+	//5.7 secure
+	if( chart->nb_items == 0)
+	{
+		DB( g_print(" not item to draw !\n" ) );
+		goto end;
+	}
+
+
 	switch(chart->type)
 	{
 		case CHART_TYPE_COL:
@@ -2175,6 +2300,7 @@ GtkChart *chart = GTK_CHART(user_data);
 			break;
 	}
 
+end:
 	// event handled
 	return TRUE;
 }
@@ -2200,54 +2326,58 @@ gboolean retval = FALSE;
 
 	if(chart->hover >= 0)
 	{
-	ChartItem *item = &g_array_index(chart->items, ChartItem, chart->hover);
+	//ChartItem *item = &g_array_index(chart->items, ChartItem, chart->hover);
+	ChartItem *item = chart_chartitem_get(chart, chart->hover);
 
-		if( chart->type != CHART_TYPE_STACK && chart->type != CHART_TYPE_STACK100 )
+		if( item )
 		{
-			strval = chart_print_double(chart, chart->buffer1, item->serie1);
-			if( !chart->dual )
+			if( chart->type != CHART_TYPE_STACK && chart->type != CHART_TYPE_STACK100 )
 			{
-				//#1420495 don't use g_markup_printf_escaped
-				if( chart->type == CHART_TYPE_PIE )
-					buffer = g_strdup_printf("%s\n%s\n%.2f%%", item->label, strval, item->rate);
-				else
-					buffer = g_strdup_printf("%s\n%s", item->label, strval);
+				strval = chart_print_double(chart, chart->buffer1, item->serie1);
+				if( !chart->dual )
+				{
+					//#1420495 don't use g_markup_printf_escaped
+					if( chart->type == CHART_TYPE_PIE )
+						buffer = g_strdup_printf("%s\n%s\n%.2f%%", item->label, strval, item->rate);
+					else
+						buffer = g_strdup_printf("%s\n%s", item->label, strval);
 
+				}
+				else
+				{
+					strval2 = chart_print_double(chart, chart->buffer2, item->serie2);
+					buffer = g_strdup_printf("%s\n+%s\n%s", item->label, strval2, strval);
+				}
 			}
 			else
 			{
-				strval2 = chart_print_double(chart, chart->buffer2, item->serie2);
-				buffer = g_strdup_printf("%s\n+%s\n%s", item->label, strval2, strval);
-			}
-		}
-		else
-		{
-		gint colid = chart->colhover;	
-		GtkTreeIter iter;
-		DataRow *dr;
-		gdouble value, rate = 0.0;
+			gint colid = chart->colhover;	
+			GtkTreeIter iter;
+			DataRow *dr;
+			gdouble value, rate = 0.0;
 
-			if( colid > -1 )
-			{
-				gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(chart->model), &iter, NULL, chart->hover);
-				
-				gtk_tree_model_get (GTK_TREE_MODEL(chart->model), &iter,
-					//LST_STORE_TRENDROW=6
-					LST_REPDIST2_ROW, &dr,
-					-1);
+				if( colid > -1 )
+				{
+					gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(chart->model), &iter, NULL, chart->hover);
+					
+					gtk_tree_model_get (GTK_TREE_MODEL(chart->model), &iter,
+						//LST_STORE_TRENDROW=6
+						LST_REPDIST2_ROW, &dr,
+						-1);
 
-				value = da_datarow_get_cell_sum (dr, colid);
-				strval = chart_print_double(chart, chart->buffer1, value);
-				
-				//#1996223 always show rate
-				//if( chart->type == CHART_TYPE_STACK )
-				//	buffer = g_strdup_printf("%s\n%s\n%s", chart->collabel[colid], item->label, strval);
-				//else
-				//{
-					if( chart->colsum[colid] > 0 )
-						rate = (value * 100) / chart->colsum[colid];
-					buffer = g_strdup_printf("%s\n%s\n%s\n%.2f%%", chart->collabel[colid], item->label, strval, rate);
-				//}
+					value = da_datarow_get_cell_sum (dr, colid);
+					strval = chart_print_double(chart, chart->buffer1, value);
+					
+					//#1996223 always show rate
+					//if( chart->type == CHART_TYPE_STACK )
+					//	buffer = g_strdup_printf("%s\n%s\n%s", chart->collabel[colid], item->label, strval);
+					//else
+					//{
+						if( chart->colsum[colid] > 0 )
+							rate = (value * 100) / chart->colsum[colid];
+						buffer = g_strdup_printf("%s\n%s\n%s\n%.2f%%", chart->collabel[colid], item->label, strval, rate);
+					//}
+				}
 			}
 		}
 
@@ -2274,7 +2404,7 @@ gint x, y;
 	if(chart->surface == NULL || chart->nb_items == 0)
 		return FALSE;
 
-	DBD( g_print("\n[gtkchart] drawarea motion\n") );
+	DBD( g_print("\n[gtkchart] drawarea motionnotifyevent\n") );
 	x = event->x;
 	y = event->y;
 
@@ -2293,20 +2423,20 @@ gint x, y;
 		//return FALSE;
 	}*/
 
-		switch(chart->type)
-		{
-			case CHART_TYPE_COL:
-			case CHART_TYPE_LINE:
-				chart->hover = colchart_get_hover(widget, x, y, chart);
-				break;
-			case CHART_TYPE_STACK:
-			case CHART_TYPE_STACK100:
-				chart->hover = colchart_stack_get_hover(widget, x, y, chart);
-				break;
-			case CHART_TYPE_PIE:
-				chart->hover = piechart_get_hover(widget, x, y, chart);
-				break;
-		}
+	switch(chart->type)
+	{
+		case CHART_TYPE_COL:
+		case CHART_TYPE_LINE:
+			chart->hover = colchart_get_hover(widget, x, y, chart);
+			break;
+		case CHART_TYPE_STACK:
+		case CHART_TYPE_STACK100:
+			chart->hover = colchart_stack_get_hover(widget, x, y, chart);
+			break;
+		case CHART_TYPE_PIE:
+			chart->hover = piechart_get_hover(widget, x, y, chart);
+			break;
+	}
 
 	//test: eval legend
 	if( chart->type != CHART_TYPE_STACK && chart->type != CHART_TYPE_STACK100 )
@@ -2593,7 +2723,7 @@ void gtk_chart_set_datas_none(GtkChart *chart)
 {
 	g_return_if_fail (GTK_IS_CHART (chart));
 
-	DB( g_print("\n[gtkchart] set no datas\n") );
+	DB( g_print("\n[gtkchart] set datas none\n") );
 
 	chart_clear(chart);
 	gtk_chart_queue_redraw(chart);
@@ -2602,51 +2732,80 @@ void gtk_chart_set_datas_none(GtkChart *chart)
 
 /*
 ** change the model and/or column
+** set column1 == column2 will dual display
 */
-void gtk_chart_set_datas(GtkChart *chart, GtkTreeModel *model, guint column, gchar *title, gchar *subtitle)
+void gtk_chart_set_datas_total(GtkChart *chart, GtkTreeModel *model, guint column1, guint column2, gchar *title, gchar *subtitle)
 {
 	g_return_if_fail (GTK_IS_CHART (chart));
 
-	DB( g_print("\n[gtkchart] set datas\n") );
+	DBDT( g_print("\n[gtkchart] set datas total\n") );
+
+	chart_clear(chart);
 
 	if( GTK_IS_TREE_MODEL(model) )
 	{
-		chart_setup_with_model(chart, model, column, column);
+		DBDT( g_print(" store model %p and columns=%d:%d\n", model, column1, column2) );
+		chart->totmodel = model;
+		chart->column1 = column1;
+		chart->column2 = column2;
+
 		if(title != NULL)
 			chart->title = g_strdup(title);
 		if(subtitle != NULL)
 			chart->subtitle = g_strdup(subtitle);
 
+		chart_setup_with_model(chart, -1);
 		gtk_chart_queue_redraw(chart);
-	}
-	else
-	{
-		chart_clear(chart);
 	}
 }
 
-/*
-** change the model and/or column
-*/
-void gtk_chart_set_dualdatas(GtkChart *chart, GtkTreeModel *model, guint column1, guint column2, gchar *title, gchar *subtitle)
+
+void gtk_chart_set_datas_time(GtkChart *chart, GtkTreeView *treeview, guint nbrows, guint nbcols, gchar *title, gchar *subtitle)
 {
+GtkTreeModel *model;
+guint colid;
+
 	g_return_if_fail (GTK_IS_CHART (chart));
 
-	DB( g_print("\n[gtkchart] set dualdatas\n") );
+	DBDT( g_print("\n[gtkchart] set datas time\n") );
 
+	chart_clear(chart);
+
+	model = gtk_tree_view_get_model(treeview);
 	if( GTK_IS_TREE_MODEL(model) )
 	{
-		chart_setup_with_model(chart, model, column1, column2 );
+		DBDT( g_print(" store model %p and n_cols=%d\n", model, nbcols) );
+
+		chart->model = model;
+		chart->nb_cols = nbcols;
+
 		if(title != NULL)
 			chart->title = g_strdup(title);
 		if(subtitle != NULL)
 			chart->subtitle = g_strdup(subtitle);
 
+		DBDT( g_print(" store column labels\n") );
+
+		chart->collabel = g_malloc0(sizeof(gpointer)*nbcols);
+		if( chart->collabel != NULL )
+		{
+			DBDT( g_print(" collabel: ") );
+			for(colid=0;colid<nbcols;colid++)
+			{
+			GtkTreeViewColumn *column;
+
+				if( (column = gtk_tree_view_get_column (treeview, colid+1) ))
+				{
+					chart->collabel[colid] = (gchar *)gtk_tree_view_column_get_title(column);
+					DBDT( g_print("%s|", chart->collabel[colid]) );
+				}
+
+			}
+			DBDT( g_print("\n") );
+		}
+
+		chart_data_series(chart, -1);
 		gtk_chart_queue_redraw(chart);
-	}
-	else
-	{
-		chart_clear(chart);
 	}
 }
 
@@ -2664,8 +2823,15 @@ void gtk_chart_set_type(GtkChart * chart, gint type)
 	chart->type = type;
 	chart->dual = FALSE;
 
+	if( type == CHART_TYPE_STACK || type == CHART_TYPE_STACK100 )
+	{
+		chart_clear_items(chart);
+		chart_data_series(chart, -1);
+	}
+
 	gtk_chart_queue_redraw(chart);
 }
+
 
 /* = = = = = = = = = = parameters = = = = = = = = = = */
 
@@ -2673,7 +2839,6 @@ void gtk_chart_set_color_scheme(GtkChart * chart, gint index)
 {
 	colorscheme_init(&chart->color_scheme, index);
 }
-
 
 
 /*
@@ -2743,6 +2908,7 @@ void gtk_chart_set_barw(GtkChart * chart, gdouble barw)
 		gtk_chart_queue_redraw(chart);
 }
 
+
 /*
 ** set the show mono (colors)
 */
@@ -2769,6 +2935,7 @@ void gtk_chart_set_smallfont(GtkChart * chart, gboolean small)
 
 
 /* = = = = = = = = = = visibility = = = = = = = = = = */
+
 
 /*
 ** change the legend visibility
@@ -2812,9 +2979,8 @@ void gtk_chart_show_average(GtkChart * chart, gdouble value, gboolean visible)
 }
 
 
-
 /*
-** chnage the overdrawn visibility
+** change the overdrawn visibility
 */
 void gtk_chart_show_overdrawn(GtkChart * chart, gboolean visible)
 {
@@ -2911,11 +3077,9 @@ GtkWidget *widget, *vbox, *frame;
  	//TODO
 	//chart->barw = GTK_CHART_BARW;
 
-
 	gtk_chart_set_color_scheme(chart, CHART_COLMAP_HOMEBANK);
 
-	widget=GTK_WIDGET(chart);
-
+	widget = GTK_WIDGET(chart);
 	gtk_box_set_homogeneous(GTK_BOX(widget), FALSE);
 
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
@@ -2934,6 +3098,7 @@ GtkWidget *widget, *vbox, *frame;
 #if DYNAMICS == 1
 	gtk_widget_set_has_tooltip(chart->drawarea, TRUE);
 #endif
+
 	gtk_widget_show(chart->drawarea);
 
 #if MYDEBUG == 1
@@ -3076,6 +3241,5 @@ GtkChart *chart;
 
 	return GTK_WIDGET(chart);
 }
-
 
 

@@ -119,7 +119,7 @@ struct _ChartItem
 	gdouble		rate;
 
 	/* draw stuffs */
-	gchar    *legend;
+	//gchar    *legend;
 	double	 angle2;	  /* rate for pie */
 	double	 height;   /* for column */ 
 };
@@ -135,7 +135,7 @@ struct _HbtkDrawContext
 	double	min;
 	double	unit;
 	gint	div;
-	double barw, blkw;
+	double  barw, blkw;
 //	double	posbarh, negbarh;
 
 	/* drawing datas */
@@ -179,7 +179,6 @@ struct _GtkChart
 	/*< private >*/
 	//GtkChartPrivate *priv;
 
-
 	/* all below should be in priv normally */
 	GtkBox			hbox;
 
@@ -188,6 +187,8 @@ struct _GtkChart
 	GtkWidget		*scrollbar;
 
 	/* data storage */
+	GtkTreeModel   *totmodel;
+	guint		column1, column2;
 	gint		nb_items;
 	GArray		*items;
 	double		rawmin, rawmax;
@@ -204,7 +205,7 @@ struct _GtkChart
 
 	/* chart properties */
 	gint		type;	   // column/pie/line
-	
+
 	gboolean	dual;
 	gboolean	abs;
 	gboolean	show_legend;
@@ -236,7 +237,6 @@ struct _GtkChart
 	gchar		buffer1[CHART_BUFFER_LENGTH];
 	gchar		buffer2[CHART_BUFFER_LENGTH];
 
-
 };
 
 
@@ -259,8 +259,6 @@ typedef struct
 } GtkChartPrintData;
 
 
-
-
 GType gtk_chart_get_type (void) G_GNUC_CONST;
 
 void gtk_chart_print(GtkChart *chart, GtkWindow *parent, gchar *dirname, gchar *filename);
@@ -268,18 +266,14 @@ void gtk_chart_print(GtkChart *chart, GtkWindow *parent, gchar *dirname, gchar *
 /* public function */
 GtkWidget *gtk_chart_new(gint type);
 
-//TODO: temp
-void chart_data_series(GtkChart *chart, GtkTreeView *treeview, gint nbrows, gint nbcols);
-
+void gtk_chart_set_datas_none (GtkChart *chart);
+void gtk_chart_set_datas_total(GtkChart *chart, GtkTreeModel *model, guint column1, guint column2, gchar *title, gchar *subtitle);
+void gtk_chart_set_datas_time (GtkChart *chart, GtkTreeView *treeview, guint nbrows, guint nbcols, gchar *title, gchar *subtitle);
 
 void gtk_chart_set_type(GtkChart *chart, gint type);
 void gtk_chart_set_color_scheme(GtkChart * chart, gint colorscheme);
 
 void gtk_chart_queue_redraw(GtkChart *chart);
-
-void gtk_chart_set_datas_none(GtkChart *chart);
-void gtk_chart_set_datas(GtkChart *chart, GtkTreeModel *model, guint column, gchar *title, gchar *subtitle);
-void gtk_chart_set_dualdatas(GtkChart *chart, GtkTreeModel *model, guint column1, guint column2, gchar *title, gchar *subtitle);
 
 void gtk_chart_set_minor_prefs(GtkChart * chart, gdouble rate, gchar *symbol);
 void gtk_chart_set_currency(GtkChart * chart, guint32 kcur);
@@ -299,3 +293,5 @@ void gtk_chart_set_absolute(GtkChart * chart, gboolean abs);
 
 G_END_DECLS
 #endif /* __GTK_CHART_H__ */
+
+
