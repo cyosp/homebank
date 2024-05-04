@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content="text/html; charset=utf-8" http-equiv="CONTENT-TYPE">
+  <meta content="noindex" name="robots">
+  <title>Assignment dialog</title>
+  <link href="help.css" rel="stylesheet" type="text/css">
+</head>
+<body id="top">
+  <div class="dochead">
+    HomeBank User manual
+  </div>
+  <div class="title">
+    <h1>Assignments dialog</h1>
+    <p>The assignments dialog is used to add, edit and manage the <a href="00-lexicon.html#assignment">assignment</a> rules of the current wallet.<br>
+    Please refer to the <a href="use-auto_assign.html">Using the Automatic assignment feature</a> for details on how using this feature.</p>
+    <h2>Dialog call</h2>
+    <ul>
+      <li>main window menu: Manage / Assignments...</li>
+      <li>main window tool bar.</li>
+    </ul>
+  </div>
+
+  <div class="row">
+  <div class="gfx">
+    <img class="gtkshot right" src="images/dlg-assign1.png"><br>
+    <img class="gtkshot right" src="images/dlg-assign2.png">
+  </div>
+  <div class="rounded content">
+    <h2>Using assignments dialog</h2>
+
+    <h3><img src="images/1.png" width="15" height="15"> Quick search</h3>
+    <p>A quick search text filter. You can use CTRL+F to activate and ESC to clear.</p>
+
+
+    <h3><img src="images/2.png" width="15" height="15"> Assignment list</h3>
+    <p>display the actual list of assignments in the wallet. It is by default sorted by rule number.<br>
+
+    
+
+    <h3><img src="images/3.png" width="15" height="15"> Buttons</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Add</th>
+        <td>add a new empty assignment.</td>
+      </tr>
+      <tr>
+        <th>Delete</th>
+        <td>delete the active assignment.</td>
+      </tr>
+      <tr>
+        <th>Edit</th>
+        <td>edit the active assignment.</td>
+      </tr>
+      <tr>
+        <th>Move up <sup>(1)</sup></th>
+        <td>move the active assignment up.</td>
+      </tr>
+      <tr>
+        <th>Move down <sup>(1)</sup></th>
+        <td>move the active assignment down.</td>
+      </tr>
+      <tr>
+        <th>Move to <sup>(1)</sup></th>
+        <td>move the active assignment to a xx position to be inputed.</td>
+      </tr>
+    </table>
+    <p><sup>(1)</sup> you cannot move assignement if the sorting is not by number ascending.</p>
+
+    <h3><img src="images/4.png" width="15" height="15"> Condition</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Search</th>
+        <td>set in a text or regular expression to search</td>
+      </tr>
+      <tr>
+        <th>Aa</th>
+        <td>set the search to consider uppercase and lowercase different, otherwise the same</td>
+      </tr>
+      <tr>
+        <th>.*</th>
+        <td>set the find fields to be interpreted as a regular expression</td>
+      </tr>
+      <tr>
+        <th>In</th>
+        <td>the field to search in: Memo / Payee</td>
+      </tr>
+      <tr>
+        <th>AND Amount</th>
+        <td>an optional amount to restict the match to</td>
+      </tr>
+    </table>
+    <p>In case of leading or trailing space, you will get a warning display the space with ␣</p>
+
+    <h3><img src="images/5.png" width="15" height="15"> Assignments</h3>
+    <p>[Disabled | If empty | Overwrite] controls in what case do the assignment</p>
+    <table class="widgetinfo">
+      <tr>
+        <th>Payee</th>
+        <td>
+          the payee to optionally assign<br>
+          <img src="images/d-info.png" width="16" height="16" />&nbsp;Entering a new payee here will create it.
+        </td>
+      </tr>
+      <tr>
+        <th>Category</th>
+        <td>
+          the category to optionally assign<br>
+          <img src="images/d-info.png" width="16" height="16" />&nbsp;Entering a new category here will create it. Example: 'Wage:Salary'
+        </td>
+      </tr>
+      <tr>
+        <th>Payment</th>
+        <td>the payment to optionally assign</td>
+      </tr>
+      <tr>
+        <th>Notes</th>
+        <td>Additional free note to distinguish rules with similar text/regex</td>
+      </tr>
+    </table>
+  </div>
+  </div>
+</body>
+</html>

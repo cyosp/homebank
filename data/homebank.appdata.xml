@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+  <id>fr.free.mdoyen.HomeBank.desktop</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-2.0+</project_license>
+  <name>HomeBank</name>
+  <summary>Free, easy, personal accounting, for everyone</summary>
+  <description>
+    <p>HomeBank is a free software (as in "free speech" and also as in "free beer") that will assist you to manage your personal accounting.</p>
+    <p xml:lang="ar">برنامج هوم بانك هو برنامج مجاني ويستطيع ان يساعدك في ادارة حساباتك الشخصية والمالية</p>
+    <p xml:lang="be">HomeBank - гэта свабоднае праграмнае забеспячэнне, якое дапаможа вам кіраваць асабістымі фінансамі.</p>
+    <p xml:lang="br">Ur meziant digor ha digoust eo HomeBank a roy skoazell deoc'h da verañ ho jederezh personel.</p>
+    <p xml:lang="ca">El HomeBank és un programari lliure que us ajudarà a gestionar la vostra comptabilitat personal.</p>
+    <p xml:lang="ckb">ماڵەبانک نەرماڵەیەکی خۆڕاییە (کە وەکو "free speech" و "free beer" ) یارمەتیت دەدا بۆ بەڕێوەبردنی کاروباریە ژمێریاری و داراییەکانت.</p>
+    <p xml:lang="cs">HomeBank je svobodný software (ve smyslu jak svobody slova, tak zdarma) který vám pomůže spravovat vaše osobní účetnictví.</p>
+    <p xml:lang="cy">Mae HomeBank yn feddalwedd rhydd (fel mewn "siarad yn rhydd" yn ogystal â "chwrw am ddim" fydd yn eich cynorthwyo i reoli eich arian personol.</p>
+    <p xml:lang="da">HomeBank er et gratis program, som kan hjælpe dig med at styre din privatøkonomi</p>
+    <p xml:lang="de">HomeBank ist eine  freie Software,  die Sie bei der Verwaltung Ihrer persönlichen Finanzen unterstützt.</p>
+    <p xml:lang="el">Το HomeBank είναι ελεύθερο λογισμικό (τόσο με την έννοια της "ελευθερίας του λόγου", αλλά και την έννοια της "δωρεάν μπίρας"), που θα σας βοηθήσει να διαχειριστείτε τα προσωπικά οικονομικά σας.</p>
+    <p xml:lang="en_CA">HomeBank is free software (as in "free speech" and also as in "free beer") that will help manage your personal accounting.</p>
+    <p xml:lang="en_GB">HomeBank is a free software (as in "free speech" and also as in "free beer") that will assist you to manage your personal accounting.</p>
+    <p xml:lang="es">HomeBank es un programa de software libre y gratuito que le ayudará a gestionar su contabilidad personal.</p>
+    <p xml:lang="eu">HomeBank zure kontabilitate pertsonala kudeatzen lagunduko dizun software libre eta doakoa da.</p>
+    <p xml:lang="fa">HomeBank یک نرم افزار آزاد ( در "آزادی بیان" و همچنین مانند "آبجو رایگان") که به شما در مدیریت حسابداری شخصی کمک می‌کند.</p>
+    <p xml:lang="fi">Kotipankki on vapaa ja ilmainen ohjelmisto (englanninkielisen sanan free tarkoittaessa sekä "sananvapautta" että "ilmaista olutta"), joka ohjaa sinua henkilökohtaisen kirjanpidon hallinnassa.</p>
+    <p xml:lang="fr">HomeBank est un logiciel libre et gratuit qui vous aidera à gérer votre comptabilité personnelle.</p>
+    <p xml:lang="fr_CA">HomeBank est un logiciel libre et gratuit qui vous aidera à gérer votre comptabilité personnelle.</p>
+    <p xml:lang="gl">HomeBank é un software libre e gratuíto que lle axudará a xestionar a súa contabilidade persoal.</p>
+    <p xml:lang="hu">A HomeBank szabad szoftver, amely segítséget nyújt a személyes pénzügyei kezelésében.</p>
+    <p xml:lang="id">HomeBank adalah perangkat lunak gratis (sebagaimana seperti "kebebasan berpendapat" dan juga sebagaimana seperti "bir gratis") yang akan membantu mengelola akuntansi pribadi Anda.</p>
+    <p xml:lang="it">HomeBank è un software libero (sia come "libertà di parola" che come "ingresso libero") che vi aiuterà a gestire la contabilità personale.</p>
+    <p xml:lang="ja">HomeBankは家計簿のフリーソフトウェア(フリーとは自由の意味)です。</p>
+    <p xml:lang="ko">홈뱅크는 귀하의 개인 회계를 관리하는 데 도움이되는 무료 소프트웨어( "무료 언론"이나 "무료 맥주"와 같은)입니다 .</p>
+    <p xml:lang="lt">„HomeBank“ – tai laisvai ir nemokamai platinama programa, padėsianti jums tvarkyti ir stebėti savo asmeninius bei šeimos (namų) finansus.</p>
+    <p xml:lang="nb">Homebank er fri programvare (fri som i fri tale og gratis som i gratis øl) som vil hjelpe deg til å administrere ditt personlige regnskap</p>
+    <p xml:lang="nds">Finanzen;Buchhaltung;Haushalt;Personal;Geld;</p>
+    <p xml:lang="nl">HomeBank is vrije software ( als in "vrije meningsuiting" en ook als in "gratis bier") om je te helpen je persoonlijke boekhouding te beheren.</p>
+    <p xml:lang="pl">HomeBank to wolny (w znaczeniu jak "wolność słowa") i darmowy program, który pomoże ci zarządzać finansami osobistymi.</p>
+    <p xml:lang="pt">HomeBank é software livre (como em "liberdade") e irá ajudá-lo a gerir as suas finanças pessoais.</p>
+    <p xml:lang="pt_BR">HomeBank é um software livre (como em "liberdade de expressão" e também em "cerveja gratuita") que auxiliará você a gerenciar suas finanças pessoais.</p>
+    <p xml:lang="ro">HomeBank este program liber (ca în "vorbire liberă" și gratuit ca în "bere gratuită") ce vă va asista în administrarea propriei contabilități.</p>
+    <p xml:lang="ru">HomeBank - это свободное программное обеспечение, которое поможет вам управлять вашими личными финансами</p>
+    <p xml:lang="sk">HomeBank je slobodný a otvorený softvér, ktorý vám pomôže spravovat vaše osobné účtovníctvo.</p>
+    <p xml:lang="sl">Program HomeBank je prosta programska oprema (kot "svoboda govora" in tudi kot "brezplačno pivo"), s katero je mogoče enostavno upravljati osebnih financ.</p>
+    <p xml:lang="sr">Кућна Банка је слободан софтвер (слободан за преузимање, мењање и расподељивање, тј. са доступним изворним кȏдом) који ће вам помоћи при вођењу вашег личног рачуноводства.</p>
+    <p xml:lang="sv">HomeBank är en fri programvara (som i "yttrandefrihet" och även som i "gratis öl") som hjälper dig att hantera din personliga bokföring.</p>
+    <p xml:lang="ta">இல்லவங்கி என்பது ஒரு இலவச மென்பொருளாகும் ("இலவச பேச்சு" மற்றும் "இலவச பீர்" போன்றது) இது உங்கள் தனிப்பட்ட கணக்கை நிர்வகிக்க உதவும்.</p>
+    <p xml:lang="tr">HomeBank, kişisel muhasebenizi yönetmenize yardımcı olacak özgür ve ücretsiz bir yazılımdır.</p>
+    <p xml:lang="uk">HomeBank безкоштовне програмне забезпечення яке допоможе вести домашню бухгалтерію</p>
+    <p xml:lang="vi">HomeBank là một phần mềm miễn phí (và tự do) sẽ hỗ trợ bạn quản lý kế toán cá nhân của chính mình.</p>
+    <p xml:lang="zh_CN">HomeBank 是协助您管理个人财务的自由软件。</p>
+    <p xml:lang="zh_TW">HomeBank 是自由軟體可以協助您管理個人財務</p>
+    <p>It is designed to easy to use and be able to analyse your personal finance in detail using powerful filtering tools and beautiful graphs.</p>
+    <p xml:lang="ar">تم تصميم البرنامج لكي يكون سهل الاستخدام وخصوصا في انشاء التقراير والاتطلاع على الاحصاءات المالية وذلك عن طريق استخدام اقوى ادوات الفلترة وايضا الشاشات الرسومية الجذابة.</p>
+    <p xml:lang="be">Просты ў выкарыстанні і дазваляе дэталёва аналізаваць вашыя асабістыя фінансы з дапамогай магутных інструментаў фільтрацыі і прыгожых графікаў.</p>
+    <p xml:lang="br">Ergrafet eo bet da vezañ aes d'ober gantañ ha da vezañ gouest da zielfennañ ho kellidoù personel dre ar munud dre arver binvioù silañ kreñv ha diervadoù brav.</p>
+    <p xml:lang="ca">S'ha dissenyat per ser fàcil d'utilitzar i permetre-us analitzar les vostres finances personals en detall utilitzant eines de filtrat potents i gràfiques intuïtives.</p>
+    <p xml:lang="ckb">بە ئاسانی دیزاین کراوە بۆ بەکارهێنان و توانای شیکردنەوەی دارایی تایبەتی خۆت بە وردی بە بەکارهێنانی ئامرازەکانی پاڵێوکردنی بەهێز و هێڵکاری جوان.</p>
+    <p xml:lang="cs">Je navržen pro snadnou, podrobnou analýzu osobních financí pomocí výkonných filtračních nástrojů a přehledných grafů.</p>
+    <p xml:lang="cy">Mae wedi ei gynllunio i fod yn hawdd i'w defnyddio ac i allu dadansoddi eich gwario personol yn fanwl gan ddefnyddio offer hidlo pwerus a graffiau hardd.</p>
+    <p xml:lang="da">Det er designet til at være brugervenligt og giver dig mulighed for at analysere din privatøkonomi i detaljer ved hjælp af effektive filtreringsværktøjer og flotte grafer.</p>
+    <p xml:lang="de">Entwickelt zur einfachen Bedienung und ausführlichen Analyse Ihrer Finanzen mit mächtigen Filterwerkzeugen und aussagekräftigen Diagrammen.</p>
+    <p xml:lang="el">Είναι σχεδιασμένο να είναι εύκολο στη χρήση και να επιτρέπει τη λεπτομερή ανάλυση των προσωπικών οικονομικών σας χρησιμοποιώντας ισχυρά εργαλεία φιλτραρίσματος και όμορφα γραφήματα.</p>
+    <p xml:lang="en_CA">It is designed to be easy to use, and able to analyse your personal finances in detail with powerful filtering tools and beautiful graphs.</p>
+    <p xml:lang="en_GB">It is designed to easy to use and be able to analyse your personal finance in detail using powerful filtering tools and beautiful graphs.</p>
+    <p xml:lang="es">Está diseñado para ser fácil de utilizar y ser capaz de analizar sus finanzas personales en detalle utilizando potentes herramientas de filtrado y gráficos muy intuitivos.</p>
+    <p xml:lang="eu">Erraz erabili eta finantza pertsonalak iragazketa tresna indartsuen eta grafiko txukunen bidez xeheki aztertzeko diseinatuta dago.</p>
+    <p xml:lang="fa">این نرم افزار به نحوی طراحی شده که به آسانی قابل استفاده باشد و به وسیله ابزار فیلتر قدرتمند و نمودار های زیبای این نرم افزار  امکان تجزیه و تحیلی امور مالی شخصیتان به وجود خواهد آمد.</p>
+    <p xml:lang="fi">Se on suunniteltu helppokäyttöiseksi ja hyödylliseksi oman taloudellisen tilanteen yksityiskohtaiseen tarkasteluun tehokkaita suodatustyökaluja ja kauniita graafeja käyttäen.</p>
+    <p xml:lang="fr">Il est conçu pour être facile à utiliser et pouvoir analyser en détail vos finances personnelles à l'aide de puissants outils de filtrage et de beaux graphiques.</p>
+    <p xml:lang="fr_CA">Il est conçu pour être facile à utiliser et pouvoir analyser en détail vos finances personnelles à l'aide de puissants outils de filtrage et de beaux graphiques.</p>
+    <p xml:lang="gl">Deseñouse para ser doado de empregar e ser capaz de analizar as túas finanzas persoais ao detalle empregando poderosas ferramentas de filtrado e fermosas gráficas.</p>
+    <p xml:lang="he">זו תוכננה לשימוש קל ומסוגלת לנתח מימון אישי לפרטים באמצעות כלי סינון יעילים מאוד ותרשימים מרשימים.</p>
+    <p xml:lang="hu">Úgy tervezték, hogy könnyen használható legyen, valamint részletes szűrőeszközökkel és szép grafikonokkal részletesen elemezhesse személyes pénzügyeit.</p>
+    <p xml:lang="id">Dirancang agar mudah digunakan dan dapat menganalisa keuangan pribadi Anda secara detail menggunakan alat penyaringan yang teruji dan serta grafis yang menarik.</p>
+    <p xml:lang="it">È stato progettato per essere facile da usare ed è in grado di analizzare le vostre finanze personali in dettaglio utilizzando potenti strumenti di filtro e bellissimi grafici.</p>
+    <p xml:lang="ja">強力なフィルタリングツールと美しいグラフにより、家計の管理と分析を簡単にできるように設計されています。</p>
+    <p xml:lang="ko">강력한 필터링 도구와 아름다운 그래프를 사용하여 사용하기 쉽고 개인 재무를 자세하게 분석 할 수 있습니다.</p>
+    <p xml:lang="lt">Sukurta nesudėtingai namų ūkio finansų apskaitai ir analizuoti jūsų asmeninius finansus, suteikdama galingus filtrus ir vaizdžias diagramas.</p>
+    <p xml:lang="nb">Det er utviklet for å være enkelt å bruke og gi deg muligheten til å analysere din personlige økonomi i detalj ved hjelp av kraftige filtreringsverktøy og vakre grafer.</p>
+    <p xml:lang="nds">Konzipiert für einfache Bedienung. Analyse der persönlichen Finanzen mit Hilfe leistungsfähiger Filterwerkzeuge und schöner Grafiken.</p>
+    <p xml:lang="nl">Het is ontworpen voor gebruiksgemak en om je financiën in detail te analyseren met krachtige filteropties en mooie grafieken</p>
+    <p xml:lang="pl">Prosty w użyciu, pozwala analizować szczegóły twoich osobistych finansów przy użyciu zaawansowanych filtrów i pięknych wykresów.</p>
+    <p xml:lang="pt">Foi desenhado para ser fácil de utilizar e para lhe permitir analisar as suas finanças pessoais em detalhe através de poderosas ferramentas de filtragem e de gráficos elegantes.</p>
+    <p xml:lang="pt_BR">Ele foi projetado para ser fácil de usar e ser capaz de analisar suas finanças pessoais em detalhe usando poderosas ferramentas de filtragem e belos gráficos.</p>
+    <p xml:lang="ro">Este conceput pentru a fi usor de utilizat  si a fi capabil sa analizeze in detaliu finantele dumneavoastra , utilizand instrumente solide de filtrare si grafice artistice placute.</p>
+    <p xml:lang="ru">Прост в использовании и позволяет детально анализировать ваши личные финансы с помощью множества фильтров и красивых графиков.</p>
+    <p xml:lang="sk">Je navrhnutý tak, aby sa jednoducho používal a bol schopný podrobne analyzovať vaše osobné financie pomocou výkonných filtračných nástrojov a pekných grafov.</p>
+    <p xml:lang="sl">Zasnovan je za enostavno rabo, zmogljivo analizo osebnih financ in podrobni prikaz s filtri in uporabnimi diagrami.</p>
+    <p xml:lang="sr">Осмишљен је да буде лак за коришћење и да може проучити ваше личне финансије детаљно користећи моћне алате за издвајање и приказивање прелепих графика.</p>
+    <p xml:lang="sv">Det är konstruerat för att vara enkelt att använda och för att kunna analysera din privatekonomi i detalj med kraftfulla filter och vackra grafer.</p>
+    <p xml:lang="ta">இது பயன்படுத்த எளிதானது மற்றும் சக்திவாய்ந்த வடிகட்டுதல் கருவிகள் மற்றும் அழகான வரைபடங்களைப் பயன்படுத்தி உங்கள் தனிப்பட்ட நிதியை விரிவாக பகுப்பாய்வு செய்ய வடிவமைக்கப்பட்டுள்ளது.</p>
+    <p xml:lang="tr">Güçlü filtreleme araçlarını ve güzel grafikleri kullanarak kişisel finansınızı kullanımı kolay ve ayrıntılı bir şekilde analiz edebilmek için tasarlanmıştır.</p>
+    <p xml:lang="uk">Вона створена щоб бути легкою у використанні та мати можливість детально аналізувати власні фінанси вмкористовючи різні фільтри і чудові графіки.</p>
+    <p xml:lang="vi">Nó được thiết kế để dễ sử dụng và có thể phân tích chi tiết tài chính cá nhân của bạn bằng cách sử dụng các bộ lọc mạnh mẽ và biểu đồ đẹp mắt.</p>
+    <p xml:lang="zh_CN">它易于使用，并能将您的个人财务状况用强大的过滤工具和美丽的图表展现出来。</p>
+    <p xml:lang="zh_TW">它的設計易於使用，並能夠使用強大的篩選工具和美麗的圖表詳細分析您的個人財務。</p>
+    <p>If you are looking for a completely free and easy way to manage your personal accounting then HomeBank should be the software of choice.</p>
+    <p xml:lang="ar">إن كنت تريد برنامجًا مجانيًا وسهلًا لإدارة الحسابات الشخصية "مصرف البيت" هو ضالتك.</p>
+    <p xml:lang="be">Калі вы шукаеце цалкам свабодны і просты спосаб кіравання вашай асабістай бухгалтэрыяй, то HomeBank – гэта Ваш выбар.</p>
+    <p xml:lang="br">Mard emaoc'h o klask un doare aes ha digoust evit merañ ho jederezh personel e tlefe Homebank bezañ ar meziant da zibab.</p>
+    <p xml:lang="ca">Si esteu buscant una manera fàcil i totalment gratuita de gestionar la vostra comptabilitat personal, el HomeBank és la vostra millor opció.</p>
+    <p xml:lang="ckb">ئەگەر تۆ بە دوای ڕێگایەکی تەواو ئازاد و ئاساندا دەگەڕێیت بۆ بەڕێوەبردنی ژمێریاری تایبەتی خۆت ئەوا ماڵەبانک دەبێت بەرنامەی هەڵبژاردن بێت.</p>
+    <p xml:lang="cs">Pokud hledáte způsob, jak zcela zdarma a snadno spravovat své osobní účetnictví, potom by pro vás aplikace HomeBank mohla být volbou.</p>
+    <p xml:lang="cy">Os ydych y chwilio am ffordd hawdd, a rhad a rhydd o reoli eich cyfrifon personol yna HomeBank yw'r un i chi.</p>
+    <p xml:lang="da">Hvis du er på udkig efter en ganske gratis og nem måde at styre din privatøkonomi på, så bør HomeBank være dit valg.</p>
+    <p xml:lang="de">Wenn Sie eine einfache und kostenlose Lösung für das Verwalten Ihrer Konten suchen, dann sollten Sie die Software "HomeBank" wählen.</p>
+    <p xml:lang="el">Αν ψάχνετε για έναν πλήρως δωρεάν και εύκολο τρόπο να διαχειριστείτε τα προσωπικά σας οικονικά, τότε το HomeBank πρέπει να είναι το λογισμικό της επιλογής σας.</p>
+    <p xml:lang="en_CA">If you are looking for a completely free and easy way to manage your personal accounting then HomeBank should be your software of choice.</p>
+    <p xml:lang="en_GB">If you are looking for a completely free and easy way to manage your personal accounting then HomeBank should be the software of choice.</p>
+    <p xml:lang="eo">Se vi serĉas tute senpagan kaj facilan manieron administri viajn personajn kontojn, tiam HejmBanko devus esti la programaro por vi.</p>
+    <p xml:lang="es">Si está buscando una manera completamente libre y fácil de manejar su contabilidad personal, entonces HomeBank debería ser su elección.</p>
+    <p xml:lang="eu">Zure kontabilitate pertsonala kudeatzeko era erabat libre eta erraz baten bila bazabiltza, Homebank da zure aukerako softwarea.</p>
+    <p xml:lang="fa">اگر شما به دنبال یک راه کاملا آزاد , رایگان و آسان برای مدیریت حسابداری شخصی خود هستید, HomeBank باید نرم افزار مورد نظر شما باشد.</p>
+    <p xml:lang="fi">Jos etsit täysin avointa ja ilmaista tapaa hallita henkilökohtaista kirjanpitoa, Kotipankki on erinomainen valinta.</p>
+    <p xml:lang="fr">Si vous recherchez un moyen totalement gratuit et facile de gérer votre comptabilité personnelle, alors HomeBank devrait être le logiciel qu’il vous faut.</p>
+    <p xml:lang="fr_CA">Si vous recherchez un moyen totalement gratuit et facile de gérer votre comptabilité personnelle, alors HomeBank devrait être le logiciel qu’il vous faut.</p>
+    <p xml:lang="gl">Se andas a buscar un xeito totalmente gratuíto e doado para xestionar a túa contabilidade persoal, entón HomeBank debería ser a túa elección.</p>
+    <p xml:lang="he">אם אתה מחפש דרך לנהל את החשבונות האישיים שלך בקלות וללא עלות, Homebank היא התכנה בשבילך.</p>
+    <p xml:lang="hu">Ha teljesen ingyenes és egyszerű módszert keres a személyes könyvelése kezelésére, akkor a HomeBankot érdemes választani.</p>
+    <p xml:lang="id">Jika Anda mencari cara untuk mengelola akuntansi pribadi Anda secara gratis dan mudah digunakan maka HomeBank merupakan pilihan yang tepat.</p>
+    <p xml:lang="it">Se siete alla ricerca di un modo completamente gratuito e facile di gestire la vostra contabilità personale, HomeBank è il software che fa per voi.</p>
+    <p xml:lang="ja">HomeBankは完全無料で、家計管理の最適なソフトです。</p>
+    <p xml:lang="ko">개인 회계를 관리 할 수있는 완전히 무료이고 쉬운 방법을 찾고 있다면 홈뱅크를 선택 하셔야 합니다.</p>
+    <p xml:lang="lt">Jei ieškote visiškai laisvo ir patogaus būdo tvarkyti savo asmeniniams finansams, išbandykite „HomeBank“ – ji jūsų nenuvils.</p>
+    <p xml:lang="nb">Hvis du er på utkikk etter en fullstendig gratis og enkel måte å administrere ditt personlige regnskap på, bør Homebank være ditt førstevalg av programvare.</p>
+    <p xml:lang="nl">Als je op zoek bent naar een volledig gratis en eenvoudige manier om je persoonlijke boekhouding te doen, dan is HomeBank de software om dit te doen.</p>
+    <p xml:lang="pl">Jeśli szukasz całkiem darmowego i łatwego sposobu zarządzania twoimi finansami powinieneś wybrać HomeBank .</p>
+    <p xml:lang="pt">Se está à procura um modo totalmente gratuito e fácil para gerir as suas finanças pessoais o HomeBank será a sua melhor escolha.</p>
+    <p xml:lang="pt_BR">Se você está procurando uma maneira totalmente gratuita e fácil de gerenciar suas finanças pessoais, então HomeBank deve ser o software escolhido.</p>
+    <p xml:lang="ro">Dacă cautați un mod de administrare al finanțelor dumneavoastră, gratuit și ușor de folosit, atunci HomeBank este software-ul (programul) de care aveti nevoie.</p>
+    <p xml:lang="ru">Если вы ищете приложение для удобного и полноценного учёта своих финансов, то HomeBank - лучший выбор.</p>
+    <p xml:lang="sk">Ak hľadáte bezplatný a jednoduchý spôsob, ako spravovať svoje osobné účtovníctvo, potom by ste mali použiť HomeBank.</p>
+    <p xml:lang="sl">Če iščete povsem brezplačen in enostaven način za osebno računovodstvo, potem mora biti program Homebank vaša prva izbira.</p>
+    <p xml:lang="sr">Ако тражите потпуно бесплатно и једноставно решење за рад са вашим личним финансијама онда би Кућна Банка требала бити најбољи избор.</p>
+    <p xml:lang="sv">Om du letar efter ett helt gratis och enkelt sätt att hantera din privata bokföring så är HomeBank programmet du borde välja.</p>
+    <p xml:lang="ta">உங்கள் தனிப்பட்ட கணக்கியலை நிர்வகிக்க முற்றிலும் இலவச மற்றும் எளிதான வழியை நீங்கள் தேடுகிறீர்கள் என்றால், இல்லவங்கி விருப்பமான மென்பொருளாக இருக்க வேண்டும்.</p>
+    <p xml:lang="tr">Kişisel muhasebenizi yönetmek için tamamen ücretsiz ve kolay bir yol arıyorsanız, HomeBank sizin için doğru tercihtir.</p>
+    <p xml:lang="uk">Якщо ви шукаєте цілковито безкоштовний і простий спосіб управління домашньою бухгалтерією, тоді HomeBank це саме те що вам потрібно.</p>
+    <p xml:lang="vi">Nếu bạn đang tìm kiếm một cách hoàn toàn miễn phí và dễ dàng để quản lý kế toán cá nhân của mình thì HomeBank nên là phần mềm đáng để lựa chọn.</p>
+    <p xml:lang="zh_CN">如果您在寻找完全免费且易用的个人财务软件，HomeBank 应该是不二之选。</p>
+    <p xml:lang="zh_TW">如果您正在尋找一個完全免費而簡單的方法來管理您的個人財務，那麼HomeBank會是首選軟體。</p>
+  </description>
+  <screenshots>
+    <screenshot type="default">
+      <image width="624" type="default" height="351">http://homebank.free.fr/img/homebank-appdata.png</image>
+    </screenshot>
+  </screenshots>
+  <url type="homepage">http://homebank.free.fr</url>
+  <update_contact>homebank@free.fr</update_contact>
+</component>

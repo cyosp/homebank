@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content="text/html; charset=utf-8" http-equiv="CONTENT-TYPE">
+  <meta content="noindex" name="robots">
+  <title>Account window</title>
+  <link href="help.css" rel="stylesheet" type="text/css">
+</head>
+<body id="top">
+  <div class="dochead">
+    HomeBank User manual
+  </div>
+  <div class="title">
+    <h1>Account window</h1>
+    <p>The account window, or so called register is used to manage one account or all the accounts at a time.<br>
+    It can be the basis of most actions dealing with transactions.</p>
+  </div>
+
+  <div class="gfx">
+    <img class="gtkshot" src="images/win-account1.png">
+  </div>
+  <div class="rounded content">
+
+    <h3><img src="images/1.png" width="15" height="15"> Menu</h3>
+    <p>The <a href="menu-account.html">menu</a> is the start of every actions on transactions.</p>
+
+    <h3><img src="images/2.png" width="15" height="15"> Quick filter area</h3>
+    <p>These widgets will enable you to quickly filter the transaction list without opening the <a href="dlg-filt.html">filter dialog</a>.</p>
+    <p>
+      <strong>Range</strong> : Quick change the date range, a tool-tip is displayed when you hover this widget and display the exact date range.<br>
+      <strong>Type</strong> : Restrict the list-view to expense or income.<br>
+      <strong>Status</strong> : Restrict the list-view to uncategorized or unreconciled.
+    </p>
+    
+    <h3><img src="images/3.png" width="15" height="15"> Quick search</h3>
+    <p>The quick search will permit to filter the transaction list instantly on text column. The search apply to all columns except status and date columns.</p>
+
+    <h3><img src="images/4.png" width="15" height="15"> Selected transaction information</h3>
+    <p>On the left you have the current date range as a remind. The information displayed depends on the selection:</p>
+    <ul>
+      <li>no selection / 1 selected:<br>
+        display the number of transaction of the list</li>
+      <li>more than 1 selected:<br>
+        display additionally: number of selected, average, sum of total, income, expense</li>
+    </ul>
+
+    <h3><img src="images/5.png" width="15" height="15"> Balance</h3>
+    <p>The balance area contains the balance summary of the account, see <a href="00-lexicon.html#balance">this page</a> for details. If the minor option is checked in the preferences, a minor toggle button appear here, see <a href="use-tipsandtricks.html#eurominor">this page</a> for details.</p>
+
+
+    <h3><img src="images/6.png" width="15" height="15"> Transaction list</h3>
+    <p>The list shows a summary of the transaction in the account. You can use the <a href="dlg-filt.html">filter dialog</a> if necessary.<br>
+    Column order can be changed by left click on the column title then drag the column.<br>
+    Column visible can be adjusted by right click on the column title, this is the only place where you can do this, any other transaction list will inherit the columns configured here.<br>
+    The Balance column is only displayed when sort is by date ascending/descending, it is hidden otherwise.</p>
+    <p>Double-click works as follow, depending of the transaction selected:</p>
+    <ul>
+      <li>one is selected: you open the <a href="dlg-tran.html">transaction dialog</a> in Edit mode</li>
+      <li>multiple are selected: you can edit from menu or tool-bar and open <a href="dlg-mult.html">multi transaction dialog</a></li>
+    </ul>
+    <p>The first column indicate the change made to the transaction:</p>
+    <p>
+      <img align="bottom" border="0" height="16" src="images/hb-ope-new.png" width="16"> = transaction added</br>
+      <img align="bottom" border="0" height="16" src="images/hb-ope-edit.png" width="16"> = transaction modified<br>
+    </p>
+    <p>The Status column indicate the status of a transaction:</p>
+    <p>
+      <img src="images/hb-ope-cleared.png"> = <a href="00-lexicon.html#txncleared">cleared</a><br>
+      <img src="images/hb-ope-reconciled.png"> = <a href="00-lexicon.html#txnreconciled">reconciled</a><br>
+      <img src="images/hb-ope-remind.png"> = <a href="00-lexicon.html#txnremind">remind</a><br>
+    </p>
+    <p>Some hot-keys are available to quickly change the status of a transaction.</p>Here's a few tips:<br>
+    <table class="hotkeys">
+      <tr>
+        <td><img src="images/key_ctrl.png"> + <img src="images/key_r.png"></td>
+        <td>- on an unreconciled transaction will <em>Reconcile</em><br>
+        - on a Reconciled transaction will ask for confirmation and toggle to <em>Cleared</em></td>
+      </tr>
+      <tr>
+        <td><img src="images/key_ctrl.png"> + <img src="images/key_c.png"></td>
+        <td>- has no effect on a <em>Reconciled</em> transaction<br>
+        - on a <em>Cleared</em> transaction will unclear it</td>
+      </tr>
+      <tr>
+        <td><img src="images/key_ctrl.png"> + <img src="images/key_n.png"></td>
+        <td>- will change the status to <em>None</em></td>
+      </tr>
+    </table>
+    <p>The Category column may display a <span class="warning">- this needs a category -</span> text<br>
+    this occurs if the account is part of the budget and the transaction has no category and is not a transfer.<br>
+    You may need to exclude the account from the budget if this was set by mistake or you don't use the budget feature, this can be done from the <a href="dlg-acco.html">dialog account</a>.</p>
+
+    <h3><img src="images/7.png" width="15" height="15"> Tool bar</h3>
+    <p>The tool-bar provides easy mouse shortcut for some of the menu. All tool button have a tool tip that will help you know what action will be launched when you click on the tool button.</p>
+
+
+    <h3><img src="images/8.png" width="15" height="15"> Lock/Unlock reconciled changes</h3>
+    <p>By default, starting v5.6, the reconciled transaction are locked for some changes: edition, status, delete.<br>
+    You can unlock by switching this button or with a preference. You can still move and copy and create from them still.</p>
+
+  </div>
+</body>
+</html>

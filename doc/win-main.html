@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content="text/html; charset=utf-8" http-equiv="CONTENT-TYPE">
+  <meta content="noindex" name="robots">
+  <title>Main window</title>
+  <link href="help.css" rel="stylesheet" type="text/css">
+</head>
+<body id="top">
+  <div class="dochead">
+    HomeBank User manual
+  </div>
+  <div class="title">
+    <h1>Main window</h1>
+    <p>The main window is the basis of most of the HomeBank actions. It is the first displayed window when you launch HomeBank.<br>
+    Closing this main window will close HomeBank, after a warning if the some unsaved changed are pending..</p>
+  </div>
+
+  <div class="gfx">
+    <img class="gtkshot" src="images/win-main1.png">
+  </div>
+  <div class="rounded content">
+
+    <h3>Drop files</h3>
+    <p>You can drop one HomeBank file at a time(.XHB) to load it.<br>
+    You can also drop one or several files to import (.OXF, .QFX, .QIF or .CSV).</p>
+
+    <h3><img src="images/1.png" width="15" height="15"> Menu</h3>
+    <p>The <a href="menu-main.html">menu</a> is the main start point of most HomeBank actions.</p>
+
+    <h3><img src="images/2.png" width="15" height="15"> Toolbar</h3>
+    <p>The toolbar provides easy mouse shortcut for some of the menu. All tool button have a tool tip that will help you know what action will be launched when you click on the tool button.</p>
+    
+    <h3><img src="images/3.png" width="15" height="15"> Your accounts</h3>
+
+    <p><b>listview</b><br>
+    This list shows a summary of every active account in the wallet. It can be grouped by:
+      <ul>
+        <li>type</li>
+        <li>group</li>
+        <li>institution</li>
+      </ul>
+    <p>In the pop menu button, there is a '<i>Show all</i>' option available to temporary display account excluded of the account summary.</p>
+    <p>The first column indicate the change made to an account:<br>
+      <img height="16" src="images/hb-ope-new.png" width="16"> = transactions added<br>
+      <img height="16" src="images/hb-ope-edit.png" width="16"> = transactions modified<br>
+    </p>
+    <p>The balance area contains the balance summary of the wallet (all accounts), see <a href="00-lexicon.html#balance">this page</a> for details. If the minor option is checked in the preferences, a minor toggle button appear here, see <a href="use-tipsandtricks.html#eurominor">this page</a> for details.</p>
+
+    <p><b>actions</b><br>
+    To show/hide balance columns: right click on the know in the first column header<br>
+    To open an account, and show its transactions, you can double-click on it, or use the tool-bar, or the menu. If you select and account and open the add dialog, it will preset the add to this account.</p>
+    </p>
+
+    <p><b>tooltip</b><br>
+    When you hover an account, depending on the data available and balance and overdraft/maximum settings, a tooltip will be displayed as follow:<br>
+    <blockquote style="background-color:#ddd;padding:8px;border-radius:4px;width:33%">
+    <b>Account Name</b><br><br>
+    last reconciled: <i>the last date this account was reconciled</i><br>
+    <i>amount</i> until overdraft (<i>overdraft amount limit</i>)<br>
+    <i>amount</i> before maximum (<i>maximum amount limit</i>)
+    </blockquote>
+    </p>
+
+    <h3><img src="images/4.png" width="15" height="15"> Where your money goes</h3>
+    <p>The small report show you the top 10 category spending for a predefined period. You can define the default period from the preferences and change into this main window when needed.</p>
+    <p>The top 10 categories are showed, with amount and rate, also a total balance for the period is displayed. And of course a nice donuts chart !</p>
+
+    <h3><img src="images/5.png" width="15" height="15"> Bottom transaction lists</h3>
+    <h4>Scheduled</h4>
+    <p>This list displays the next occurrence of scheduled (automated) transaction and their state, please read the <a href="use-auto_addition.html#list">scheduled transaction usage</a> section for more details.</p>
+   
+
+    <h4>Future</h4>
+    <p>This list display any future transaction, future means date > today's</p>
+
+    <h4>Remind</h4>
+    <p>This list display any transaction in <a href="00-lexicon.html#txnremind">remind status</a></p>
+
+  </div>
+</body>
+</html>

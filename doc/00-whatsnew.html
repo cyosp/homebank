@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content="text/html; charset=utf-8" http-equiv="content-type">
+  <meta content="noindex" name="robots">
+  <title>New features</title>
+  <link href="help.css" rel="stylesheet" type="text/css">
+</head>
+<body id="top">
+  <div class="dochead">
+    HomeBank User manual
+  </div>
+  <div class="title">
+    <h1>What's New in HomeBank 5.6</h1>
+    <p>To review the complete list of changes, please use the <i>Help > Release Notes</i> menu from HomeBank program.<br>
+    Older <i>what's new in X.Y</i> can be read into <a href="00-previously.html" target="mainFrame">previously on HomeBank...</a></p>
+
+    <!--<b>New features in v5.6</b>
+    <ul class="toc">
+      <li><a href="#56stack">Charts for Over Time Statistics report</a></li>
+      <li><a href="#56filter">Filter redesign and improvement</a></li>
+      <li><a href="#56advxfer">Internal transfer with different currencies</a></li>
+      <li><a href="#56ttmulti">Multiple item selection for trend time report</a></li>
+      <li><a href="#56datrang">More date range option and redesign</a></li>
+      <li><a href="#56hidelst">Archive payee/category to lighten the lists</a></li>
+      <li><a href="#56locktxn">Feature to lock changes of reconciled transactions</a></li>
+      <li><a href="#56newasgn">Assignment dialog changes and improvements</a></li>
+    </ul>-->
+
+
+  <div class="rounded content">
+    <h3><a id="56stack" name="56stack"></a>Charts for Over Time Statistics report</h3>
+    <img class="gtkshot left" src="images/56stack.png"></p>
+    <p>The Over Time part of the <a href="win-statistics.html">Statistics report</a> was introduced into v5.3 as a standalone table view.<br>
+    This version officially introduce the graph part of this waited and powerful feature, so you now have both a Stack bar graph and a 100% Stack bar graph, thus
+    those two were already released with a back-port since v5.5.4</p>
+
+    <p>With this version you also have a <b>Balance mode</b> option when you select the Account as a source</p>
+    
+    <p class="top clear"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+  <div class="rounded content">
+    <h3><a id="56filter" name="56filter"></a>Filter redesign and improvement</h3>
+    <img class="gtkshot left" src="images/56filter.png">
+    <p>The filters into HomeBank was completely rewritten in preparation for future changes.<br>
+    A lots of changes have been made to the <a href="dlg-filt.html">filter dialog</a>:</p>
+    <ul>
+      <li>reorder of the switch part menu on the left + added a visual indicator if it is active</li>
+      <li>each part has a separated On/Off button, then an Include/Exclude radio-button</li>
+      <li>Status part was split to separate Status and Type part with ability to filter on useful individual values of each</li>
+      <li>Tag is now a filter part itself, with a checkbox list-view like payee, category or account</li>
+      <li>Amount/Text were regrouped into the same part</li>
+    </ul>
+    
+    <p class="top clear"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+  <div class="rounded content">
+    <h3><a id="56advxfer" name="56advxfer"></a>Internal transfer with different currencies</h3>
+    <p>
+    Transfer with different currencies are now permitted. When you select transfer type in the <a href="dlg-tran.html">Transaction dialog</a> you have an additional amount widget.<br>
+    this amount is prefilled only when you Add and if:<br>
+        - the source account is into base currency<br>
+        - the target currency have a conversion rate<br>
+        otherwise you have to fill it manually 
+    </p>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+  <div class="rounded content">
+    <h3><a id="56ttmulti" name="56ttmulti"></a>Multiple item selection for trend time report</h3>
+    <p>The <a href="win-trendtime.html">Trend Time Report</a> was until now restricted to display one item at a time or all the items.<br>
+    Now, you have a list of items (Account, Category, Payee, Tag) so that you can use combination of items to be computed and displayed.
+    </p>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+  <div class="rounded content">
+    <h3><a id="56datrang" name="56datrang"></a>More date range option and redesign</h3>
+    <img class="gtkshot left" src="images/56datrang.png">
+    <p>The date range widget was redesigned and enriched with a lot of new entries.</p>
+      <p>It is divided in 2 vertical part and 3 columns.<br>
+      <ul>
+      <li><b>The top part</b> show preset for past / present / future<br>
+       day, week, fortnight, month, quarter, year.</li>
+      <li><b>The bottom part</b> have the other preset<br>
+        Last xx days, 12 months and the new '30 days around'.</li>
+      </ul>
+    </p>
+      
+    <p class="top clear"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+  <div class="rounded content">
+    <h3><a id="56hidelst" name="56hidelst"></a>Hide payee/category to lighten the lists</h3>
+    <p>As some items may become outdated, it is now possible to hide payee/category from the list or drop-down widgets.<br>
+    For that, new 'eye hide' buttons were added into both the <a href="dlg-paye.html">payee dialog</a> and <a href="dlg-cate.html">category dialog</a> so you can control what to display or not.</p>
+    <p>By default also on those dialogs, the count column are hidden as well and a show usage button was added.</p>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+  <div class="rounded content">
+    <h3><a id="56locktxn" name="56locktxn"></a>Feature to lock changes of reconciled transactions</h3>
+    <p>This feature enables to lock the reconciled transaction for any changes, this is a missing protection I wanted to add for a while and asked by some users.<br>
+    By default it will be enabled, but if you want to get back to the actual behavior, you have a preferences into the transaction section as well.<br>
+    There is also a ON/OFF switch into the <a href="win-account.html">account window</a> to quickly enable disable it for quick edit.<br>
+    At last, when this feature is on, you cannot edit reconciled transaction from any detail report list.
+    </p>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+  <div class="rounded content">
+    <h3><a id="56newasgn" name="56newasgn"></a>Assignment dialog changes and improvements</h3>
+    <p>To improve and ease the management of a long list of assignment, some changes have been made to the <a href="dlg-assi.html"> assignment dialog</a>:</p>
+    <ul>
+      <li>the dual view dialog was changed to a single list-view with more columns</li>
+      <li>you can sort the list-view on every columns</li>
+      <li>a quick search input to filter is available, as usual with shortcut CTRL+F, then ESC to empty</li>
+      <li>editing is now done using the edit action button or by double-clicking on the assignment line</li>
+      <li>the drag and drop feature was replaced to a more convenient set of move [up][down][to] action buttons</li>
+    </ul>
+    <p>Also you can add an amount into the condition</p>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+  </div>
+</body>
+</html>

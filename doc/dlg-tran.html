@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content="text/html; charset=utf-8" http-equiv="CONTENT-TYPE">
+  <meta content="noindex" name="robots">
+  <title>Transactions dialog</title>
+  <link href="help.css" rel="stylesheet" type="text/css">
+</head>
+<body id="top">
+  <div class="dochead">
+    HomeBank User manual
+  </div>
+  <div class="title">
+    <h1>Transaction dialog</h1>
+    <p>The transaction dialog is used to add, edit and manage the <a href="00-lexicon.html#transaction">transactions</a>.<br>
+    Please refer to the <a href="use-tipsandtricks.html">Tips & Tricks</a> for additional information.</p>
+
+    <h2>Dialog call</h2>
+    <ul>
+      <li>main window menu: Transaction / Add...</li>
+      <li>main window tool-bar.</li>
+      <li>from the account window-menu: Transaction / Add... / Inherit... / Edit...</li>
+      <li>from the account window transaction list: by double-click on an transaction</li>
+    </ul>
+
+  </div>
+  <div class="row">
+  <div class="gfx">
+    <img class="gtkshot right"src="images/dlg-transaction1.png"><br>
+     <img class="gtkshot right" src="images/dlg-transaction2.png">
+  </div>
+
+  <div class="rounded content">
+    <h2>Using transaction dialog</h2>
+
+    <h3><img src="images/1.png" width="15" height="15"> Type of transaction</h3>
+    <p>the type of the transaction, between: Expense / Income / Transfer.<br>
+    Transfer is the internal transfer of &lt;v5.3.</p>
+
+
+    <h3><img src="images/2.png" width="15" height="15"> Use a template</h3>
+    <p>Select a source <a href="00-lexicon.html#template">template definition</a> to fill in the transaction dialog fields.<br>
+      Starting 5.5.5, the list display the 'memo' field if it is not empty, otherwise it display '(no memo) payee / category'.
+    </p>
+
+    <h3><img src="images/3.png" width="15" height="15"> Transaction details</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Date</th>
+        <td>date of the transaction<br>
+        - the input and display is based on your locale, so the order can be dmy / mdy / ymd, the display uses (<a href="https://man7.org/linux/man-pages/man3/strftime.3.html">strftime</a> %x).<br>
+        - you can input: day, day/month or month/day (depending your locale) without year, or a complete date, with 2 or 4 digits for the year.<br>
+        - if you input a bad date, the date will be reversed to today's date and the input switched to warning (orange border in Adwaita, may be different for other themes)
+        <p>
+        <img src="images/d-info.png" width="16" height="16" />&nbsp;you can use <a href="use-tipsandtricks.html#datewidget">keys combination</a> to change the date.<br>
+        <img src="images/d-info.png" width="16" height="16" />&nbsp;the right side button pop-up a full calendar
+        </p>
+      </td>
+      </tr>
+      <tr>
+        <th>Amount</th>
+        <td>amount of the transaction<br>
+        use the top Expense/Income to change the sign</td>
+      </tr>
+      <tr>
+        <th>(xfer Amount)</th>
+        <td>this second amount is only showed for xfer with account with different currencies<br>
+        this will the transfer amount in destination account currency<br>
+        this amount is prefilled only when you Add and if:<br>
+        - the source account is into base currency<br>
+        - the target currency have a conversion rate<br>
+        otherwise you have to fill it manually</td>
+      </tr>
+      <tr>
+        <th>Account<br>(xfer From/To)</th>
+        <td>account the transaction should be attached to, and from/to for transfer.</td>
+      </tr>
+      <tr>
+        <th>Payment</th>
+        <td>payment for the transaction. It will be displayed as small icons. See the lexicon for <a href="00-lexicon.html#payment">payment</a> detail<br></td>
+      </tr>
+      <tr>
+        <th>Book 2</th>
+        <td>displayed when paymen tis checque: select the 2nd cheque notebook</td>
+      </tr>
+      <tr>
+        <th>Info</th>
+        <td>additional information such as real date or value date, cheque numbers, other numbers related to the transaction.<br>
+        this field is automatically filled for cheque numbers.</td>
+      </tr>
+      <tr>
+        <th>Payee</th>
+        <td>
+        	payee of the transaction, see <a href="00-lexicon.html#payee">payee definition</a> for further details.
+        	<p><img src="images/d-info.png" width="16" height="16" />&nbsp;Entering a new payee here will create it.</p>
+        </td>
+      </tr>
+      <tr>
+        <th>Category</th>
+        <td>category of the transaction, see <a href="00-lexicon.html#category">category definition</a> for further details.
+        	<p><img src="images/d-info.png" width="16" height="16" />&nbsp;Entering a new category here will create it. Example: 'Wage:Salary'.<br>
+          the list is sorted by type and then alphabetically, if amount is expense, expense category will be at top, if it is credit, credit category will be on top.
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <th>Status</th>
+        <td>
+          The different status a transaction can have:
+          <ul>
+            <li>None</li>
+            <li><a href="00-lexicon.html#txncleared">Cleared</a></li>
+            <li><a href="00-lexicon.html#txnreconciled">Reconciled</a></li>
+            <li><a href="00-lexicon.html#txnremind">Remind</a></li>
+            <li><a href="00-lexicon.html#txnvoid">Void</a><br>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>Memo</th>
+        <td>memo of transaction.<br>
+        and optionally vehicle cost data's, see <a href="use-vehiclecost.html">vehicle cost</a>.</td>
+      </tr>
+      <tr>
+        <th>Tags</th>
+        <td>tags of the transaction, see <a href="00-lexicon.html#tags">tag definition</a> for further details.</td>
+      </tr>
+    </table>
+
+    <h3><img src="images/4.png" width="15" height="15"> Action button area</h3>
+
+      <p>
+    The transaction dialog enables to input several transaction to the chain. Both [Add & Keep] and [Add] button will add a transaction. Then, the behaviour to input a next one, depends on the button you click and the preference you have set:
+
+    <table class="widgetinfo">
+      <tr>
+        <th>Add</th>
+        <td>date will be set, according to the <a href="dlg-pref.html#tab4">Keep the last date</a> preference:<br>
+          - ON:&nbsp; date is KEPT<br>
+          - OFF: date is TODAY<br>
+          All other fields/data are CLEARED
+        </td>
+      </tr>
+      <tr>
+        <th>Add & Keep</th>
+        <td>All the fields/data remains after the transaction is added</td>
+      </tr>
+      <tr>
+        <th>Close</th>
+        <td>Close the dialog and do nothing else</td>
+      </tr>
+    </table>
+
+  </div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content="text/html; charset=utf-8" http-equiv="content-type">
+  <meta content="noindex" name="robots">
+  <title>Payees dialog</title>
+  <link href="help.css" rel="stylesheet" type="text/css">
+</head>
+<body id="top">
+  <div class="dochead">
+    HomeBank User manual
+  </div>
+  <div class="title">
+    <h1>Payees dialog</h1>
+    <p>The payees dialog is used to add, edit and manage the <a href="00-lexicon.html#payee">payees</a> of the current wallet.<br>
+    For each payee, you can define a default <i>payment mode</i> and <i>category</i>, later, into the transaction/scheduled/template dialog, if you choose a payee, the payment mode will be filled (if set to (none)), as well as the category (if it is empty).
+    </p>
+    <h2>Dialog call</h2>
+    <ul>
+      <li>main window menu: Manage / Payees...</li>
+      <li>main window tool bar.</li>
+    </ul>
+  </div>
+
+  <div class="row">
+  <div class="gfx">
+    <img class="gtkshot right"src="images/dlg-payee1.png"><br>
+    <img class="gtkshot right"src="images/dlg-payee2.png">
+  </div>
+  <div class="rounded content">
+    <h2>Using payees dialog</h2>
+
+    <h3><img src="images/1.png" width="15" height="15"> View buttons</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Show hidden</th>
+        <td>Toggle show/hide of hidden categories</td>
+      </tr>
+      <tr>
+        <th>Show usage</th>
+        <td>Toggle show/hide usage columns</td>
+      </tr>
+    </table>
+
+    <h3><img src="images/2.png" width="15" height="15"> Quick search</h3>
+    <p>A quick search text filter. You can use CTRL+F to activate and ESC to clear.</p>
+
+    <h3><img src="images/3.png" width="15" height="15"> Menu Button</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Import CSV</th>
+        <td>Import and merge some payees from a CSV file</td>
+      </tr>
+      <tr>
+        <th>Export CSV</th>
+        <td>export the entire payee list into a CSV file</td>
+      </tr>
+      <tr>
+        <th>Delete unused</th>
+        <td>delete all unused payee</td>
+      </tr>
+    </table>
+    <p>Please refer to <a href="misc-csvformat.html#pay">CSV file format</a> for the file description.</p>
+
+
+    <h3><img src="images/4.png" width="15" height="15"> Payee list</h3>
+    <p>display payee name, usage count and default category<br>
+    the usage count:</p>
+    <ul>
+    <li>txn: transaction
+    <li>cfg: template/scheduled transaction
+    <li>cfg: assignment rule
+    </ul>
+
+    <h3><img src="images/5.png" width="15" height="15"> Action buttons</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Add</th>
+        <td>toggle the payee name widget to visible/invisible</td>
+      </tr>
+      <tr>
+        <th>Delete</th>
+        <td>delete the selected payee</td>
+      </tr>
+      <tr>
+        <th>Edit</th>
+        <td>edit the active payee.</td>
+      </tr>
+      <tr>
+        <th>Move/Merge</th>
+        <td>move or merge the current payee to a new one you will select</td>
+      </tr>
+      <tr>
+        <th>Hide/Show</th>
+        <td>toggle the active payee to be visible or not into dropdown lists</td>
+      </tr>
+    </table>
+
+    <h3><img src="images/6.png" width="15" height="15"> Payee name</h3>
+    <p>type a new payee name here and press return to add.</p>
+
+    <p><b>Edit</b><br>
+      To edit a payee, double click on it.<br>You can then change the default payment/category as well.</p>
+  </div>
+  </div>
+</body>
+</html>

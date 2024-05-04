@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content="text/html; charset=utf-8" http-equiv="content-type">
+  <meta content="noindex" name="robots">
+  <title>Categories dialog</title>
+  <link href="help.css" rel="stylesheet" type="text/css">
+</head>
+<body id="top">
+  <div class="dochead">
+    HomeBank User manual
+  </div>
+  <div class="title">
+    <h1>Categories dialog</h1>
+    <p>The categories dialog is used to add, edit and manage the <a href="00-lexicon.html#category">categories</a> of the current wallet.</p>
+    <h2>Dialog call</h2>
+    <ul>
+      <li>main window menu: Manage / Categories.</li>
+      <li>main window tool bar.</li>
+    </ul>
+  </div>
+
+  <div class="row">
+  <div class="gfx">
+    <img class="gtkshot right" src="images/dlg-category1.png">
+  </div>
+  <div class="rounded content">
+    <h2>Using categories dialog</h2>
+
+    <h3><img src="images/1.png" width="15" height="15"> View buttons</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Show hidden</th>
+        <td>Toggle show/hide of hidden categories</td>
+      </tr>
+      <tr>
+        <th>Show usage</th>
+        <td>Toggle show/hide usage columns</td>
+      </tr>
+      <tr>
+        <th>Type switcher</th>
+        <td>Toggle the category list with Expense/Income categories only</td>
+      </tr>
+    </table>
+
+    <h3><img src="images/2.png" width="15" height="15"> Quick search</h3>
+    <p>A quick search text filter. You can use CTRL+F to activate and ESC to clear.</p>
+
+
+    <h3><img src="images/3.png" width="15" height="15"> Menu Button</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Import CSV</th>
+        <td>Import and merge some categories from a CSV file</td>
+      </tr>
+      <tr>
+        <th>Export CSV</th>
+        <td>export the entire categories list into a CSV file</td>
+      </tr>
+      <tr>
+        <th>Delete unused</th>
+        <td>delete all unused category</td>
+      </tr>
+    </table>
+    <p>Please refer to <a href="misc-csvformat.html#cat">CSV file format</a> for the file description.</p>
+
+
+    <h3><img src="images/4.png" width="15" height="15"> Categories list</h3>
+    <p>display category name and usage count (# column)<br>
+    the count in parenthesis is the usage of the sole category, when it has some subcategories<br>
+    the usage count:</p>
+    <ul>
+    <li>txn: transaction/split
+    <li>cfg: payee default category
+    <li>cfg: template/scheduled transaction
+    <li>cfg: assignment rule
+    <li>cfg: default car cost usage is also by default 'No category'
+  </ul>
+<p><b>Edit</b><br>
+      To edit a category, double click on it.</p>
+
+    <h3><img src="images/5.png" width="15" height="15"> Action buttons</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Add</th>
+        <td>toggle the categoryname widget visible/invisible</td>
+      </tr>
+      <tr>
+        <th>Delete</th>
+        <td>delete the selected branch or categories, i.e. if a category is selected, all subcategories will be deleted</td>
+      </tr>
+      <tr>
+        <th>Edit</th>
+        <td>edit the active category.</td>
+      </tr>
+      <tr>
+        <th>Move/Merge</th>
+        <td>move or merge the current category to a new one you will select</td>
+      </tr>
+      <tr>
+        <th>Hide/Show</th>
+        <td>toggle the active category to be visible or not into dropdown lists</td>
+      </tr>
+    </table>
+
+    <h3><img src="images/6.png" width="15" height="15"> Category name</h3>
+    <p>type a new category name here and press return to add.</p>
+    <h3><img src="images/6.png"> Subcategory name</h3>
+    <p>- select the category to add subcategory to in the category list<br>
+    - type a new subcategory name here and press return to add.</p>
+
+
+  </div>
+  </div>
+</body>
+</html>
