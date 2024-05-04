@@ -307,7 +307,9 @@ GtkCellRenderer    *renderer;
 	   g_object_set(renderer, "xalign", 1.0, NULL);
 	
 	column = gtk_tree_view_column_new_with_attributes(title, renderer, NULL);
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	if( sortcolumnid == LST_DSPOPE_AMOUNT )
+		gtk_tree_view_column_set_alignment (column, 1.0);
 	gtk_tree_view_column_set_sort_column_id (column, sortcolumnid);
 
 	if(sortcolumnid == LST_DSPOPE_AMOUNT )
@@ -658,7 +660,8 @@ GtkTreeViewColumn	*column;
     //gtk_cell_renderer_set_fixed_size(renderer, 16, -1);
     gtk_tree_view_column_pack_start(column, renderer, TRUE);
     gtk_tree_view_column_set_cell_data_func(column, renderer, list_file_valid_cell_data_function, NULL, NULL);
-	gtk_tree_view_column_set_alignment (column, 0.5);
+    //#2004631 date and column title alignement
+	//gtk_tree_view_column_set_alignment (column, 0.5);
     gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 	g_object_set(renderer, "stock-size", GTK_ICON_SIZE_LARGE_TOOLBAR, NULL);
  

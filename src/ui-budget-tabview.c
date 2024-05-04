@@ -1541,13 +1541,25 @@ ui_bud_tabview_data_t *data = user_data;
 	data->TVC_category = col;
 
 	gtk_tree_view_column_set_title(col, _("Category"));
-	gtk_tree_view_column_set_alignment(col, 0.5);
+	//#2004631 date and column title alignement
+	//gtk_tree_view_column_set_alignment(col, 0.5);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(view), col);
 
 	gtk_tree_view_set_expander_column(GTK_TREE_VIEW(view), col);
 	
 	// Category Name
 	cat_name_renderer = gtk_cell_renderer_text_new();
+
+	//#2004053 + add 5.6.2
+	g_object_set(cat_name_renderer, 
+		"ellipsize", PANGO_ELLIPSIZE_END,
+	    "ellipsize-set", TRUE,
+		//taken from nemo, not exactly a resize to content, but good compromise
+	    "width-chars", 40,
+	    NULL);
+	gtk_tree_view_column_set_min_width(col, HB_MINWIDTH_LIST);
+	gtk_tree_view_column_set_resizable(col, TRUE);
+
 	gtk_tree_view_column_pack_start (col, cat_name_renderer, TRUE);
 	gtk_tree_view_column_add_attribute(col, cat_name_renderer, "text", UI_BUD_TABVIEW_CATEGORY_NAME);
 	gtk_tree_view_column_set_cell_data_func(col, cat_name_renderer, ui_bud_tabview_view_display_category_name, (gpointer) data, NULL);
@@ -1559,7 +1571,8 @@ ui_bud_tabview_data_t *data = user_data;
 	/* --- Annual Total --- */
 	col = gtk_tree_view_column_new();
 	gtk_tree_view_column_set_title(col, _("Annual Total"));
-	gtk_tree_view_column_set_alignment(col, 0.5);
+	//#2004631 date and column title alignement
+	gtk_tree_view_column_set_alignment(col, 1.0);
 
 	gtk_tree_view_append_column(GTK_TREE_VIEW(view), col);
 	renderer = gtk_cell_renderer_text_new();
@@ -1570,7 +1583,8 @@ ui_bud_tabview_data_t *data = user_data;
 	/* --- Monthly average --- */
 	col = gtk_tree_view_column_new();
 	gtk_tree_view_column_set_title(col, _("Monthly Average"));
-	gtk_tree_view_column_set_alignment(col, 0.5);
+	//#2004631 date and column title alignement
+	gtk_tree_view_column_set_alignment(col, 1.0);
 
 	gtk_tree_view_append_column(GTK_TREE_VIEW(view), col);
 	renderer = gtk_cell_renderer_text_new();
@@ -1581,7 +1595,8 @@ ui_bud_tabview_data_t *data = user_data;
 	/* --- Monthly column --- */
 	col = gtk_tree_view_column_new();
 	gtk_tree_view_column_set_title(col, _("Monthly"));
-	gtk_tree_view_column_set_alignment(col, 0.5);
+	//#2004631 date and column title alignement
+	gtk_tree_view_column_set_alignment(col, 1.0);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(view), col);
 
 	// Monthly toggler
@@ -1610,7 +1625,8 @@ ui_bud_tabview_data_t *data = user_data;
 		col = gtk_tree_view_column_new();
 
 		gtk_tree_view_column_set_title(col, _(UI_BUD_TABVIEW_MONTHS[month]));
-		gtk_tree_view_column_set_alignment(col, 0.5);
+		//#2004631 date and column title alignement
+		gtk_tree_view_column_set_alignment(col, 1.0);
 		gtk_tree_view_append_column(GTK_TREE_VIEW(view), col);
 		renderer = gtk_cell_renderer_spin_new();
 

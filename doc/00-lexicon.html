@@ -26,6 +26,7 @@
         <a href="#account">Accounts</a><br>
         <a href="#assignment">Assignment</a><br>
         <a href="#pmxfer">bank transfer</a> <i>{payment}</i><br>
+        <a href="#backup">Backup</a><br>
         <a href="#balance">Balance</a><br>
         <a href="#budget">Budget</a><br>
         </td>
@@ -232,6 +233,22 @@
     <p>The budget is global to the wallet, so if you need to manage a different budget each year, you can use CSV import/export capabilities.</p>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
+
+<div class="rounded content">
+    <h2><a id="backup" name="backup"></a>Backup</h2>
+    <p>There is 2 mechanism that ensure you can get back to a several previous version of your .xhb file.</p>
+    <p><b>1) the last backup file</b><br>
+    Every-time you save your file, the previous version will be saved with .xhb~ (tilde at the end), into the wallet folder.<br>
+    To get back to this file, you can use the File > Revert menu. If there is no .xhb~ file, this menu will be disabled.</p>
+    <p><b>2) the backup file once a day</b><br>
+    Each day you save your file for the first time, a .bak file will be created into the backup folder. Which means if you save it 3 times during the same day, only the first save will be saved as the day backup.<br>
+    To get back to one of this backup, you can use the File > Restore backup menu. If there is no .bak file, this menu will be disabled.</p>
+
+    <p>With this mechanism, you have a good compromise between safety backup and data storage.</p>
+
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
   <div class="rounded content">
     <h2><a id="balance" name="balance"></a>Balances</h2>
     <p>A key point of your accounts are balances. HomeBank offers 4 balances covering the entire life cycle of your accounts. You can show/hide the balances you need for your usage, for example hide the reconciled and future for a simple management.</p>

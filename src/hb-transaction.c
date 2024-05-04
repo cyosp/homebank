@@ -419,10 +419,13 @@ gboolean found;
 
 void da_transaction_set_flag(Transaction *item)
 {
-	//DB( g_print("\n[transaction] set flag\n") );
-	item->flags &= ~(OF_INCOME);
-	if( item->amount > 0)
-		item->flags |= (OF_INCOME);
+	//#2002348 no change if zero
+	if( item->amount != 0.0 )
+	{
+		item->flags &= ~(OF_INCOME);
+		if( item->amount > 0)
+			item->flags |= (OF_INCOME);
+	}
 }
 
 
@@ -1343,25 +1346,31 @@ guint changes = 0;
 
 	DB( g_print("\n[transaction] auto from payee\n") );
 
+	DB( g_print(" n_txn=%d\n", g_list_length(txnlist)) );
+
 	list = g_list_first(txnlist);
 	while(list != NULL)
 	{
 	Transaction *txn = list->data;
 
-		pay = da_pay_get(txn->kpay);
-		if( pay != NULL )
+		if( txn != NULL )
 		{
-			if( txn->kcat == 0 )
+			pay = da_pay_get(txn->kpay);
+			if( pay != NULL )
 			{
-				txn->kcat = pay->kcat;
-				changes++;
+				if( txn->kcat == 0 )
+				{
+					txn->kcat = pay->kcat;
+					changes++;
+				}
+					
+				if( txn->paymode == PAYMODE_NONE )
+				{
+					txn->paymode = pay->paymode;
+					changes++;
+				}
 			}
-				
-			if( txn->paymode == PAYMODE_NONE )
-			{
-				txn->paymode = pay->paymode;
-				changes++;
-			}
+
 		}
 		list = g_list_next(list);
 	}

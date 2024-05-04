@@ -614,7 +614,8 @@ GtkTreeViewColumn	*column;
 	renderer = gtk_cell_renderer_text_new ();
 	column = gtk_tree_view_column_new();
 	gtk_tree_view_column_set_title(column, _("Name"));
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	//gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_cur_listview_name_cell_data_function, GINT_TO_POINTER(LST_DEFCUR_DATAS), NULL);
 	gtk_tree_view_column_set_resizable(column, TRUE);
@@ -637,7 +638,8 @@ GtkTreeViewColumn	*column;
 	g_object_set(renderer, "xalign", 1.0, NULL);
 	column = gtk_tree_view_column_new();
 	gtk_tree_view_column_set_title(column, _("Exchange rate"));
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	gtk_tree_view_column_set_alignment (column, 1.0);
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_cur_listview_rate_cell_data_function, GINT_TO_POINTER(LST_DEFCUR_DATAS), NULL);
 	gtk_tree_view_column_set_resizable(column, TRUE);
@@ -647,10 +649,12 @@ GtkTreeViewColumn	*column;
 
 	// column 4: last modified
 	renderer = gtk_cell_renderer_text_new ();
-	g_object_set(renderer, "xalign", 0.5, NULL);
+	//#2004631 date and column title alignement
+	//g_object_set(renderer, "xalign", 0.5, NULL);
 	column = gtk_tree_view_column_new();
 	gtk_tree_view_column_set_title(column, _("Last modified"));
-	gtk_tree_view_column_set_alignment (column, 0.5);
+	//#2004631 date and column title alignement
+	//gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_cur_listview_lastmodified_cell_data_function, GINT_TO_POINTER(LST_DEFCUR_DATAS), NULL);
 	gtk_tree_view_column_set_resizable(column, TRUE);
@@ -1308,6 +1312,12 @@ gboolean retcode = FALSE;
 
 	// do nothing if just the base currency
 	if(da_cur_length() <= 1)
+		return TRUE;
+
+	//TODO: add a force option ?
+	// add 5.6.2 as the online currency only update every 24h
+	// avoid to call the API too often
+	if( GLOBALS->xhb_obsoletecurr == FALSE )
 		return TRUE;
 
 	retcode = currency_online_sync(&error);

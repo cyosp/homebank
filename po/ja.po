@@ -6,17 +6,16 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: homebank-4.0.4\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-12-22 19:09+0100\n"
-"PO-Revision-Date: 2021-03-20 15:59+0000\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2023-01-28 17:01+0100\n"
+"PO-Revision-Date: 2022-12-15 02:02+0000\n"
 "Last-Translator: Seiichi Saida <Unknown>\n"
 "Language-Team: Team Puppy Linux Japanese\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2022-12-05 17:16+0000\n"
-"X-Generator: Launchpad (build 51cef3d08dff1e227b5ada709bd67280c567d4be)\n"
+"X-Launchpad-Export-Date: 2023-02-05 19:36+0000\n"
+"X-Generator: Launchpad (build 33dc2e2ab7f8e563f52b8c81cbdf9e3946d2097e)\n"
 "First-Translator: nyu <nyu_8804@yahoo.co.jp>\n"
 
 #: ../data/homebank.desktop.in.in.h:1 ../src/dsp-mainwindow.c:702
@@ -46,9 +45,7 @@ msgstr "HomeBankは家計簿のフリーソフトウェア(フリーとは自由
 msgid ""
 "It is designed to easy to use and be able to analyse your personal finance "
 "in detail using powerful filtering tools and beautiful graphs."
-msgstr ""
-"強力なフィルタリングツールと美しいグラフにより、家計の管理と分析を簡単にでき"
-"るように設計されています。"
+msgstr "強力なフィルタリングツールと美しいグラフにより、家計の管理と分析を簡単にできるように設計されています。"
 
 #: ../data/homebank.appdata.xml.in.h:3
 msgid ""
@@ -120,373 +117,386 @@ msgstr ""
 "選択した取引のそれぞれで\n"
 "割り当てを作成しますか？"
 
-#: ../src/dsp-account.c:683 ../src/dsp-account.c:751
+#: ../src/dsp-account.c:683 ../src/dsp-account.c:759
 msgid "_Create"
 msgstr "作成(_C)"
 
-#: ../src/dsp-account.c:750
+#: ../src/dsp-account.c:728
+msgid "Create Assignment"
+msgstr ""
+
+#: ../src/dsp-account.c:729 ../src/dsp-account.c:804
+#, c-format
+msgid "%d created and prefixed with **PREFILLED**"
+msgstr ""
+
+#: ../src/dsp-account.c:758
 msgid ""
 "Do you want to create a template with\n"
 "each of the selected transaction?"
 msgstr "選択した取引ごとにテンプレートを作成しますか？"
 
-#: ../src/dsp-account.c:1665
+#: ../src/dsp-account.c:803
+msgid "Create Template"
+msgstr ""
+
+#: ../src/dsp-account.c:1681
 msgid ""
 "Do you want to delete\n"
 "each of the selected transaction?"
 msgstr "選択した取引をそれぞれ削除しますか？"
 
-#: ../src/dsp-account.c:1666 ../src/ui-account.c:1441 ../src/ui-archive.c:819
-#: ../src/ui-assign.c:1428 ../src/ui-budget-tabview.c:2300
+#: ../src/dsp-account.c:1682 ../src/ui-account.c:1441 ../src/ui-archive.c:823
+#: ../src/ui-assign.c:1442 ../src/ui-budget-tabview.c:2300
 #: ../src/ui-category.c:1481 ../src/ui-category.c:2026
-#: ../src/ui-currency.c:1544 ../src/ui-payee.c:1040 ../src/ui-payee.c:1565
+#: ../src/ui-currency.c:1550 ../src/ui-payee.c:1040 ../src/ui-payee.c:1565
 #: ../src/ui-tag.c:922
 msgid "_Delete"
 msgstr "削除(_D)"
 
-#: ../src/dsp-account.c:1747
+#: ../src/dsp-account.c:1763
 msgid "Are you sure you want to change the status to None?"
 msgstr "状態を「なし」に変更してもよろしいですか？"
 
-#: ../src/dsp-account.c:1748 ../src/dsp-account.c:1807
+#: ../src/dsp-account.c:1764 ../src/dsp-account.c:1823
 msgid "Some transaction in your selection are already Reconciled."
 msgstr "選択した取引の一部は既に照合済です。"
 
-#: ../src/dsp-account.c:1749 ../src/ui-assist-start.c:277
+#: ../src/dsp-account.c:1765 ../src/ui-assist-start.c:277
 #: ../src/ui-dialogs.c:430
 msgid "_Change"
 msgstr "変更(_C)"
 
-#: ../src/dsp-account.c:1806
+#: ../src/dsp-account.c:1822
 msgid "Are you sure you want to toggle the status Reconciled?"
 msgstr "照合済の状態を切り替えてもよろしいですか？"
 
-#: ../src/dsp-account.c:1808
+#: ../src/dsp-account.c:1824
 msgid "_Toggle"
 msgstr "切り替え(_T)"
 
-#: ../src/dsp-account.c:2213
+#: ../src/dsp-account.c:2229
 #, c-format
 msgid "%d transactions"
 msgstr "%d件の取引"
 
-#: ../src/dsp-account.c:2216
+#: ../src/dsp-account.c:2232
 #, c-format
 msgid "%d transactions, %d selected, avg: %s, sum: %s (%s - %s)"
 msgstr "%d件の取引、%d件選択され、平均：%s、合計：%s (%s - %s)"
 
-#: ../src/dsp-account.c:2228
+#: ../src/dsp-account.c:2244
 msgid "Locked. Click to unlock"
-msgstr ""
+msgstr "ロックされた。クリックしてを解除"
 
-#: ../src/dsp-account.c:2228
+#: ../src/dsp-account.c:2244
 msgid "Unlocked. Click to lock"
-msgstr ""
+msgstr "ロックされていません。クリックしてロック"
 
-#: ../src/dsp-account.c:2505 ../src/dsp-account.c:2606
+#: ../src/dsp-account.c:2521 ../src/dsp-account.c:2622
 msgid "_Add..."
 msgstr "追加(_A)..."
 
-#: ../src/dsp-account.c:2507 ../src/dsp-account.c:2608
+#: ../src/dsp-account.c:2523 ../src/dsp-account.c:2624
 msgid "_Inherit..."
 msgstr "継続(_I)..."
 
-#: ../src/dsp-account.c:2509 ../src/dsp-account.c:2610
+#: ../src/dsp-account.c:2525 ../src/dsp-account.c:2626
 msgid "_Edit..."
 msgstr "編集(_E)..."
 
-#: ../src/dsp-account.c:2511 ../src/dsp-account.c:2624
+#: ../src/dsp-account.c:2527 ../src/dsp-account.c:2640
 msgid "_Multiple Edit..."
 msgstr "複数の取引を編集(_M)…"
 
-#: ../src/dsp-account.c:2516 ../src/dsp-account.c:2615
+#: ../src/dsp-account.c:2532 ../src/dsp-account.c:2631
 msgid "_Status"
 msgstr "状態(_S)"
 
-#: ../src/dsp-account.c:2518 ../src/dsp-account.c:2617
+#: ../src/dsp-account.c:2534 ../src/dsp-account.c:2633
 msgid "_None"
 msgstr "なし(_N)"
 
-#: ../src/dsp-account.c:2520 ../src/dsp-account.c:2619
+#: ../src/dsp-account.c:2536 ../src/dsp-account.c:2635
 msgid "_Cleared"
 msgstr "清算済(_C)"
 
-#: ../src/dsp-account.c:2522 ../src/dsp-account.c:2621
+#: ../src/dsp-account.c:2538 ../src/dsp-account.c:2637
 msgid "_Reconciled"
 msgstr "照合済(_R)"
 
-#: ../src/dsp-account.c:2527
+#: ../src/dsp-account.c:2543
 msgid "View _Split"
 msgstr "分割取引を表示(_S)"
 
-#: ../src/dsp-account.c:2529
+#: ../src/dsp-account.c:2545
 msgid "Copy raw amount"
-msgstr ""
+msgstr "元金額をコピー"
 
-#: ../src/dsp-account.c:2531 ../src/dsp-account.c:2626
+#: ../src/dsp-account.c:2547 ../src/dsp-account.c:2641
 msgid "Create template..."
 msgstr "テンプレートを作成..."
 
-#: ../src/dsp-account.c:2533 ../src/dsp-account.c:2625
+#: ../src/dsp-account.c:2549 ../src/dsp-account.c:2642
 msgid "Create assignment..."
 msgstr "割り当てを作成…"
 
-#: ../src/dsp-account.c:2535 ../src/dsp-account.c:2627
+#: ../src/dsp-account.c:2551 ../src/dsp-account.c:2643
 msgid "_Delete..."
 msgstr "削除(_D)…"
 
-#: ../src/dsp-account.c:2540
+#: ../src/dsp-account.c:2556
 msgid "_Up"
 msgstr "上へ(_U)"
 
-#: ../src/dsp-account.c:2542
+#: ../src/dsp-account.c:2558
 msgid "_Down"
 msgstr "下へ(_D)"
 
-#: ../src/dsp-account.c:2582
+#: ../src/dsp-account.c:2598
 msgid "A_ccount"
 msgstr "口座(_C)"
 
-#: ../src/dsp-account.c:2584
+#: ../src/dsp-account.c:2600
 msgid "Export QIF..."
 msgstr "QIFでエクスポート…"
 
-#: ../src/dsp-account.c:2585
+#: ../src/dsp-account.c:2601
 msgid "Export CSV..."
 msgstr "CSVでエクスポート..."
 
-#: ../src/dsp-account.c:2587
+#: ../src/dsp-account.c:2603
 msgid "Export as PDF..."
 msgstr "PDFでエクスポート…"
 
-#: ../src/dsp-account.c:2589
+#: ../src/dsp-account.c:2605
 msgid "Print..."
 msgstr "印刷..."
 
-#: ../src/dsp-account.c:2591 ../src/dsp-mainwindow.c:680
+#: ../src/dsp-account.c:2607 ../src/dsp-mainwindow.c:680
 #: ../src/dsp-mainwindow.c:1851 ../src/ui-account.c:1758
-#: ../src/ui-archive.c:1188 ../src/ui-assign.c:1674 ../src/ui-budget.c:1143
+#: ../src/ui-archive.c:1199 ../src/ui-assign.c:1688 ../src/ui-budget.c:1143
 #: ../src/ui-budget-tabview.c:2759 ../src/ui-category.c:2410
-#: ../src/ui-currency.c:1680 ../src/ui-dialogs.c:194 ../src/ui-payee.c:1764
+#: ../src/ui-currency.c:1686 ../src/ui-dialogs.c:194 ../src/ui-payee.c:1764
 #: ../src/ui-split.c:833 ../src/ui-tag.c:1051 ../src/ui-transaction.c:1457
 msgid "_Close"
 msgstr "閉じる(_C)"
 
 #. #1818052 wish: copy/paste one/multiple transaction(s)
-#: ../src/dsp-account.c:2595 ../src/dsp-mainwindow.c:1856
+#: ../src/dsp-account.c:2611 ../src/dsp-mainwindow.c:1856
 msgid "_Edit"
 msgstr "編集(_E)"
 
-#: ../src/dsp-account.c:2597
+#: ../src/dsp-account.c:2613
 msgid "Copy"
 msgstr "コピー"
 
-#: ../src/dsp-account.c:2599
+#: ../src/dsp-account.c:2615
 msgid "Paste"
 msgstr "貼り付け"
 
-#: ../src/dsp-account.c:2601
+#: ../src/dsp-account.c:2617
 msgid "Paste (today)"
-msgstr "貼り付け（今日の日付で）"
+msgstr "貼り付け（本日の日付で）"
 
-#: ../src/dsp-account.c:2604
+#: ../src/dsp-account.c:2620
 msgid "Transacti_on"
 msgstr "取引(_O)"
 
-#: ../src/dsp-account.c:2632
+#: ../src/dsp-account.c:2648
 msgid "_Find"
 msgstr "検索(_F)"
 
-#: ../src/dsp-account.c:2635 ../src/dsp-mainwindow.c:1903
+#: ../src/dsp-account.c:2651 ../src/dsp-mainwindow.c:1903
 msgid "_Tools"
 msgstr "ツール(_T)"
 
-#: ../src/dsp-account.c:2637
+#: ../src/dsp-account.c:2653
 msgid "Mark duplicate..."
 msgstr "重複としてマーク…"
 
-#: ../src/dsp-account.c:2638
+#: ../src/dsp-account.c:2654
 msgid "Check internal transfer"
 msgstr "振込を確認"
 
-#: ../src/dsp-account.c:2639
+#: ../src/dsp-account.c:2655
 msgid "Auto. assignments"
 msgstr "自動割り当て"
 
-#: ../src/dsp-account.c:2640
+#: ../src/dsp-account.c:2656
 msgid "_Filter..."
 msgstr "フィルタ(_F)..."
 
-#: ../src/dsp-account.c:2641
+#: ../src/dsp-account.c:2657
 msgid "Convert to Euro..."
 msgstr "ユーロに変換…"
 
-#: ../src/dsp-account.c:2655 ../src/dsp-mainwindow.c:1960
-#: ../src/ui-account.c:1814 ../src/ui-archive.c:1266 ../src/ui-assign.c:1738
+#: ../src/dsp-account.c:2671 ../src/dsp-mainwindow.c:1960
+#: ../src/ui-account.c:1814 ../src/ui-archive.c:1277 ../src/ui-assign.c:1752
 #: ../src/ui-assist-import.c:1573 ../src/ui-category.c:2524
-#: ../src/ui-currency.c:1756 ../src/ui-payee.c:1878 ../src/ui-split.c:1014
+#: ../src/ui-currency.c:1762 ../src/ui-payee.c:1878 ../src/ui-split.c:1014
 #: ../src/ui-tag.c:1149
 msgid "Add"
 msgstr "追加"
 
-#: ../src/dsp-account.c:2655
+#: ../src/dsp-account.c:2671
 msgid "Add a new transaction"
 msgstr "新しい取引を追加"
 
-#: ../src/dsp-account.c:2657
+#: ../src/dsp-account.c:2673
 msgid "Inherit"
 msgstr "継続"
 
-#: ../src/dsp-account.c:2657
+#: ../src/dsp-account.c:2673
 msgid "Inherit from the active transaction"
 msgstr "当取引から継続"
 
 #. widget = gtk_button_new_with_mnemonic(_("_Edit"));
-#: ../src/dsp-account.c:2659 ../src/ui-archive.c:1285 ../src/ui-assign.c:1757
-#: ../src/ui-category.c:2543 ../src/ui-currency.c:1774 ../src/ui-payee.c:1896
+#: ../src/dsp-account.c:2675 ../src/ui-archive.c:1296 ../src/ui-assign.c:1771
+#: ../src/ui-category.c:2543 ../src/ui-currency.c:1780 ../src/ui-payee.c:1896
 #: ../src/ui-split.c:973 ../src/ui-tag.c:1165
 msgid "Edit"
 msgstr "編集"
 
-#: ../src/dsp-account.c:2659
+#: ../src/dsp-account.c:2675
 msgid "Edit the active transaction"
 msgstr "当取引を編集"
 
 #. Cleared
-#: ../src/dsp-account.c:2664 ../src/list-account.c:692 ../src/ui-filter.c:1172
+#: ../src/dsp-account.c:2680 ../src/list-account.c:692 ../src/ui-filter.c:1172
 #: ../src/ui-widgets-data.c:164 ../src/ui-widgets-data.c:211
 msgid "Cleared"
 msgstr "清算済"
 
-#: ../src/dsp-account.c:2664
+#: ../src/dsp-account.c:2680
 msgid "Toggle cleared for selected transaction(s)"
 msgstr "選択した取引の精算の状態を切り替えます"
 
 #. Reconciled
-#: ../src/dsp-account.c:2665 ../src/list-account.c:688 ../src/ui-filter.c:1177
+#: ../src/dsp-account.c:2681 ../src/list-account.c:688 ../src/ui-filter.c:1177
 #: ../src/ui-widgets-data.c:165 ../src/ui-widgets-data.c:213
 msgid "Reconciled"
 msgstr "照合済"
 
-#: ../src/dsp-account.c:2665
+#: ../src/dsp-account.c:2681
 msgid "Toggle reconciled for selected transaction(s)"
 msgstr "選択した取引の照合の状態を切り替えます"
 
-#: ../src/dsp-account.c:2669
+#: ../src/dsp-account.c:2685
 msgid "Edit Multiple"
 msgstr "複数の取引を編集"
 
-#: ../src/dsp-account.c:2669
+#: ../src/dsp-account.c:2685
 msgid "Edit multiple transaction"
 msgstr "複数の取引を編集"
 
-#: ../src/dsp-account.c:2670
+#: ../src/dsp-account.c:2686
 msgid "Create template"
 msgstr "テンプレートの作成"
 
-#: ../src/dsp-account.c:2671 ../src/ui-account.c:1818 ../src/ui-archive.c:1270
-#: ../src/ui-assign.c:1742 ../src/ui-assist-import.c:1577
-#: ../src/ui-category.c:2528 ../src/ui-currency.c:1760 ../src/ui-payee.c:1882
+#: ../src/dsp-account.c:2687 ../src/ui-account.c:1818 ../src/ui-archive.c:1281
+#: ../src/ui-assign.c:1756 ../src/ui-assist-import.c:1577
+#: ../src/ui-category.c:2528 ../src/ui-currency.c:1766 ../src/ui-payee.c:1882
 #: ../src/ui-split.c:969 ../src/ui-tag.c:1152
 msgid "Delete"
 msgstr "削除"
 
-#: ../src/dsp-account.c:2671
+#: ../src/dsp-account.c:2687
 msgid "Delete selected transaction(s)"
 msgstr "選択した取引を削除"
 
-#: ../src/dsp-account.c:2677
+#: ../src/dsp-account.c:2693
 msgid "Up"
 msgstr "上へ"
 
-#: ../src/dsp-account.c:2677
+#: ../src/dsp-account.c:2693
 msgid "Move transaction up"
 msgstr "取引を上に移動"
 
-#: ../src/dsp-account.c:2678
+#: ../src/dsp-account.c:2694
 msgid "Down"
 msgstr "下へ"
 
-#: ../src/dsp-account.c:2678
+#: ../src/dsp-account.c:2694
 msgid "Move transaction down"
 msgstr "取引を下に移動"
 
-#: ../src/dsp-account.c:2685
+#: ../src/dsp-account.c:2701
 msgid "Reconciled changes is"
-msgstr ""
+msgstr "照合済の取引への変更は"
 
-#: ../src/dsp-account.c:2746
+#: ../src/dsp-account.c:2762
 msgid "(closed)"
 msgstr "（閉鎖された）"
 
-#: ../src/dsp-account.c:2753
+#: ../src/dsp-account.c:2769
 #, c-format
 msgid "%s - HomeBank"
 msgstr "%s - HomeBank"
 
-#: ../src/dsp-account.c:2753
+#: ../src/dsp-account.c:2769
 msgid "All transactions"
 msgstr "全ての取引"
 
 #. info bar for duplicate
-#: ../src/dsp-account.c:2783
+#: ../src/dsp-account.c:2799
 msgid "_Refresh"
 msgstr "更新(_R)"
 
-#: ../src/dsp-account.c:2812 ../src/rep-balance.c:1068 ../src/rep-budget.c:1351
-#: ../src/rep-stats.c:1749 ../src/rep-time.c:1409 ../src/rep-vehicle.c:1009
+#: ../src/dsp-account.c:2828 ../src/rep-balance.c:1068 ../src/rep-budget.c:1351
+#: ../src/rep-stats.c:1749 ../src/rep-time.c:1409 ../src/rep-vehicle.c:1000
 #: ../src/ui-pref.c:1364 ../src/ui-pref.c:1725 ../src/ui-pref.c:2164
 msgid "_Range:"
 msgstr "範囲(_R):"
 
-#: ../src/dsp-account.c:2822
+#: ../src/dsp-account.c:2838
 msgid "Toggle show future transaction"
 msgstr "将来の取引の表示を切り替え"
 
-#: ../src/dsp-account.c:2827 ../src/rep-budget.c:1326 ../src/rep-stats.c:1686
+#: ../src/dsp-account.c:2843 ../src/rep-budget.c:1326 ../src/rep-stats.c:1686
 #: ../src/ui-account.c:1870 ../src/ui-assist-start.c:536
 msgid "_Type:"
 msgstr "種類(_T):"
 
-#: ../src/dsp-account.c:2834 ../src/ui-transaction.c:1714
+#: ../src/dsp-account.c:2850 ../src/ui-transaction.c:1714
 msgid "_Status:"
 msgstr "状態(_S):"
 
-#: ../src/dsp-account.c:2841
+#: ../src/dsp-account.c:2857
 msgid "Open the list filter"
 msgstr "リストフィルタを開く"
 
-#: ../src/dsp-account.c:2846 ../src/rep-balance.c:811 ../src/rep-budget.c:1033
-#: ../src/rep-stats.c:1394 ../src/rep-time.c:1080 ../src/rep-vehicle.c:797
+#: ../src/dsp-account.c:2862 ../src/rep-balance.c:811 ../src/rep-budget.c:1033
+#: ../src/rep-stats.c:1394 ../src/rep-time.c:1080 ../src/rep-vehicle.c:786
 msgid "Refresh results"
 msgstr "結果を更新"
 
 #. widget = gtk_button_new_with_mnemonic (_("Reset _filters"));
-#: ../src/dsp-account.c:2852 ../src/ui-filter.c:1226 ../src/ui-pref.c:2268
+#: ../src/dsp-account.c:2868 ../src/ui-filter.c:1226 ../src/ui-pref.c:2268
 #: ../src/ui-pref.c:2292
 msgid "_Reset"
 msgstr "元に戻す(_R)"
 
 #. TRANSLATORS: this is for Euro specific users, a toggle to display in 'Minor' currency
-#: ../src/dsp-account.c:2858 ../src/rep-balance.c:1047 ../src/rep-budget.c:1338
-#: ../src/rep-stats.c:1728 ../src/rep-time.c:1388 ../src/rep-vehicle.c:996
+#: ../src/dsp-account.c:2874 ../src/rep-balance.c:1047 ../src/rep-budget.c:1338
+#: ../src/rep-stats.c:1728 ../src/rep-time.c:1388 ../src/rep-vehicle.c:987
 msgid "Euro _minor"
 msgstr "ヨーロッパのマイナー通貨(_M)"
 
 #. account name
-#: ../src/dsp-account.c:2917
+#: ../src/dsp-account.c:2933
 msgid "Reconciled:"
 msgstr "照合済:"
 
-#: ../src/dsp-account.c:2924
+#: ../src/dsp-account.c:2940
 msgid "Cleared:"
 msgstr "清算済:"
 
-#: ../src/dsp-account.c:2931
+#: ../src/dsp-account.c:2947
 msgid "Today:"
 msgstr "本日:"
 
-#: ../src/dsp-account.c:2938
+#: ../src/dsp-account.c:2954
 msgid "Future:"
 msgstr "将来:"
 
@@ -582,7 +592,7 @@ msgstr "バックアップを開く(_O)"
 msgid "Unable to open '%s', the file does not exist.\n"
 msgstr "ファイル「%s」を開けません（ファイルが存在しません）。\n"
 
-#: ../src/dsp-mainwindow.c:1139 ../src/ui-currency.c:1319
+#: ../src/dsp-mainwindow.c:1139 ../src/ui-currency.c:1325
 msgid "Unknown error"
 msgstr "不明のエラー"
 
@@ -614,10 +624,9 @@ msgid "The file has been modified since reading it."
 msgstr "読み取り後にファイルが変更されています。"
 
 #: ../src/dsp-mainwindow.c:1229
-msgid "If you save it, all the external changes could be lost. Save it anyway?"
-msgstr ""
-"このファイルを保存すると外部からの変更はすべて失われます。強制的に保存します"
-"か?"
+msgid ""
+"If you save it, all the external changes could be lost. Save it anyway?"
+msgstr "このファイルを保存すると外部からの変更はすべて失われます。強制的に保存しますか?"
 
 #: ../src/dsp-mainwindow.c:1230
 msgid "S_ave Anyway"
@@ -706,7 +715,7 @@ msgstr "管理(_M)"
 
 #: ../src/dsp-mainwindow.c:1875
 msgid "Wallet..."
-msgstr ""
+msgstr "財布ファイル…"
 
 #: ../src/dsp-mainwindow.c:1876
 msgid "Acc_ounts..."
@@ -718,7 +727,7 @@ msgstr "受取人(_P)..."
 
 #: ../src/dsp-mainwindow.c:1878
 msgid "Categories..."
-msgstr "カテゴリ"
+msgstr "カテゴリ…"
 
 #: ../src/dsp-mainwindow.c:1879
 msgid "Scheduled/Template..."
@@ -869,10 +878,10 @@ msgstr "現在のファイルを保存"
 #. gtk_assistant_set_page_title (GTK_ASSISTANT (data->assistant), page, _("Transaction"));
 #. gtk_assistant_set_page_title (GTK_ASSISTANT (data->assistant), page, genacc->name);
 #. header
-#: ../src/dsp-mainwindow.c:1950 ../src/list-operation.c:1649
+#: ../src/dsp-mainwindow.c:1950 ../src/list-operation.c:1657
 #: ../src/list-scheduled.c:678 ../src/rep-stats.c:67 ../src/rep-time.c:73
 #: ../src/ui-account.c:878 ../src/ui-archive.c:484
-#: ../src/ui-assist-import.c:2168 ../src/ui-dialogs.c:213
+#: ../src/ui-assist-import.c:2167 ../src/ui-dialogs.c:213
 #: ../src/ui-filter.c:802 ../src/ui-filter.c:806 ../src/ui-filter.c:1291
 msgid "Account"
 msgstr "口座"
@@ -886,9 +895,9 @@ msgstr "口座を管理"
 #. payee
 #. header
 #: ../src/dsp-mainwindow.c:1951 ../src/hb-export.c:443
-#: ../src/list-operation.c:1683 ../src/list-scheduled.c:593
+#: ../src/list-operation.c:1691 ../src/list-scheduled.c:593
 #: ../src/rep-stats.c:66 ../src/rep-time.c:75 ../src/ui-archive.c:461
-#: ../src/ui-assign.c:532 ../src/ui-assist-import.c:401 ../src/ui-dialogs.c:268
+#: ../src/ui-assign.c:543 ../src/ui-assist-import.c:401 ../src/ui-dialogs.c:268
 #: ../src/ui-filter.c:891 ../src/ui-filter.c:896 ../src/ui-filter.c:1295
 #: ../src/ui-payee.c:942 ../src/ui-pref.c:132 ../src/ui-widgets-data.c:29
 msgid "Payee"
@@ -903,9 +912,9 @@ msgstr "受取人を管理"
 #. category
 #. header
 #: ../src/dsp-mainwindow.c:1952 ../src/hub-spending.c:435
-#: ../src/list-operation.c:1717 ../src/list-scheduled.c:614
+#: ../src/list-operation.c:1725 ../src/list-scheduled.c:614
 #: ../src/rep-budget.c:1491 ../src/rep-budget.c:1682 ../src/rep-stats.c:64
-#: ../src/rep-time.c:74 ../src/ui-archive.c:465 ../src/ui-assign.c:536
+#: ../src/rep-time.c:74 ../src/ui-archive.c:465 ../src/ui-assign.c:547
 #: ../src/ui-assist-import.c:405 ../src/ui-budget.c:263
 #: ../src/ui-budget-tabview.c:1543 ../src/ui-category.c:1378
 #: ../src/ui-dialogs.c:277 ../src/ui-filter.c:832 ../src/ui-filter.c:837
@@ -936,7 +945,7 @@ msgstr "予算"
 msgid "Manage the budget"
 msgstr "予算を管理"
 
-#: ../src/dsp-mainwindow.c:1955 ../src/ui-assign.c:890 ../src/ui-dialogs.c:249
+#: ../src/dsp-mainwindow.c:1955 ../src/ui-assign.c:901 ../src/ui-dialogs.c:249
 msgid "Assignment"
 msgstr "割り当て"
 
@@ -974,7 +983,7 @@ msgstr "時間傾向報告を開く"
 
 #. column: Balance
 #: ../src/dsp-mainwindow.c:1967 ../src/hb-export.c:447
-#: ../src/list-operation.c:1729 ../src/rep-balance.c:1395
+#: ../src/list-operation.c:1737 ../src/rep-balance.c:1395
 #: ../src/ui-widgets-data.c:59
 msgid "Balance"
 msgstr "差引残高"
@@ -1007,7 +1016,7 @@ msgstr "寄付"
 msgid "Donate to HomeBank project"
 msgstr "HomeBankプロジェクトへ寄付"
 
-#: ../src/dsp-mainwindow.c:2087 ../src/ui-archive.c:1225
+#: ../src/dsp-mainwindow.c:2087 ../src/ui-archive.c:1236
 #: ../src/ui-dialogs.c:233
 msgid "Scheduled"
 msgstr "予定取引"
@@ -1024,17 +1033,17 @@ msgstr "備忘通知"
 
 #: ../src/gtk-dateentry.c:672
 msgid "_Today"
-msgstr ""
+msgstr "本日(_T)"
 
-#: ../src/hb-archive.c:215 ../src/ui-archive.c:811
+#: ../src/hb-archive.c:215 ../src/ui-archive.c:815
 msgid "(no memo)"
-msgstr ""
+msgstr "(摘要なし)"
 
 #: ../src/hb-archive.c:388 ../src/hb-archive.c:390 ../src/hb-assign.c:278
 msgid "**PREFILLED**"
 msgstr "※予備※"
 
-#: ../src/hb-category.c:492 ../src/hb-report.c:351 ../src/ui-budget.c:113
+#: ../src/hb-category.c:492 ../src/hb-report.c:363 ../src/ui-budget.c:113
 #: ../src/ui-category.c:220 ../src/ui-category.c:763
 msgid "(no category)"
 msgstr "（カテゴリなし）"
@@ -1044,13 +1053,13 @@ msgid "invalid CSV format"
 msgstr "無効なCSV形式"
 
 #. header
-#: ../src/hb-export.c:441 ../src/list-operation.c:1671
-#: ../src/rep-balance.c:1376 ../src/rep-vehicle.c:167 ../src/rep-vehicle.c:1335
+#: ../src/hb-export.c:441 ../src/list-operation.c:1679
+#: ../src/rep-balance.c:1376 ../src/rep-vehicle.c:167 ../src/rep-vehicle.c:1326
 #: ../src/ui-assist-import.c:373 ../src/ui-filter.c:949 ../src/ui-filter.c:1279
 msgid "Date"
 msgstr "日付"
 
-#: ../src/hb-export.c:442 ../src/list-operation.c:1444
+#: ../src/hb-export.c:442 ../src/list-operation.c:1449
 #: ../src/ui-assist-import.c:387 ../src/ui-pref.c:133 ../src/ui-pref.c:2533
 #: ../src/ui-pref.c:2541
 msgid "Info"
@@ -1058,7 +1067,7 @@ msgstr "情報"
 
 #. column: Memo
 #. memo
-#: ../src/hb-export.c:444 ../src/list-operation.c:1686
+#: ../src/hb-export.c:444 ../src/list-operation.c:1694
 #: ../src/list-scheduled.c:635 ../src/ui-archive.c:469
 #: ../src/ui-assist-import.c:378 ../src/ui-pref.c:131 ../src/ui-split.c:223
 #: ../src/ui-split.c:982 ../src/ui-widgets-data.c:28
@@ -1068,14 +1077,14 @@ msgstr "摘要"
 #. column: Amount
 #. amount
 #. header
-#: ../src/hb-export.c:445 ../src/list-operation.c:1708 ../src/rep-time.c:1620
-#: ../src/rep-time.c:1773 ../src/rep-vehicle.c:171 ../src/rep-vehicle.c:1380
+#: ../src/hb-export.c:445 ../src/list-operation.c:1716 ../src/rep-time.c:1620
+#: ../src/rep-time.c:1773 ../src/rep-vehicle.c:171 ../src/rep-vehicle.c:1371
 #: ../src/ui-archive.c:474 ../src/ui-assist-import.c:382 ../src/ui-filter.c:988
 #: ../src/ui-split.c:239 ../src/ui-split.c:986
 msgid "Amount"
 msgstr "金額"
 
-#: ../src/hb-hbfile.c:597 ../src/ui-assist-import.c:2168
+#: ../src/hb-hbfile.c:611 ../src/ui-assist-import.c:2167
 msgid "Unknown"
 msgstr "不明"
 
@@ -1095,21 +1104,21 @@ msgstr "km/L"
 msgid "mi./l"
 msgstr "マイル/L"
 
-#: ../src/hb-report.c:363 ../src/ui-payee.c:644
+#: ../src/hb-report.c:375 ../src/ui-payee.c:644
 msgid "(no payee)"
 msgstr "（受取人なし）"
 
 #. g_snprintf(s, slen, _("%d-w%d"), g_date_get_year(date), g_date_get_monday_week_of_year(date));
 #. TRANSLATORS: printf string for year of week W, ex. 2019-W52 for week 52 of 2019
-#: ../src/hb-report.c:970
+#: ../src/hb-report.c:990
 #, c-format
 msgid "%d-w%02d"
-msgstr ""
+msgstr "%d年-%02d週目"
 
 #. g_snprintf(buffer, 63, "%d-%02d", g_date_get_year(date), g_date_get_month(date));
 #. todo: will be innacurrate here if fiscal year start not 1/jan
 #. TRANSLATORS: printf string for year of quarter Q, ex. 2019-Q4 for quarter 4 of 2019
-#: ../src/hb-report.c:984
+#: ../src/hb-report.c:1004
 #, c-format
 msgid "%d-q%d"
 msgstr "%d-Q%d"
@@ -1191,7 +1200,7 @@ msgstr "予定取引の実行結果を確認"
 #. column: Total
 #: ../src/hub-scheduled.c:477 ../src/list-account.c:123 ../src/list-report.c:56
 #: ../src/list-report.c:363 ../src/list-report.c:721 ../src/rep-stats.c:78
-#: ../src/rep-stats.c:885 ../src/rep-stats.c:986 ../src/rep-vehicle.c:1080
+#: ../src/rep-stats.c:885 ../src/rep-stats.c:986 ../src/rep-vehicle.c:1071
 #: ../src/ui-widgets-data.c:50 ../src/ui-widgets-data.c:57
 msgid "Total"
 msgstr "合計"
@@ -1206,7 +1215,7 @@ msgstr "スキップ(_S)"
 
 #: ../src/hub-scheduled.c:541
 msgid "Edit & P_ost"
-msgstr ""
+msgstr "編集して実行(_O)"
 
 #. TRANSLATORS: Posting a scheduled transaction is the action to materialize it into its target account.
 #. TRANSLATORS: Before that action the automated transaction occurrence is pending and not yet really existing.
@@ -1251,15 +1260,15 @@ msgstr "総計"
 
 #: ../src/list-account.c:535
 msgid "last reconciled"
-msgstr ""
+msgstr "最終照合"
 
 #: ../src/list-account.c:549
 msgid "until overdraft"
-msgstr ""
+msgstr "貸越可能額"
 
 #: ../src/list-account.c:565
 msgid "before maximum"
-msgstr ""
+msgstr "貯蓄可能額"
 
 #: ../src/list-account.c:676
 msgid "Accounts"
@@ -1279,17 +1288,17 @@ msgstr "ー分割取引ー"
 msgid "- this needs a category -"
 msgstr "ーカテゴリが必要ー"
 
-#: ../src/list-operation.c:1657
+#: ../src/list-operation.c:1665
 msgid "Match"
-msgstr ""
+msgstr "一致項目"
 
 #. header
-#: ../src/list-operation.c:1691 ../src/ui-filter.c:1155 ../src/ui-filter.c:1285
+#: ../src/list-operation.c:1699 ../src/ui-filter.c:1155 ../src/ui-filter.c:1285
 msgid "Status"
 msgstr "状態"
 
 #. column: Expense
-#: ../src/list-operation.c:1711 ../src/list-report.c:56
+#: ../src/list-operation.c:1719 ../src/list-report.c:56
 #: ../src/list-report.c:351 ../src/list-scheduled.c:647
 #: ../src/rep-balance.c:1387 ../src/rep-stats.c:76
 #: ../src/ui-budget-tabview.c:88 ../src/ui-filter.c:1129
@@ -1299,7 +1308,7 @@ msgid "Expense"
 msgstr "支出"
 
 #. column: Income
-#: ../src/list-operation.c:1714 ../src/list-report.c:56
+#: ../src/list-operation.c:1722 ../src/list-report.c:56
 #: ../src/list-report.c:357 ../src/list-scheduled.c:658
 #: ../src/rep-balance.c:1391 ../src/rep-stats.c:77
 #: ../src/ui-budget-tabview.c:89 ../src/ui-filter.c:1134
@@ -1308,7 +1317,7 @@ msgstr "支出"
 msgid "Income"
 msgstr "収入"
 
-#: ../src/list-operation.c:1724
+#: ../src/list-operation.c:1732
 msgid "Tags"
 msgstr "タグ"
 
@@ -1371,7 +1380,7 @@ msgid "Toggle detail"
 msgstr "詳細を切り替え"
 
 #: ../src/rep-balance.c:811 ../src/rep-budget.c:1033 ../src/rep-stats.c:1394
-#: ../src/rep-time.c:1080 ../src/rep-vehicle.c:797
+#: ../src/rep-time.c:1080 ../src/rep-vehicle.c:786
 msgid "Refresh"
 msgstr "更新"
 
@@ -1385,7 +1394,7 @@ msgid "Balance report"
 msgstr "差引残高報告"
 
 #: ../src/rep-balance.c:1021 ../src/rep-budget.c:1314 ../src/rep-stats.c:1667
-#: ../src/rep-time.c:1357 ../src/rep-vehicle.c:983
+#: ../src/rep-time.c:1357 ../src/rep-vehicle.c:972
 msgid "Display"
 msgstr "表示"
 
@@ -1402,19 +1411,19 @@ msgid "_Zoom X:"
 msgstr "X軸のズーム(_Z):"
 
 #: ../src/rep-balance.c:1064 ../src/rep-budget.c:1347 ../src/rep-stats.c:1745
-#: ../src/rep-time.c:1405 ../src/rep-vehicle.c:1005
+#: ../src/rep-time.c:1405 ../src/rep-vehicle.c:996
 msgid "Date filter"
 msgstr "日付フィルタ"
 
 #: ../src/rep-balance.c:1074 ../src/rep-budget.c:1357 ../src/rep-stats.c:1755
-#: ../src/rep-time.c:1415 ../src/rep-vehicle.c:1015 ../src/ui-filter.c:961
+#: ../src/rep-time.c:1415 ../src/rep-vehicle.c:1006 ../src/ui-filter.c:961
 #: ../src/ui-filter.c:999 ../src/ui-transaction.c:184
 #: ../src/ui-transaction.c:185
 msgid "_From:"
 msgstr "から(_F):"
 
 #: ../src/rep-balance.c:1080 ../src/rep-budget.c:1363 ../src/rep-stats.c:1761
-#: ../src/rep-time.c:1421 ../src/rep-vehicle.c:1021 ../src/ui-assign.c:1627
+#: ../src/rep-time.c:1421 ../src/rep-vehicle.c:1012 ../src/ui-assign.c:1640
 #: ../src/ui-filter.c:968 ../src/ui-filter.c:1006 ../src/ui-transaction.c:178
 #: ../src/ui-transaction.c:184 ../src/ui-transaction.c:185
 msgid "_To:"
@@ -1422,7 +1431,7 @@ msgstr "へ(_T):"
 
 #: ../src/rep-balance.c:1090
 msgid "Account filter"
-msgstr ""
+msgstr "口座フィルタ"
 
 #: ../src/rep-balance.c:1098 ../src/rep-time.c:1439
 #: ../src/ui-assist-import.c:1798 ../src/ui-filter.c:746
@@ -1572,15 +1581,15 @@ msgstr "結果をドーナツグラフで表示"
 
 #: ../src/rep-stats.c:1351
 msgid "View results as stack"
-msgstr ""
+msgstr "結果を積み上げグラフで表示"
 
 #: ../src/rep-stats.c:1356
 msgid "Stack 100%"
-msgstr ""
+msgstr "100%積み上げグラフ"
 
 #: ../src/rep-stats.c:1357
 msgid "View results as stack 100%"
-msgstr ""
+msgstr "結果を100%積み上げグラフで表示"
 
 #: ../src/rep-stats.c:1373
 msgid "Legend"
@@ -1616,15 +1625,15 @@ msgstr "モード:"
 
 #: ../src/rep-stats.c:1695
 msgid "_Balance mode"
-msgstr ""
+msgstr "差引残高モード(_B)"
 
 #: ../src/rep-stats.c:1710
 msgid "Sort by _amount"
-msgstr ""
+msgstr "金額順で表示(_A)"
 
 #: ../src/rep-stats.c:1715
 msgid "Compare Exp. & Inc."
-msgstr ""
+msgstr "支出と収入を比較"
 
 #: ../src/rep-stats.c:1826
 msgid "Total:"
@@ -1675,13 +1684,13 @@ msgstr "累積(_C)"
 
 #: ../src/rep-time.c:1431
 msgid "Item filter"
-msgstr ""
+msgstr "項目フィルタ"
 
 #: ../src/rep-time.c:1620 ../src/rep-time.c:1761
 msgid "Time slice"
 msgstr "割り当て時間"
 
-#.
+#. 
 #. LST_CAR_DATE,
 #. LST_CAR_MEMO,
 #. LST_CAR_METER,
@@ -1690,10 +1699,10 @@ msgstr "割り当て時間"
 #. LST_CAR_AMOUNT,
 #. LST_CAR_DIST,
 #. LST_CAR_100KM
-#.
-#.
+#. 
+#. 
 #. column: Memo
-#.
+#. 
 #. column = gtk_tree_view_column_new();
 #. gtk_tree_view_column_set_title(column, _("Memo"));
 #. gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
@@ -1701,60 +1710,63 @@ msgstr "割り当て時間"
 #. gtk_tree_view_column_pack_start(column, renderer, TRUE);
 #. gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_MEMO);
 #. //gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
-#.
+#. 
 #. column: Meter
-#: ../src/rep-vehicle.c:168 ../src/rep-vehicle.c:1368
+#: ../src/rep-vehicle.c:168 ../src/rep-vehicle.c:1359
 msgid "Meter"
 msgstr "メータ"
 
 #. column: Fuel load
-#: ../src/rep-vehicle.c:169 ../src/rep-vehicle.c:1372
+#: ../src/rep-vehicle.c:169 ../src/rep-vehicle.c:1363
 msgid "Fuel"
 msgstr "燃料"
 
 #. column: Price by unit
-#: ../src/rep-vehicle.c:170 ../src/rep-vehicle.c:1376
+#: ../src/rep-vehicle.c:170 ../src/rep-vehicle.c:1367
 msgid "Price"
 msgstr "価格"
 
 #. column: Distance done
-#: ../src/rep-vehicle.c:172 ../src/rep-vehicle.c:1384
+#: ../src/rep-vehicle.c:172 ../src/rep-vehicle.c:1375
 msgid "Dist."
 msgstr "距離"
 
-#: ../src/rep-vehicle.c:800
+#: ../src/rep-vehicle.c:789
 msgid "Export"
 msgstr "エクスポート"
 
-#: ../src/rep-vehicle.c:800 ../src/ui-dialogs.c:551 ../src/ui-dialogs.c:826
+#: ../src/rep-vehicle.c:789 ../src/ui-dialogs.c:551 ../src/ui-dialogs.c:826
 msgid "Export as CSV"
 msgstr "CSVでエクスポート"
 
-#: ../src/rep-vehicle.c:964
+#: ../src/rep-vehicle.c:953
 msgid "Vehicle cost report"
 msgstr "車の費用報告"
 
-#: ../src/rep-vehicle.c:987
-msgid "Vehi_cle:"
-msgstr "車(_C):"
+#. label = make_label_widget(_("Vehi_cle:"));
+#. #2001566 make label consistent with properties dialog
+#: ../src/rep-vehicle.c:978 ../src/ui-assign.c:1059 ../src/ui-hbfile.c:340
+#: ../src/ui-payee.c:1287
+msgid "_Category:"
+msgstr "カテゴリ(_C):"
 
-#: ../src/rep-vehicle.c:1047
+#: ../src/rep-vehicle.c:1038
 msgid "Meter:"
 msgstr "メータ:"
 
-#: ../src/rep-vehicle.c:1051
+#: ../src/rep-vehicle.c:1042
 msgid "Consumption:"
 msgstr "消費量:"
 
-#: ../src/rep-vehicle.c:1055
+#: ../src/rep-vehicle.c:1046
 msgid "Fuel cost:"
 msgstr "燃費:"
 
-#: ../src/rep-vehicle.c:1059
+#: ../src/rep-vehicle.c:1050
 msgid "Other cost:"
 msgstr "その他の経費:"
 
-#: ../src/rep-vehicle.c:1063
+#: ../src/rep-vehicle.c:1054
 msgid "Total cost:"
 msgstr "合計経費:"
 
@@ -1763,17 +1775,17 @@ msgstr "合計経費:"
 #. gtk_combo_box_set_wrap_width(GTK_COMBO_BOX(data->CY_template), 0);
 #. populate template
 #: ../src/ui-account.c:535 ../src/ui-account.c:1682 ../src/ui-assign.c:181
-#: ../src/ui-currency.c:245 ../src/ui-widgets.c:1337
+#: ../src/ui-currency.c:245 ../src/ui-widgets.c:1340
 msgid "(none)"
 msgstr "(なし)"
 
-#: ../src/ui-account.c:861 ../src/ui-assign.c:499 ../src/ui-category.c:1312
+#: ../src/ui-account.c:861 ../src/ui-assign.c:510 ../src/ui-category.c:1312
 #: ../src/ui-currency.c:599 ../src/ui-payee.c:873 ../src/ui-tag.c:484
 msgid "Visible"
 msgstr "表示"
 
 #. GTK_FILE_CHOOSER_ACTION_OPEN,
-#: ../src/ui-account.c:1022 ../src/ui-assign.c:893
+#: ../src/ui-account.c:1022 ../src/ui-assign.c:904
 #: ../src/ui-assist-import.c:746 ../src/ui-budget-tabview.c:2101
 #: ../src/ui-budget-tabview.c:2354 ../src/ui-category.c:1723
 #: ../src/ui-category.c:1886 ../src/ui-currency.c:780 ../src/ui-currency.c:1150
@@ -1787,7 +1799,7 @@ msgstr "表示"
 msgid "_Cancel"
 msgstr "キャンセル(_C)"
 
-#: ../src/ui-account.c:1024 ../src/ui-assign.c:895 ../src/ui-category.c:1725
+#: ../src/ui-account.c:1024 ../src/ui-assign.c:906 ../src/ui-category.c:1725
 #: ../src/ui-currency.c:782 ../src/ui-currency.c:1152 ../src/ui-dialogs.c:387
 #: ../src/ui-hbfile.c:235 ../src/ui-payee.c:1237 ../src/ui-pref.c:2296
 #: ../src/ui-split.c:915 ../src/ui-tag.c:681 ../src/ui-transaction.c:1452
@@ -1821,13 +1833,11 @@ msgstr "「%s」口座を削除できません。"
 #: ../src/ui-account.c:1422
 msgid ""
 "This account contains transactions and/or is part of internal transfers."
-msgstr ""
-"この口座には取引が含まれておりますか、この口座は既存の取引の振込元か振込先で"
-"す。"
+msgstr "この口座には取引が含まれておりますか、この口座は既存の取引の振込元か振込先です。"
 
-#: ../src/ui-account.c:1433 ../src/ui-archive.c:811 ../src/ui-assign.c:1420
+#: ../src/ui-account.c:1433 ../src/ui-archive.c:815 ../src/ui-assign.c:1434
 #: ../src/ui-budget-tabview.c:2288 ../src/ui-category.c:2014
-#: ../src/ui-currency.c:1536 ../src/ui-payee.c:1553 ../src/ui-tag.c:910
+#: ../src/ui-currency.c:1542 ../src/ui-payee.c:1553 ../src/ui-tag.c:910
 #, c-format
 msgid "Are you sure you want to permanently delete '%s'?"
 msgstr "本当に「%s」を永久に削除しますか？"
@@ -1886,13 +1896,13 @@ msgstr "開始残高(_B):"
 
 #: ../src/ui-account.c:1910
 msgid "_Currency:"
-msgstr "通貨(_C)"
+msgstr "通貨(_C):"
 
 #: ../src/ui-account.c:1917
 msgid "this account was _closed"
 msgstr "この口座は閉鎖されました(_C)"
 
-#: ../src/ui-account.c:1922 ../src/ui-assign.c:1086 ../src/ui-payee.c:1264
+#: ../src/ui-account.c:1922 ../src/ui-assign.c:1097 ../src/ui-payee.c:1264
 msgid "Notes:"
 msgstr "注記:"
 
@@ -1914,11 +1924,11 @@ msgstr "報告から除外"
 
 #: ../src/ui-account.c:1981
 msgid "exclude from account _summary"
-msgstr "口座の概要から除外する(_S)"
+msgstr "口座一覧から除外する(_S)"
 
 #: ../src/ui-account.c:1987
 msgid "outflow into summary"
-msgstr ""
+msgstr "一覧へ流出"
 
 #: ../src/ui-account.c:1992
 msgid "exclude from the _budget"
@@ -1954,45 +1964,45 @@ msgstr "最低残高(_O):"
 
 #: ../src/ui-account.c:2050
 msgid "Max_imum:"
-msgstr ""
+msgstr "最大残高(_I)"
 
-#: ../src/ui-archive.c:813
+#: ../src/ui-archive.c:817
 msgid "If you delete a scheduled/template, it will be permanently lost."
 msgstr "予定取引やテンプレートを削除すると、永久に失われます。"
 
-#: ../src/ui-archive.c:1105
+#: ../src/ui-archive.c:1116
 msgid "Next _date:"
 msgstr "次の日付(_D)"
 
-#: ../src/ui-archive.c:1113
+#: ../src/ui-archive.c:1124
 msgid "Ever_y:"
 msgstr "毎(_Y):"
 
-#: ../src/ui-archive.c:1128
+#: ../src/ui-archive.c:1139
 msgid "More options"
 msgstr "詳細の設定"
 
-#: ../src/ui-archive.c:1140
+#: ../src/ui-archive.c:1151
 msgid "Week end:"
 msgstr "週末:"
 
-#: ../src/ui-archive.c:1148
+#: ../src/ui-archive.c:1159
 msgid "_Stop after:"
 msgstr "繰り返し(_S):"
 
-#: ../src/ui-archive.c:1162
+#: ../src/ui-archive.c:1173
 msgid "posts"
 msgstr "回"
 
-#: ../src/ui-archive.c:1185
+#: ../src/ui-archive.c:1196
 msgid "Manage scheduled/template transactions"
 msgstr "予定取引とテンプレートの管理"
 
-#: ../src/ui-archive.c:1229 ../src/ui-dialogs.c:241
+#: ../src/ui-archive.c:1240 ../src/ui-dialogs.c:241
 msgid "Template"
 msgstr "テンプレート"
 
-#: ../src/ui-archive.c:1299
+#: ../src/ui-archive.c:1310
 msgid "_Schedule"
 msgstr "予定を編集(_S)"
 
@@ -2009,101 +2019,97 @@ msgid "Overwrite"
 msgstr "上書き"
 
 #. column : Search
-#: ../src/ui-assign.c:524
+#: ../src/ui-assign.c:535
 msgid "Search"
 msgstr "検索文"
 
 #. column : Notes
-#: ../src/ui-assign.c:528
+#: ../src/ui-assign.c:539
 msgid "Notes"
 msgstr "注記"
 
-#: ../src/ui-assign.c:687
+#: ../src/ui-assign.c:698
 #, c-format
 msgid "This search text already exists at position %d"
-msgstr ""
+msgstr "この検索文字は既に#%dに存在します"
 
-#: ../src/ui-assign.c:935
+#: ../src/ui-assign.c:946
 msgid "Condition"
 msgstr "条件"
 
 #. label = make_label_widget(_("Con_tains:"));
-#: ../src/ui-assign.c:940
+#: ../src/ui-assign.c:951
 msgid "_Search:"
 msgstr "検索(_S):"
 
-#: ../src/ui-assign.c:949
+#: ../src/ui-assign.c:960
 msgid "Case sensitive"
 msgstr "大/小文字を区別する"
 
-#: ../src/ui-assign.c:954
+#: ../src/ui-assign.c:965
 msgid "Regular expression"
 msgstr "正規表現"
 
-#: ../src/ui-assign.c:972
+#: ../src/ui-assign.c:983
 msgid "_In:"
 msgstr "対象(_I):"
 
-#: ../src/ui-assign.c:990
+#: ../src/ui-assign.c:1001
 msgid "_AND"
-msgstr ""
+msgstr "且つ(_A)"
 
 #. gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
-#: ../src/ui-assign.c:999 ../src/ui-transaction.c:1546
+#: ../src/ui-assign.c:1010 ../src/ui-transaction.c:1546
 #: ../src/ui-txn-multi.c:499
 msgid "Amou_nt:"
 msgstr "金額(_N):"
 
 #. label = make_label_group(_("Assign payee"));
-#: ../src/ui-assign.c:1018
+#: ../src/ui-assign.c:1029
 msgid "Assignments"
 msgstr "割り当て"
 
-#: ../src/ui-assign.c:1028 ../src/ui-transaction.c:1666
+#: ../src/ui-assign.c:1039 ../src/ui-transaction.c:1666
 #: ../src/ui-txn-multi.c:564
 msgid "_Payee:"
 msgstr "受取人(_P):"
 
-#: ../src/ui-assign.c:1048 ../src/ui-hbfile.c:340 ../src/ui-payee.c:1287
-msgid "_Category:"
-msgstr "カテゴリ(_C):"
-
-#: ../src/ui-assign.c:1067
+#: ../src/ui-assign.c:1078
 msgid "Pay_ment:"
 msgstr "支払(_M):"
 
-#: ../src/ui-assign.c:1373
+#: ../src/ui-assign.c:1387
 #, c-format
 msgid "(rule %d)"
 msgstr "（ルール%d）"
 
-#: ../src/ui-assign.c:1422
+#: ../src/ui-assign.c:1436
 msgid "If you delete an assignment, it will be permanently lost."
 msgstr "割り当てを削除すると永久に失われます。"
 
-#: ../src/ui-assign.c:1609
+#: ../src/ui-assign.c:1622
 msgid "Move to..."
-msgstr ""
+msgstr "移動…"
 
-#: ../src/ui-assign.c:1618
+#: ../src/ui-assign.c:1631
 msgid "Move rule"
-msgstr ""
+msgstr "ルールを移動"
 
-#: ../src/ui-assign.c:1643
+#: ../src/ui-assign.c:1655
 msgid "Move"
-msgstr ""
+msgstr "移動"
 
-#: ../src/ui-assign.c:1671
+#: ../src/ui-assign.c:1685
 msgid "Manage Assignments"
 msgstr "割り当ての管理"
 
-#: ../src/ui-assign.c:1771
+#: ../src/ui-assign.c:1785
 msgid "Move up"
-msgstr ""
+msgstr "上に移動"
 
-#: ../src/ui-assign.c:1775
+#: ../src/ui-assign.c:1789
 msgid "Move down"
-msgstr ""
+msgstr "下に移動"
 
 #: ../src/ui-assist-start.c:57
 msgid ""
@@ -2174,7 +2180,7 @@ msgstr ""
 
 #: ../src/ui-assist-start.c:419
 msgid "Setup categories for my language"
-msgstr "私の言語のためのカテゴリを設定する"
+msgstr "私の言語でのカテゴリを設定する"
 
 #: ../src/ui-assist-start.c:429
 msgid "Preset file:"
@@ -2242,7 +2248,7 @@ msgstr "＜新規口座＞"
 
 #: ../src/ui-assist-import.c:513
 msgid "<Skip this account>"
-msgstr "＜この口座をを飛ばす＞"
+msgstr "＜この口座ををスキップ＞"
 
 #: ../src/ui-assist-import.c:656 ../src/ui-assist-import.c:1813
 msgid "Valid"
@@ -2373,9 +2379,7 @@ msgstr ""
 msgid ""
 "No changes will be made until you click \"Apply\" at the end of this "
 "assistant."
-msgstr ""
-"このアシスタントの最後に「適用」ボタンをクリックするまで変更は保存されませ"
-"ん。"
+msgstr "このアシスタントの最後に「適用」ボタンをクリックするまで変更は保存されません。"
 
 #: ../src/ui-assist-import.c:1479
 msgid "Don't show this again"
@@ -2427,23 +2431,23 @@ msgstr "摘要/受取人の先頭文字だけを大文字にする(_C)"
 
 #: ../src/ui-assist-import.c:1835
 msgid "_Toggle amount"
-msgstr ""
+msgstr "金額を切り替え(_T)"
 
 #: ../src/ui-assist-import.c:1869
 msgid "Similar transaction in target account (possible duplicate)"
 msgstr "当口座内の似たような取引（重複の可能性あり）"
 
-#: ../src/ui-assist-import.c:1893
+#: ../src/ui-assist-import.c:1892
 msgid "Date _gap:"
 msgstr "日付許容範囲(_G):"
 
 #. TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days of date tolerance
 #. TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days in advance the current date
-#: ../src/ui-assist-import.c:1901 ../src/ui-hbfile.c:319 ../src/ui-pref.c:1791
+#: ../src/ui-assist-import.c:1900 ../src/ui-hbfile.c:319 ../src/ui-pref.c:1791
 msgid "days"
 msgstr "日"
 
-#: ../src/ui-assist-import.c:1909
+#: ../src/ui-assist-import.c:1908
 msgid ""
 "The match is done in order: by account, amount and date.\n"
 "A date tolerance of 0 day means an exact match"
@@ -2451,36 +2455,36 @@ msgstr ""
 "以下の順で一致: 口座、金額そして日付。\n"
 "日付許容範囲の0は完全な一致を意味します。"
 
-#: ../src/ui-assist-import.c:1980
+#: ../src/ui-assist-import.c:1979
 msgid "Run automation"
 msgstr "自動処理"
 
-#: ../src/ui-assist-import.c:1984
+#: ../src/ui-assist-import.c:1983
 msgid "1) Enrich with _payee default"
 msgstr "1) 受取人のデフォルト設定を適用(_P)"
 
-#: ../src/ui-assist-import.c:1990
+#: ../src/ui-assist-import.c:1989
 msgid "2) Run automatic _assigment rules"
 msgstr "2) 割り当てルールを自動実行(_A)"
 
-#: ../src/ui-assist-import.c:1996
+#: ../src/ui-assist-import.c:1995
 msgid "Click \"Apply\" to update your accounts."
 msgstr "「適用」をクリックして口座を更新します。"
 
-#: ../src/ui-assist-import.c:2330
+#: ../src/ui-assist-import.c:2329
 msgid "Welcome"
 msgstr "ようこそ"
 
-#: ../src/ui-assist-import.c:2336
+#: ../src/ui-assist-import.c:2335
 msgid "Select file(s)"
 msgstr "ファイルを選択"
 
 #. gtk_assistant_set_page_type (GTK_ASSISTANT (assistant), page, GTK_ASSISTANT_PAGE_PROGRESS);
-#: ../src/ui-assist-import.c:2341
+#: ../src/ui-assist-import.c:2340
 msgid "Import"
 msgstr "インポート"
 
-#: ../src/ui-assist-import.c:2354
+#: ../src/ui-assist-import.c:2353
 msgid "Confirmation"
 msgstr "確認"
 
@@ -2650,9 +2654,7 @@ msgstr "カテゴリを結合"
 msgid ""
 "Transactions assigned to category '%s', will be moved to the category "
 "selected below."
-msgstr ""
-"カテゴリ「%s」に割り当てられた取引は、以下で選択されたカテゴリに移動されま"
-"す。"
+msgstr "カテゴリ「%s」に割り当てられた取引は、以下で選択されたカテゴリに移動されます。"
 
 #: ../src/ui-budget-tabview.c:2385
 msgid "Target category"
@@ -2694,13 +2696,13 @@ msgstr "入力をクリア"
 #. TRANSLATORS: 'txn' is abbrevation for transaction
 #: ../src/ui-category.c:1340 ../src/ui-payee.c:905
 msgid "# txn"
-msgstr ""
+msgstr "取引"
 
 #. TRANSLATORS: 'cfg' is abbrevation for configuration
 #. TRANSLATORS: 'txn' is abbrevation for configuration
 #: ../src/ui-category.c:1354 ../src/ui-payee.c:920
 msgid "# cfg"
-msgstr ""
+msgstr "設定"
 
 #: ../src/ui-category.c:1479
 msgid "Delete unused categories"
@@ -2716,11 +2718,11 @@ msgstr ""
 
 #: ../src/ui-category.c:1720
 msgid "Edit Category"
-msgstr ""
+msgstr "カテゴリを編集"
 
 #: ../src/ui-category.c:1752
 msgid "Change Type"
-msgstr ""
+msgstr "種類を変更"
 
 #: ../src/ui-category.c:1757
 msgid "_Income"
@@ -2728,7 +2730,7 @@ msgstr "収入(_I)"
 
 #: ../src/ui-category.c:1762
 msgid "Propagate to _children"
-msgstr ""
+msgstr "サブカテゴリも変更"
 
 #: ../src/ui-category.c:1816
 #, c-format
@@ -2756,7 +2758,7 @@ msgstr ""
 
 #: ../src/ui-category.c:1906
 msgid "Include _subcategories"
-msgstr ""
+msgstr "サブカテゴリを含む(_S)"
 
 #: ../src/ui-category.c:2407
 msgid "Manage Categories"
@@ -2766,11 +2768,11 @@ msgstr "カテゴリを管理"
 #. content = gtk_dialog_get_header_bar(GTK_DIALOG (dialog));
 #: ../src/ui-category.c:2447 ../src/ui-payee.c:1809
 msgid "Show Hidden"
-msgstr ""
+msgstr "非表示したのを表示"
 
 #: ../src/ui-category.c:2451 ../src/ui-payee.c:1813
 msgid "Show Usage"
-msgstr ""
+msgstr "使用回数を表示"
 
 #: ../src/ui-category.c:2474 ../src/ui-payee.c:1832
 msgid "_Delete unused"
@@ -2782,7 +2784,7 @@ msgstr "移動/結合"
 
 #: ../src/ui-category.c:2561 ../src/ui-payee.c:1914
 msgid "Show/Hide"
-msgstr ""
+msgstr "表示/非表示"
 
 #: ../src/ui-category.c:2593
 msgid "new category"
@@ -2864,19 +2866,19 @@ msgstr "カスタム通貨を追加(_C)"
 msgid "_ISO:"
 msgstr "通貨コード(_I):"
 
-#: ../src/ui-currency.c:1327
+#: ../src/ui-currency.c:1333
 msgid "Update online error"
 msgstr "オンライン更新エラー"
 
-#: ../src/ui-currency.c:1538
+#: ../src/ui-currency.c:1544
 msgid "If you delete a currency, it will be permanently lost."
 msgstr "通貨を削除すると永久に失われます。"
 
-#: ../src/ui-currency.c:1581
+#: ../src/ui-currency.c:1587
 msgid "Change the base currency"
 msgstr "基準通貨を変更"
 
-#: ../src/ui-currency.c:1582
+#: ../src/ui-currency.c:1588
 msgid ""
 "If you proceed, rates of other currencies\n"
 "will be set to 0, don't forget to update it"
@@ -2884,15 +2886,15 @@ msgstr ""
 "進むと、他の通貨の為替レートが0に\n"
 "なってしまうので、更新を忘れずに"
 
-#: ../src/ui-currency.c:1677
+#: ../src/ui-currency.c:1683
 msgid "Currencies"
 msgstr "通貨"
 
-#: ../src/ui-currency.c:1726
+#: ../src/ui-currency.c:1732
 msgid "Update online"
 msgstr "オンライン更新"
 
-#: ../src/ui-currency.c:1778
+#: ../src/ui-currency.c:1784
 msgid "Set as base"
 msgstr "基準通貨として設定"
 
@@ -2975,7 +2977,7 @@ msgstr "保存せずに閉じる(_W)"
 
 #: ../src/ui-dialogs.c:830
 msgid "Export as _CSV"
-msgstr ""
+msgstr "_CSVでエクスポート"
 
 #: ../src/ui-dialogs.c:853 ../src/ui-dialogs.c:987
 msgid "Folder:"
@@ -2991,11 +2993,11 @@ msgstr "ファイル名:"
 
 #: ../src/ui-dialogs.c:870
 msgid "Add Status column"
-msgstr ""
+msgstr "状態の欄を追加"
 
 #: ../src/ui-dialogs.c:874
 msgid "Detail split lines"
-msgstr ""
+msgstr "詳細の行を分割"
 
 #. 123456789012345678901234567890123456789012345678901234567890
 #: ../src/ui-dialogs.c:884
@@ -3003,6 +3005,8 @@ msgid ""
 "The file will not be in HomeBank CSV format, because you export\n"
 "from 'All transaction', or you selected an option."
 msgstr ""
+"「全ての取引」からエクスポートしたか、又はオプションを選択したため、\n"
+"このファイルは HomeBank CSV 形式ではありません。"
 
 #: ../src/ui-dialogs.c:954
 msgid "Export as PDF"
@@ -3023,24 +3027,24 @@ msgstr ""
 
 #: ../src/ui-dialogs.c:1122
 msgid "Select action for target creation"
-msgstr ""
+msgstr "対象を作成するための動作を選択"
 
 #: ../src/ui-dialogs.c:1126
 msgid "Create _New"
-msgstr ""
+msgstr "新規作成(_N)"
 
 #: ../src/ui-dialogs.c:1127
 msgid "Use _Selection"
-msgstr ""
+msgstr "選択したのを使用(_S)"
 
 #: ../src/ui-dialogs.c:1155
 msgid "Source transfer"
-msgstr ""
+msgstr "元の振込"
 
 #. target listview
 #: ../src/ui-dialogs.c:1172
 msgid "Target association suggested"
-msgstr ""
+msgstr "提案された対象の関連付け"
 
 #: ../src/ui-dialogs.c:1177
 msgid ""
@@ -3051,7 +3055,7 @@ msgstr "振込に関連したと思われる取引が見つかりました。"
 #. header
 #: ../src/ui-filter.c:1013
 msgid "Text"
-msgstr ""
+msgstr "文字"
 
 #: ../src/ui-filter.c:1025
 msgid "_Memo:"
@@ -3070,12 +3074,12 @@ msgstr "大/小文字を区別する(_S)"
 #. TRANSLATORS: this is abbreviation for Payment
 #: ../src/ui-filter.c:1057 ../src/ui-filter.c:1304 ../src/ui-payee.c:978
 msgid "Payment"
-msgstr ""
+msgstr "支払"
 
 #. header
 #: ../src/ui-filter.c:1117 ../src/ui-filter.c:1282
 msgid "Type"
-msgstr ""
+msgstr "種類"
 
 #: ../src/ui-filter.c:1139 ../src/ui-transaction.c:55
 #: ../src/ui-widgets-data.c:204
@@ -3084,7 +3088,7 @@ msgstr "振込"
 
 #: ../src/ui-filter.c:1185
 msgid "Always show"
-msgstr ""
+msgstr "常に表示"
 
 #: ../src/ui-filter.c:1192 ../src/ui-widgets-data.c:167
 msgid "Void"
@@ -3092,31 +3096,31 @@ msgstr "無効"
 
 #: ../src/ui-filter.c:1196
 msgid "Added"
-msgstr ""
+msgstr "追加済み"
 
 #: ../src/ui-filter.c:1200
 msgid "Edited"
-msgstr ""
+msgstr "編集済み"
 
 #: ../src/ui-filter.c:1231
 msgid "_Use"
-msgstr ""
+msgstr "使用(_U)"
 
 #: ../src/ui-filter.c:1307
 msgid "Amount/Text"
-msgstr ""
+msgstr "金額・文字"
 
 #: ../src/ui-hbfile.c:43
 msgid "Due Date"
-msgstr ""
+msgstr "期日"
 
 #: ../src/ui-hbfile.c:44
 msgid "Next Payout"
-msgstr ""
+msgstr "次回の支払"
 
 #: ../src/ui-hbfile.c:45
 msgid "In Advance"
-msgstr ""
+msgstr "事前"
 
 #: ../src/ui-hbfile.c:230
 msgid "File properties"
@@ -3124,15 +3128,15 @@ msgstr "ファイルのプロパティ"
 
 #: ../src/ui-hbfile.c:282
 msgid "Automatic post:"
-msgstr ""
+msgstr "自動実行:"
 
 #: ../src/ui-hbfile.c:298
 msgid "of each"
-msgstr ""
+msgstr "日、"
 
 #: ../src/ui-hbfile.c:305
 msgid "month"
-msgstr ""
+msgstr "ヶ月ごと"
 
 #: ../src/ui-payee.c:1038
 msgid "Delete unused payee"
@@ -3148,11 +3152,11 @@ msgstr ""
 
 #: ../src/ui-payee.c:1232
 msgid "Edit Payee"
-msgstr ""
+msgstr "受取人を編集"
 
 #: ../src/ui-payee.c:1282
 msgid "Default Fill"
-msgstr ""
+msgstr "デフォルトの設定"
 
 #: ../src/ui-payee.c:1296 ../src/ui-transaction.c:1624
 #: ../src/ui-txn-multi.c:534
@@ -3330,8 +3334,7 @@ msgstr "HomeBankファイルのデフォルトのフォルダーを選択しま�
 
 #: ../src/ui-pref.c:659
 msgid "Choose a default HomeBank backup files folder"
-msgstr ""
-"HomeBankのバックアップファイルのデフォルトのフォルダーを選択してください"
+msgstr "HomeBankのバックアップファイルのデフォルトのフォルダーを選択してください"
 
 #: ../src/ui-pref.c:664
 msgid "Choose a default import folder"
@@ -3379,7 +3382,7 @@ msgstr "配色:"
 
 #: ../src/ui-pref.c:1397
 msgid "Smaller legend _font"
-msgstr ""
+msgstr "凡例のフォントを小さく"
 
 #: ../src/ui-pref.c:1408
 msgid "Statistics options"
@@ -3399,7 +3402,7 @@ msgstr "詳細を表示(_D)"
 
 #: ../src/ui-pref.c:1427
 msgid "Include _transfer"
-msgstr ""
+msgstr "振込取引を表示(_T)"
 
 #: ../src/ui-pref.c:1437
 msgid "Budget options"
@@ -3488,7 +3491,7 @@ msgstr "ガソリンをガロンで表示(_G)"
 #. label = make_label_group(_("Transaction window"));
 #: ../src/ui-pref.c:1721
 msgid "Transaction list"
-msgstr ""
+msgstr "取引一覧"
 
 #: ../src/ui-pref.c:1733
 msgid "_Show future:"
@@ -3517,23 +3520,23 @@ msgstr "備忘通知の取引を差引残高に記入"
 
 #: ../src/ui-pref.c:1766
 msgid "Lock reconciled for any changes"
-msgstr ""
+msgstr "照合済の取引を変更されないようにロック"
 
 #: ../src/ui-pref.c:1777
 msgid "Transaction dialog"
-msgstr ""
+msgstr "取引ダイアログ"
 
 #: ../src/ui-pref.c:1781
 msgid "_Keep the last date when multiple add"
-msgstr ""
+msgstr "複数追加時に最後の日付を保持(_K)"
 
 #: ../src/ui-pref.c:1786
 msgid "Transfer target date tolerance:"
-msgstr ""
+msgstr "振込予定日の許容範囲:"
 
 #: ../src/ui-pref.c:1795
 msgid "Enable _memo autocomplete with"
-msgstr ""
+msgstr "摘要の自動補完を有効にする(_M)。ただし"
 
 #: ../src/ui-pref.c:1801
 msgid "rolling days"
@@ -3541,7 +3544,7 @@ msgstr "日以内の取引に限る"
 
 #: ../src/ui-pref.c:1806
 msgid "Show add confirmation text for 5s"
-msgstr ""
+msgstr "追加された取引の確認を5秒間表示"
 
 #: ../src/ui-pref.c:1859
 msgid "_Toolbar:"
@@ -3555,7 +3558,7 @@ msgstr "グリッド線(_G):"
 
 #: ../src/ui-pref.c:1880
 msgid "Gtk settings"
-msgstr ""
+msgstr "Gtk設定"
 
 #: ../src/ui-pref.c:1884
 msgid "Override"
@@ -3563,7 +3566,7 @@ msgstr "上書き"
 
 #: ../src/ui-pref.c:1889
 msgid "Font _size:"
-msgstr ""
+msgstr "フォントサイズ(_S):"
 
 #: ../src/ui-pref.c:1897
 msgid "Dark theme"
@@ -3647,7 +3650,7 @@ msgstr "メインウィンドウの報告"
 
 #: ../src/ui-pref.c:2171
 msgid "Max _items:"
-msgstr ""
+msgstr "最大項目数(_I):"
 
 #: ../src/ui-pref.c:2266
 msgid "Reset All Preferences"
@@ -3720,11 +3723,11 @@ msgstr "警告：分割取引の合計金額と取引の種類が一致しない
 
 #: ../src/ui-tag.c:323
 msgid "(no tag)"
-msgstr ""
+msgstr "(タグなし)"
 
 #: ../src/ui-tag.c:676
 msgid "Edit Tag"
-msgstr ""
+msgstr "タグを編集"
 
 #: ../src/ui-tag.c:748
 #, c-format
@@ -3848,11 +3851,11 @@ msgid ""
 msgstr ""
 "・入力：日にち、または完全な日付\n"
 "・矢印キー + CtrlまたはShiftで年または月を変更\n"
-"・空白なら今日の日付になります"
+"・空白なら本日の日付になります"
 
 #: ../src/ui-transaction.c:1584
 msgid "No rate available to auto fill"
-msgstr ""
+msgstr "自動入力に使用できるレートがありません"
 
 #: ../src/ui-transaction.c:1616
 msgid "T_o:"
@@ -3923,7 +3926,7 @@ msgstr "（種類なし）"
 msgid "Bank"
 msgstr "銀行"
 
-#: ../src/ui-widgets-data.c:79 ../src/ui-widgets.c:1340
+#: ../src/ui-widgets-data.c:79 ../src/ui-widgets.c:1343
 msgid "Cash"
 msgstr "現金"
 
@@ -3931,7 +3934,7 @@ msgstr "現金"
 msgid "Asset"
 msgstr "資産"
 
-#: ../src/ui-widgets-data.c:81 ../src/ui-widgets.c:1338
+#: ../src/ui-widgets-data.c:81 ../src/ui-widgets.c:1341
 msgid "Credit card"
 msgstr "クレジットカード"
 
@@ -3941,118 +3944,103 @@ msgstr "負債"
 
 #: ../src/ui-widgets-data.c:83
 msgid "Checking"
-msgstr ""
+msgstr "当座預金"
 
 #: ../src/ui-widgets-data.c:84
 msgid "Savings"
-msgstr ""
+msgstr "普通預金"
 
 #: ../src/ui-widgets-data.c:96
 msgid "Yesterday"
-msgstr ""
+msgstr "昨日"
 
 #: ../src/ui-widgets-data.c:98
 msgid "Tomorrow"
-msgstr ""
+msgstr "明日"
 
 #: ../src/ui-widgets-data.c:100
-#, fuzzy
 msgid "Last Week"
-msgstr "週"
+msgstr "前週"
 
 #: ../src/ui-widgets-data.c:101
-#, fuzzy
 msgid "This Week"
-msgstr "週"
+msgstr "今週"
 
 #: ../src/ui-widgets-data.c:102
-#, fuzzy
 msgid "Next Week"
-msgstr "次の日付"
+msgstr "来週"
 
 #: ../src/ui-widgets-data.c:104
-#, fuzzy
 msgid "Last Fortnight"
-msgstr "今月"
+msgstr ""
 
 #: ../src/ui-widgets-data.c:105
-#, fuzzy
 msgid "This Fortnight"
-msgstr "今月"
+msgstr "この2週間"
 
 #: ../src/ui-widgets-data.c:106
 msgid "Next Fortnight"
-msgstr ""
+msgstr "次の2週間"
 
 #: ../src/ui-widgets-data.c:108
-#, fuzzy
 msgid "Last Month"
-msgstr "月"
+msgstr "前月"
 
 #: ../src/ui-widgets-data.c:109
-#, fuzzy
 msgid "This Month"
 msgstr "今月"
 
 #: ../src/ui-widgets-data.c:110
-#, fuzzy
 msgid "Next Month"
-msgstr "月"
+msgstr "来月"
 
 #: ../src/ui-widgets-data.c:112
-#, fuzzy
 msgid "Last Quarter"
-msgstr "四半期"
+msgstr "前四半期"
 
 #: ../src/ui-widgets-data.c:113
-#, fuzzy
 msgid "This Quarter"
-msgstr "四半期"
+msgstr "今四半期"
 
 #: ../src/ui-widgets-data.c:114
-#, fuzzy
 msgid "Next Quarter"
-msgstr "次の日付"
+msgstr "次の四半期"
 
 #: ../src/ui-widgets-data.c:116
-#, fuzzy
 msgid "Last Year"
-msgstr "半年"
+msgstr "昨年"
 
 #: ../src/ui-widgets-data.c:117
-#, fuzzy
 msgid "This Year"
-msgstr "年"
+msgstr "今年"
 
 #: ../src/ui-widgets-data.c:118
-#, fuzzy
 msgid "Next Year"
-msgstr "次の日付"
+msgstr "来年"
 
 #: ../src/ui-widgets-data.c:124
 msgid "Last 30 Days"
-msgstr ""
+msgstr "過去30日間"
 
 #: ../src/ui-widgets-data.c:125
 msgid "Last 60 Days"
-msgstr ""
+msgstr "過去60日間"
 
 #: ../src/ui-widgets-data.c:126
 msgid "Last 90 Days"
-msgstr ""
+msgstr "過去90日間"
 
 #: ../src/ui-widgets-data.c:128
 msgid "Last 12 Months"
-msgstr ""
+msgstr "過去12ヶ月間"
 
 #: ../src/ui-widgets-data.c:129
 msgid "30 Days Around"
-msgstr ""
+msgstr "向こう30日間"
 
 #: ../src/ui-widgets-data.c:130
-#, fuzzy
 msgid "All Date"
-msgstr "日付"
+msgstr "全ての日付"
 
 #: ../src/ui-widgets-data.c:137
 msgid "This month"
@@ -4060,19 +4048,19 @@ msgstr "今月"
 
 #: ../src/ui-widgets-data.c:138
 msgid "Next month"
-msgstr ""
+msgstr "翌月"
 
 #: ../src/ui-widgets-data.c:140
 msgid "Next 30 days"
-msgstr ""
+msgstr "次の30日間"
 
 #: ../src/ui-widgets-data.c:141
 msgid "Next 60 days"
-msgstr ""
+msgstr "次の60日間"
 
 #: ../src/ui-widgets-data.c:142
 msgid "Next 90 days"
-msgstr ""
+msgstr "次の90日間"
 
 #: ../src/ui-widgets-data.c:182
 msgid "Possible"
@@ -4089,7 +4077,7 @@ msgstr "より後"
 #. added 5.6
 #: ../src/ui-widgets-data.c:186
 msgid "Skip"
-msgstr ""
+msgstr "スキップ"
 
 #: ../src/ui-widgets-data.c:192
 msgid "Exp. & Inc."
@@ -4195,35 +4183,35 @@ msgstr "9月"
 msgid "Search..."
 msgstr "検索…"
 
-#: ../src/ui-widgets.c:1339
+#: ../src/ui-widgets.c:1342
 msgid "Check"
 msgstr "小切手"
 
-#: ../src/ui-widgets.c:1341
+#: ../src/ui-widgets.c:1344
 msgid "Bank Transfer"
 msgstr "銀行振込"
 
-#: ../src/ui-widgets.c:1342
+#: ../src/ui-widgets.c:1345
 msgid "Debit card"
 msgstr "デビットカード"
 
-#: ../src/ui-widgets.c:1343
+#: ../src/ui-widgets.c:1346
 msgid "Standing order"
 msgstr "自動振替"
 
-#: ../src/ui-widgets.c:1344
+#: ../src/ui-widgets.c:1347
 msgid "Electronic payment"
 msgstr "電子決済"
 
-#: ../src/ui-widgets.c:1345
+#: ../src/ui-widgets.c:1348
 msgid "Deposit"
 msgstr "入金"
 
 #. TRANSLATORS: Financial institution fee
-#: ../src/ui-widgets.c:1347
+#: ../src/ui-widgets.c:1350
 msgid "FI fee"
 msgstr "金融機関手数料"
 
-#: ../src/ui-widgets.c:1348
+#: ../src/ui-widgets.c:1351
 msgid "Direct Debit"
 msgstr "口座自動引き落とし"

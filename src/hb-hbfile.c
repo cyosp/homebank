@@ -85,7 +85,21 @@ GFileInfo *gfileinfo;
 	if( gfileinfo )
 	{
 		retval = g_file_info_get_attribute_uint64 (gfileinfo, G_FILE_ATTRIBUTE_TIME_MODIFIED);
-		DB( g_print("- '%s' last access = %lu\n", filepath, retval) );	
+		DB( g_print(" '%s' last access = %lu\n", filepath, retval) );	
+		
+		//add 5.6.2 if file opened more than 24h, currencies are obsolete
+		GDateTime *dtf = g_file_info_get_modification_date_time(gfileinfo);
+		gchar *dts = g_date_time_format_iso8601(dtf);
+		GDateTime *dtn = g_date_time_new_now_local();
+		GTimeSpan ts = g_date_time_difference(dtn, dtf);
+		DB( g_print(" modif datetime='%s' since %ld, %ld hours\n", dts, ts, ts/G_TIME_SPAN_HOUR) );		
+				
+		GLOBALS->xhb_obsoletecurr = ((ts/G_TIME_SPAN_HOUR) > 24) ? TRUE : FALSE;
+
+		g_free(dts);
+		g_date_time_unref(dtf);
+		g_date_time_unref(dtn);
+		
 		g_object_unref(gfileinfo);
 	}
 	g_object_unref(gfile);

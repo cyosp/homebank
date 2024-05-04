@@ -75,13 +75,13 @@
 
 #define HOMEBANK_MAJOR	5
 #define HOMEBANK_MINOR	6
-#define HOMEBANK_MICRO	1
+#define HOMEBANK_MICRO	2
 
-#define HB_VERSION		"5.6.1"
+#define HB_VERSION		"5.6.2"
 #define HB_VERSION_NUM	(HOMEBANK_MAJOR*10000) + (HOMEBANK_MINOR*100) + HOMEBANK_MICRO
 
 #define FILE_VERSION		1.4
-#define PREF_VERSION		561
+#define PREF_VERSION		562
 
 #if HB_UNSTABLE == FALSE
 	#define	PROGNAME		"HomeBank"
@@ -339,6 +339,7 @@ struct HomeBank
 	gchar			*xhb_filepath;
 	gboolean		xhb_hasrevert;		//file has backup (*.xhb~) used for revert menu sensitivity
 	guint64			xhb_timemodified;
+	gboolean		xhb_obsoletecurr;
 
 	// really global stuffs
 	gboolean		first_run;

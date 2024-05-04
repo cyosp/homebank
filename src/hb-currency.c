@@ -324,7 +324,6 @@ end:
 }
 
 
-
 Currency4217 *iso4217format_get(gchar *code)
 {
 Currency4217 *cur;
@@ -563,7 +562,7 @@ Currency *item;
 	if( !item->grouping_char )
 		item->grouping_char = g_strdup("");
 
-	#if MEDEBUG == 1
+	#if MYDEBUG == 1
 	g_printf("        symbol ='%s'\n", item->symbol);
 	g_printf("    sym_prefix ='%d'\n", item->sym_prefix);
 	g_printf("  decimal_char ='%s'\n", item->decimal_char);
@@ -588,10 +587,22 @@ Currency *cur;
 	if(cur)
 	{
 		DB( g_print(" found cur='%s'\n", cur->iso_code) );
-		cur->rate = rate;
-		cur->mdate = date;
-		GLOBALS->changes_count++;
-		retval = TRUE;
+
+		cur->rate   = rate;
+		cur->mdate  = date;		
+
+		//#2002650 test if there is a change
+		if( rate != cur->rate )
+		{
+			GLOBALS->changes_count++;
+			retval = TRUE;
+		}
+		#if MYDEBUG == 1
+		else
+		{
+			DB( g_print(" rate was identical\n") );
+		}
+		#endif
 	}
 
 	return retval;
