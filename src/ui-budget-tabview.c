@@ -332,7 +332,7 @@ ui_bud_tabview_search_criteria_t parent_search = ui_bud_tabview_search_criteria_
 		budget,
 		&child,
 		UI_BUD_TABVIEW_CATEGORY_KEY, bdg_category->key,
-		UI_BUD_TABVIEW_CATEGORY_NAME, bdg_category->name,
+		UI_BUD_TABVIEW_CATEGORY_NAME, bdg_category->typename,
 		UI_BUD_TABVIEW_CATEGORY_FULLNAME, bdg_category->fullname,
 		UI_BUD_TABVIEW_CATEGORY_TYPE, category_type_get (bdg_category),
 		UI_BUD_TABVIEW_IS_MONITORING_FORCED, (bdg_category->flags & GF_FORCED),
@@ -1207,7 +1207,7 @@ ui_bud_tabview_view_mode_t view_mode = UI_BUD_TABVIEW_VIEW_SUMMARY;
 	}
 
 	g_object_set(renderer,
-		"style", is_sub_category ? PANGO_STYLE_ITALIC : PANGO_STYLE_NORMAL,
+		//"style", is_sub_category ? PANGO_STYLE_ITALIC : PANGO_STYLE_NORMAL,
 		"weight", weight,
 		NULL);
 }
@@ -1562,7 +1562,7 @@ ui_bud_tabview_data_t *data = user_data;
 	gtk_tree_view_column_set_resizable(col, TRUE);
 
 	gtk_tree_view_column_pack_start (col, cat_name_renderer, TRUE);
-	gtk_tree_view_column_add_attribute(col, cat_name_renderer, "text", UI_BUD_TABVIEW_CATEGORY_NAME);
+	gtk_tree_view_column_add_attribute(col, cat_name_renderer, "markup", UI_BUD_TABVIEW_CATEGORY_NAME);
 	gtk_tree_view_column_set_cell_data_func(col, cat_name_renderer, ui_bud_tabview_view_display_category_name, (gpointer) data, NULL);
 #if HB_BUD_TABVIEW_EDIT_ENABLE
 	g_object_set(cat_name_renderer, "editable", TRUE, NULL);

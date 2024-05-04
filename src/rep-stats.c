@@ -65,7 +65,7 @@ static void repstats_update_daterange(GtkWidget *widget, gpointer user_data);
 static void repstats_update_date_widget(GtkWidget *widget, gpointer user_data);
 static void repstats_selection(GtkTreeSelection *treeselection, gpointer user_data);
 static void repstats_selection2(GtkTreeSelection *treeselection, gpointer user_data);
-static gchar *repstats_compute_title(gint mode, gint src, gint type);
+static gchar *repstats_compute_title(gint mode, gint src, gint type, gint intvl);
 
 
 extern HbKvData CYA_REPORT_SRC[];
@@ -167,12 +167,13 @@ struct repstats_data *data = user_data;
 static void repstats_action_print(GtkToolButton *toolbutton, gpointer user_data)
 {
 struct repstats_data *data = user_data;
-gint tmpsrc, tmpmode, tmptype, page;
+gint tmpsrc, tmpmode, tmptype, tmpintvl, page;
 gchar *title, *name;
 
 	tmpmode  = hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_mode));
 	tmpsrc  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_src));
 	tmptype = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_type));
+	tmpintvl = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_intvl));
 	page = gtk_notebook_get_current_page(GTK_NOTEBOOK(data->GR_result));
 	
 	name = g_strdup_printf("hb-repstat_%s", hbtk_get_label(CYA_REPORT_SRC,tmpsrc));
@@ -181,7 +182,7 @@ gchar *title, *name;
 	{
 	GString *node;
 	
-		title = repstats_compute_title(tmpmode, tmpsrc, tmptype);
+		title = repstats_compute_title(tmpmode, tmpsrc, tmptype, tmpintvl);
 		if( tmpmode == 0 )
 			node = lst_report_to_string(GTK_TREE_VIEW(data->LV_report), tmpsrc, hbtk_get_label(CYA_REPORT_SRC, tmpsrc), TRUE);
 		else
@@ -247,15 +248,25 @@ gint response_id;
 
 
 static gchar *
-repstats_compute_title(gint mode, gint src, gint type)
+repstats_compute_title(gint mode, gint src, gint type, gint intvl)
 {
-gchar *title;
+gchar *x, *y;
+
+	//5.7.3 fix title
+	if( mode == REPORT_MODE_TOTAL )
+	{
+		x = hbtk_get_label(CYA_REPORT_TYPE,type);
+		y = hbtk_get_label(CYA_REPORT_SRC, src);
+	}
+	else
+	{
+		x = hbtk_get_label(CYA_REPORT_SRC, src);
+		y = hbtk_get_label(CYA_REPORT_INTVL, intvl);
+	}
 
 	//TRANSLATORS: example 'Expense by Category'
-	title = g_strdup_printf(_("%s by %s"), hbtk_get_label(CYA_REPORT_TYPE,type), hbtk_get_label(CYA_REPORT_SRC, src) );
-
-
-	return title;
+	//TRANSLATORS: example 'Category by Month'
+	return g_strdup_printf(_("%s by %s"), x, y );
 }
 
 
@@ -301,7 +312,6 @@ gint range;
 	if(range != FLT_RANGE_MISC_CUSTOM)
 	{
 		filter_preset_daterange_set(data->filter, range, 0);
-
 		repstats_update_date_widget(data->window, NULL);
 
 		repstats_compute(data->window, NULL);
@@ -315,7 +325,7 @@ static void repstats_update(GtkWidget *widget, gpointer user_data)
 struct repstats_data *data;
 gboolean byamount;
 GtkTreeModel		 *model;
-gint tmpmode, tmpsrc, tmptype, usrcomp, column;
+gint tmpmode, tmpsrc, tmptype, tmpintvl, usrcomp, column;
 gboolean xval;
 gchar *title;
 
@@ -325,12 +335,12 @@ gchar *title;
 
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_report));
 	byamount = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_byamount));
-	usrcomp = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_compare));
-
-	tmpmode = hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_mode));
+	usrcomp  = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_compare));
+	tmpmode  = hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_mode));
 	//tmpsrc  = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_src));
-	tmpsrc  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_src));
-	tmptype = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_type));
+	tmpsrc   = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_src));
+	tmptype  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_type));
+	tmpintvl = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_intvl));
 	
 	//debug option
 	DB( g_print(" option: byamount=%d tmptype=%d '%s' tmpsrc=%d '%s'\n\n", byamount, tmptype, hbtk_get_label(CYA_REPORT_TYPE,tmptype), tmpsrc, hbtk_get_label(CYA_REPORT_SRC,tmpsrc)) );
@@ -357,7 +367,7 @@ gchar *title;
 	DB( g_print(" sort on column %d\n\n", column) );
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), column, GTK_SORT_ASCENDING);
 
-	title = repstats_compute_title(tmpmode, tmpsrc, tmptype);
+	title = repstats_compute_title(tmpmode, tmpsrc, tmptype, tmpintvl);
 
 	#if HB_STATS_DO_TOTAL == 1
 	gtk_chart_set_color_scheme(GTK_CHART(data->RE_chart), PREFS->report_color_scheme);
@@ -834,7 +844,7 @@ GtkTreeIter  iter, parent, *tmpparent;
 	tmpintvl  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_intvl));
 	tmpaccbal = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_balance));
 	tmpforecast = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_forecast));
-	if( tmpsrc != REPORT_SRC_ACCOUNT )
+	if( tmpsrc != REPORT_SRC_ACCOUNT && tmpsrc != REPORT_SRC_ACCGROUP)
 		tmpaccbal = FALSE;
 
 	DB( hb_print_date(data->filter->mindate, "min:") );
@@ -1202,7 +1212,7 @@ gint mode, type, tmpsrc, page;
 	visible = (mode==0 && page == 0) ? TRUE : FALSE;
 	hb_widget_visible(data->BT_rate, visible);
 
-	visible = (tmpsrc == REPORT_SRC_ACCOUNT) ? TRUE : FALSE;
+	visible = (tmpsrc == REPORT_SRC_ACCOUNT) || (tmpsrc == REPORT_SRC_ACCGROUP) ? TRUE : FALSE;
 	hb_widget_visible(data->CM_balance, visible);
 
 	//zoom

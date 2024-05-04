@@ -210,40 +210,16 @@ ui_cat_entry_popover_text_cell_data_function (GtkTreeViewColumn *col,
 				GtkTreeIter *iter,
 				gpointer user_data)
 {
-Category *entry;
-gchar *name;
-gchar *string;
+Category *item;
+gchar *markup;
 
-	gtk_tree_model_get(model, iter, STO_CAT_DATA, &entry, -1);
-	if(entry->key == 0)
-		name = _("(no category)");
-	else
-		name = entry->name;
+	gtk_tree_model_get(model, iter, 
+		STO_CAT_DATA, &item, 
+		-1);
 
-	gchar type = category_get_type_char(entry);
+	markup = (item->key == 0) ? _("(no category)") : item->typename;
 
-	#if MYDEBUG
-	if(entry->flags & GF_MIXED) type = 'm';
-	string = g_markup_printf_escaped ("[%c] %d:%d '%s' 0x(%d)", 
-		type, entry->parent, entry->key, entry->fullname, entry->flags );
-	#else
-	if(entry->key == 0)
-		string = g_strdup(name);
-	else
-	{
-		if( entry->parent == 0 )
-			string = g_markup_printf_escaped("%s [%c]", name, type);
-		else
-			string = g_markup_printf_escaped(" %c <i>%s</i>", type, name);
-			//string = g_strdup_printf(" - %s", name);
-	}
-	#endif
-
-	//g_object_set(renderer, "text", string, NULL);
-	g_object_set(renderer, "markup", string, NULL);
-
-	g_free(string);
-
+	g_object_set(renderer, "markup", markup, NULL);
 }
 
 
@@ -759,40 +735,16 @@ ui_cat_listview_text_cell_data_function (GtkTreeViewColumn *col,
 				GtkTreeIter *iter,
 				gpointer user_data)
 {
-Category *entry;
-gchar *name;
-gchar *string;
+Category *item;
+gchar *markup;
 
 	gtk_tree_model_get(model, iter, 
-		LST_DEFCAT_DATAS, &entry,
-		//LST_DEFCAT_NAME, &name,
+		LST_DEFCAT_DATAS, &item,
 		-1);
-	if(entry->key == 0)
-		name = _("(no category)");
-	else
-		name = entry->name;
 
-	gchar type = category_get_type_char(entry);
+	markup = (item->key == 0) ? _("(no category)") : item->typename;
 
-	if(entry->key == 0)
-		string = g_strdup(name);
-	else
-	{
-		if( entry->parent == 0 )
-			string = g_markup_printf_escaped("%s [%c]", name, type);
-			//string = g_strdup_printf("%s [%c]", name, type);
-		else
-			string = g_markup_printf_escaped("%c <i>%s</i>", type, name);
-			//string = g_strdup_printf("%c <i>%s</i>", type, name);
-	}
-
-	//g_print(" txt = '%s'\n", string);
-
-	//g_object_set(renderer, "text", string, NULL);
-	g_object_set(renderer, "markup", string, NULL);
-
-	g_free(string);
-
+	g_object_set(renderer, "markup", markup, NULL);
 }
 
 

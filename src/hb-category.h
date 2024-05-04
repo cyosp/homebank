@@ -33,6 +33,7 @@ struct _category
 
 	/* unsaved datas */
 	gchar		*fullname;
+	gchar		*typename;
 	//gboolean	flt_select;
 	guint16		nb_use_txn;
 	guint16		nb_use_txncat;	//cat usage only

@@ -482,24 +482,28 @@ guint n_row, n_key;
 		{
 			case REPORT_SRC_NONE:
 				n_row = 1;
-				n_key  = 1;
+				n_key = 1;
 				break;
 			case REPORT_SRC_CATEGORY:
 				n_row = da_cat_length();
-				n_key  = da_cat_get_max_key();
+				n_key = da_cat_get_max_key();
 				break;
 			case REPORT_SRC_PAYEE:
 				n_row = da_pay_length();
-				n_key  = da_pay_get_max_key();
+				n_key = da_pay_get_max_key();
 				break;
 			//5.7: todo check this +1
 			case REPORT_SRC_ACCOUNT:
 				n_row = da_acc_length();
-				n_key  = da_acc_get_max_key();
+				n_key = da_acc_get_max_key();
+				break;
+			case REPORT_SRC_ACCGROUP:
+				n_row = da_grp_length();
+				n_key = da_grp_get_max_key();
 				break;
 			case REPORT_SRC_TAG:
 				n_row = da_tag_length();
-				n_key  = da_tag_get_max_key();
+				n_key = da_tag_get_max_key();
 				break;
 		}
 	}
@@ -602,6 +606,7 @@ guint idx = 0;
 	g_list_free(lpay);
 }
 
+
 static void _datatable_init_items_acc(DataTable *dt)
 {
 GList *lacc, *l;
@@ -631,6 +636,37 @@ guint idx = 0;
 	}
 	g_list_free(lacc);
 }
+
+
+static void _datatable_init_items_accgrp(DataTable *dt)
+{
+GList *lgrp, *l;
+guint idx = 0;
+
+	lgrp = l = group_glist_sorted(HB_GLIST_SORT_NAME);
+	while (l != NULL )
+	{
+	Group *grp = l->data;
+	DataRow *dr = dt->rows[idx];
+
+		if( dr != NULL )
+		{
+			dr->pos   = idx;
+			dr->label = g_strdup( (grp->key == 0) ? _("(no group)") : grp->name );
+			DB2( g_print(" +grp k:%d, idx:%d '%s'\n", grp->key, idx, dr->label) );
+			//store transpose
+			dt->keyindex[grp->key] = idx;
+			//datatable_set_keyindex(dt, acc->key, idx);
+			//store keylist
+			dt->keylist[idx] = grp->key;
+			//datatable_set_keylist(dt, idx, acc->key);
+		}
+		l = g_list_next(l);
+		idx++;
+	}
+	g_list_free(lgrp);
+}
+
 
 
 static void _datatable_init_items_tag(DataTable *dt)
@@ -718,6 +754,9 @@ GDateYear prevyear = 0;
 				break;
 			case REPORT_SRC_ACCOUNT:
 				_datatable_init_items_acc(dt);
+				break;
+			case REPORT_SRC_ACCGROUP:
+				_datatable_init_items_accgrp(dt);
 				break;
 			case REPORT_SRC_TAG:
 				_datatable_init_items_tag(dt);
@@ -934,7 +973,10 @@ static void datatable_data_add_balance(DataTable *dt, gint src, gint intvl, Filt
 GList *lst_acc, *lnk_acc;
 GList *lnk_txn;
 
-	if( src != REPORT_SRC_ACCOUNT && src != REPORT_SRC_NONE )
+	DB1( g_print(" -- try add balance\n") );
+
+
+	if( src != REPORT_SRC_ACCOUNT && src != REPORT_SRC_ACCGROUP && src != REPORT_SRC_NONE )
 		return;
 
 	DB1( g_print(" -- add balance\n") );
@@ -958,8 +1000,20 @@ GList *lnk_txn;
 
 		//add initial amount to col[0]
 		trn_amount = hb_amount_base(acc->initial, acc->kcur);
-		//for none, we only allocate the row[0]
-		datatable_add(dt, (src == REPORT_SRC_NONE) ? 0 : acc->key, 0, trn_amount, TRUE);
+		//we can't use report_items_get_key here
+		//for none, we only allocate the row[0], so pos is 0
+		pos = 0;
+		switch(src)
+		{
+			case REPORT_SRC_ACCOUNT:
+				pos = acc->key;
+				break;
+			case REPORT_SRC_ACCGROUP:
+				pos = acc->kgrp;
+				break;
+		}		
+		
+		datatable_add(dt, pos, 0, trn_amount, TRUE);
 		DB2( g_print("  ** add initbal %8.2f to row:%d, col:%d\n", trn_amount, acc->key, 0) );
 
 		//add txn amount prior mindate to col[0]
@@ -984,7 +1038,7 @@ GList *lnk_txn;
 
 				if( txn->date < flt->mindate )
 				{
-					//DB2( g_print("  **add %8.2f row:%d, col:%d\n", trn_amount, pos, 0) );
+					DB2( g_print("  **add %8.2f row:%d, col:%d\n", trn_amount, pos, 0) );
 					datatable_add(dt, pos, 0, trn_amount, TRUE);
 				}
 			}
@@ -1137,7 +1191,12 @@ GDate *post_date;
 			
 			acc = da_acc_get(txn->kacc);
 			if(acc)
+			{
+				//#5.7.3 don't forecast...
+				if( acc->flags & (AF_NOREPORT|AF_CLOSED) )
+					goto nextarc;
 				txn->kcur = acc->kcur;
+			}
 
 			txn->date = curdate = arc->nextdate;
 
@@ -1167,6 +1226,7 @@ GDate *post_date;
 
 			da_transaction_free (txn);
 		}
+nextarc:
 		list = g_list_next(list);
 	}
 
@@ -1312,6 +1372,7 @@ gdouble da_datarow_get_cell_sum(DataRow *dr, guint32 index)
 //rep-stat
 guint report_items_get_key(gint src, guint jfrom, Transaction *txn)
 {
+Account *acc;
 guint key = 0;
 
 	switch(src)
@@ -1331,8 +1392,14 @@ guint key = 0;
 		case REPORT_SRC_ACCOUNT:
 			key = txn->kacc;
 			break;
+		case REPORT_SRC_ACCGROUP:
+			acc = da_acc_get(txn->kacc);
+			if( acc != NULL )
+				key = acc->kgrp;
+			break;
+
 		//TODO! miss TAG
-			
+
 		case REPORT_SRC_MONTH:
 			key = DateInMonth(jfrom, txn->date);
 			break;

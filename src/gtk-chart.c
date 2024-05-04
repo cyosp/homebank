@@ -970,7 +970,7 @@ guint rowid, colid;
 		gtk_tree_model_get (GTK_TREE_MODEL(model), &firstiter,
 			LST_REPORT2_LABEL, &itrlabel,
 			-1);
-		gchar *bc = g_markup_printf_escaped("<a href=\"root\">%s</a> &gt; %s", CHART_CATEGORY, itrlabel);
+		gchar *bc = g_markup_printf_escaped("<a href=\"root\">%s</a> &gt; %s", _(CHART_CATEGORY), itrlabel);
 
 
 		gtk_label_set_markup(GTK_LABEL(chart->breadcrumb), bc);
@@ -1684,7 +1684,8 @@ gboolean valid = FALSE;
 	else
 	{
 	GtkTreePath *path = gtk_tree_path_new_from_indices(indice, -1);
-	gchar *pathstr, *itrlabel;
+	gchar *pathstr, *itrlabel, *valstr;
+	gdouble value1;
 
 		chart->show_breadcrumb = TRUE;
 
@@ -1697,8 +1698,13 @@ gboolean valid = FALSE;
 		// update the breadcrumb
 		gtk_tree_model_get (GTK_TREE_MODEL(totmodel), &iter,
 			LST_REPORT_NAME, &itrlabel,
+			column1, &value1,
 			-1);
-		gchar *bc = g_markup_printf_escaped("<a href=\"root\">Category</a> &gt; %s", itrlabel);
+		
+		//5.7.3 // 2042699
+		valstr = chart_print_double(chart, chart->buffer1, value1);
+		
+		gchar *bc = g_markup_printf_escaped("<a href=\"root\">%s</a> &gt; %s %s", _(CHART_CATEGORY), itrlabel, valstr);
 		gtk_label_set_markup(GTK_LABEL(chart->breadcrumb), bc);
 		g_free(bc);
 		gtk_widget_show(chart->breadcrumb);
@@ -1879,7 +1885,7 @@ gint i, n_legend;
 	if( chart->show_breadcrumb )
 	{
 		chart_set_font_size(chart, layout, CHART_FONT_SIZE_NORMAL);
-		pango_layout_set_text (layout, "Category", -1);
+		pango_layout_set_text (layout, _(CHART_CATEGORY), -1);
 		pango_layout_get_size (layout, &tw, &th);
 		bch = (th / PANGO_SCALE);
 		gtk_widget_set_margin_top(chart->breadcrumb, drawctx->t + drawctx->title_zh + drawctx->subtitle_zh);
