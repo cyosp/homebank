@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content="text/html; charset=utf-8" http-equiv="content-type">
+  <meta content="noindex" name="robots">
+  <title>Accounts dialog</title>
+  <link href="help.css" rel="stylesheet" type="text/css">
+</head>
+<body id="top">
+  <div class="dochead">
+    HomeBank User manual
+  </div>
+  <div class="title">
+    <h1>Accounts dialog</h1>
+    <p>The accounts dialog is used to add, edit and manage the <a href="00-lexicon.html#account">accounts</a> of the current wallet.</p>
+    <h2>Dialog call</h2>
+    <ul>
+      <li>main window menu: Manage / Accounts</li>
+      <li>main window tool bar.</li>
+    </ul>
+  </div>
+
+  <div class="row">
+  <div class="gfx">
+    <img class="gtkshot right" src="images/dlg-account1.png"><br>
+    <img class="gtkshot right" src="images/dlg-account2.png"><br>
+    <img class="gtkshot right" src="images/dlg-account3.png">
+  </div>
+  <div class="rounded content">
+    <h2>Using accounts dialog</h2>
+
+    <h3><img src="images/1.png" width="15" height="15"> Account list</h3>
+    <p>display the actual list of accounts in the wallet. The account at the top of the list will be the one to be displayed when opening your wallet. You can easily change the accounts order using Drag&amp;Drop process.</p>
+    <p>
+      <img src="images/hb-ope-budget.png" width="16" height="16"> = account is part of the budget
+    </p>
+
+    <h3><img src="images/2.png" width="15" height="15"> Buttons</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Add</th>
+        <td>add a new empty account.</td>
+      </tr>
+      <tr>
+        <th>Delete</th>
+        <td>delete the active account. This is only possible if the account has no transactions.</td>
+      </tr>
+      <tr>
+        <th>Edit</th>
+        <td>edit the active account.</td>
+      </tr>
+    </table><br>
+
+    <h3><img src="images/3.png" width="15" height="15"> General</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Type</th>
+        <td>the type of the account</td>
+      </tr>
+      <tr>
+        <th>Group</th>
+        <td>the group name of the account</td>
+      </tr>
+      <tr>
+        <th>Institution</th>
+        <td>the bank name where the account is registered.</td>
+      </tr>
+      <tr>
+        <th>Number</th>
+        <td>the bank account number itself.</td>
+      </tr>
+      <tr>
+        <th>Start balance</th>
+        <td>the initial balance amount, i.e the balance before the first transaction.</td>
+      </tr>
+      <tr>
+        <th>Currency</th>
+        <td>
+          the currency of the account, you can manage this list with the <a href="dlg-curr.html">currencies dialog</a><br>
+          <p><img src="images/d-warn.png">&nbsp;<span class="warning">If the account you change contains internal xfer, any target account will change of currency as well</span></p>
+        </td>
+      </tr>
+      <tr>
+        <th>This account was closed</th>
+        <td>the bank account is closed.<br>
+        please also note that closed account are no more considered for reports.</td>
+      </tr>
+      <tr>
+        <th>Notes</th>
+        <td>optional notes you may want to add</td>
+      </tr>
+    </table>
+
+    <h3><img src="images/4.png" width="15" height="15"> Behaviour</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Default template</th>
+        <td>the template transaction prefill new transaction with.<br>
+          <img src="images/d-info.png">&nbsp;From the main window, the template will work only if you preselect an account in 'Your accounts' list</td>
+      </tr>
+      <tr>
+        <th>Exclude from account summary</th>
+        <td>the account will must not be used into the account summary list of the main window.</td>
+      </tr>
+      <tr>
+        <th>Outflow in summary</th>
+        <td>the account will be aside any total in the summary list of the main window.</td>
+      </tr>
+      <tr>
+        <th>Exclude from the budget</th>
+        <td>the account will not be used for the budget data.</td>
+      </tr>
+      <tr>
+        <th>Exclude from any reports</th>
+        <td>the account will not be used for any report data.</td>
+      </tr>
+    </table>
+
+    <h3><img src="images/5.png" width="15" height="15"> Misc.</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Overdraft at</th>
+        <td>
+          the balance threshold, if you have an authorized balance, this will be used in the <a href="05over.html">Balance</a> report window.
+        </td>
+      </tr>
+        <th>Maximum</th>
+        <td>
+          the maximum amount for this account
+        </td>
+      </tr>
+      <tr>
+        <th>Chequebook 1</th>
+        <td>the next cheque number of first pad to be used (this is auto updated later when you add some transactions).</td>
+      </tr>
+      <tr>
+        <th>Chequebook 2</th>
+        <td>some of the above but for a second cheque pad (for a joined account)</td>
+      </tr>
+    </table>
+
+  </div>
+</body>
+</html>

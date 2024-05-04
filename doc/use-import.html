@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content="text/html; charset=utf-8" http-equiv="CONTENT-TYPE">
+  <meta content="noindex" name="robots">
+  <title>Using the import files feature</title>
+  <link href="help.css" rel="stylesheet" type="text/css">
+</head>
+<body id="top">
+  <div class="dochead">
+    HomeBank User manual
+  </div>
+  <div class="title">
+    <h1>Using the Import files feature</h1>
+    <p>HomeBank is able to import one or several downloaded statements from your bank or credit card, 
+    or maybe exported from some other programs, in the following formats:</p>
+
+    <p class="padleft">
+    <b>Recommended:</b> .OFX or .QFX<br>
+    <i>(Sometimes named Money™ or Quicken™)</i><br>
+    <b>Supported:</b> .QIF<br>
+    <i>(Common Quicken™ file)</i><br>
+    <b>Advanced users only:</b> .CSV<br>
+    <i>(format is specific to HomeBank, <a href="misc-csvformat.html#txn">see the documentation</a>)</i><br>
+    </p>
+
+    <ul class="toc">
+      <li>Step 1: <a href="#step1">Open the import assistant dialog</a></li>
+      <li>Step 2: <a href="#step2">Select file(s) to import</a></li>
+      <li>Step 3: <a href="#step3">Adjust what to import for each account</a></li>
+      <li>Step 4: <a href="#step4">Confirmation</a></li>
+    </ul>
+    <p><img src="images/d-warn.png">&nbsp;<span class="warning">Starting v5.2, the assignments occurs when you validate the import.</span></p>
+  </div>
+  <div class="rounded content">
+    <h3 id="step1">Step 1: Open the import assistant dialog</h3>
+    <p>From the <em>main window</em>:</p>
+    <ul>
+      <li>Select the File/Import... menu<br>
+      The import assistant will open, with an empty file list</li>
+      <br>
+      <li>By dropping one or several file to import<br>
+      The import assistant will open, with the file dropped already into the file list</li>
+    </ul>
+    <p>then you will be guided you through the different steps for importing the files</p>
+    <div class="clear"></div>
+  </div>
+  <div class="rounded content">
+    <h3>Step 2: Select file(s) to import</h3>
+    <p>You can again drop some files here, or use the +/- button to pick up some files to import.</p>
+          <img class="gtkshot left" src="images/use-import2.png"></p>
+  <div class="clear"></div>
+  </div>
+  <div class="rounded content">
+    <h3 id="step3">Step 3: Adjust what to import for each account</h3>
+    <p>For each account, you will be able to select what to import with several option, depending on the format.</p>
+    
+    <h4>Import xxxxxx into</h4><img class="gtkshot right" src="images/use-import3a.png">
+    <p>where xxxxxx will be <b>this file</b> or <b>this account</b>. If you put the mouse over it, you will get 
+    some information on a tooltip: Name, Number, File, Encoding.</p>
+
+    <h4>Target account</h4>
+    <p>
+      <ul>
+        <li>&lt;New account (global)&gt; : is a global account to merge several file/account</li>
+        <li>&lt;New account&gt; : import in a separate account<br>
+        <li>... all your existing account ...</li>
+        <li>&lt;Skip this account&gt; : to completely skip the account</li>
+      </ul>
+    </p>
+
+    <h4>Automated account target</h4>
+    <p>Except for .CSV, HomeBank will try to match the account by its number at first, then by its name.</p>
+    <p>For this to work, of course the number (for OFX) or name (for OFX/QIF) into HomeBank must be a substring 
+    or exact string of what it is into the file to import. For example:<br>
+      if your account number is <i>1234</i> and the number into the file is 1111 666 <i>1234</i> 77 it should match and preset 
+      the target account for you.</p> 
+
+    <p>If the file do not contains any reliable account information, you will get a <img src="images/d-warn.png"> icon right to the target account dropdown.</p>
+
+    <h4>Import options</h4>
+    <p>Depending on the format, you will have several option, similar to the one you have configured into the preferences.</p>
+
+
+    <h4>Transactions to import</h4><img class="gtkshot right" src="images/use-import3b.png">
+    <p>Into this listview will be displayed all the transaction for the current file/account. You can check/uncheck each transaction one by one
+    or select all, none, invert option, and valid to uncheck again possible duplicate.</p>
+    <p>By default, HomeBank will detect exact duplicate (within the current import), and depending on the target account, the 
+    similar transaction into the target account, uncheck them for import and mark them with a <img src="images/hb-ope-similar.png"> icon.</p>
+    <p>Possible duplicate note:<br>
+    If the file is an OFX/QFX file, the fitid will be used, identical fitid means a duplicate (since 5.5.1).<br>
+  Otherwise a simple comparison of value: date, amount, memo, payee and category identical means a duplicate.</p>
+
+    <h4>Similar transaction in target account</h4>
+    <p>This section will be showed for transaction suspected to already 
+    exists. You can also change the date gap here. The similar detection refresh when you change the target account or the date gap.</p>
+    <p>The detection of similar transaction is done in the following order, according to the date gap (default is 0 days = exact).</p>
+    <ul>
+      <li>same account</li>
+      <li>same amount</li>
+      <li>same date (with the configured tolerance)</li>
+    </ul>
+    <div class="clear"></div>
+  </div>
+  <div class="rounded content">
+    <h3 id="step4">Step 4: Confirmation</h3>
+    <p>At last, the synthesis of what is to be imported, for each account.</p>
+    <p><img class="gtkshot" src="images/use-import4.png"></p>
+    <div class="clear"></div>
+  </div>
+</body>
+</html>

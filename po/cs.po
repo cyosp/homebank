@@ -1,0 +1,4098 @@
+# translation of cs.po to Czech
+# translation of cs.po to
+# Czech translation for homebank
+# Copyright (c) 2007 Rosetta Contributors and Canonical Ltd 2007
+# This file is distributed under the same license as the homebank package.
+#
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2007.
+# Jiří Zachař <jirizachar@seznam.cz>, 2007.
+msgid ""
+msgstr ""
+"Project-Id-Version: cs\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2022-11-13 09:58+0100\n"
+"PO-Revision-Date: 2021-04-21 22:27+0000\n"
+"Last-Translator: Martin Fiala <ten.martin.fiala@gmail.com>\n"
+"Language-Team: Czech <cs@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2022-12-05 17:16+0000\n"
+"X-Generator: Launchpad (build 51cef3d08dff1e227b5ada709bd67280c567d4be)\n"
+"Language: cs\n"
+
+#: ../data/homebank.desktop.in.in.h:1 ../src/dsp-mainwindow.c:702
+msgid "HomeBank"
+msgstr "HomeBank"
+
+#: ../data/homebank.desktop.in.in.h:2
+msgid "Personal finance"
+msgstr "Osobní finance"
+
+#: ../data/homebank.desktop.in.in.h:3 ../src/dsp-mainwindow.c:209
+#: ../src/dsp-mainwindow.c:706
+msgid "Free, easy, personal accounting for everyone"
+msgstr "Jednoduché, osobní účetnictví zdarma pro každého"
+
+#: ../data/homebank.desktop.in.in.h:4
+msgid "finance;accounting;budget;personal;money;"
+msgstr "finance,účetnictví,rozpočet,osobní,peníze"
+
+#: ../data/homebank.appdata.xml.in.h:1
+msgid ""
+"HomeBank is a free software (as in \"free speech\" and also as in \"free "
+"beer\") that will assist you to manage your personal accounting."
+msgstr ""
+"HomeBank je svobodný software (ve smyslu jak svobody slova, tak zdarma) "
+"který vám pomůže spravovat vaše osobní účetnictví."
+
+#: ../data/homebank.appdata.xml.in.h:2
+msgid ""
+"It is designed to easy to use and be able to analyse your personal finance "
+"in detail using powerful filtering tools and beautiful graphs."
+msgstr ""
+"Je navržen pro snadnou, podrobnou analýzu osobních financí pomocí výkonných "
+"filtračních nástrojů a přehledných grafů."
+
+#: ../data/homebank.appdata.xml.in.h:3
+msgid ""
+"If you are looking for a completely free and easy way to manage your "
+"personal accounting then HomeBank should be the software of choice."
+msgstr ""
+"Pokud hledáte způsob, jak zcela zdarma a snadno spravovat své osobní "
+"účetnictví, potom by pro vás aplikace HomeBank mohla být volbou."
+
+#: ../src/dsp-account.c:212
+#, c-format
+msgid "There is %d group of similar transactions"
+msgstr "Je zde %d skupina podobných transakcí"
+
+#: ../src/dsp-account.c:217
+msgid "No similar transaction were found !"
+msgstr "Nenalezeny žádné podobné transakce!"
+
+#: ../src/dsp-account.c:306 ../src/dsp-account.c:316
+msgid "Check internal transfer result"
+msgstr "Zkontrolvat výsledek interního převodu"
+
+#: ../src/dsp-account.c:307
+msgid "No inconsistency found !"
+msgstr "Nebyla nalezena žádná neshoda!"
+
+#: ../src/dsp-account.c:317
+#, c-format
+msgid ""
+"Inconsistency were found: %d\n"
+"do you want to review and fix?"
+msgstr ""
+"Byla nalezena neshoda: %d\n"
+"chcete si ji prohlédnout?"
+
+#: ../src/dsp-account.c:414
+#, c-format
+msgid "Every transaction amount will be divided by %.6f."
+msgstr "Částka každé transakce bude vydělena %.6f."
+
+#: ../src/dsp-account.c:418
+msgid ""
+"Are you sure you want to convert this account\n"
+"to Euro as Major currency?"
+msgstr ""
+"Opravdu chcete převést tento účet\n"
+"na účet, kde je hlavní měnou Euro?"
+
+#: ../src/dsp-account.c:420
+msgid "_Convert"
+msgstr "_Převést"
+
+#: ../src/dsp-account.c:542
+msgid "No transaction changed"
+msgstr "Žádná transakce se nezměnila."
+
+#: ../src/dsp-account.c:544
+#, c-format
+msgid "transaction changed: %d"
+msgstr "transakce změněna: %d"
+
+#: ../src/dsp-account.c:547
+msgid "Automatic assignment result"
+msgstr "Výsledek automatického přiřazení"
+
+#: ../src/dsp-account.c:682
+msgid ""
+"Do you want to create an assignment with\n"
+"each of the selected transaction?"
+msgstr ""
+"Chcete vytvořit přiřazení s \n"
+"každou vybranou transakcí?"
+
+#: ../src/dsp-account.c:683 ../src/dsp-account.c:751
+msgid "_Create"
+msgstr "_Vytvořit"
+
+#: ../src/dsp-account.c:750
+msgid ""
+"Do you want to create a template with\n"
+"each of the selected transaction?"
+msgstr "Chcete vytvořit předlohu s vybranými transakcemi?"
+
+#: ../src/dsp-account.c:1665
+msgid ""
+"Do you want to delete\n"
+"each of the selected transaction?"
+msgstr "Chcete smazat všechny vybrané transakce?"
+
+#: ../src/dsp-account.c:1666 ../src/ui-account.c:1441 ../src/ui-archive.c:819
+#: ../src/ui-assign.c:1428 ../src/ui-budget-tabview.c:2300
+#: ../src/ui-category.c:1481 ../src/ui-category.c:2026
+#: ../src/ui-currency.c:1544 ../src/ui-payee.c:1040 ../src/ui-payee.c:1565
+#: ../src/ui-tag.c:922
+msgid "_Delete"
+msgstr "_Smazat"
+
+#: ../src/dsp-account.c:1747
+msgid "Are you sure you want to change the status to None?"
+msgstr "Opravdu chcete změnit stav na Žádný?"
+
+#: ../src/dsp-account.c:1748 ../src/dsp-account.c:1807
+msgid "Some transaction in your selection are already Reconciled."
+msgstr "Některé transakce ve vašem výběru už jsou ve stavu Schváleno."
+
+#: ../src/dsp-account.c:1749 ../src/ui-assist-start.c:277
+#: ../src/ui-dialogs.c:430
+msgid "_Change"
+msgstr "_Změnit"
+
+#: ../src/dsp-account.c:1806
+msgid "Are you sure you want to toggle the status Reconciled?"
+msgstr "Opravdu přepnout do stavu Schváleno?"
+
+#: ../src/dsp-account.c:1808
+msgid "_Toggle"
+msgstr "Přepnou_t"
+
+#: ../src/dsp-account.c:2213
+#, c-format
+msgid "%d transactions"
+msgstr "%d transakcí"
+
+#: ../src/dsp-account.c:2216
+#, c-format
+msgid "%d transactions, %d selected, avg: %s, sum: %s (%s - %s)"
+msgstr "%d transakcí, %d vybráno, průměr: %s, součet: %s (%s - %s)"
+
+#: ../src/dsp-account.c:2228
+msgid "Locked. Click to unlock"
+msgstr ""
+
+#: ../src/dsp-account.c:2228
+msgid "Unlocked. Click to lock"
+msgstr ""
+
+#: ../src/dsp-account.c:2505 ../src/dsp-account.c:2606
+msgid "_Add..."
+msgstr "_Přidat…"
+
+#: ../src/dsp-account.c:2507 ../src/dsp-account.c:2608
+msgid "_Inherit..."
+msgstr "_Odvodit..."
+
+#: ../src/dsp-account.c:2509 ../src/dsp-account.c:2610
+msgid "_Edit..."
+msgstr "_Upravit…"
+
+#: ../src/dsp-account.c:2511 ../src/dsp-account.c:2624
+msgid "_Multiple Edit..."
+msgstr "_Vícenásobná úprava…"
+
+#: ../src/dsp-account.c:2516 ../src/dsp-account.c:2615
+msgid "_Status"
+msgstr "_Stav"
+
+#: ../src/dsp-account.c:2518 ../src/dsp-account.c:2617
+msgid "_None"
+msgstr "_Nic"
+
+#: ../src/dsp-account.c:2520 ../src/dsp-account.c:2619
+msgid "_Cleared"
+msgstr "_Zaplaceno"
+
+#: ../src/dsp-account.c:2522 ../src/dsp-account.c:2621
+msgid "_Reconciled"
+msgstr "_Schváleno"
+
+#: ../src/dsp-account.c:2527
+msgid "View _Split"
+msgstr ""
+
+#: ../src/dsp-account.c:2529
+msgid "Copy raw amount"
+msgstr ""
+
+#: ../src/dsp-account.c:2531 ../src/dsp-account.c:2626
+msgid "Create template..."
+msgstr "Vytvořit šablonu..."
+
+#: ../src/dsp-account.c:2533 ../src/dsp-account.c:2625
+msgid "Create assignment..."
+msgstr "Vytvořit přiřazení..."
+
+#: ../src/dsp-account.c:2535 ../src/dsp-account.c:2627
+msgid "_Delete..."
+msgstr "_Smazat…"
+
+#: ../src/dsp-account.c:2540
+msgid "_Up"
+msgstr ""
+
+#: ../src/dsp-account.c:2542
+msgid "_Down"
+msgstr ""
+
+#: ../src/dsp-account.c:2582
+msgid "A_ccount"
+msgstr "Ú_čet"
+
+#: ../src/dsp-account.c:2584
+msgid "Export QIF..."
+msgstr "Exportovat QIF…"
+
+#: ../src/dsp-account.c:2585
+msgid "Export CSV..."
+msgstr "Exportovat CSV..."
+
+#: ../src/dsp-account.c:2587
+msgid "Export as PDF..."
+msgstr "Exportovat do PDF…"
+
+#: ../src/dsp-account.c:2589
+msgid "Print..."
+msgstr "Tisk…"
+
+#: ../src/dsp-account.c:2591 ../src/dsp-mainwindow.c:680
+#: ../src/dsp-mainwindow.c:1851 ../src/ui-account.c:1758
+#: ../src/ui-archive.c:1188 ../src/ui-assign.c:1674 ../src/ui-budget.c:1143
+#: ../src/ui-budget-tabview.c:2759 ../src/ui-category.c:2410
+#: ../src/ui-currency.c:1680 ../src/ui-dialogs.c:194 ../src/ui-payee.c:1764
+#: ../src/ui-split.c:833 ../src/ui-tag.c:1051 ../src/ui-transaction.c:1457
+msgid "_Close"
+msgstr "_Zavřít"
+
+#. #1818052 wish: copy/paste one/multiple transaction(s)
+#: ../src/dsp-account.c:2595 ../src/dsp-mainwindow.c:1856
+msgid "_Edit"
+msgstr "_Upravit"
+
+#: ../src/dsp-account.c:2597
+msgid "Copy"
+msgstr "Kopírovat"
+
+#: ../src/dsp-account.c:2599
+msgid "Paste"
+msgstr "Vložit"
+
+#: ../src/dsp-account.c:2601
+msgid "Paste (today)"
+msgstr "Vložit (dnes)"
+
+#: ../src/dsp-account.c:2604
+msgid "Transacti_on"
+msgstr "Přev_od"
+
+#: ../src/dsp-account.c:2632
+msgid "_Find"
+msgstr "_Hledat"
+
+#: ../src/dsp-account.c:2635 ../src/dsp-mainwindow.c:1903
+msgid "_Tools"
+msgstr "_Nástroje"
+
+#: ../src/dsp-account.c:2637
+msgid "Mark duplicate..."
+msgstr "Označit duplikáty..."
+
+#: ../src/dsp-account.c:2638
+msgid "Check internal transfer"
+msgstr "Zkontrolovat interní převod"
+
+#: ../src/dsp-account.c:2639
+msgid "Auto. assignments"
+msgstr "Automatické přiřazení"
+
+#: ../src/dsp-account.c:2640
+msgid "_Filter..."
+msgstr "Pře"
+
+#: ../src/dsp-account.c:2641
+msgid "Convert to Euro..."
+msgstr "Převést na Euro…"
+
+#: ../src/dsp-account.c:2655 ../src/dsp-mainwindow.c:1960
+#: ../src/ui-account.c:1814 ../src/ui-archive.c:1266 ../src/ui-assign.c:1738
+#: ../src/ui-assist-import.c:1573 ../src/ui-category.c:2524
+#: ../src/ui-currency.c:1756 ../src/ui-payee.c:1878 ../src/ui-split.c:1014
+#: ../src/ui-tag.c:1149
+msgid "Add"
+msgstr "Přidat"
+
+#: ../src/dsp-account.c:2655
+msgid "Add a new transaction"
+msgstr "Přidat novou transakci"
+
+#: ../src/dsp-account.c:2657
+msgid "Inherit"
+msgstr "Odvodit"
+
+#: ../src/dsp-account.c:2657
+msgid "Inherit from the active transaction"
+msgstr "Vytvořit podle stávající transakce"
+
+#. widget = gtk_button_new_with_mnemonic(_("_Edit"));
+#: ../src/dsp-account.c:2659 ../src/ui-archive.c:1285 ../src/ui-assign.c:1757
+#: ../src/ui-category.c:2543 ../src/ui-currency.c:1774 ../src/ui-payee.c:1896
+#: ../src/ui-split.c:973 ../src/ui-tag.c:1165
+msgid "Edit"
+msgstr "Upravit"
+
+#: ../src/dsp-account.c:2659
+msgid "Edit the active transaction"
+msgstr "Upravit aktivní transakci"
+
+#. Cleared
+#: ../src/dsp-account.c:2664 ../src/list-account.c:692 ../src/ui-filter.c:1172
+#: ../src/ui-widgets-data.c:164 ../src/ui-widgets-data.c:211
+msgid "Cleared"
+msgstr "Zaplaceno"
+
+#: ../src/dsp-account.c:2664
+msgid "Toggle cleared for selected transaction(s)"
+msgstr "Změnit na \"Zaplaceno\" pro vybrané transakce"
+
+#. Reconciled
+#: ../src/dsp-account.c:2665 ../src/list-account.c:688 ../src/ui-filter.c:1177
+#: ../src/ui-widgets-data.c:165 ../src/ui-widgets-data.c:213
+msgid "Reconciled"
+msgstr "Schváleno"
+
+#: ../src/dsp-account.c:2665
+msgid "Toggle reconciled for selected transaction(s)"
+msgstr "Přepnout vybrané transakce do stavu Schváleno."
+
+#: ../src/dsp-account.c:2669
+msgid "Edit Multiple"
+msgstr "Upravit více"
+
+#: ../src/dsp-account.c:2669
+msgid "Edit multiple transaction"
+msgstr "Upravit více transakcí"
+
+#: ../src/dsp-account.c:2670
+msgid "Create template"
+msgstr "Vytvořit šablonu"
+
+#: ../src/dsp-account.c:2671 ../src/ui-account.c:1818 ../src/ui-archive.c:1270
+#: ../src/ui-assign.c:1742 ../src/ui-assist-import.c:1577
+#: ../src/ui-category.c:2528 ../src/ui-currency.c:1760 ../src/ui-payee.c:1882
+#: ../src/ui-split.c:969 ../src/ui-tag.c:1152
+msgid "Delete"
+msgstr "Smazat"
+
+#: ../src/dsp-account.c:2671
+msgid "Delete selected transaction(s)"
+msgstr "Smazat vybraný převod(y)"
+
+#: ../src/dsp-account.c:2677
+msgid "Up"
+msgstr ""
+
+#: ../src/dsp-account.c:2677
+msgid "Move transaction up"
+msgstr "Posunout transakci výš"
+
+#: ../src/dsp-account.c:2678
+msgid "Down"
+msgstr ""
+
+#: ../src/dsp-account.c:2678
+msgid "Move transaction down"
+msgstr "Posunout transakci níž"
+
+#: ../src/dsp-account.c:2685
+msgid "Reconciled changes is"
+msgstr ""
+
+#: ../src/dsp-account.c:2746
+msgid "(closed)"
+msgstr "(uzavřeno)"
+
+#: ../src/dsp-account.c:2753
+#, c-format
+msgid "%s - HomeBank"
+msgstr "%s – HomeBank"
+
+#: ../src/dsp-account.c:2753
+msgid "All transactions"
+msgstr "Všechny transakce"
+
+#. info bar for duplicate
+#: ../src/dsp-account.c:2783
+msgid "_Refresh"
+msgstr "_Obnovit"
+
+#: ../src/dsp-account.c:2812 ../src/rep-balance.c:1074 ../src/rep-budget.c:1350
+#: ../src/rep-stats.c:1754 ../src/rep-time.c:1415 ../src/rep-vehicle.c:1016
+#: ../src/ui-pref.c:1364 ../src/ui-pref.c:1725 ../src/ui-pref.c:2164
+msgid "_Range:"
+msgstr "_Rozsah:"
+
+#: ../src/dsp-account.c:2822
+msgid "Toggle show future transaction"
+msgstr "Přepnout zobrazení budoucí transakce"
+
+#: ../src/dsp-account.c:2827 ../src/rep-budget.c:1325 ../src/rep-stats.c:1691
+#: ../src/ui-account.c:1870 ../src/ui-assist-start.c:536
+msgid "_Type:"
+msgstr "_Typ:"
+
+#: ../src/dsp-account.c:2834 ../src/ui-transaction.c:1714
+msgid "_Status:"
+msgstr "_Stav:"
+
+#: ../src/dsp-account.c:2841
+msgid "Open the list filter"
+msgstr "Otevřít seznam filtrů"
+
+#: ../src/dsp-account.c:2846 ../src/rep-balance.c:811 ../src/rep-budget.c:1033
+#: ../src/rep-stats.c:1394 ../src/rep-time.c:1080 ../src/rep-vehicle.c:797
+msgid "Refresh results"
+msgstr "Načíst výsledky znovu"
+
+#. widget = gtk_button_new_with_mnemonic (_("Reset _filters"));
+#: ../src/dsp-account.c:2852 ../src/ui-filter.c:1226 ../src/ui-pref.c:2268
+#: ../src/ui-pref.c:2292
+msgid "_Reset"
+msgstr "_Reset"
+
+#. TRANSLATORS: this is for Euro specific users, a toggle to display in 'Minor' currency
+#: ../src/dsp-account.c:2858 ../src/rep-balance.c:1053 ../src/rep-budget.c:1337
+#: ../src/rep-stats.c:1733 ../src/rep-time.c:1394 ../src/rep-vehicle.c:1003
+msgid "Euro _minor"
+msgstr "Euro drobné"
+
+#. account name
+#: ../src/dsp-account.c:2917
+msgid "Reconciled:"
+msgstr "Schváleno:"
+
+#: ../src/dsp-account.c:2924
+msgid "Cleared:"
+msgstr "Zaplaceno:"
+
+#: ../src/dsp-account.c:2931
+msgid "Today:"
+msgstr "Dnes:"
+
+#: ../src/dsp-account.c:2938
+msgid "Future:"
+msgstr "Budoucí:"
+
+#: ../src/dsp-mainwindow.c:126
+#, c-format
+msgid "Revert unsaved changes to file '%s'?"
+msgstr "Zahodit neuložené změny v souboru '%s'?"
+
+#: ../src/dsp-mainwindow.c:129
+msgid ""
+"- Changes made to the file will be permanently lost\n"
+"- File will be reloaded from the last save (.xhb~)"
+msgstr ""
+"- Provedené změny souboru nebudou uloženy.\n"
+"- Soubor bude obnoven z posledního uloženého stavu (.xhb~)"
+
+#: ../src/dsp-mainwindow.c:136
+msgid "_Revert"
+msgstr "_Vrátit"
+
+#: ../src/dsp-mainwindow.c:325
+msgid "Are you sure you want to anonymize the file?"
+msgstr "Opravdu chcete soubor anonymizovat?"
+
+#: ../src/dsp-mainwindow.c:328
+msgid ""
+"Proceeding will anonymize any text, \n"
+"like 'account x', 'payee y', 'memo z', ..."
+msgstr ""
+"Pokračováním bude anonymizován jakýkoliv text, \n"
+"jako „účet x“, “příjemce y“, „poznámka z“, …"
+
+#: ../src/dsp-mainwindow.c:335
+msgid "_Anonymize"
+msgstr "_Anonymizovat"
+
+#: ../src/dsp-mainwindow.c:677
+msgid "Welcome to HomeBank"
+msgstr "Vítejte v HomeBank"
+
+#. label = make_label (_("What do you want to do:"), 0, 0);
+#. gimp_label_set_attributes(GTK_LABEL(label), PANGO_ATTR_WEIGHT, PANGO_WEIGHT_BOLD, -1);
+#. gtk_box_pack_start (GTK_BOX (mainvbox), label, FALSE, FALSE, 0);
+#: ../src/dsp-mainwindow.c:724
+msgid "Open _last opened file"
+msgstr "Otevřít _naposledy otevřený soubor"
+
+#: ../src/dsp-mainwindow.c:728
+msgid "Create a _new file"
+msgstr "Vytvořit _nový soubor"
+
+#: ../src/dsp-mainwindow.c:732
+msgid "_Open an existing file"
+msgstr "_Otevřít existující soubor"
+
+#: ../src/dsp-mainwindow.c:736
+msgid "Open the _example file"
+msgstr "Otevřít _ukázkový soubor"
+
+#: ../src/dsp-mainwindow.c:740
+msgid "Read HomeBank _Manual"
+msgstr "Přečíst si HomeBank _Manuál"
+
+#: ../src/dsp-mainwindow.c:744
+msgid "Configure _preferences"
+msgstr "Nastavit _předvolby"
+
+#: ../src/dsp-mainwindow.c:748
+msgid "Show this window next time"
+msgstr "Zobrazit toto okno i příště"
+
+#: ../src/dsp-mainwindow.c:995
+#, c-format
+msgid ""
+"You are about to open the backup file '%s'.\n"
+"\n"
+"Are you sure you want to do this?"
+msgstr ""
+"Právě se chystáte otevřít zálohu '%s'.\n"
+"\n"
+"Chcete ji opravdu otevřít?"
+
+#: ../src/dsp-mainwindow.c:999
+msgid "Open the backup file?"
+msgstr "Otevřít zálohu?"
+
+#: ../src/dsp-mainwindow.c:1001
+msgid "_Open backup"
+msgstr "_otevřít zálohu"
+
+#: ../src/dsp-mainwindow.c:1047
+#, c-format
+msgid "Unable to open '%s', the file does not exist.\n"
+msgstr "Nelze otevřít '%s', soubor neexistuje.\n"
+
+#: ../src/dsp-mainwindow.c:1139 ../src/ui-currency.c:1319
+msgid "Unknown error"
+msgstr "Neznámá chyba"
+
+#: ../src/dsp-mainwindow.c:1144 ../src/dsp-mainwindow.c:1253
+#, c-format
+msgid "I/O error for file '%s'."
+msgstr "I/O chyba pro soubor '%s'."
+
+#: ../src/dsp-mainwindow.c:1147
+#, c-format
+msgid "The file '%s' is not a valid HomeBank file."
+msgstr "Soubor „%s“ není platným souborem HomeBank."
+
+#: ../src/dsp-mainwindow.c:1150
+#, c-format
+msgid ""
+"The file '%s' was saved with a higher version of HomeBank\n"
+"and cannot be loaded by the current version."
+msgstr ""
+"Soubor „%s“ byl uložen novější verzí programu HomeBank\n"
+"a nelze ho otevřít v této verzi."
+
+#: ../src/dsp-mainwindow.c:1155 ../src/dsp-mainwindow.c:1256
+msgid "File error"
+msgstr "Chyba souboru"
+
+#: ../src/dsp-mainwindow.c:1228
+msgid "The file has been modified since reading it."
+msgstr "Soubor byl upraven od jeho posledního čtení."
+
+#: ../src/dsp-mainwindow.c:1229
+msgid ""
+"If you save it, all the external changes could be lost. Save it anyway?"
+msgstr ""
+"Pokud jej uložíte, všechny externí změny mohou být ztraceny. Přesto uložit?"
+
+#: ../src/dsp-mainwindow.c:1230
+msgid "S_ave Anyway"
+msgstr "P_řesto uložit"
+
+#: ../src/dsp-mainwindow.c:1805
+msgid "Clear"
+msgstr ""
+
+#: ../src/dsp-mainwindow.c:1827
+msgid "_File"
+msgstr "_Soubor"
+
+#: ../src/dsp-mainwindow.c:1829
+msgid "_New"
+msgstr "_Nový"
+
+#: ../src/dsp-mainwindow.c:1831
+msgid "_Open..."
+msgstr "_Otevřít…"
+
+#: ../src/dsp-mainwindow.c:1833
+msgid "Open _Recent"
+msgstr "Otevřít _Nedávné"
+
+#: ../src/dsp-mainwindow.c:1838 ../src/ui-dialogs.c:505 ../src/ui-dialogs.c:552
+#: ../src/ui-dialogs.c:613 ../src/ui-dialogs.c:753
+msgid "_Save"
+msgstr "_Uložit"
+
+#: ../src/dsp-mainwindow.c:1840
+msgid "Save _As..."
+msgstr "Uložit _Jako"
+
+#: ../src/dsp-mainwindow.c:1843
+msgid "Import..."
+msgstr "Importovat…"
+
+#: ../src/dsp-mainwindow.c:1844
+msgid "Export as QIF..."
+msgstr "Exportovat jako QIF…"
+
+#: ../src/dsp-mainwindow.c:1846
+msgid "Revert"
+msgstr "Vrátit"
+
+#: ../src/dsp-mainwindow.c:1847
+msgid "Restore backup"
+msgstr "Obnovit zálohu"
+
+#: ../src/dsp-mainwindow.c:1849
+msgid "Properties..."
+msgstr "Vlastnosti…"
+
+#: ../src/dsp-mainwindow.c:1853
+msgid "_Quit"
+msgstr "_Ukončit"
+
+#: ../src/dsp-mainwindow.c:1858
+msgid "Preferences..."
+msgstr "Předvolby…"
+
+#: ../src/dsp-mainwindow.c:1860
+msgid "_View"
+msgstr "_Zobrazit"
+
+#: ../src/dsp-mainwindow.c:1862
+msgid "_Toolbar"
+msgstr "_Panel nástrojů"
+
+#: ../src/dsp-mainwindow.c:1864
+msgid "_Top spending"
+msgstr "_Hlavní výdaje"
+
+#: ../src/dsp-mainwindow.c:1866
+msgid "_Bottom Lists"
+msgstr ""
+
+#: ../src/dsp-mainwindow.c:1869 ../src/ui-pref.c:92
+msgid "Euro minor"
+msgstr "Euro drobné"
+
+#: ../src/dsp-mainwindow.c:1873
+msgid "_Manage"
+msgstr "_Spravovat"
+
+#: ../src/dsp-mainwindow.c:1875
+msgid "Wallet..."
+msgstr ""
+
+#: ../src/dsp-mainwindow.c:1876
+msgid "Acc_ounts..."
+msgstr "Úč_ty…"
+
+#: ../src/dsp-mainwindow.c:1877
+msgid "_Payees..."
+msgstr "_Příjemci…"
+
+#: ../src/dsp-mainwindow.c:1878
+msgid "Categories..."
+msgstr "Kategorie…"
+
+#: ../src/dsp-mainwindow.c:1879
+msgid "Scheduled/Template..."
+msgstr "Naplánované/šablona…"
+
+#: ../src/dsp-mainwindow.c:1880
+msgid "Budget..."
+msgstr "Rozpočet…"
+
+#: ../src/dsp-mainwindow.c:1881
+msgid "Budget (table view)..."
+msgstr ""
+
+#: ../src/dsp-mainwindow.c:1882
+msgid "Assignments..."
+msgstr "Přiřazení…"
+
+#: ../src/dsp-mainwindow.c:1883
+msgid "Currencies..."
+msgstr "Měny…"
+
+#: ../src/dsp-mainwindow.c:1884
+msgid "Tags..."
+msgstr "Štítky..."
+
+#: ../src/dsp-mainwindow.c:1886
+msgid "_Transactions"
+msgstr "_Transakce"
+
+#: ../src/dsp-mainwindow.c:1888
+msgid "Add..."
+msgstr "Přidat…"
+
+#: ../src/dsp-mainwindow.c:1889
+msgid "Show..."
+msgstr "Zobrazit…"
+
+#: ../src/dsp-mainwindow.c:1890
+msgid "Show all..."
+msgstr "Zobrazit vše…"
+
+#: ../src/dsp-mainwindow.c:1892
+msgid "Set scheduler..."
+msgstr "Nastavit naplánované…"
+
+#: ../src/dsp-mainwindow.c:1893 ../src/ui-transaction.c:1475
+msgid "Post scheduled"
+msgstr "Odeslat naplánované"
+
+#: ../src/dsp-mainwindow.c:1895
+msgid "_Reports"
+msgstr "_Sestavy"
+
+#: ../src/dsp-mainwindow.c:1897
+msgid "_Statistics..."
+msgstr "_Statistika…"
+
+#: ../src/dsp-mainwindow.c:1898
+msgid "_Trend Time..."
+msgstr "_Trend v čase…"
+
+#: ../src/dsp-mainwindow.c:1899
+msgid "_Balance..."
+msgstr "_Zůstatek..."
+
+#: ../src/dsp-mainwindow.c:1900
+msgid "B_udget..."
+msgstr "Ro_zpočet…"
+
+#: ../src/dsp-mainwindow.c:1901
+msgid "_Vehicle cost..."
+msgstr "Náklady na _vozidlo…"
+
+#: ../src/dsp-mainwindow.c:1905
+msgid "Show welcome dialog..."
+msgstr "Zobrazit uvítací dialog…"
+
+#: ../src/dsp-mainwindow.c:1906
+msgid "File statistics..."
+msgstr "Statistiky souboru…"
+
+#: ../src/dsp-mainwindow.c:1908
+msgid "Anonymize..."
+msgstr "Anonymizovat…"
+
+#: ../src/dsp-mainwindow.c:1910
+msgid "_Help"
+msgstr "_Nápověda"
+
+#: ../src/dsp-mainwindow.c:1912
+msgid "_Contents"
+msgstr "_Obsah"
+
+#: ../src/dsp-mainwindow.c:1914 ../src/dsp-mainwindow.c:1973
+msgid "Get Help Online..."
+msgstr ""
+
+#: ../src/dsp-mainwindow.c:1917
+msgid "Check for updates..."
+msgstr "Zjistit dostupnost případných aktualizací…"
+
+#: ../src/dsp-mainwindow.c:1918
+msgid "Release Notes"
+msgstr "Poznámky k vydání"
+
+#: ../src/dsp-mainwindow.c:1919
+msgid "Report a Problem..."
+msgstr "Nahlásit problém…"
+
+#: ../src/dsp-mainwindow.c:1920
+msgid "Translate this Application..."
+msgstr "Překládat texty této aplikace…"
+
+#: ../src/dsp-mainwindow.c:1922
+msgid "_About"
+msgstr "O _aplikaci"
+
+#: ../src/dsp-mainwindow.c:1935
+msgid "New"
+msgstr "Nový"
+
+#: ../src/dsp-mainwindow.c:1935
+msgid "Create a new file"
+msgstr "Vytvořit nový soubor"
+
+#: ../src/dsp-mainwindow.c:1938
+msgid "Open"
+msgstr "Otevřít"
+
+#: ../src/dsp-mainwindow.c:1939
+msgid "Open a file"
+msgstr "Otevřít soubor"
+
+#: ../src/dsp-mainwindow.c:1944
+msgid "Open a recently used file"
+msgstr "Otevřít nedávno používaný soubor"
+
+#: ../src/dsp-mainwindow.c:1946
+msgid "Save"
+msgstr "Uložit"
+
+#: ../src/dsp-mainwindow.c:1946
+msgid "Save the current file"
+msgstr "Uložit právě otevřený soubor"
+
+#. 5.2 Account is always created but not visible for BOOK
+#. column : Account
+#. gtk_assistant_set_page_title (GTK_ASSISTANT (data->assistant), page, _("Transaction"));
+#. gtk_assistant_set_page_title (GTK_ASSISTANT (data->assistant), page, genacc->name);
+#. header
+#: ../src/dsp-mainwindow.c:1950 ../src/list-operation.c:1649
+#: ../src/list-scheduled.c:678 ../src/rep-stats.c:67 ../src/rep-time.c:73
+#: ../src/ui-account.c:878 ../src/ui-archive.c:484
+#: ../src/ui-assist-import.c:2168 ../src/ui-dialogs.c:213
+#: ../src/ui-filter.c:802 ../src/ui-filter.c:806 ../src/ui-filter.c:1291
+msgid "Account"
+msgstr "Účet"
+
+#: ../src/dsp-mainwindow.c:1950
+msgid "Manage the accounts"
+msgstr "Spravovat účty"
+
+#. column: Payee
+#. column : Payee
+#. payee
+#. header
+#: ../src/dsp-mainwindow.c:1951 ../src/hb-export.c:443
+#: ../src/list-operation.c:1683 ../src/list-scheduled.c:593
+#: ../src/rep-stats.c:66 ../src/rep-time.c:75 ../src/ui-archive.c:461
+#: ../src/ui-assign.c:532 ../src/ui-assist-import.c:401 ../src/ui-dialogs.c:268
+#: ../src/ui-filter.c:891 ../src/ui-filter.c:896 ../src/ui-filter.c:1295
+#: ../src/ui-payee.c:942 ../src/ui-pref.c:132 ../src/ui-widgets-data.c:29
+msgid "Payee"
+msgstr "Příjemce"
+
+#: ../src/dsp-mainwindow.c:1951
+msgid "Manage the payees"
+msgstr "Spravovat příjemce"
+
+#. column: Category
+#. column : Category
+#. category
+#. header
+#: ../src/dsp-mainwindow.c:1952 ../src/hub-spending.c:435
+#: ../src/list-operation.c:1717 ../src/list-scheduled.c:614
+#: ../src/rep-budget.c:1490 ../src/rep-budget.c:1681 ../src/rep-stats.c:64
+#: ../src/rep-time.c:74 ../src/ui-archive.c:465 ../src/ui-assign.c:536
+#: ../src/ui-assist-import.c:405 ../src/ui-budget.c:263
+#: ../src/ui-budget-tabview.c:1543 ../src/ui-category.c:1378
+#: ../src/ui-dialogs.c:277 ../src/ui-filter.c:832 ../src/ui-filter.c:837
+#: ../src/ui-filter.c:1298 ../src/ui-payee.c:964 ../src/ui-split.c:203
+#: ../src/ui-split.c:978 ../src/ui-widgets-data.c:42
+msgid "Category"
+msgstr "Kategorie"
+
+#: ../src/dsp-mainwindow.c:1952
+msgid "Manage the categories"
+msgstr "Spravovat kategorie"
+
+#: ../src/dsp-mainwindow.c:1953
+msgid "Scheduled/Template"
+msgstr ""
+
+#: ../src/dsp-mainwindow.c:1953
+msgid "Manage the scheduled/template transactions"
+msgstr ""
+
+#. column: Income
+#: ../src/dsp-mainwindow.c:1954 ../src/dsp-mainwindow.c:1968
+#: ../src/rep-budget.c:655 ../src/rep-budget.c:1490 ../src/rep-budget.c:1695
+msgid "Budget"
+msgstr "Rozpočet"
+
+#: ../src/dsp-mainwindow.c:1954
+msgid "Manage the budget"
+msgstr ""
+
+#: ../src/dsp-mainwindow.c:1955 ../src/ui-assign.c:890 ../src/ui-dialogs.c:249
+msgid "Assignment"
+msgstr "Přiřazení"
+
+#: ../src/dsp-mainwindow.c:1955
+msgid "Manage the automatic assignments"
+msgstr ""
+
+#: ../src/dsp-mainwindow.c:1959
+msgid "Show"
+msgstr "Zobrazit"
+
+#: ../src/dsp-mainwindow.c:1959
+msgid "Shows selected account transactions"
+msgstr "Zobrazit transakce zvoleného účtu"
+
+#: ../src/dsp-mainwindow.c:1960
+msgid "Add transactions"
+msgstr "Přidat transakce"
+
+#: ../src/dsp-mainwindow.c:1965
+msgid "Statistics"
+msgstr "Statistiky"
+
+#: ../src/dsp-mainwindow.c:1965
+msgid "Open the Statistics report"
+msgstr "Otevřít statistiky"
+
+#: ../src/dsp-mainwindow.c:1966
+msgid "Trend time"
+msgstr ""
+
+#: ../src/dsp-mainwindow.c:1966
+msgid "Open the Trend Time report"
+msgstr "Otevřít výkaz trend v čase"
+
+#. column: Balance
+#: ../src/dsp-mainwindow.c:1967 ../src/hb-export.c:447
+#: ../src/list-operation.c:1729 ../src/rep-balance.c:1401
+#: ../src/ui-widgets-data.c:59
+msgid "Balance"
+msgstr "Bilance"
+
+#: ../src/dsp-mainwindow.c:1967
+msgid "Open the Balance report"
+msgstr "Otevřít přehled zůstatků"
+
+#: ../src/dsp-mainwindow.c:1968
+msgid "Open the Budget report"
+msgstr "Otevřít zprávu o rozpočtu"
+
+#: ../src/dsp-mainwindow.c:1969 ../src/ui-hbfile.c:336
+msgid "Vehicle cost"
+msgstr "Náklady na vozidlo"
+
+#: ../src/dsp-mainwindow.c:1969
+msgid "Open the Vehicle cost report"
+msgstr "Otevřít přehled nákladů na vozidlo"
+
+#: ../src/dsp-mainwindow.c:1973
+msgid "Help"
+msgstr "Nápověda"
+
+#: ../src/dsp-mainwindow.c:1974
+msgid "Donate"
+msgstr "Podpořit"
+
+#: ../src/dsp-mainwindow.c:1974
+msgid "Donate to HomeBank project"
+msgstr "Podpořit projekt HomeBank"
+
+#: ../src/dsp-mainwindow.c:2087 ../src/ui-archive.c:1225
+#: ../src/ui-dialogs.c:233
+msgid "Scheduled"
+msgstr "Naplánováno"
+
+#. Future
+#: ../src/dsp-mainwindow.c:2091 ../src/list-account.c:700
+msgid "Future"
+msgstr "Budoucí"
+
+#: ../src/dsp-mainwindow.c:2094 ../src/ui-filter.c:1188
+#: ../src/ui-widgets-data.c:166
+msgid "Remind"
+msgstr "Připomenout"
+
+#: ../src/gtk-dateentry.c:672
+msgid "_Today"
+msgstr ""
+
+#: ../src/hb-archive.c:215 ../src/ui-archive.c:811
+msgid "(no memo)"
+msgstr ""
+
+#: ../src/hb-archive.c:388 ../src/hb-archive.c:390 ../src/hb-assign.c:278
+msgid "**PREFILLED**"
+msgstr ""
+
+#: ../src/hb-category.c:492 ../src/hb-report.c:351 ../src/ui-budget.c:113
+#: ../src/ui-category.c:220 ../src/ui-category.c:763
+msgid "(no category)"
+msgstr "(žádná kategorie)"
+
+#: ../src/hb-category.c:1032 ../src/hb-payee.c:616
+msgid "invalid CSV format"
+msgstr "neplatný CSV formát"
+
+#. header
+#: ../src/hb-export.c:441 ../src/list-operation.c:1671
+#: ../src/rep-balance.c:1382 ../src/rep-vehicle.c:167 ../src/rep-vehicle.c:1342
+#: ../src/ui-assist-import.c:373 ../src/ui-filter.c:949 ../src/ui-filter.c:1279
+msgid "Date"
+msgstr "Datum"
+
+#: ../src/hb-export.c:442 ../src/list-operation.c:1444
+#: ../src/ui-assist-import.c:387 ../src/ui-pref.c:133 ../src/ui-pref.c:2533
+#: ../src/ui-pref.c:2541
+msgid "Info"
+msgstr "Info"
+
+#. column: Memo
+#. memo
+#: ../src/hb-export.c:444 ../src/list-operation.c:1686
+#: ../src/list-scheduled.c:635 ../src/ui-archive.c:469
+#: ../src/ui-assist-import.c:378 ../src/ui-pref.c:131 ../src/ui-split.c:223
+#: ../src/ui-split.c:982 ../src/ui-widgets-data.c:28
+msgid "Memo"
+msgstr "Poznámka"
+
+#. column: Amount
+#. amount
+#. header
+#: ../src/hb-export.c:445 ../src/list-operation.c:1708 ../src/rep-time.c:1626
+#: ../src/rep-time.c:1779 ../src/rep-vehicle.c:171 ../src/rep-vehicle.c:1387
+#: ../src/ui-archive.c:474 ../src/ui-assist-import.c:382 ../src/ui-filter.c:988
+#: ../src/ui-split.c:239 ../src/ui-split.c:986
+msgid "Amount"
+msgstr "Částka"
+
+#: ../src/hb-hbfile.c:597 ../src/ui-assist-import.c:2168
+msgid "Unknown"
+msgstr "Neznámý"
+
+#. TRANSLATORS: format a liter number with l/L as abbreviation
+#: ../src/hb-preferences.c:84
+#, c-format
+msgid "%.2f l"
+msgstr "%.2f L"
+
+#. TRANSLATORS: kilometer per liter
+#: ../src/hb-preferences.c:87
+msgid "km/l"
+msgstr "km/l"
+
+#. TRANSLATORS: miles per liter
+#: ../src/hb-preferences.c:90
+msgid "mi./l"
+msgstr "mil/l"
+
+#: ../src/hb-report.c:363 ../src/ui-payee.c:644
+msgid "(no payee)"
+msgstr "(žádný příjemce)"
+
+#. g_snprintf(s, slen, _("%d-w%d"), g_date_get_year(date), g_date_get_monday_week_of_year(date));
+#. TRANSLATORS: printf string for year of week W, ex. 2019-W52 for week 52 of 2019
+#: ../src/hb-report.c:970
+#, c-format
+msgid "%d-w%02d"
+msgstr ""
+
+#. g_snprintf(buffer, 63, "%d-%02d", g_date_get_year(date), g_date_get_month(date));
+#. todo: will be innacurrate here if fiscal year start not 1/jan
+#. TRANSLATORS: printf string for year of quarter Q, ex. 2019-Q4 for quarter 4 of 2019
+#: ../src/hb-report.c:984
+#, c-format
+msgid "%d-q%d"
+msgstr ""
+
+#: ../src/homebank.c:70
+msgid "Output version information and exit"
+msgstr "Vypsat informace o verzi a skončit"
+
+#: ../src/homebank.c:73
+msgid "[FILE]"
+msgstr "[SOUBOR]"
+
+#: ../src/homebank.c:255
+msgid "Browser error."
+msgstr "Chyba prohlížeče."
+
+#: ../src/homebank.c:256
+#, c-format
+msgid "Could not display the URL '%s'"
+msgstr "Nedaří se zobrazit URL adresu „%s“"
+
+#: ../src/homebank.c:878 ../src/homebank.c:879
+msgid "HomeBank options"
+msgstr "Nastavení HomeBank"
+
+#: ../src/hub-account.c:130
+msgid "(no institution)"
+msgstr "(žádná instituce)"
+
+#: ../src/hub-account.c:140 ../src/ui-group.c:272
+msgid "(no group)"
+msgstr "(žádná skupina)"
+
+#: ../src/hub-account.c:535
+msgid "Your accounts"
+msgstr "Vaše účty"
+
+#: ../src/hub-account.c:550 ../src/ui-budget.c:1239
+#: ../src/ui-budget-tabview.c:2904 ../src/ui-category.c:2575
+#: ../src/ui-filter.c:867
+msgid "Expand all"
+msgstr "Rozbalit vše"
+
+#: ../src/hub-account.c:554 ../src/ui-budget.c:1243
+#: ../src/ui-budget-tabview.c:2908 ../src/ui-category.c:2579
+#: ../src/ui-filter.c:871
+msgid "Collapse all"
+msgstr "Sbalit vše"
+
+#: ../src/hub-account.c:571
+msgid "Show all"
+msgstr "Zobrazit vše"
+
+#: ../src/hub-account.c:576
+msgid "By type"
+msgstr "Podle typu"
+
+#: ../src/hub-account.c:577
+msgid "By group"
+msgstr "Podle skupiny"
+
+#: ../src/hub-account.c:578
+msgid "By institution"
+msgstr "Podle instituce"
+
+#: ../src/hub-scheduled.c:330
+msgid "No transaction to add"
+msgstr "Žádná transakce pro přidání"
+
+#: ../src/hub-scheduled.c:332
+#, c-format
+msgid "transaction added: %d"
+msgstr "přidána transakce: %d"
+
+#: ../src/hub-scheduled.c:335
+msgid "Check scheduled transactions result"
+msgstr "Zkontrolujte výsledek naplánovaných transakcí"
+
+#. column: Total
+#: ../src/hub-scheduled.c:477 ../src/list-account.c:123 ../src/list-report.c:56
+#: ../src/list-report.c:363 ../src/list-report.c:721 ../src/rep-stats.c:78
+#: ../src/rep-stats.c:885 ../src/rep-stats.c:986 ../src/rep-vehicle.c:1087
+#: ../src/ui-widgets-data.c:50 ../src/ui-widgets-data.c:57
+msgid "Total"
+msgstr "Celkem"
+
+#: ../src/hub-scheduled.c:521 ../src/ui-hbfile.c:278
+msgid "Scheduled transactions"
+msgstr "Plánované transakce"
+
+#: ../src/hub-scheduled.c:537
+msgid "_Skip"
+msgstr "_Přeskočit"
+
+#: ../src/hub-scheduled.c:541
+msgid "Edit & P_ost"
+msgstr ""
+
+#. TRANSLATORS: Posting a scheduled transaction is the action to materialize it into its target account.
+#. TRANSLATORS: Before that action the automated transaction occurrence is pending and not yet really existing.
+#: ../src/hub-scheduled.c:547 ../src/ui-transaction.c:1463
+msgid "_Post"
+msgstr "_Odeslat"
+
+#: ../src/hub-scheduled.c:562
+msgid "maximum post date"
+msgstr "nejpozdější možné datum zaúčtování"
+
+#. hb_label_set_amount(GTK_LABEL(data->TX_topamount), total, GLOBALS->kcur, GLOBALS->minor);
+#: ../src/hub-spending.c:91
+msgid "Top spending"
+msgstr "Největší výdaje"
+
+#. future usage
+#: ../src/hub-spending.c:103
+#, c-format
+msgid "Top %d spending"
+msgstr "Největší %d výdaje"
+
+#: ../src/hub-spending.c:311
+msgid "Other"
+msgstr "Jiné"
+
+#: ../src/hub-spending.c:402
+msgid "Where your money goes"
+msgstr "Kam odcházejí vaše peníze"
+
+#: ../src/hub-spending.c:436 ../src/rep-stats.c:65 ../src/ui-widgets-data.c:43
+msgid "Subcategory"
+msgstr "Podkategorie"
+
+#: ../src/hb-import.c:1408
+msgid "imported account"
+msgstr "importovaný účet"
+
+#: ../src/list-account.c:127
+msgid "Grand total"
+msgstr "Celkový součet"
+
+#: ../src/list-account.c:535
+msgid "last reconciled"
+msgstr ""
+
+#: ../src/list-account.c:549
+msgid "until overdraft"
+msgstr ""
+
+#: ../src/list-account.c:565
+msgid "before maximum"
+msgstr ""
+
+#: ../src/list-account.c:676
+msgid "Accounts"
+msgstr "Účty"
+
+#. Today
+#: ../src/list-account.c:696
+msgid "Today"
+msgstr "Dnes"
+
+#: ../src/list-operation.c:703 ../src/list-scheduled.c:181
+#: ../src/ui-archive.c:278
+msgid "- split -"
+msgstr "- rozděleno -"
+
+#: ../src/list-operation.c:719
+msgid "- this needs a category -"
+msgstr ""
+
+#: ../src/list-operation.c:1657
+msgid "Match"
+msgstr ""
+
+#. header
+#: ../src/list-operation.c:1691 ../src/ui-filter.c:1155 ../src/ui-filter.c:1285
+msgid "Status"
+msgstr "Stav"
+
+#. column: Expense
+#: ../src/list-operation.c:1711 ../src/list-report.c:56
+#: ../src/list-report.c:351 ../src/list-scheduled.c:647
+#: ../src/rep-balance.c:1393 ../src/rep-stats.c:76
+#: ../src/ui-budget-tabview.c:88 ../src/ui-filter.c:1129
+#: ../src/ui-transaction.c:53 ../src/ui-widgets-data.c:35
+#: ../src/ui-widgets-data.c:193 ../src/ui-widgets-data.c:202
+msgid "Expense"
+msgstr "Výdaje"
+
+#. column: Income
+#: ../src/list-operation.c:1714 ../src/list-report.c:56
+#: ../src/list-report.c:357 ../src/list-scheduled.c:658
+#: ../src/rep-balance.c:1397 ../src/rep-stats.c:77
+#: ../src/ui-budget-tabview.c:89 ../src/ui-filter.c:1134
+#: ../src/ui-transaction.c:54 ../src/ui-widgets-data.c:36
+#: ../src/ui-widgets-data.c:194 ../src/ui-widgets-data.c:203
+msgid "Income"
+msgstr "Příjmy"
+
+#: ../src/list-operation.c:1724
+msgid "Tags"
+msgstr "Štítky"
+
+#. column: Result
+#: ../src/list-report.c:56 ../src/list-report.c:340 ../src/rep-budget.c:655
+#: ../src/rep-budget.c:1490 ../src/rep-budget.c:1699
+msgid "Result"
+msgstr "Výsledek"
+
+#: ../src/list-report.c:717
+msgid "Average"
+msgstr "Průměr"
+
+#. TRANSLATORS: title of list column to inform the scheduled transaction is Late
+#: ../src/list-scheduled.c:544
+msgid "Late"
+msgstr "Později"
+
+#. TRANSLATORS: title of list column to inform how many occurence remain to post for limited scheduled txn
+#: ../src/list-scheduled.c:562
+msgid "Still"
+msgstr ""
+
+#: ../src/list-scheduled.c:576 ../src/ui-archive.c:453
+msgid "Next date"
+msgstr "Příští datum"
+
+#. //TRANSLATORS: count of transaction in balancedrawn / count of total transaction under abalancedrawn amount threshold
+#: ../src/rep-balance.c:256
+#, c-format
+msgid "%d/%d under %s"
+msgstr "%d/%d pod %s"
+
+#: ../src/rep-balance.c:791 ../src/rep-budget.c:1012 ../src/rep-stats.c:1332
+#: ../src/rep-time.c:1048
+msgid "List"
+msgstr "Seznam"
+
+#: ../src/rep-balance.c:792 ../src/rep-budget.c:1013 ../src/rep-stats.c:1333
+#: ../src/rep-time.c:1049
+msgid "View results as list"
+msgstr "Zobrazit výsledky jako seznam"
+
+#: ../src/rep-balance.c:797 ../src/rep-time.c:1054
+msgid "Line"
+msgstr "Čárový"
+
+#: ../src/rep-balance.c:798 ../src/rep-time.c:1055
+msgid "View results as lines"
+msgstr "Zobrazit výsledky jako čárový graf"
+
+#: ../src/rep-balance.c:805 ../src/rep-budget.c:1026 ../src/rep-stats.c:1364
+#: ../src/rep-time.c:1068
+msgid "Detail"
+msgstr "Podrobnosti"
+
+#: ../src/rep-balance.c:806 ../src/rep-budget.c:1027 ../src/rep-stats.c:1365
+#: ../src/rep-time.c:1069
+msgid "Toggle detail"
+msgstr "Zobrazit/skrýt podrobnosti"
+
+#: ../src/rep-balance.c:811 ../src/rep-budget.c:1033 ../src/rep-stats.c:1394
+#: ../src/rep-time.c:1080 ../src/rep-vehicle.c:797
+msgid "Refresh"
+msgstr "Načíst znovu"
+
+#: ../src/rep-balance.c:814 ../src/rep-budget.c:1076 ../src/rep-stats.c:1437
+#: ../src/rep-time.c:1123
+msgid "Print"
+msgstr "Tisk"
+
+#: ../src/rep-balance.c:1007
+msgid "Balance report"
+msgstr "Přehled zůstatku"
+
+#: ../src/rep-balance.c:1027 ../src/rep-budget.c:1313 ../src/rep-stats.c:1672
+#: ../src/rep-time.c:1363 ../src/rep-vehicle.c:990
+msgid "Display"
+msgstr "Zobrazení"
+
+#: ../src/rep-balance.c:1040 ../src/rep-stats.c:1705 ../src/rep-time.c:1381
+msgid "Inter_val:"
+msgstr "Inter_val:"
+
+#: ../src/rep-balance.c:1048 ../src/rep-time.c:1389
+msgid "Show empty line"
+msgstr "Ukázat prázdný řádek"
+
+#: ../src/rep-balance.c:1058 ../src/rep-stats.c:1725 ../src/rep-time.c:1399
+msgid "_Zoom X:"
+msgstr "_Přiblížení (osa X):"
+
+#: ../src/rep-balance.c:1070 ../src/rep-budget.c:1346 ../src/rep-stats.c:1750
+#: ../src/rep-time.c:1411 ../src/rep-vehicle.c:1012
+msgid "Date filter"
+msgstr "Datumový filtr"
+
+#: ../src/rep-balance.c:1080 ../src/rep-budget.c:1356 ../src/rep-stats.c:1760
+#: ../src/rep-time.c:1421 ../src/rep-vehicle.c:1022 ../src/ui-filter.c:961
+#: ../src/ui-filter.c:999 ../src/ui-transaction.c:184
+#: ../src/ui-transaction.c:185
+msgid "_From:"
+msgstr "_Od:"
+
+#: ../src/rep-balance.c:1086 ../src/rep-budget.c:1362 ../src/rep-stats.c:1766
+#: ../src/rep-time.c:1427 ../src/rep-vehicle.c:1028 ../src/ui-assign.c:1627
+#: ../src/ui-filter.c:968 ../src/ui-filter.c:1006 ../src/ui-transaction.c:178
+#: ../src/ui-transaction.c:184 ../src/ui-transaction.c:185
+msgid "_To:"
+msgstr "_Do:"
+
+#: ../src/rep-balance.c:1096
+msgid "Account filter"
+msgstr ""
+
+#: ../src/rep-balance.c:1104 ../src/rep-time.c:1445
+#: ../src/ui-assist-import.c:1798 ../src/ui-filter.c:746
+msgid "Select:"
+msgstr "Vybrat:"
+
+#: ../src/rep-balance.c:1108 ../src/rep-time.c:1449
+#: ../src/ui-assist-import.c:1801 ../src/ui-filter.c:750
+#: ../src/ui-widgets-data.c:144
+msgid "All"
+msgstr "Vše"
+
+#: ../src/rep-balance.c:1112 ../src/rep-time.c:1453
+#: ../src/ui-assist-import.c:1805 ../src/ui-filter.c:754
+#: ../src/ui-filter.c:1167 ../src/ui-pref.c:106 ../src/ui-widgets-data.c:163
+msgid "None"
+msgstr "Žádný"
+
+#: ../src/rep-balance.c:1116 ../src/rep-time.c:1457
+#: ../src/ui-assist-import.c:1809 ../src/ui-filter.c:758
+msgid "Invert"
+msgstr "Invertovat"
+
+#. update stack chart
+#: ../src/rep-budget.c:649 ../src/ui-budget.c:985
+#, c-format
+msgid "Budget for %s"
+msgstr "Rozpočet na %s"
+
+#: ../src/rep-budget.c:870
+msgid " over"
+msgstr " přes"
+
+#: ../src/rep-budget.c:876
+msgid " left"
+msgstr " zbývá"
+
+#: ../src/rep-budget.c:879
+msgid " under"
+msgstr " pod"
+
+#: ../src/rep-budget.c:1018 ../src/rep-stats.c:1350
+msgid "Stack"
+msgstr ""
+
+#: ../src/rep-budget.c:1019
+msgid "View results as stack bars"
+msgstr "Zobrazit výsledky jako sloupcový graf"
+
+#. gtk_widget_set_halign (menu, GTK_ALIGN_END);
+#: ../src/rep-budget.c:1041 ../src/rep-stats.c:1402 ../src/rep-time.c:1088
+msgid "_Result to clipboard"
+msgstr "Výsledek do sch_ránky"
+
+#: ../src/rep-budget.c:1045 ../src/rep-stats.c:1406 ../src/rep-time.c:1092
+msgid "_Result to CSV"
+msgstr "_Výsledek do CSV"
+
+#: ../src/rep-budget.c:1049 ../src/rep-stats.c:1410 ../src/rep-time.c:1096
+msgid "_Detail to clipboard"
+msgstr "_Podrobnosti do schránky"
+
+#: ../src/rep-budget.c:1054 ../src/rep-stats.c:1415 ../src/rep-time.c:1101
+msgid "_Detail to CSV"
+msgstr "_Podrobnosti do CSV"
+
+#: ../src/rep-budget.c:1204
+msgid "No account is defined to be part of the budget."
+msgstr "Není zvolen žádný účet coby součást rozpočtu."
+
+#: ../src/rep-budget.c:1205
+msgid "You should include some accounts from the account dialog."
+msgstr "Z dialogu účtů byste měli zahrnout nějaké účty."
+
+#: ../src/rep-budget.c:1292
+msgid "Budget report"
+msgstr "Zpráva o rozpočtu"
+
+#: ../src/rep-budget.c:1317 ../src/rep-stats.c:1683 ../src/rep-time.c:1367
+msgid "_View by:"
+msgstr "Zobrazit podle:"
+
+#: ../src/rep-budget.c:1332
+msgid "Only out of budget"
+msgstr "Pouze mimo rozpočet"
+
+#: ../src/rep-budget.c:1391
+msgid "Result:"
+msgstr "Výsledek:"
+
+#: ../src/rep-budget.c:1397
+msgid "Budget:"
+msgstr "Rozpočet:"
+
+#: ../src/rep-budget.c:1403
+msgid "Spent:"
+msgstr "Utraceno:"
+
+#. column: Expense
+#: ../src/rep-budget.c:1490 ../src/rep-budget.c:1691
+msgid "Spent"
+msgstr "Utraceno"
+
+#. header
+#: ../src/rep-stats.c:68 ../src/rep-time.c:76 ../src/ui-dialogs.c:286
+#: ../src/ui-filter.c:921 ../src/ui-filter.c:925 ../src/ui-filter.c:1301
+msgid "Tag"
+msgstr "Štítek"
+
+#: ../src/rep-stats.c:69 ../src/rep-time.c:84 ../src/ui-widgets-data.c:175
+msgid "Month"
+msgstr "Měsíc"
+
+#: ../src/rep-stats.c:70 ../src/rep-time.c:87 ../src/ui-widgets-data.c:176
+msgid "Year"
+msgstr "Rok"
+
+#. TRANSLATORS: example 'Expense by Category'
+#: ../src/rep-stats.c:345
+#, c-format
+msgid "%s by %s"
+msgstr "%s od %s"
+
+#: ../src/rep-stats.c:909
+msgid "Too much columns to display"
+msgstr ""
+
+#: ../src/rep-stats.c:910
+msgid "Please select a wider interval and / or a narrower date range"
+msgstr ""
+
+#: ../src/rep-stats.c:1338 ../src/rep-time.c:1060
+msgid "Column"
+msgstr "Sloupec"
+
+#: ../src/rep-stats.c:1339 ../src/rep-time.c:1061
+msgid "View results as column"
+msgstr "Zobrazit výsledky jako sloupec"
+
+#: ../src/rep-stats.c:1344
+msgid "Donut"
+msgstr "Donut"
+
+#: ../src/rep-stats.c:1345
+msgid "View results as donut"
+msgstr "Zobrazit výsledky jako kruhový graf"
+
+#: ../src/rep-stats.c:1351
+msgid "View results as stack"
+msgstr ""
+
+#: ../src/rep-stats.c:1356
+msgid "Stack 100%"
+msgstr ""
+
+#: ../src/rep-stats.c:1357
+msgid "View results as stack 100%"
+msgstr ""
+
+#: ../src/rep-stats.c:1373
+msgid "Legend"
+msgstr ""
+
+#: ../src/rep-stats.c:1374
+msgid "Toggle legend"
+msgstr "Zobrazit/skrýt popisek"
+
+#: ../src/rep-stats.c:1382
+msgid "Rate"
+msgstr ""
+
+#: ../src/rep-stats.c:1383
+msgid "Toggle rate"
+msgstr "Zobrazit/skrýt poměr"
+
+#: ../src/rep-stats.c:1391 ../src/rep-time.c:1076
+msgid "Filter"
+msgstr "Filtr"
+
+#: ../src/rep-stats.c:1391 ../src/rep-time.c:1076 ../src/ui-filter.c:1218
+msgid "Edit filter"
+msgstr "Upravit filtr"
+
+#: ../src/rep-stats.c:1653
+msgid "Statistics Report"
+msgstr "Statistiky"
+
+#: ../src/rep-stats.c:1676
+msgid "Mode:"
+msgstr "Mód:"
+
+#: ../src/rep-stats.c:1700
+msgid "_Balance mode"
+msgstr ""
+
+#: ../src/rep-stats.c:1715
+msgid "Sort by _amount"
+msgstr "Seřadit podle _množství"
+
+#: ../src/rep-stats.c:1720
+msgid "Compare Exp. & Inc."
+msgstr ""
+
+#: ../src/rep-stats.c:1831
+msgid "Total:"
+msgstr "Celkem:"
+
+#: ../src/rep-stats.c:1837 ../src/ui-budget.c:1277
+msgid "Income:"
+msgstr "Příjem:"
+
+#: ../src/rep-stats.c:1844 ../src/ui-budget.c:1270
+msgid "Expense:"
+msgstr "Výdaje:"
+
+#: ../src/rep-time.c:82 ../src/ui-widgets-data.c:173
+msgid "Day"
+msgstr "Den"
+
+#: ../src/rep-time.c:83 ../src/ui-widgets-data.c:174
+msgid "Week"
+msgstr "Týden"
+
+#: ../src/rep-time.c:85
+msgid "Quarter"
+msgstr "Čtvrtletí"
+
+#: ../src/rep-time.c:86
+msgid "Half Year"
+msgstr "Půl roku"
+
+#. TRANSLATORS: example 'Category Over Time'
+#: ../src/rep-time.c:293
+#, c-format
+msgid "%s Over Time"
+msgstr "%s v průběhu doby"
+
+#: ../src/rep-time.c:786
+#, c-format
+msgid "Average: %s"
+msgstr "Průměr: %s"
+
+#: ../src/rep-time.c:1344
+msgid "Trend Time Report"
+msgstr "Zpráva o trendu v čase"
+
+#: ../src/rep-time.c:1376
+msgid "_Cumulate"
+msgstr "_Shlukovat"
+
+#: ../src/rep-time.c:1437
+msgid "Item filter"
+msgstr ""
+
+#: ../src/rep-time.c:1626 ../src/rep-time.c:1767
+msgid "Time slice"
+msgstr "Časový úsek"
+
+#. 
+#. LST_CAR_DATE,
+#. LST_CAR_MEMO,
+#. LST_CAR_METER,
+#. LST_CAR_FUEL,
+#. LST_CAR_PRICE,
+#. LST_CAR_AMOUNT,
+#. LST_CAR_DIST,
+#. LST_CAR_100KM
+#. 
+#. 
+#. column: Memo
+#. 
+#. column = gtk_tree_view_column_new();
+#. gtk_tree_view_column_set_title(column, _("Memo"));
+#. gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
+#. renderer = gtk_cell_renderer_text_new();
+#. gtk_tree_view_column_pack_start(column, renderer, TRUE);
+#. gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_MEMO);
+#. //gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
+#. 
+#. column: Meter
+#: ../src/rep-vehicle.c:168 ../src/rep-vehicle.c:1375
+msgid "Meter"
+msgstr "Metr"
+
+#. column: Fuel load
+#: ../src/rep-vehicle.c:169 ../src/rep-vehicle.c:1379
+msgid "Fuel"
+msgstr "Palivo"
+
+#. column: Price by unit
+#: ../src/rep-vehicle.c:170 ../src/rep-vehicle.c:1383
+msgid "Price"
+msgstr "Cena"
+
+#. column: Distance done
+#: ../src/rep-vehicle.c:172 ../src/rep-vehicle.c:1391
+msgid "Dist."
+msgstr "Vzdálenost"
+
+#: ../src/rep-vehicle.c:800
+msgid "Export"
+msgstr "Exportovat"
+
+#: ../src/rep-vehicle.c:800 ../src/ui-dialogs.c:551 ../src/ui-dialogs.c:826
+msgid "Export as CSV"
+msgstr "Exportovat jako CSV"
+
+#: ../src/rep-vehicle.c:971
+msgid "Vehicle cost report"
+msgstr "Přehled nákladů na vozidlo"
+
+#: ../src/rep-vehicle.c:994
+msgid "Vehi_cle:"
+msgstr "Vozidlo:"
+
+#: ../src/rep-vehicle.c:1054
+msgid "Meter:"
+msgstr "Počítadlo kilometrů:"
+
+#: ../src/rep-vehicle.c:1058
+msgid "Consumption:"
+msgstr "Spotřeba:"
+
+#: ../src/rep-vehicle.c:1062
+msgid "Fuel cost:"
+msgstr "Náklady na palivo:"
+
+#: ../src/rep-vehicle.c:1066
+msgid "Other cost:"
+msgstr "Ostatní náklady:"
+
+#: ../src/rep-vehicle.c:1070
+msgid "Total cost:"
+msgstr "Celková cena:"
+
+#. setting wrap causes O(n^2) performance regression because after
+#. every insert the drop-down list size is re-computed.
+#. gtk_combo_box_set_wrap_width(GTK_COMBO_BOX(data->CY_template), 0);
+#. populate template
+#: ../src/ui-account.c:535 ../src/ui-account.c:1682 ../src/ui-assign.c:181
+#: ../src/ui-currency.c:245 ../src/ui-widgets.c:1337
+msgid "(none)"
+msgstr "(nic)"
+
+#: ../src/ui-account.c:861 ../src/ui-assign.c:499 ../src/ui-category.c:1312
+#: ../src/ui-currency.c:599 ../src/ui-payee.c:873 ../src/ui-tag.c:484
+msgid "Visible"
+msgstr "Viditelný"
+
+#. GTK_FILE_CHOOSER_ACTION_OPEN,
+#: ../src/ui-account.c:1022 ../src/ui-assign.c:893
+#: ../src/ui-assist-import.c:746 ../src/ui-budget-tabview.c:2101
+#: ../src/ui-budget-tabview.c:2354 ../src/ui-category.c:1723
+#: ../src/ui-category.c:1886 ../src/ui-currency.c:780 ../src/ui-currency.c:1150
+#: ../src/ui-dialogs.c:81 ../src/ui-dialogs.c:386 ../src/ui-dialogs.c:504
+#: ../src/ui-dialogs.c:559 ../src/ui-dialogs.c:619 ../src/ui-dialogs.c:688
+#: ../src/ui-dialogs.c:752 ../src/ui-dialogs.c:829 ../src/ui-dialogs.c:957
+#: ../src/ui-dialogs.c:1126 ../src/ui-filter.c:1230 ../src/ui-hbfile.c:233
+#: ../src/ui-payee.c:1235 ../src/ui-payee.c:1434 ../src/ui-pref.c:2294
+#: ../src/ui-split.c:902 ../src/ui-tag.c:679 ../src/ui-tag.c:802
+#: ../src/ui-transaction.c:1451 ../src/ui-txn-multi.c:447
+msgid "_Cancel"
+msgstr "_Storno"
+
+#: ../src/ui-account.c:1024 ../src/ui-assign.c:895 ../src/ui-category.c:1725
+#: ../src/ui-currency.c:782 ../src/ui-currency.c:1152 ../src/ui-dialogs.c:387
+#: ../src/ui-hbfile.c:235 ../src/ui-payee.c:1237 ../src/ui-pref.c:2296
+#: ../src/ui-split.c:915 ../src/ui-tag.c:681 ../src/ui-transaction.c:1452
+#: ../src/ui-txn-multi.c:449
+msgid "_OK"
+msgstr "_OK"
+
+#: ../src/ui-account.c:1363 ../src/ui-account.c:1477
+msgid "Account name"
+msgstr "Název účtu"
+
+#: ../src/ui-account.c:1369 ../src/ui-account.c:1483 ../src/ui-category.c:1815
+#: ../src/ui-payee.c:1354 ../src/ui-tag.c:747
+msgid "Error"
+msgstr "Chyba"
+
+#: ../src/ui-account.c:1370
+#, c-format
+msgid ""
+"Cannot add an account '%s',\n"
+"this name already exists."
+msgstr ""
+"Účet nelze přidat pod názvem „%s“,\n"
+"je už používán pro jiný."
+
+#: ../src/ui-account.c:1418
+#, c-format
+msgid "Cannot delete account '%s'"
+msgstr "Účet „%s“ nelze smazat"
+
+#: ../src/ui-account.c:1422
+msgid ""
+"This account contains transactions and/or is part of internal transfers."
+msgstr "Tento účet obsahuje transkace a/nebo je součástí interních převodů."
+
+#: ../src/ui-account.c:1433 ../src/ui-archive.c:811 ../src/ui-assign.c:1420
+#: ../src/ui-budget-tabview.c:2288 ../src/ui-category.c:2014
+#: ../src/ui-currency.c:1536 ../src/ui-payee.c:1553 ../src/ui-tag.c:910
+#, c-format
+msgid "Are you sure you want to permanently delete '%s'?"
+msgstr "Opravdu chcete nadobro smazat „%s“?"
+
+#: ../src/ui-account.c:1435
+msgid "If you delete an account, it will be permanently lost."
+msgstr "Pokud účet smažete, bude nadobro ztracen."
+
+#: ../src/ui-account.c:1484
+#, c-format
+msgid ""
+"Cannot rename this Account,\n"
+"from '%s' to '%s',\n"
+"this name already exists."
+msgstr ""
+"Účet „%s“ nelze přejmenovat\n"
+"na „%s“, protože takto už je\n"
+"nazvaný jiný."
+
+#: ../src/ui-account.c:1755
+msgid "Manage Accounts"
+msgstr "Správa účtů"
+
+#: ../src/ui-account.c:1832
+msgid "Rename"
+msgstr "Přejmenovat"
+
+#: ../src/ui-account.c:1843
+msgid ""
+"Drag & drop to change the order\n"
+"Double-click to rename"
+msgstr ""
+"Pořadí změníte přetáhnutím\n"
+"Přejmenujete dvojklikem"
+
+#: ../src/ui-account.c:1857 ../src/ui-hbfile.c:260 ../src/ui-pref.c:84
+#: ../src/ui-pref.c:1465 ../src/ui-pref.c:1855
+msgid "General"
+msgstr "Obecné"
+
+#: ../src/ui-account.c:1878
+msgid "_Group:"
+msgstr "_Skupina:"
+
+#: ../src/ui-account.c:1887
+msgid "_Institution:"
+msgstr "_Institut"
+
+#: ../src/ui-account.c:1895
+msgid "N_umber:"
+msgstr "Č_íslo:"
+
+#: ../src/ui-account.c:1903
+msgid "Start _balance:"
+msgstr "Počáteční_zůstatek:"
+
+#: ../src/ui-account.c:1910
+msgid "_Currency:"
+msgstr "_Měna:"
+
+#: ../src/ui-account.c:1917
+msgid "this account was _closed"
+msgstr "tento účet byl _uzavřen"
+
+#: ../src/ui-account.c:1922 ../src/ui-assign.c:1086 ../src/ui-payee.c:1264
+msgid "Notes:"
+msgstr "Poznámky:"
+
+#: ../src/ui-account.c:1943
+msgid "Behaviour"
+msgstr ""
+
+#: ../src/ui-account.c:1952
+msgid "Automation"
+msgstr "Automatizace"
+
+#: ../src/ui-account.c:1956
+msgid "Default _Template:"
+msgstr "Výchozí _Šablona:"
+
+#: ../src/ui-account.c:1977
+msgid "Report exclusion"
+msgstr "Vynechání z výkazu"
+
+#: ../src/ui-account.c:1981
+msgid "exclude from account _summary"
+msgstr "vynechat z přehledu _účtu"
+
+#: ../src/ui-account.c:1987
+msgid "outflow into summary"
+msgstr ""
+
+#: ../src/ui-account.c:1992
+msgid "exclude from the _budget"
+msgstr "vynechat z _rozpočtu"
+
+#: ../src/ui-account.c:1997
+msgid "exclude from any _reports"
+msgstr "vynechat ze všech _sestav"
+
+#: ../src/ui-account.c:2007
+msgid "Misc."
+msgstr "Různé"
+
+#: ../src/ui-account.c:2016
+msgid "Current check number"
+msgstr "Aktuální počet šeků"
+
+#: ../src/ui-account.c:2020
+msgid "Checkbook _1:"
+msgstr "Šeková knížka _1:"
+
+#: ../src/ui-account.c:2027
+msgid "Checkbook _2:"
+msgstr "Šeková knížka _2:"
+
+#: ../src/ui-account.c:2039
+msgid "Balance limits"
+msgstr "Limity zůstatku"
+
+#: ../src/ui-account.c:2043
+msgid "_Overdraft at:"
+msgstr "Přečerpání na:"
+
+#: ../src/ui-account.c:2050
+msgid "Max_imum:"
+msgstr "Max_imum:"
+
+#: ../src/ui-archive.c:813
+msgid "If you delete a scheduled/template, it will be permanently lost."
+msgstr ""
+"Pokud naplánovanou transakci nebo šablonu smažete, nebude to možné vzít zpět."
+
+#: ../src/ui-archive.c:1105
+msgid "Next _date:"
+msgstr "Příští _datum:"
+
+#: ../src/ui-archive.c:1113
+msgid "Ever_y:"
+msgstr "Každý:"
+
+#: ../src/ui-archive.c:1128
+msgid "More options"
+msgstr "Více možností"
+
+#: ../src/ui-archive.c:1140
+msgid "Week end:"
+msgstr "Konec týdne:"
+
+#: ../src/ui-archive.c:1148
+msgid "_Stop after:"
+msgstr "_Ukončit po:"
+
+#: ../src/ui-archive.c:1162
+msgid "posts"
+msgstr "příspěvky"
+
+#: ../src/ui-archive.c:1185
+msgid "Manage scheduled/template transactions"
+msgstr "Spravovat naplánované transakce / šablony transakcí"
+
+#: ../src/ui-archive.c:1229 ../src/ui-dialogs.c:241
+msgid "Template"
+msgstr "Šablona"
+
+#: ../src/ui-archive.c:1299
+msgid "_Schedule"
+msgstr "_Naplánovat"
+
+#: ../src/ui-assign.c:47
+msgid "Disabled"
+msgstr "Vypnuto"
+
+#: ../src/ui-assign.c:48
+msgid "If empty"
+msgstr "Pokud je prázdný"
+
+#: ../src/ui-assign.c:49
+msgid "Overwrite"
+msgstr "Přepsat"
+
+#. column : Search
+#: ../src/ui-assign.c:524
+msgid "Search"
+msgstr "Hledat"
+
+#. column : Notes
+#: ../src/ui-assign.c:528
+msgid "Notes"
+msgstr "Poznámky"
+
+#: ../src/ui-assign.c:687
+#, c-format
+msgid "This search text already exists at position %d"
+msgstr ""
+
+#: ../src/ui-assign.c:935
+msgid "Condition"
+msgstr "Podmínka"
+
+#. label = make_label_widget(_("Con_tains:"));
+#: ../src/ui-assign.c:940
+msgid "_Search:"
+msgstr "_Hledat:"
+
+#: ../src/ui-assign.c:949
+msgid "Case sensitive"
+msgstr ""
+
+#: ../src/ui-assign.c:954
+msgid "Regular expression"
+msgstr ""
+
+#: ../src/ui-assign.c:972
+msgid "_In:"
+msgstr "_V:"
+
+#: ../src/ui-assign.c:990
+msgid "_AND"
+msgstr ""
+
+#. gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+#: ../src/ui-assign.c:999 ../src/ui-transaction.c:1546
+#: ../src/ui-txn-multi.c:499
+msgid "Amou_nt:"
+msgstr ""
+
+#. label = make_label_group(_("Assign payee"));
+#: ../src/ui-assign.c:1018
+msgid "Assignments"
+msgstr ""
+
+#: ../src/ui-assign.c:1028 ../src/ui-transaction.c:1666
+#: ../src/ui-txn-multi.c:564
+msgid "_Payee:"
+msgstr "_Příjemce platby:"
+
+#: ../src/ui-assign.c:1048 ../src/ui-hbfile.c:340 ../src/ui-payee.c:1287
+msgid "_Category:"
+msgstr "_Kategorie:"
+
+#: ../src/ui-assign.c:1067
+msgid "Pay_ment:"
+msgstr "Platba:"
+
+#: ../src/ui-assign.c:1373
+#, c-format
+msgid "(rule %d)"
+msgstr ""
+
+#: ../src/ui-assign.c:1422
+msgid "If you delete an assignment, it will be permanently lost."
+msgstr "Pokud přiřazení smažete, nepůjde to vrátit zpět."
+
+#: ../src/ui-assign.c:1609
+msgid "Move to..."
+msgstr ""
+
+#: ../src/ui-assign.c:1618
+msgid "Move rule"
+msgstr ""
+
+#: ../src/ui-assign.c:1643
+msgid "Move"
+msgstr ""
+
+#: ../src/ui-assign.c:1671
+msgid "Manage Assignments"
+msgstr "Spravovat přiřazení"
+
+#: ../src/ui-assign.c:1771
+msgid "Move up"
+msgstr ""
+
+#: ../src/ui-assign.c:1775
+msgid "Move down"
+msgstr ""
+
+#: ../src/ui-assist-start.c:57
+msgid ""
+"This assistant will help you setup a minimum configuration\n"
+"for a new HomeBank file."
+msgstr ""
+
+#: ../src/ui-assist-start.c:62
+msgid "All the elements you setup here can be changed later if required."
+msgstr ""
+
+#: ../src/ui-assist-start.c:67
+msgid ""
+"No changes will be made until you click \"Apply\"\n"
+"at the end of this assistant."
+msgstr ""
+"Žádné změny nebudou provedeny, dokud nezmáčknete \"Použít\"\n"
+"na konci tohoto asistenta."
+
+#. 123456789012345678901234567890123456789012345678901234567890
+#: ../src/ui-assist-start.c:136
+msgid ""
+"HomeBank will display a title for the main window,\n"
+"it can be a free label or your name."
+msgstr ""
+
+#: ../src/ui-assist-start.c:146 ../src/ui-hbfile.c:264
+msgid "_Title:"
+msgstr "_Název:"
+
+#. 123456789012345678901234567890123456789012345678901234567890
+#: ../src/ui-assist-start.c:264
+msgid ""
+"HomeBank support multiple currencies. The base currency is\n"
+"the default for new accounts and reports."
+msgstr ""
+
+#: ../src/ui-assist-start.c:272
+msgid "Base:"
+msgstr "Základ:"
+
+#: ../src/ui-assist-start.c:282
+msgid "Setup additional currencies"
+msgstr "Nastavit další měny"
+
+#: ../src/ui-assist-start.c:296 ../src/ui-transaction.c:1461
+msgid "_Add"
+msgstr "Přid_at"
+
+#: ../src/ui-assist-start.c:394
+msgid "Not found"
+msgstr "Nenalezeno"
+
+#. 123456789012345678901234567890123456789012345678901234567890
+#: ../src/ui-assist-start.c:414
+msgid ""
+"HomeBank can prefill the categories for your language\n"
+"if a CSV file is available and provided by the community."
+msgstr ""
+"HomeBank může předvyplnit kategorie pro váš jazyk,\n"
+"pokud je CSV soubor dostupný a poskytnutý komunitou."
+
+#: ../src/ui-assist-start.c:419
+msgid "Setup categories for my language"
+msgstr "Nastavit kategorie pro můj jazyk"
+
+#: ../src/ui-assist-start.c:429
+msgid "Preset file:"
+msgstr "Soubor s přednastaveními:"
+
+#. 123456789012345678901234567890123456789012345678901234567890
+#: ../src/ui-assist-start.c:512
+msgid ""
+"HomeBank enables to import your accounts from downloaded\n"
+"financial institution files, or you can create your account manually."
+msgstr ""
+
+#: ../src/ui-assist-start.c:517
+msgid "Create my first account"
+msgstr "Vytvořit první účet"
+
+#: ../src/ui-assist-start.c:529 ../src/ui-category.c:1740
+#: ../src/ui-currency.c:1231 ../src/ui-payee.c:1254 ../src/ui-tag.c:704
+msgid "_Name:"
+msgstr "_Název:"
+
+#: ../src/ui-assist-start.c:560
+msgid ""
+"This is a confirmation page,\n"
+"\n"
+"press 'Apply' to apply changes"
+msgstr ""
+
+#: ../src/ui-assist-start.c:737
+msgid "Start File Setup"
+msgstr "Začít nastavení souboru"
+
+#: ../src/ui-assist-start.c:743
+msgid "File Options"
+msgstr "Možnosti souboru"
+
+#: ../src/ui-assist-start.c:748
+msgid "Choose Currencies"
+msgstr "Vybrat měny"
+
+#: ../src/ui-assist-start.c:753
+msgid "Choose Categories"
+msgstr "Vybrat kategorie"
+
+#: ../src/ui-assist-start.c:758
+msgid "Create Account"
+msgstr "Vytvořit účet"
+
+#: ../src/ui-assist-start.c:764
+msgid "Finish File Setup"
+msgstr "Dokončit nastavení souboru"
+
+#: ../src/ui-assist-import.c:487
+msgid "<New account (global)>"
+msgstr "<Nový účet (globální)>"
+
+#: ../src/ui-assist-import.c:492
+msgid "<New account>"
+msgstr "<Nový účet>"
+
+#: ../src/ui-assist-import.c:513
+msgid "<Skip this account>"
+msgstr "<Přeskočit tento účet>"
+
+#: ../src/ui-assist-import.c:656 ../src/ui-assist-import.c:1813
+msgid "Valid"
+msgstr "Platný"
+
+#: ../src/ui-assist-import.c:667 ../src/ui-currency.c:616
+#: ../src/ui-currency.c:1214
+msgid "Name"
+msgstr "Název"
+
+#: ../src/ui-assist-import.c:748 ../src/ui-dialogs.c:546
+#: ../src/ui-dialogs.c:608 ../src/ui-dialogs.c:689
+msgid "_Open"
+msgstr "_Otevřít"
+
+#: ../src/ui-assist-import.c:758
+msgid "Known files"
+msgstr "Podporované soubory"
+
+#: ../src/ui-assist-import.c:769 ../src/ui-dialogs.c:510
+msgid "QIF files"
+msgstr "QIF soubory"
+
+#: ../src/ui-assist-import.c:777
+msgid "OFX/QFX files"
+msgstr "OFX/QFX soubory"
+
+#: ../src/ui-assist-import.c:785 ../src/ui-dialogs.c:568
+msgid "CSV files"
+msgstr "CSV soubory"
+
+#: ../src/ui-assist-import.c:792 ../src/ui-dialogs.c:511
+#: ../src/ui-dialogs.c:569 ../src/ui-dialogs.c:629
+msgid "All files"
+msgstr "Všechny soubory"
+
+#: ../src/ui-assist-import.c:871
+msgid "new global account"
+msgstr "nový globální účet"
+
+#: ../src/ui-assist-import.c:874
+msgid "new account"
+msgstr "nový účet"
+
+#: ../src/ui-assist-import.c:877
+msgid "skipped"
+msgstr "přeskočeno"
+
+#: ../src/ui-assist-import.c:896
+#, c-format
+msgid ", %d of %d transactions"
+msgstr ", %d z %d transakcí"
+
+#: ../src/ui-assist-import.c:1025
+#, c-format
+msgid "%d transaction(s), %d similar, %d existing, %d selected"
+msgstr ""
+
+#: ../src/ui-assist-import.c:1027
+#, c-format
+msgid "%d transaction(s), %d selected"
+msgstr "%d transakce, %d vybrané"
+
+#: ../src/ui-assist-import.c:1195
+msgid ""
+"Some date cannot be converted. Please try to change the date order to "
+"continue."
+msgstr ""
+"Některá data nemohou být převedena. Aby bylo možné pokračovat, zkuste změnit "
+"jejich pořadí."
+
+#. label = g_strdup_printf(_("'%s' - %s"), genacc->name, hb_import_filetype_char_get(genacc));
+#: ../src/ui-assist-import.c:1384
+#, c-format
+msgid "Import <b>%s</b> in_to:"
+msgstr "_Importovat <b>%s</b> do:"
+
+#: ../src/ui-assist-import.c:1384
+msgid "this file"
+msgstr "tento soubor"
+
+#: ../src/ui-assist-import.c:1384
+msgid "this account"
+msgstr "tento účet"
+
+#: ../src/ui-assist-import.c:1391
+#, c-format
+msgid ""
+"Name: %s\n"
+"Number: %s\n"
+"File: %s\n"
+"Encoding: %s"
+msgstr ""
+"Název: %s\n"
+"Číslo: %s\n"
+"Soubor: %s\n"
+"Kódování: %s"
+
+#: ../src/ui-assist-import.c:1441
+msgid "Import transactions from bank or credit card"
+msgstr "Importovat transakce z banky nebo kreditní karty"
+
+#: ../src/ui-assist-import.c:1449
+msgid ""
+"With this assistant you will be guided through the process of importing one "
+"or several\n"
+"downloaded statements from your bank or credit card, in the following "
+"formats:"
+msgstr ""
+"Tento pomocník vás provede procesem importu jednoho nebo více\n"
+"stažených výpisů z vaší banky nebo kreditní karty, v následujících formátech:"
+
+#: ../src/ui-assist-import.c:1455
+msgid ""
+"<b>Recommended:</b> .OFX or .QFX\n"
+"<i>(Sometimes named Money™ or Quicken™)</i>\n"
+"<b>Supported:</b> .QIF\n"
+"<i>(Common Quicken™ file)</i>\n"
+"<b>Advanced users only:</b> .CSV\n"
+"<i>(format is specific to HomeBank, see the documentation)</i>"
+msgstr ""
+"<b>Doporučeno:</b> .OFX nebo .QFX\n"
+"<i>(Někdy také nazýváno jako Money™ nebo Quicken™)</i>\n"
+"<b>Podporováno:</b> .QIF\n"
+"<i>(Běžný Quicken™ soubor)</i>\n"
+"<b>Pouze pro pokročilé uživatele:</b> .CSV\n"
+"<i>(formát je specifický pro HomeBank, viz dokumentace)</i>"
+
+#: ../src/ui-assist-import.c:1475
+msgid ""
+"No changes will be made until you click \"Apply\" at the end of this "
+"assistant."
+msgstr ""
+"Dokud na konci tohoto průvodce nekliknete na „Použít“, nebudou provedeny "
+"žádné změny."
+
+#: ../src/ui-assist-import.c:1479
+msgid "Don't show this again"
+msgstr "Znovu už toto nezobrazovat"
+
+#: ../src/ui-assist-import.c:1538
+msgid ""
+"Drag&Drop one or several files to import.\n"
+"You can also use the add/delete buttons of the list."
+msgstr ""
+
+#: ../src/ui-assist-import.c:1611
+msgid ""
+"There is too much account in the files you choose,\n"
+"please use the back button to select less files."
+msgstr ""
+
+#: ../src/ui-assist-import.c:1733
+msgid "Target account identification by name or number failed."
+msgstr "Identifikace cílového účtu podle názvu nebo čísla se nezdařila."
+
+#: ../src/ui-assist-import.c:1746 ../src/ui-pref.c:1231
+msgid "Date order:"
+msgstr "Pořadí v datu:"
+
+#: ../src/ui-assist-import.c:1762 ../src/ui-pref.c:1279
+msgid "_Import memos"
+msgstr "_Importovat poznámky"
+
+#: ../src/ui-assist-import.c:1766 ../src/ui-pref.c:1282
+msgid "_Swap memos with payees"
+msgstr "Prohodit poznámky a příjemce"
+
+#: ../src/ui-assist-import.c:1776 ../src/ui-pref.c:1254
+msgid "OFX _Name:"
+msgstr "OFX _Název:"
+
+#: ../src/ui-assist-import.c:1782 ../src/ui-pref.c:1262
+msgid "OFX _Memo:"
+msgstr "OFX pozná_mka:"
+
+#: ../src/ui-assist-import.c:1831 ../src/ui-pref.c:1239
+msgid "Sentence _case memo/payee"
+msgstr ""
+
+#: ../src/ui-assist-import.c:1835
+msgid "_Toggle amount"
+msgstr "_Přepnout množství"
+
+#: ../src/ui-assist-import.c:1869
+msgid "Similar transaction in target account (possible duplicate)"
+msgstr "Podobná transakce v cílovém účtu (možná duplicita)"
+
+#: ../src/ui-assist-import.c:1893
+msgid "Date _gap:"
+msgstr "Mezera v datu:"
+
+#. TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days of date tolerance
+#. TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days in advance the current date
+#: ../src/ui-assist-import.c:1901 ../src/ui-hbfile.c:319 ../src/ui-pref.c:1791
+msgid "days"
+msgstr "dnů"
+
+#: ../src/ui-assist-import.c:1909
+msgid ""
+"The match is done in order: by account, amount and date.\n"
+"A date tolerance of 0 day means an exact match"
+msgstr ""
+"Párování je prováděno v pořadí: podle účtu, částky a data.\n"
+"Tolerance data 0 dnů znamená přesnou shodu"
+
+#: ../src/ui-assist-import.c:1980
+msgid "Run automation"
+msgstr "Spustit automatizaci"
+
+#: ../src/ui-assist-import.c:1984
+msgid "1) Enrich with _payee default"
+msgstr ""
+
+#: ../src/ui-assist-import.c:1990
+msgid "2) Run automatic _assigment rules"
+msgstr "2) Spustit automatické _přiřazovací pravidla"
+
+#: ../src/ui-assist-import.c:1996
+msgid "Click \"Apply\" to update your accounts."
+msgstr ""
+
+#: ../src/ui-assist-import.c:2330
+msgid "Welcome"
+msgstr "Vítejte"
+
+#: ../src/ui-assist-import.c:2336
+msgid "Select file(s)"
+msgstr "Vybrat soubor(y)"
+
+#. gtk_assistant_set_page_type (GTK_ASSISTANT (assistant), page, GTK_ASSISTANT_PAGE_PROGRESS);
+#: ../src/ui-assist-import.c:2341
+msgid "Import"
+msgstr "Import"
+
+#: ../src/ui-assist-import.c:2354
+msgid "Confirmation"
+msgstr "Potvrzení"
+
+#: ../src/ui-budget.c:529 ../src/ui-category.c:1530 ../src/ui-payee.c:1088
+#: ../src/ui-tag.c:579
+msgid "File format error"
+msgstr "Chyba formátu souboru"
+
+#: ../src/ui-budget.c:530 ../src/ui-category.c:1531 ../src/ui-payee.c:1089
+#: ../src/ui-tag.c:580
+msgid ""
+"The CSV file must contains the exact numbers of column,\n"
+"separated by a semi-colon, please see the help for more details."
+msgstr ""
+"Je třeba, aby CSV soubor obsahoval přesná čísla řádků,\n"
+"oddělovaných středníky. Podrobnosti naleznete v Nápovědě."
+
+#: ../src/ui-budget.c:922
+msgid "Are you sure you want to clear input?"
+msgstr "Opravdu chcete položku smazat?"
+
+#: ../src/ui-budget.c:924 ../src/ui-budget-tabview.c:2509
+msgid "If you proceed, every amount will be set to 0."
+msgstr "Pokud budete pokračovat, všechny částky budou nastaveny na 0."
+
+#: ../src/ui-budget.c:930 ../src/ui-budget-tabview.c:2515
+msgid "_Clear"
+msgstr "_Vyčistit"
+
+#: ../src/ui-budget.c:1140
+msgid "Manage Budget"
+msgstr "Spravovat rozpočet"
+
+#: ../src/ui-budget.c:1186 ../src/ui-category.c:2463 ../src/ui-payee.c:1821
+#: ../src/ui-tag.c:1098
+msgid "_Import CSV"
+msgstr "_Importovat CSV"
+
+#: ../src/ui-budget.c:1190 ../src/ui-category.c:2467 ../src/ui-payee.c:1825
+#: ../src/ui-tag.c:1102
+msgid "E_xport CSV"
+msgstr "E_xportovat CSV"
+
+#: ../src/ui-budget.c:1284
+msgid "Balance:"
+msgstr "Zůstatek:"
+
+#: ../src/ui-budget.c:1305
+msgid "is the same each month"
+msgstr ""
+
+#: ../src/ui-budget.c:1319
+msgid "_Clear input"
+msgstr "Vyčistit vstup"
+
+#: ../src/ui-budget.c:1334
+msgid "is different per month"
+msgstr "je jiná každý měsíc"
+
+#: ../src/ui-budget.c:1373 ../src/ui-dialogs.c:866
+msgid "Options"
+msgstr "Možnosti"
+
+#: ../src/ui-budget.c:1378 ../src/ui-budget-tabview.c:2883
+msgid "_Force monitoring this category"
+msgstr "_Vynutit sledování této kategorie"
+
+#: ../src/ui-budget-tabview.c:79 ../src/ui-widgets-data.c:277
+msgid "Jan"
+msgstr "Led"
+
+#: ../src/ui-budget-tabview.c:79 ../src/ui-widgets-data.c:278
+msgid "Feb"
+msgstr "Úno"
+
+#: ../src/ui-budget-tabview.c:79 ../src/ui-widgets-data.c:279
+msgid "Mar"
+msgstr "Bře"
+
+#: ../src/ui-budget-tabview.c:80 ../src/ui-widgets-data.c:280
+msgid "Apr"
+msgstr "Dub"
+
+#: ../src/ui-budget-tabview.c:80 ../src/ui-widgets-data.c:261
+#: ../src/ui-widgets-data.c:281
+msgid "May"
+msgstr "květen"
+
+#: ../src/ui-budget-tabview.c:80 ../src/ui-widgets-data.c:282
+msgid "Jun"
+msgstr "Čer"
+
+#: ../src/ui-budget-tabview.c:81 ../src/ui-widgets-data.c:283
+msgid "Jul"
+msgstr "Čec"
+
+#: ../src/ui-budget-tabview.c:81 ../src/ui-widgets-data.c:284
+msgid "Aug"
+msgstr "Srp"
+
+#: ../src/ui-budget-tabview.c:81
+msgid "Sept"
+msgstr "Září"
+
+#: ../src/ui-budget-tabview.c:82 ../src/ui-widgets-data.c:286
+msgid "Oct"
+msgstr "Říj"
+
+#: ../src/ui-budget-tabview.c:82 ../src/ui-widgets-data.c:287
+msgid "Nov"
+msgstr "Lis"
+
+#: ../src/ui-budget-tabview.c:82 ../src/ui-widgets-data.c:288
+msgid "Dec"
+msgstr "Pro"
+
+#: ../src/ui-budget-tabview.c:87
+msgid "Summary"
+msgstr "Souhrn"
+
+#: ../src/ui-budget-tabview.c:533 ../src/ui-budget-tabview.c:534
+msgid "Totals"
+msgstr "Součty"
+
+#: ../src/ui-budget-tabview.c:1561
+msgid "Annual Total"
+msgstr ""
+
+#: ../src/ui-budget-tabview.c:1572
+msgid "Monthly Average"
+msgstr "Průměr za měsíc"
+
+#: ../src/ui-budget-tabview.c:1583
+msgid "Monthly"
+msgstr ""
+
+#: ../src/ui-budget-tabview.c:2098
+msgid "Add a category"
+msgstr "Přidat kategorii"
+
+#: ../src/ui-budget-tabview.c:2107 ../src/ui-budget-tabview.c:2360
+msgid "_Apply"
+msgstr "_Použít"
+
+#: ../src/ui-budget-tabview.c:2125
+msgid "Parent category"
+msgstr ""
+
+#: ../src/ui-budget-tabview.c:2148
+msgid "Category name"
+msgstr "Název kategorie"
+
+#: ../src/ui-budget-tabview.c:2292 ../src/ui-category.c:2018
+msgid ""
+"This category is used.\n"
+"Any transaction using that category will be set to (no category)"
+msgstr ""
+"Tato kategorie je použitá.\n"
+"Transakce, které využívají tuto kategorii budou nastaveny na (žádná "
+"kategorie)"
+
+#: ../src/ui-budget-tabview.c:2351
+msgid "Merge categories"
+msgstr "Sloučit kategorie"
+
+#: ../src/ui-budget-tabview.c:2378
+#, c-format
+msgid ""
+"Transactions assigned to category '%s', will be moved to the category "
+"selected below."
+msgstr ""
+
+#: ../src/ui-budget-tabview.c:2385
+msgid "Target category"
+msgstr ""
+
+#: ../src/ui-budget-tabview.c:2417 ../src/ui-category.c:1910
+#, c-format
+msgid "_Delete the category '%s'"
+msgstr "_Vymazat kategorii „%s“"
+
+#: ../src/ui-budget-tabview.c:2508
+#, c-format
+msgid "Are you sure you want to clear inputs for '%s'?"
+msgstr ""
+
+#. create window
+#: ../src/ui-budget-tabview.c:2756
+msgid "Budget (table view)"
+msgstr ""
+
+#. Add / Remove / Merge
+#: ../src/ui-budget-tabview.c:2840
+msgid "Add category"
+msgstr "Přidat kategorii"
+
+#: ../src/ui-budget-tabview.c:2845
+msgid "Remove category"
+msgstr "Smazat kategorii"
+
+#: ../src/ui-budget-tabview.c:2850 ../src/ui-category.c:1887
+#: ../src/ui-payee.c:1435 ../src/ui-tag.c:803
+msgid "Merge"
+msgstr "Sloučit"
+
+#: ../src/ui-budget-tabview.c:2867
+msgid "Clear input"
+msgstr "Smazat vstup"
+
+#. TRANSLATORS: 'txn' is abbrevation for transaction
+#: ../src/ui-category.c:1340 ../src/ui-payee.c:905
+msgid "# txn"
+msgstr ""
+
+#. TRANSLATORS: 'cfg' is abbrevation for configuration
+#. TRANSLATORS: 'txn' is abbrevation for configuration
+#: ../src/ui-category.c:1354 ../src/ui-payee.c:920
+msgid "# cfg"
+msgstr "# konf."
+
+#: ../src/ui-category.c:1479
+msgid "Delete unused categories"
+msgstr "Smazat nepoužité kategorie"
+
+#: ../src/ui-category.c:1480
+msgid ""
+"Are you sure you want to permanently\n"
+"delete unused categories?"
+msgstr "Opravdu chcete nepoužívané kategorie navždy smazat?"
+
+#: ../src/ui-category.c:1720
+msgid "Edit Category"
+msgstr ""
+
+#: ../src/ui-category.c:1752
+msgid "Change Type"
+msgstr ""
+
+#: ../src/ui-category.c:1757
+msgid "_Income"
+msgstr "_Příjem"
+
+#: ../src/ui-category.c:1762
+msgid "Propagate to _children"
+msgstr ""
+
+#: ../src/ui-category.c:1816
+#, c-format
+msgid ""
+"Cannot rename this Category,\n"
+"from '%s' to '%s',\n"
+"this name already exists."
+msgstr ""
+"Kategorii „%s“ nelze přejmenovat\n"
+"na „%s“, protože tento název\n"
+"už je používán pro jinou."
+
+#: ../src/ui-category.c:1875
+#, c-format
+msgid "Merge category '%s'"
+msgstr "Sloučit s kategorií „%s“"
+
+#: ../src/ui-category.c:1896
+msgid ""
+"Transactions assigned to this category,\n"
+"will be moved to the category selected below."
+msgstr ""
+"Transakce přiřazené do této kategorie\n"
+"budou přesunuty do té níže vybrané."
+
+#: ../src/ui-category.c:1906
+msgid "Include _subcategories"
+msgstr "Zahrnout _podkategorie"
+
+#: ../src/ui-category.c:2407
+msgid "Manage Categories"
+msgstr "Spravovat kategorie"
+
+#. test headerbar
+#. content = gtk_dialog_get_header_bar(GTK_DIALOG (dialog));
+#: ../src/ui-category.c:2447 ../src/ui-payee.c:1809
+msgid "Show Hidden"
+msgstr ""
+
+#: ../src/ui-category.c:2451 ../src/ui-payee.c:1813
+msgid "Show Usage"
+msgstr ""
+
+#: ../src/ui-category.c:2474 ../src/ui-payee.c:1832
+msgid "_Delete unused"
+msgstr "_Smazat nepoužívané"
+
+#: ../src/ui-category.c:2547 ../src/ui-payee.c:1900 ../src/ui-tag.c:1168
+msgid "Move/Merge"
+msgstr "Přesunout/Sloučit"
+
+#: ../src/ui-category.c:2561 ../src/ui-payee.c:1914
+msgid "Show/Hide"
+msgstr ""
+
+#: ../src/ui-category.c:2593
+msgid "new category"
+msgstr "nová kategorie"
+
+#: ../src/ui-category.c:2605
+msgid "new subcategory"
+msgstr "nová podkategorie"
+
+#: ../src/ui-currency.c:366 ../src/ui-currency.c:373
+msgid "Base currency"
+msgstr "Základní měna"
+
+#: ../src/ui-currency.c:627
+msgid "Symbol"
+msgstr "Symbol"
+
+#: ../src/ui-currency.c:639 ../src/ui-currency.c:822 ../src/ui-pref.c:1505
+msgid "Exchange rate"
+msgstr "Kurz"
+
+#: ../src/ui-currency.c:652
+msgid "Last modified"
+msgstr "Naposledy změněno"
+
+#: ../src/ui-currency.c:777
+msgid "Edit currency"
+msgstr "Upravit měnu"
+
+#: ../src/ui-currency.c:808 ../src/ui-dialogs.c:295 ../src/ui-pref.c:1480
+msgid "Currency"
+msgstr "Měna"
+
+#: ../src/ui-currency.c:841 ../src/ui-pref.c:1522
+msgid "Format"
+msgstr "Formát"
+
+#: ../src/ui-currency.c:850 ../src/ui-pref.c:1531 ../src/ui-pref.c:1611
+msgid "_Customize"
+msgstr "_Přizpůsobit"
+
+#: ../src/ui-currency.c:859 ../src/ui-pref.c:1540
+msgid "_Symbol:"
+msgstr "_Symbol:"
+
+#: ../src/ui-currency.c:866 ../src/ui-pref.c:1547
+msgid "Is pre_fix"
+msgstr "Zobrazovat před částkou"
+
+#: ../src/ui-currency.c:871 ../src/ui-pref.c:1552
+msgid "_Decimal char:"
+msgstr "_Desetinná značka:"
+
+#: ../src/ui-currency.c:878 ../src/ui-pref.c:1559
+msgid "_Frac digits:"
+msgstr "D_esetinná místa:"
+
+#: ../src/ui-currency.c:885 ../src/ui-pref.c:1566
+msgid "_Grouping char:"
+msgstr "Oddělovač tisíců:"
+
+#: ../src/ui-currency.c:1147
+msgid "Select base currency"
+msgstr "Zvolte základní měnu"
+
+#: ../src/ui-currency.c:1147
+msgid "Select currency"
+msgstr "Zvolte měnu"
+
+#: ../src/ui-currency.c:1219
+msgid "ISO Code"
+msgstr "ISO kód"
+
+#: ../src/ui-currency.c:1225
+msgid "Add a custom _currency"
+msgstr "Přidat vlastní _měnu"
+
+#: ../src/ui-currency.c:1238
+msgid "_ISO:"
+msgstr "_ISO:"
+
+#: ../src/ui-currency.c:1327
+msgid "Update online error"
+msgstr "Chyba online aktualizace"
+
+#: ../src/ui-currency.c:1538
+msgid "If you delete a currency, it will be permanently lost."
+msgstr "Pokud měnu smažete, bude trvale odstraněna."
+
+#: ../src/ui-currency.c:1581
+msgid "Change the base currency"
+msgstr "Změnit základní měnu"
+
+#: ../src/ui-currency.c:1582
+msgid ""
+"If you proceed, rates of other currencies\n"
+"will be set to 0, don't forget to update it"
+msgstr ""
+"Pokud budete pokračovat, kurzy ostatních měn budou\n"
+"nastaveny na nulu. Nezapomeňte je aktualizovat"
+
+#: ../src/ui-currency.c:1677
+msgid "Currencies"
+msgstr "Měny"
+
+#: ../src/ui-currency.c:1726
+msgid "Update online"
+msgstr "Aktualizace online"
+
+#: ../src/ui-currency.c:1778
+msgid "Set as base"
+msgstr "Nastavit jako základ"
+
+#: ../src/ui-dialogs.c:191
+msgid "File statistics"
+msgstr "Statistika souborů"
+
+#: ../src/ui-dialogs.c:222
+msgid "Transaction"
+msgstr "Transakce"
+
+#: ../src/ui-dialogs.c:383
+msgid "Upgrade"
+msgstr "Přejít na novější verzi"
+
+#: ../src/ui-dialogs.c:411
+msgid "Select a base currency"
+msgstr "Zvolit základní měnu"
+
+#: ../src/ui-dialogs.c:420
+msgid ""
+"Starting v5.1, HomeBank can manage several currencies\n"
+"if the currency below is not correct, please change it:"
+msgstr ""
+"Od verze 5.1, HomeBank umí pracovat s několika měnami\n"
+"pokud níže uvedená měna není správně, změňte ji:"
+
+#: ../src/ui-dialogs.c:425
+msgid "Currency:"
+msgstr "Měna:"
+
+#: ../src/ui-dialogs.c:501
+msgid "Export as QIF"
+msgstr "Exportovat jako QIF data"
+
+#: ../src/ui-dialogs.c:545
+msgid "Import from CSV"
+msgstr "Importovat z CSV"
+
+#: ../src/ui-dialogs.c:607
+msgid "Open HomeBank file"
+msgstr "Otevřít HomeBank soubor"
+
+#: ../src/ui-dialogs.c:607
+msgid "Open HomeBank backup file"
+msgstr "Otevřít HomeBank záložní soubor"
+
+#: ../src/ui-dialogs.c:612
+msgid "Save HomeBank file as"
+msgstr "Uložit HomeBank soubor jako"
+
+#: ../src/ui-dialogs.c:628 ../src/ui-pref.c:2020
+msgid "HomeBank files"
+msgstr "Soubory HomeBank"
+
+#: ../src/ui-dialogs.c:640
+msgid "File backup"
+msgstr "Záložní soubor"
+
+#: ../src/ui-dialogs.c:644
+msgid "All backups"
+msgstr "Všechny zálohy"
+
+#: ../src/ui-dialogs.c:742
+msgid "Save changes to the file before closing?"
+msgstr "Před ukončením, uložit změny do souboru?"
+
+#: ../src/ui-dialogs.c:746
+#, c-format
+msgid ""
+"If you don't save, changes will be permanently lost.\n"
+"Number of changes: %d."
+msgstr ""
+"Bez uložení budou změny navždy ztraceny.\n"
+"Počet změn: %d."
+
+#: ../src/ui-dialogs.c:751
+msgid "Close _without saving"
+msgstr "Zavřít _bez uložení"
+
+#: ../src/ui-dialogs.c:830
+msgid "Export as _CSV"
+msgstr "Exportovat jako _CSV"
+
+#: ../src/ui-dialogs.c:853 ../src/ui-dialogs.c:987
+msgid "Folder:"
+msgstr "Složka:"
+
+#: ../src/ui-dialogs.c:855 ../src/ui-dialogs.c:989
+msgid "Pick a Folder"
+msgstr "Vyberte složku"
+
+#: ../src/ui-dialogs.c:859 ../src/ui-dialogs.c:993
+msgid "Filename:"
+msgstr "Název souboru:"
+
+#: ../src/ui-dialogs.c:870
+msgid "Add Status column"
+msgstr ""
+
+#: ../src/ui-dialogs.c:874
+msgid "Detail split lines"
+msgstr ""
+
+#. 123456789012345678901234567890123456789012345678901234567890
+#: ../src/ui-dialogs.c:884
+msgid ""
+"The file will not be in HomeBank CSV format, because you export\n"
+"from 'All transaction', or you selected an option."
+msgstr ""
+
+#: ../src/ui-dialogs.c:954
+msgid "Export as PDF"
+msgstr "Exportovat do PDF"
+
+#: ../src/ui-dialogs.c:958
+msgid "Export as _PDF"
+msgstr "Exportovat do _PDF"
+
+#. 123456789012345678901234567890123456789012345678901234567890
+#: ../src/ui-dialogs.c:1004
+msgid ""
+"With HomeBank, printing is oriented towards an eco-responsible\n"
+"attitude towards the most widespread digital format: PDF format. "
+msgstr ""
+
+#: ../src/ui-dialogs.c:1123
+msgid "Select action for target creation"
+msgstr ""
+
+#: ../src/ui-dialogs.c:1127
+msgid "Create _New"
+msgstr ""
+
+#: ../src/ui-dialogs.c:1128
+msgid "Use _Selection"
+msgstr ""
+
+#: ../src/ui-dialogs.c:1156
+msgid "Source transfer"
+msgstr ""
+
+#. target listview
+#: ../src/ui-dialogs.c:1173
+msgid "Target association suggested"
+msgstr ""
+
+#: ../src/ui-dialogs.c:1178
+msgid ""
+"HomeBank has found some transaction that may be the associated transaction "
+"for the internal transfer."
+msgstr ""
+"HomeBank nalezlo některé transakce, které mohou být přiřazenými transakcemi "
+"pro interní převod."
+
+#. header
+#: ../src/ui-filter.c:1013
+msgid "Text"
+msgstr ""
+
+#: ../src/ui-filter.c:1025
+msgid "_Memo:"
+msgstr "Pozná_mka:"
+
+#: ../src/ui-filter.c:1032 ../src/ui-transaction.c:1636
+#: ../src/ui-txn-multi.c:548
+msgid "_Info:"
+msgstr "_Informace:"
+
+#: ../src/ui-filter.c:1040
+msgid "Case _sensitive"
+msgstr "Rozlišovat malá/VELKÁ pí_smena"
+
+#. header
+#. TRANSLATORS: this is abbreviation for Payment
+#: ../src/ui-filter.c:1057 ../src/ui-filter.c:1304 ../src/ui-payee.c:978
+msgid "Payment"
+msgstr ""
+
+#. header
+#: ../src/ui-filter.c:1117 ../src/ui-filter.c:1282
+msgid "Type"
+msgstr ""
+
+#: ../src/ui-filter.c:1139 ../src/ui-transaction.c:55
+#: ../src/ui-widgets-data.c:204
+msgid "Transfer"
+msgstr "Převod"
+
+#: ../src/ui-filter.c:1185
+msgid "Always show"
+msgstr ""
+
+#: ../src/ui-filter.c:1192 ../src/ui-widgets-data.c:167
+msgid "Void"
+msgstr ""
+
+#: ../src/ui-filter.c:1196
+msgid "Added"
+msgstr ""
+
+#: ../src/ui-filter.c:1200
+msgid "Edited"
+msgstr ""
+
+#: ../src/ui-filter.c:1231
+msgid "_Use"
+msgstr ""
+
+#: ../src/ui-filter.c:1307
+msgid "Amount/Text"
+msgstr ""
+
+#: ../src/ui-hbfile.c:43
+msgid "Due Date"
+msgstr ""
+
+#: ../src/ui-hbfile.c:44
+msgid "Next Payout"
+msgstr ""
+
+#: ../src/ui-hbfile.c:45
+msgid "In Advance"
+msgstr ""
+
+#: ../src/ui-hbfile.c:230
+msgid "File properties"
+msgstr "Vlastnosti souboru"
+
+#: ../src/ui-hbfile.c:282
+msgid "Automatic post:"
+msgstr ""
+
+#: ../src/ui-hbfile.c:298
+msgid "of each"
+msgstr ""
+
+#: ../src/ui-hbfile.c:305
+msgid "month"
+msgstr ""
+
+#: ../src/ui-payee.c:1038
+msgid "Delete unused payee"
+msgstr "Smazat nepoužité příjemce"
+
+#: ../src/ui-payee.c:1039
+msgid ""
+"Are you sure you want to\n"
+"permanently delete unused payee?"
+msgstr ""
+"Opravdu chcete natrvalo\n"
+"smazat nepoužité příjemce?"
+
+#: ../src/ui-payee.c:1232
+msgid "Edit Payee"
+msgstr ""
+
+#: ../src/ui-payee.c:1282
+msgid "Default Fill"
+msgstr ""
+
+#: ../src/ui-payee.c:1296 ../src/ui-transaction.c:1624
+#: ../src/ui-txn-multi.c:534
+msgid "Pa_yment:"
+msgstr "P_latba:"
+
+#: ../src/ui-payee.c:1355
+#, c-format
+msgid ""
+"Cannot rename this Payee,\n"
+"from '%s' to '%s',\n"
+"this name already exists."
+msgstr ""
+"Příjemce „%s“ nelze přejmenovat\n"
+"na „%s“, protože toto pojmenování\n"
+"už je použito pro nějakého jiného."
+
+#: ../src/ui-payee.c:1423
+#, c-format
+msgid "Merge payee '%s'"
+msgstr "Sloučit s příjemcem „%s“"
+
+#: ../src/ui-payee.c:1444
+msgid ""
+"Transactions assigned to this payee,\n"
+"will be moved to the payee selected below."
+msgstr ""
+"Transakce přiřazené tomuto příjemci,\n"
+"budou přesunuty na toho níže vybraného."
+
+#: ../src/ui-payee.c:1455
+#, c-format
+msgid "_Delete the payee '%s'"
+msgstr "_Smazat příjemce „%s“"
+
+#: ../src/ui-payee.c:1557
+msgid ""
+"This payee is used.\n"
+"Any transaction using that payee will be set to (no payee)"
+msgstr ""
+"Tento příjemce je používán.\n"
+"Jakékoli transakce používající tohoto příjemce budou nastaveny na (žádný "
+"příjemce)"
+
+#: ../src/ui-payee.c:1761
+msgid "Manage Payees"
+msgstr "Spravovat příjemce"
+
+#: ../src/ui-payee.c:1923
+msgid "new payee"
+msgstr "nový příjemce"
+
+#: ../src/ui-pref.c:85
+msgid "Interface"
+msgstr "Uživatelské rozhraní"
+
+#: ../src/ui-pref.c:86
+msgid "Locale"
+msgstr "Místní a jazyková nastavení"
+
+#: ../src/ui-pref.c:87
+msgid "Transactions"
+msgstr "Transakce"
+
+#: ../src/ui-pref.c:88
+msgid "Import/Export"
+msgstr "Import/Export"
+
+#: ../src/ui-pref.c:89
+msgid "Report"
+msgstr "Sestava"
+
+#: ../src/ui-pref.c:90 ../src/ui-pref.c:1972
+msgid "Backup"
+msgstr "Zálohovat"
+
+#: ../src/ui-pref.c:91
+msgid "Folders"
+msgstr "Složky"
+
+#: ../src/ui-pref.c:97
+msgid "System defaults"
+msgstr "Výchozí ze systému"
+
+#: ../src/ui-pref.c:98
+msgid "Icons only"
+msgstr "Pouze ikony"
+
+#: ../src/ui-pref.c:99
+msgid "Text only"
+msgstr "Pouze text"
+
+#: ../src/ui-pref.c:100
+msgid "Text under icons"
+msgstr "Text pod ikonami"
+
+#: ../src/ui-pref.c:101
+msgid "Text beside icons"
+msgstr "Text vedle ikon"
+
+#: ../src/ui-pref.c:107
+msgid "Horizontal"
+msgstr "Vodorovně"
+
+#: ../src/ui-pref.c:108
+msgid "Vertical"
+msgstr "Svisle"
+
+#: ../src/ui-pref.c:109
+msgid "Both"
+msgstr "V obou směrech"
+
+#: ../src/ui-pref.c:116
+msgid "Tango light"
+msgstr "Tango světlé"
+
+#: ../src/ui-pref.c:117
+msgid "Tango medium"
+msgstr "Tango střední"
+
+#: ../src/ui-pref.c:118
+msgid "Tango dark"
+msgstr "Tango tmavé"
+
+#: ../src/ui-pref.c:123
+msgid "m-d-y"
+msgstr "m-d-r"
+
+#: ../src/ui-pref.c:124
+msgid "d-m-y"
+msgstr "d-m-r"
+
+#: ../src/ui-pref.c:125
+msgid "y-m-d"
+msgstr "r-m-d"
+
+#: ../src/ui-pref.c:130 ../src/ui-pref.c:138
+msgid "Ignore"
+msgstr "Ignorovat"
+
+#: ../src/ui-pref.c:139
+msgid "Append to Info"
+msgstr "Připojit k informaci"
+
+#: ../src/ui-pref.c:140
+msgid "Append to Memo"
+msgstr "Připojit k poznámce"
+
+#: ../src/ui-pref.c:141
+msgid "Append to Payee"
+msgstr "Připojit k příjemci"
+
+#: ../src/ui-pref.c:146
+msgid "Tab"
+msgstr "Karta"
+
+#: ../src/ui-pref.c:147
+msgid "Comma"
+msgstr "Čárka"
+
+#: ../src/ui-pref.c:148
+msgid "Semicolon"
+msgstr "Středník"
+
+#: ../src/ui-pref.c:149
+msgid "Space"
+msgstr "Mezera"
+
+#: ../src/ui-pref.c:491
+msgid "System Language"
+msgstr "Systémový jazyk"
+
+#: ../src/ui-pref.c:654
+msgid "Choose a default HomeBank files folder"
+msgstr "Výběr standardní složky pro soubory HomeBank"
+
+#: ../src/ui-pref.c:659
+msgid "Choose a default HomeBank backup files folder"
+msgstr ""
+
+#: ../src/ui-pref.c:664
+msgid "Choose a default import folder"
+msgstr "Výběr standardní složky pro import"
+
+#: ../src/ui-pref.c:669
+msgid "Choose a default export folder"
+msgstr "Výběr standardní složky pro export"
+
+#: ../src/ui-pref.c:1227
+msgid "General options"
+msgstr ""
+
+#: ../src/ui-pref.c:1250
+msgid "OFX/QFX options"
+msgstr "Možnosti OFX/QFX"
+
+#: ../src/ui-pref.c:1275
+msgid "QIF options"
+msgstr "Možnosti QIF"
+
+#: ../src/ui-pref.c:1292
+msgid "CSV options"
+msgstr "Možnosti CSV"
+
+#: ../src/ui-pref.c:1296
+msgid "(transaction import only)"
+msgstr ""
+
+#: ../src/ui-pref.c:1300
+msgid "Separator:"
+msgstr "Oddělovač:"
+
+#: ../src/ui-pref.c:1360
+msgid "Initial filter"
+msgstr "Výchozí filtr"
+
+#: ../src/ui-pref.c:1377
+msgid "Charts options"
+msgstr "Možnosti grafů"
+
+#: ../src/ui-pref.c:1381
+msgid "Color scheme:"
+msgstr "Barevné schéma:"
+
+#: ../src/ui-pref.c:1397
+msgid "Smaller legend _font"
+msgstr ""
+
+#: ../src/ui-pref.c:1408
+msgid "Statistics options"
+msgstr "Nastavení statistik"
+
+#: ../src/ui-pref.c:1412
+msgid "Show by _amount"
+msgstr "Zobr_azit podle částky"
+
+#: ../src/ui-pref.c:1417
+msgid "Show _rate column"
+msgstr "Zob_razit sloupec kurz"
+
+#: ../src/ui-pref.c:1422 ../src/ui-pref.c:1441
+msgid "Show _details"
+msgstr "Zobrazit po_drobnosti"
+
+#: ../src/ui-pref.c:1427
+msgid "Include _transfer"
+msgstr ""
+
+#: ../src/ui-pref.c:1437
+msgid "Budget options"
+msgstr "Nastavení rozpočtu"
+
+#: ../src/ui-pref.c:1469
+msgid "_Enable"
+msgstr "Z_apnout"
+
+#. row++;
+#: ../src/ui-pref.c:1489 ../src/ui-pref.c:1917
+msgid "_Preset:"
+msgstr "_Předvolba:"
+
+#: ../src/ui-pref.c:1592
+msgid "User interface"
+msgstr "Uživatelské rozhraní"
+
+#: ../src/ui-pref.c:1596
+msgid "_Language:"
+msgstr "_Jazyk:"
+
+#: ../src/ui-pref.c:1604
+msgid "_Date display:"
+msgstr "Zobrazení _datumu:"
+
+#: ../src/ui-pref.c:1620
+msgid "_Format:"
+msgstr "_Formát:"
+
+#: ../src/ui-pref.c:1632
+msgid ""
+"%a locale's abbreviated weekday name.\n"
+"%A locale's full weekday name. \n"
+"%b locale's abbreviated month name. \n"
+"%B locale's full month name. \n"
+"%c locale's appropriate date and time representation. \n"
+"%C century number (the year divided by 100 and truncated to an integer) as a "
+"decimal number [00-99]. \n"
+"%d day of the month as a decimal number [01,31]. \n"
+"%D same as %m/%d/%y. \n"
+"%e day of the month as a decimal number [1,31]; a single digit is preceded "
+"by a space. \n"
+"%j day of the year as a decimal number [001,366]. \n"
+"%m month as a decimal number [01,12]. \n"
+"%p locale's appropriate date representation. \n"
+"%y year without century as a decimal number [00,99]. \n"
+"%Y year with century as a decimal number."
+msgstr ""
+"%a zkrácený název dne v týdnu, dle místních a jazykových nastavení.\n"
+"%A celý název dne v týdnu, dle, dle místních a jazykových nastavení. \n"
+"%b zkrácený název měsíce, dle místních a jazykových nastavení. \n"
+"%B celý název měsíce, dle místních a jazykových nastavení. \n"
+"%c představuje datum a čas, příslušně dle místních a jazykových nastavení. \n"
+"%C číslovka století (letopočet dělený 100 a zkrácený na celé číslo) jako "
+"desítkové číslo [00-99]. \n"
+"%d den v měsíci jako desítkové číslo [01-31]. \n"
+"%D stejné jako %m/%d/%y. \n"
+"%e den v měsíci jako desítkové číslo [1-31], kde osamocené číslici předchází "
+"mezera. \n"
+"%j den v roce jako desítkové číslo [001-366]. \n"
+"%m měsíc jako desítkové číslo [01-12]. \n"
+"%p představuje datum, příslušně dle místních a jazykových nastavení. \n"
+"%y rok bez století, jako desítkové číslo [00-99]. \n"
+"%Y rok se stoletím, jako desítkové číslo."
+
+#: ../src/ui-pref.c:1662
+msgid "Fiscal year"
+msgstr "Daňový rok"
+
+#. TRANSLATORS: (fiscal year) starts on
+#: ../src/ui-pref.c:1667
+msgid "Starts _on:"
+msgstr "Začíná:"
+
+#: ../src/ui-pref.c:1687
+msgid "Measurement units"
+msgstr "Měrné jednotky"
+
+#: ../src/ui-pref.c:1691
+msgid "Use _miles for meter"
+msgstr "Vzdálenost uvádět v _mílích"
+
+#: ../src/ui-pref.c:1696
+msgid "Use _gallon for fuel"
+msgstr "Objem paliva uvádět v _galonech"
+
+#. label = make_label_group(_("Transaction window"));
+#: ../src/ui-pref.c:1721
+msgid "Transaction list"
+msgstr "Seznam transakcí"
+
+#: ../src/ui-pref.c:1733
+msgid "_Show future:"
+msgstr "Zobrazit budoucno_st:"
+
+#. TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days in advance the current date
+#: ../src/ui-pref.c:1742
+msgid "days ahead"
+msgstr "dní dopředu"
+
+#: ../src/ui-pref.c:1746
+msgid "Hide reconciled"
+msgstr "Neukazovat schválené"
+
+#: ../src/ui-pref.c:1751
+msgid "Always show remind"
+msgstr ""
+
+#: ../src/ui-pref.c:1756
+msgid "Always show void"
+msgstr ""
+
+#: ../src/ui-pref.c:1761
+msgid "Include remind into balance"
+msgstr ""
+
+#: ../src/ui-pref.c:1766
+msgid "Lock reconciled for any changes"
+msgstr ""
+
+#: ../src/ui-pref.c:1777
+msgid "Transaction dialog"
+msgstr "Dialog transakce"
+
+#: ../src/ui-pref.c:1781
+msgid "_Keep the last date when multiple add"
+msgstr ""
+
+#: ../src/ui-pref.c:1786
+msgid "Transfer target date tolerance:"
+msgstr ""
+
+#: ../src/ui-pref.c:1795
+msgid "Enable _memo autocomplete with"
+msgstr ""
+
+#: ../src/ui-pref.c:1801
+msgid "rolling days"
+msgstr "dny"
+
+#: ../src/ui-pref.c:1806
+msgid "Show add confirmation text for 5s"
+msgstr ""
+
+#: ../src/ui-pref.c:1859
+msgid "_Toolbar:"
+msgstr "_Nástrojová lišta:"
+
+#. widget = gtk_check_button_new_with_mnemonic (_("Enable rows in alternating colors"));
+#. data->CM_ruleshint = widget;
+#: ../src/ui-pref.c:1868
+msgid "_Grid line:"
+msgstr "_Čáry mřížky:"
+
+#: ../src/ui-pref.c:1880
+msgid "Gtk settings"
+msgstr "Nastavení Gtk"
+
+#: ../src/ui-pref.c:1884
+msgid "Override"
+msgstr ""
+
+#: ../src/ui-pref.c:1889
+msgid "Font _size:"
+msgstr ""
+
+#: ../src/ui-pref.c:1897
+msgid "Dark theme"
+msgstr ""
+
+#: ../src/ui-pref.c:1908
+msgid "Amount colors"
+msgstr "Barvy částek"
+
+#: ../src/ui-pref.c:1912
+msgid "Uses custom colors"
+msgstr "Používat vlastní barvy"
+
+#: ../src/ui-pref.c:1926
+msgid "_Expense:"
+msgstr "_Výdej:"
+
+#: ../src/ui-pref.c:1938
+msgid "_Income:"
+msgstr "_Příjem:"
+
+#: ../src/ui-pref.c:1945
+msgid "_Warning:"
+msgstr "_Varování:"
+
+#: ../src/ui-pref.c:1976
+msgid "_Enable automatic backups"
+msgstr "_Zapnout automatické zálohy"
+
+#: ../src/ui-pref.c:1981
+msgid "_Number of backups to keep:"
+msgstr "Počet záloh, které uchovávat:"
+
+#: ../src/ui-pref.c:1996
+msgid "Backup frequency is once a day"
+msgstr "Frekvence zálohování je jednou denně"
+
+#: ../src/ui-pref.c:2024
+msgid "_Wallets:"
+msgstr "_Peněženky:"
+
+#: ../src/ui-pref.c:2042
+msgid "_Backups:"
+msgstr "_Zálohy"
+
+#: ../src/ui-pref.c:2067
+msgid "Exchange files"
+msgstr "Soubory pro výměnu"
+
+#: ../src/ui-pref.c:2071
+msgid "_Import:"
+msgstr "_Import:"
+
+#: ../src/ui-pref.c:2090
+msgid "_Export:"
+msgstr "_Export:"
+
+#: ../src/ui-pref.c:2130
+msgid "Program start"
+msgstr "Spuštění programu"
+
+#: ../src/ui-pref.c:2134
+msgid "Show splash screen"
+msgstr "Zobrazovat spouštěcí obrazovku"
+
+#: ../src/ui-pref.c:2139
+msgid "Load last opened file"
+msgstr "Načíst minule otevřený soubor"
+
+#: ../src/ui-pref.c:2144
+msgid "Post pending scheduled transactions"
+msgstr "Odeslat neuskutečněné naplánované transakce"
+
+#: ../src/ui-pref.c:2149
+msgid "Update currencies online"
+msgstr "Aktualizovat měny online"
+
+#: ../src/ui-pref.c:2160
+msgid "Main window reports"
+msgstr "Výkazy v hlavním okně"
+
+#: ../src/ui-pref.c:2171
+msgid "Max _items:"
+msgstr ""
+
+#: ../src/ui-pref.c:2266
+msgid "Reset All Preferences"
+msgstr "Resetovat všechna nastavení"
+
+#: ../src/ui-pref.c:2267
+msgid ""
+"Do you really want to reset\n"
+"all preferences to default\n"
+"values?"
+msgstr ""
+"Opravdu chcete resetovat\n"
+"všechna nastavení do výchozích\n"
+"hodnot?"
+
+#: ../src/ui-pref.c:2289
+msgid "Preferences"
+msgstr "Předvolby"
+
+#: ../src/ui-pref.c:2534
+msgid ""
+"You will have to restart HomeBank\n"
+"for the language change to take effect."
+msgstr ""
+"Aby se změna jazyka projevila,\n"
+"bude třeba HomeBank restartovat."
+
+#: ../src/ui-pref.c:2542
+msgid ""
+"The backup directory has changed,\n"
+"you may need to copy the '.bak' file to this new location."
+msgstr ""
+
+#: ../src/ui-split.c:830 ../src/ui-split.c:899 ../src/ui-transaction.c:1558
+msgid "Transaction splits"
+msgstr "Rozdělit částku"
+
+#: ../src/ui-split.c:965
+msgid "Delete all"
+msgstr "Smazat vše"
+
+#: ../src/ui-split.c:1018
+msgid "Apply"
+msgstr "Použít"
+
+#: ../src/ui-split.c:1022
+msgid "Cancel"
+msgstr "Storno"
+
+#: ../src/ui-split.c:1030
+msgid "Transaction amount:"
+msgstr "Částka:"
+
+#: ../src/ui-split.c:1039
+msgid "Unassigned:"
+msgstr "Nepřiřazené:"
+
+#: ../src/ui-split.c:1054
+msgid "Sum of splits:"
+msgstr "Součet položek:"
+
+#: ../src/ui-split.c:1066
+msgid "Warning: sum of splits and transaction amount don't match"
+msgstr ""
+
+#: ../src/ui-split.c:1074
+msgid "Warning: sum of splits and transaction type don't match"
+msgstr ""
+
+#: ../src/ui-tag.c:323
+msgid "(no tag)"
+msgstr ""
+
+#: ../src/ui-tag.c:676
+msgid "Edit Tag"
+msgstr ""
+
+#: ../src/ui-tag.c:748
+#, c-format
+msgid ""
+"Cannot rename this Tag,\n"
+"from '%s' to '%s',\n"
+"this name already exists."
+msgstr ""
+"Nelze přejmenovat tento Štítek,\n"
+"z '%s' na '%s',\n"
+"toto jméno již existuje."
+
+#: ../src/ui-tag.c:791
+#, c-format
+msgid "Merge tag '%s'"
+msgstr "Sloučit štítek '%s'"
+
+#: ../src/ui-tag.c:812
+msgid ""
+"Transactions assigned to this tag,\n"
+"will be moved to the tag selected below."
+msgstr ""
+
+#: ../src/ui-tag.c:822
+#, c-format
+msgid "_Delete the tag '%s'"
+msgstr "_Smazat štítek '%s'"
+
+#: ../src/ui-tag.c:914
+msgid ""
+"This tag is used.\n"
+"That tag will be deleted from any transaction using it."
+msgstr ""
+
+#: ../src/ui-tag.c:1048
+msgid "Manage Tags"
+msgstr "Spravovat štítky"
+
+#: ../src/ui-tag.c:1176
+msgid "new tag"
+msgstr "nový štítek"
+
+#: ../src/ui-transaction.c:177 ../src/ui-transaction.c:1597
+#: ../src/ui-txn-multi.c:513
+msgid "A_ccount:"
+msgstr "Úče_t:"
+
+#: ../src/ui-transaction.c:901
+#, c-format
+msgid "Transaction of %s created."
+msgstr ""
+
+#: ../src/ui-transaction.c:993
+msgid ""
+"Do you want to break the internal transfer?\n"
+"\n"
+"Proceeding will delete the target transaction."
+msgstr ""
+
+#: ../src/ui-transaction.c:995
+msgid "_Break"
+msgstr ""
+
+#: ../src/ui-transaction.c:1311
+msgid "Show _scheduled"
+msgstr "Zobrazit _naplánované"
+
+#: ../src/ui-transaction.c:1315
+msgid "Show _all accounts"
+msgstr "Zobr_azit všechny účty"
+
+#: ../src/ui-transaction.c:1346
+msgid "Use a template"
+msgstr "Použít šablonu"
+
+#: ../src/ui-transaction.c:1459
+msgid "Add & _Keep"
+msgstr "Přidat a _Ponechat"
+
+#: ../src/ui-transaction.c:1473
+msgid "Add transaction"
+msgstr "Přidat transakci"
+
+#: ../src/ui-transaction.c:1474
+msgid "Add template"
+msgstr "Přidat šablonu"
+
+#: ../src/ui-transaction.c:1478
+msgid "Inherit transaction"
+msgstr "Odvozená transakce"
+
+#: ../src/ui-transaction.c:1480
+msgid "Inherit template"
+msgstr ""
+
+#: ../src/ui-transaction.c:1483
+msgid "Edit transaction"
+msgstr "Upravit transakci"
+
+#: ../src/ui-transaction.c:1485
+msgid "Edit template"
+msgstr "Upravit šablonu"
+
+#: ../src/ui-transaction.c:1523 ../src/ui-txn-multi.c:481
+msgid "_Date:"
+msgstr "_Datum:"
+
+#. gtk_widget_set_tooltip_text(widget, _("Date accepted here are:\nday,\nday/month or month/day,\nand complete date into your locale"));
+#: ../src/ui-transaction.c:1538
+msgid ""
+"- type: d, d/m, m/d a complete date\n"
+"- use arrow key + ctrl or shift\n"
+"- empty for today"
+msgstr ""
+
+#: ../src/ui-transaction.c:1584
+msgid "No rate available to auto fill"
+msgstr ""
+
+#: ../src/ui-transaction.c:1616
+msgid "T_o:"
+msgstr ""
+
+#: ../src/ui-transaction.c:1630
+msgid "Book _2"
+msgstr ""
+
+#. gtk_widget_set_tooltip_text(widget, _("Autocompletion and direct seizure\nis available"));
+#: ../src/ui-transaction.c:1678 ../src/ui-transaction.c:1699
+msgid ""
+"- type some letter for autocompletion\n"
+"- type new text to create entry"
+msgstr ""
+
+#: ../src/ui-transaction.c:1686 ../src/ui-txn-multi.c:581
+msgid "Cate_gory:"
+msgstr ""
+
+#: ../src/ui-transaction.c:1725 ../src/ui-txn-multi.c:598
+msgid "M_emo:"
+msgstr "Po_známka:"
+
+#: ../src/ui-transaction.c:1733 ../src/ui-txn-multi.c:614
+msgid "_Tags:"
+msgstr "_Štítky:"
+
+#: ../src/ui-transaction.c:1756
+msgid "Warning: amount and category sign don't match"
+msgstr "Upozornění: částka a znaménko kategorie (+ nebo -) nesouhlasí"
+
+#: ../src/ui-txn-multi.c:466
+msgid "Multiple edit transactions"
+msgstr "Hromadná úprava transakcí"
+
+#: ../src/ui-txn-multi.c:636
+msgid ""
+"Type as\n"
+"transfer"
+msgstr ""
+
+#: ../src/ui-widgets-data.c:51
+msgid "Time"
+msgstr "Čas"
+
+#: ../src/ui-widgets-data.c:58
+msgid "Trend"
+msgstr "Trend"
+
+#: ../src/ui-widgets-data.c:66
+msgid "Include"
+msgstr "Zahrnout"
+
+#: ../src/ui-widgets-data.c:67
+msgid "Exclude"
+msgstr "Vynechat"
+
+#: ../src/ui-widgets-data.c:77
+msgid "(no type)"
+msgstr "(žádný typ)"
+
+#: ../src/ui-widgets-data.c:78
+msgid "Bank"
+msgstr "Banka"
+
+#: ../src/ui-widgets-data.c:79 ../src/ui-widgets.c:1340
+msgid "Cash"
+msgstr "Hotovost"
+
+#: ../src/ui-widgets-data.c:80
+msgid "Asset"
+msgstr "Aktiva"
+
+#: ../src/ui-widgets-data.c:81 ../src/ui-widgets.c:1338
+msgid "Credit card"
+msgstr "Kreditní karta"
+
+#: ../src/ui-widgets-data.c:82
+msgid "Liability"
+msgstr "Pasiva"
+
+#: ../src/ui-widgets-data.c:83
+msgid "Checking"
+msgstr "Ověřování"
+
+#: ../src/ui-widgets-data.c:84
+msgid "Savings"
+msgstr "Úspory"
+
+#: ../src/ui-widgets-data.c:137
+msgid "This month"
+msgstr "Tento měsíc"
+
+#: ../src/ui-widgets-data.c:138
+msgid "Next month"
+msgstr "Příští měsíc"
+
+#: ../src/ui-widgets-data.c:140
+msgid "Next 30 days"
+msgstr "Dalších 30 dní"
+
+#: ../src/ui-widgets-data.c:141
+msgid "Next 60 days"
+msgstr "Dalších 60 dní"
+
+#: ../src/ui-widgets-data.c:142
+msgid "Next 90 days"
+msgstr "Dalších 90 dní"
+
+#: ../src/ui-widgets-data.c:182
+msgid "Possible"
+msgstr "Možné"
+
+#: ../src/ui-widgets-data.c:183
+msgid "Before"
+msgstr "Před"
+
+#: ../src/ui-widgets-data.c:184
+msgid "After"
+msgstr "Po"
+
+#. added 5.6
+#: ../src/ui-widgets-data.c:186
+msgid "Skip"
+msgstr ""
+
+#: ../src/ui-widgets-data.c:192
+msgid "Exp. & Inc."
+msgstr "Příjmy a výdaje"
+
+#: ../src/ui-widgets-data.c:200
+msgid "Any Type"
+msgstr "Jakýkoli"
+
+#: ../src/ui-widgets-data.c:209
+msgid "Any Status"
+msgstr "Jakýkoli"
+
+#: ../src/ui-widgets-data.c:212
+msgid "Uncleared"
+msgstr "Neschváleno"
+
+#: ../src/ui-widgets-data.c:214
+msgid "Unreconciled"
+msgstr "Nevyrovnaný"
+
+#: ../src/ui-widgets-data.c:216
+msgid "Uncategorized"
+msgstr "Bez kategorie"
+
+#: ../src/ui-widgets-data.c:243
+msgid "Mon"
+msgstr "Po"
+
+#: ../src/ui-widgets-data.c:244
+msgid "Tue"
+msgstr "Út"
+
+#: ../src/ui-widgets-data.c:245
+msgid "Wed"
+msgstr "St"
+
+#: ../src/ui-widgets-data.c:246
+msgid "Thu"
+msgstr "Čt"
+
+#: ../src/ui-widgets-data.c:247
+msgid "Fri"
+msgstr "Pá"
+
+#: ../src/ui-widgets-data.c:248
+msgid "Sat"
+msgstr "So"
+
+#: ../src/ui-widgets-data.c:249
+msgid "Sun"
+msgstr "Ne"
+
+#: ../src/ui-widgets-data.c:257
+msgid "January"
+msgstr "leden"
+
+#: ../src/ui-widgets-data.c:258
+msgid "February"
+msgstr "únor"
+
+#: ../src/ui-widgets-data.c:259
+msgid "March"
+msgstr "březen"
+
+#: ../src/ui-widgets-data.c:260
+msgid "April"
+msgstr "duben"
+
+#: ../src/ui-widgets-data.c:262
+msgid "June"
+msgstr "červen"
+
+#: ../src/ui-widgets-data.c:263
+msgid "July"
+msgstr "červenec"
+
+#: ../src/ui-widgets-data.c:264
+msgid "August"
+msgstr "srpen"
+
+#: ../src/ui-widgets-data.c:265
+msgid "September"
+msgstr "září"
+
+#: ../src/ui-widgets-data.c:266
+msgid "October"
+msgstr "říjen"
+
+#: ../src/ui-widgets-data.c:267
+msgid "November"
+msgstr "listopad"
+
+#: ../src/ui-widgets-data.c:268
+msgid "December"
+msgstr "prosinec"
+
+#: ../src/ui-widgets-data.c:285
+msgid "Sep"
+msgstr "Zář"
+
+#: ../src/ui-widgets.c:388
+msgid "Search..."
+msgstr "Hledat…"
+
+#: ../src/ui-widgets.c:1339
+msgid "Check"
+msgstr "Šek"
+
+#: ../src/ui-widgets.c:1341
+msgid "Bank Transfer"
+msgstr "Bankovní převod"
+
+#: ../src/ui-widgets.c:1342
+msgid "Debit card"
+msgstr "Debetní karta"
+
+#: ../src/ui-widgets.c:1343
+msgid "Standing order"
+msgstr "Trvalý příkaz"
+
+#: ../src/ui-widgets.c:1344
+msgid "Electronic payment"
+msgstr "Elektronická platba"
+
+#: ../src/ui-widgets.c:1345
+msgid "Deposit"
+msgstr "Vklad"
+
+#. TRANSLATORS: Financial institution fee
+#: ../src/ui-widgets.c:1347
+msgid "FI fee"
+msgstr "Bankovní poplatek"
+
+#: ../src/ui-widgets.c:1348
+msgid "Direct Debit"
+msgstr "Inkaso"

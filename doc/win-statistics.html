@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content="text/html; charset=utf-8" http-equiv="CONTENT-TYPE">
+  <meta content="noindex" name="robots">
+  <title>Statistics report</title>
+  <link href="help.css" rel="stylesheet" type="text/css">
+</head>
+<body id="top">
+  <div class="dochead">
+    HomeBank User manual
+  </div>
+  <div class="title">
+    <h1>Statistics report</h1>
+    <p>The statistics report is the main analysis part of HomeBank. Its will allow to focus on your financial flow in the details instantly and dynamically by filtering on every axis and displaying the results for a period.<br>
+    The main view axis is on Category, Subcategory, Payee, Tag, Month, Year, with a possibility to focus on Expense, Income, or Balance; then a complete filter is also possible on transactions, see the <a href="dlg-filt.html">filter dialog</a> for details.<br>
+    By default the internal transfer are not included into the computing of this report. To enable this you have 2 options, set the <a href="dlg-pref.html#tab6">default preference</a> or you can change with the <a href="dlg-filt.html">filter dialog</a>.<br>
+    Results are displayed in 3 ways: list-view, column chart, donuts chart.<br>
+    At last, you can display every transactions detail of the selected view (Category, Payee, Month, Year).<br>
+    A tool-tip will appear on every column/donuts chart after a little delay,or by pressing the left mouse-button.</p>
+    <h2>Window call</h2>
+    <ul>
+      <li>from the main window-menu: Reports / Statistics</li>
+      <li>from the main window-tool-bar.</li>
+    </ul>
+  </div>
+
+  <div class="row">
+  <div class="gfx">
+    <img class="gtkshot right" src="images/win-statistics1.png"><br>
+    <img class="gtkshot right" src="images/win-statistics2.png"><br>
+    <img class="gtkshot right" src="images/win-statistics3.png"><br>
+  </div>
+  <div class="rounded content">
+    <h2>Using statistics report</h2>
+
+    <h3><img src="images/1.png" width="15" height="15"> Display</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Mode</th>
+        <td>Total: will display the total expense/income/balance for the period<br>
+        Time: will display the total per interval for the period</td>
+      </tr>
+      <tr>
+        <th>View by</th>
+        <td>
+          specify the item the result should be computed for:
+          <ul>
+            <li>Category</li>
+            <li>Subcategory</li>
+            <li>Payee</li>
+            <li>Tag</li>
+            <li>Month</li>
+            <li>Half Year</li>
+            <li>Year</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>Balance mode</th>
+        <td>available only when you select Account in Time mode, instead of sum, it will show result as balance</td>
+      </tr>
+      <tr>
+        <th>Type</th>
+        <td>
+          filter the result to:
+          <ul>
+            <li>Expense</li>
+            <li>Income</li>
+            <li>Balance</li>
+          </ul>Items with no results, or equal to 0 will not be displayed
+        </td>
+      </tr>
+
+      <tr>
+        <th>Interval</th>
+        <td>
+          specify the interval when display mode by Time:
+          <ul>
+            <li>Day</li>
+            <li>Week</li>
+            <li>Month</li>
+            <li>Quarter</li>
+            <li>Half Year</li>
+            <li>Year</li>
+            </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>By amount</th>
+        <td>sort the result by amount instead of the default order alphabetical for Category/Payee or chronological for Month/Year</td>
+      </tr>
+      <tr>
+        <th>Zoom X</th>
+        <td>select the X zoom factor in real time</td>
+      </tr>
+    </table>
+    <h3><img src="images/2.png" width="15" height="15"> Date filter</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Range</th>
+        <td>fast select a date with predefined range</td>
+      </tr>
+      <tr>
+        <th>From / To</th>
+        <td>specify date bound limit to restrict the results to</td>
+      </tr>
+    </table>
+    <h3><img src="images/3.png" width="15" height="15"> Tool-bar</h3>
+    <p>The tool-bar is the main control of the display. All tool-button have a tool-tip that will help you know what action will be launched when you click on the tool-button. The icon appear or not depending the context.
+    <br>
+    At the end of the toolbar, there is an export button that enable Result or detail of transaction to copy to clipboard or export into a CSV file</p>
+
+    <h3><img src="images/4.png" width="15" height="15"> Total</h3>
+    <p>This is the grand total for the period: Expense, Income, Balance.</p>
+
+    <h3><img src="images/5.png" width="15" height="15"> Result list / Column chart / Donuts chart</h3>
+    <p>The result list display the computed amounts according to the current selection and filter.</p>
+
+    <h3><img src="images/6.png" width="15" height="15"> Transaction detail list</h3>
+    <p>The transaction detail list will show every transaction of the selected item in the above result list.<br>
+    The columns visible in that list are those configured in the <a href="win-account.html">account window</a>.<br>
+    By default it is not visible. Use the tool-bar 'Toggle detail' button for changing this.<br>
+    You can also default keep it visible in the <a href="dlg-pref.html#tab6">Preference dialog</a></p>
+  </div>
+</body>
+</html>

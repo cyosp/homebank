@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content="text/html; charset=utf-8" http-equiv="content-type">
+  <meta content="noindex" name="robots">
+  <title>Budget dialog</title>
+  <link href="help.css" rel="stylesheet" type="text/css">
+</head>
+<body id="top">
+  <div class="dochead">
+    HomeBank User manual
+  </div>
+  <div class="title">
+    <h1>Budget dialog</h1>
+    <p>The budget dialog is the main interface to edit, modify and manage your <a href="00-lexicon.html#budget">budget</a>. 
+    Please refer to the <a href="use-budget.html">using the budget feature</a> for details on how using this feature.<br>
+    You also have a <b>table view version</b> of this dialog since v5.3, see below.</p>
+    <h2>Dialog call</h2>
+    <ul>
+      <li>main window menu: Manage / Budget</li>
+      <li>main window tool bar.</li>
+    </ul>
+  </div>
+
+  <div class="row">
+  <div class="gfx">
+    <img class="gtkshot right" src="images/dlg-budget1.png">
+  </div>
+  <div class="rounded content">
+    <h2>Using budget dialog</h2>
+
+    <h3><img src="images/1.png" width="15" height="15"> Expense/Income switcher</h3>
+    <p>Toggle the category list with Expense/Income categories only</p>
+
+    <h3><img src="images/2.png" width="15" height="15"> Menu button</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Import</th>
+        <td>import the budget from a CSV file.</td>
+      </tr>
+      <tr>
+        <th>Export</th>
+        <td>export the budget to a CSV file.</td>
+      </tr>
+    </table>
+    <p>Please refer to <a href="misc-csvformat.html#bud">CSV file format</a> for the file description.</p>
+
+    <h3><img src="images/3.png" width="15" height="15"> Category list</h3>
+    <p>display the list of categories and subcategories of the current wallet.</p>
+    <p>
+      <img src="images/hb-ope-budget.png"> = category has budget set (and is also displayed bold)<br>
+      <img src="images/hb-ope-forced.png"> = category is forced to be displayed
+    </p>  
+
+
+    <h3><img src="images/4.png" width="15" height="15"> Budget totals</h3>
+    <p>This is the totals for the current budget.</p>
+
+    <h3><img src="images/5.png" width="15" height="15"> Budget for ...</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>is the same each month</th>
+        <td>category budget will be the same for every month: Jan -&gt; Dec<br>
+        you can then fill the amount below</td>
+      </tr>
+      <tr>
+        <th>is different per month</th>
+        <td>category budget will be specific each month<br>
+        you can then fill the amount of each needed months</td>
+      </tr>
+      <tr>
+        <th>Jan, Feb, ..., Dec</th>
+        <td>The amount for each month</td>
+      </tr>
+      <tr>
+        <th>Clear input</th>
+        <td>clear any budget for the selected category</td>
+      </tr>
+    </table>
+    <h3><img src="images/6.png" width="15" height="15"> Options</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Force monitoring this category</th>
+        <td>By default, if a transaction has no amount (0.00) it it not displayed into the budget report. This checkbox will change this and can manage such case.</td>
+      </tr>
+    </table>
+  </div>
+  </div>
+
+  <h1>Table view budget dialog</h1>
+  <div class="row">
+  <div class="gfx">
+    <img class="gtkshot right" src="images/dlg-budget2.png">
+  </div>
+  <div class="rounded content">
+    <h2>Using budget table view dialog</h2>
+    <p>the way of using this winodw is quite the same, only the displaying chnages.</p>
+
+  </div>
+  
+</body>
+</html>

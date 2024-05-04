@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg xmlns:osb="http://www.openswatchbook.org/uri/2009/osb" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" id="svg7384" height="16" width="16" version="1.1" inkscape:version="0.92.4 (5da689c313, 2019-01-14)" sodipodi:docname="hicolor_actions_scalable_edit-split-symbolic.svg">
+  <defs id="defs12">
+    <linearGradient osb:paint="solid" id="linearGradient5606">
+      <stop style="stop-color:#000000;stop-opacity:1;" offset="0" id="stop5608" />
+    </linearGradient>
+    <filter style="color-interpolation-filters:sRGB" id="filter7554">
+      <feBlend mode="darken" in2="BackgroundImage" id="feBlend7556" />
+    </filter>
+    <filter style="color-interpolation-filters:sRGB" id="filter7554-5">
+      <feBlend mode="darken" in2="BackgroundImage" id="feBlend7556-6" />
+    </filter>
+    <filter id="filter7554-1" style="color-interpolation-filters:sRGB">
+      <feBlend id="feBlend7556-8" in2="BackgroundImage" mode="darken" />
+    </filter>
+  </defs>
+  <sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-width="1920" inkscape:window-height="1044" id="namedview10" showgrid="true" inkscape:zoom="33.625" inkscape:cx="8" inkscape:cy="-2.5309148" inkscape:window-x="0" inkscape:window-y="0" inkscape:window-maximized="1" inkscape:current-layer="svg7384">
+    <inkscape:grid type="xygrid" id="grid3219" />
+  </sodipodi:namedview>
+  <metadata id="metadata90">
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>HomeBank Symbolic Icon Theme</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <title id="title9167">HomeBank Symbolic Icon Theme</title>
+  <path
+     d="m 8.002168,2.0390638 c 3.769717,0.00458 7.069944,2.3667906 8.007624,5.7304771 a 1.0419771,0.95987616 0 0 1 0,0.4785181 c -0.380752,1.3512946 -1.147175,2.53619 -2.167953,3.474586 L 13.130915,11.011708 C 14.007236,10.196291 14.670481,9.1774153 14.999974,8.00782 14.179142,5.0634317 11.299955,3.00404 8.000128,3.00004 7.136817,3.0005745 6.3061653,3.1490594 5.5294824,3.4101984 L 4.7697291,2.6504314 C 5.7697071,2.258143 6.863483,2.0398038 8.000158,2.0391038 a 1.0419771,0.95987616 0 0 1 0.00195,0 z M 2.1565966,4.2792549 2.8675209,4.990192 C 1.9922102,5.8053088 1.3296548,6.8233847 1.000362,7.99218 c 0.8208319,2.944388 3.7000186,5.00378 6.999846,5.00778 0.862411,-5.24e-4 1.6927628,-0.147599 2.468746,-0.408198 l 0.757793,0.757807 c -0.999078,0.391698 -2.091154,0.610637 -3.226529,0.611327 a 1.0419771,0.95987616 0 0 1 -0.00195,0 c -3.769717,-0.0046 -7.06994442,-2.36679 -8.00762379,-5.7304769 a 1.0419771,0.95987616 0 0 1 0,-0.4804681 C 0.37102584,6.3999564 1.137419,5.2168611 2.1565966,4.2792649 Z M 8.000268,4.999952 A 2.999934,2.999988 0 0 1 11.000202,7.99994 2.999934,2.999988 0 0 1 10.894734,8.7753269 L 9.9943641,7.8749405 A 1.999956,1.999992 0 0 0 8.1253052,6.005848 L 7.2229851,5.1035116 A 2.999934,2.999988 0 0 1 8.000308,4.999992 Z M 5.1058317,7.2284431 6.0062019,8.1288295 A 1.999956,1.999992 0 0 0 7.8713608,9.994022 L 8.773681,10.896358 A 2.999934,2.999988 0 0 1 8.000258,10.999878 2.999934,2.999988 0 0 1 5.000324,7.99989 2.999934,2.999988 0 0 1 5.1057917,7.2284131 Z"
+     fill="#bebebe"
+     id="path2"
+     style="stroke-width:0.999987" />
+  <rect
+     transform="matrix(-.70711 -.70711 -.70711 .70711 0 0)"
+     x="-19.314"
+     y="-.49958"
+     width="16"
+     height="1"
+     ry="0"
+     fill="#bebebe"
+     id="rect6" />
+</svg>

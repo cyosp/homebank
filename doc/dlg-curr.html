@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content="text/html; charset=utf-8" http-equiv="CONTENT-TYPE">
+  <meta content="noindex" name="robots">
+  <title>Currencies dialog</title>
+  <link href="help.css" rel="stylesheet" type="text/css">
+</head>
+<body id="top">
+  <div class="dochead">
+    HomeBank User manual
+  </div>
+  <div class="title">
+    <h1>Currencies dialog</h1>
+    <p>The currencies dialog is used to add, modify and manage the <a href="00-lexicon.html#currency">currencies</a> available for the wallets.</p>
+
+    <h2>Dialog call</h2>
+    <ul>
+      <li>main window menu: Manage / Currencies</li>
+      <li>main window tool bar.</li>
+    </ul>
+  </div>
+
+  <div class="row">
+  <div class="gfx">
+    <img class="gtkshot right" src="images/dlg-currencies1.png"><br>
+    <img class="gtkshot right" src="images/dlg-currencies2.png">
+  </div>
+  <div class="rounded content">
+    <h2>Using currencies dialog</h2>
+
+    <h3><img src="images/1.png" width="15" height="15"> General</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Update on-line</th>
+        <td>Trigger an update exchanges rate on-line. This is disabled when you only have a single currency.<br>
+        <img src="images/d-warn.png"/>&nbsp;<span class="warning">Please see the additional notes below</span>
+        </td>
+      </tr>
+      
+    </table>
+    
+
+    <h3><img src="images/2.png" width="15" height="15"> Currencies list</h3>
+    <p>display currency ISO code, name, symbol, exchange rate and last modified date</p>
+    <h3><img src="images/3.png" width="15" height="15"> Buttons</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Add</th>
+        <td>open a dialog to add a new currency<br>
+        + see the notes below.</td>
+      </tr>
+      <tr>
+        <th>Edit</th>
+        <td>open a dialog to edit the selected currency</td>
+      </tr>
+      <tr>
+        <th>Delete</th>
+        <td>delete the selected currency</td>
+      </tr>
+      <tr>
+        <th>Set as base</th>
+        <td>set the selected currency to be the base currency</td>
+      </tr>
+    </table>
+
+    <h2>Notes: add a currency</h2>
+    <p>
+    - you can pick up new currencies from the official ISO 4217 list<br>
+    - you can define a custom currency for discontinued or cryptocurrency</p>
+    <p>When you define a custom currency, please take care of the following:<br>
+    - the Name must be at least 3 chars long<br>
+    - the ISO code is optional, but you cannot change it easily later on<br>
+    - the ISO code must be 3 chars long and cannot be the same an existing ISO 4217 one
+    </p>
+
+    <h2>Notes: Online Currency Update</h2>
+    <p class="warning"><img src="images/d-warn.png"/>&nbsp;
+    This is an extra feature relying on a <b>third party web service</b>.</p>
+    
+    <p>
+    Your currencies may not be supported:<br>
+    - as base currency: and nothing will update<br>
+    - as a target currency: this currency will not be updated<br>
+    See additional notes below</p>
+
+    <p>The current API is:<br>
+    - &#x29c9; <a href="https://frankfurter.app" target="_blank">frankfurter.app</a> which rely on All currencies quoted against the euro (base currency)<br>
+    - &#x29c9; <a href="https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html" target="_blank">list of supported currencies</a></p>
+    <p>
+    <p>Previous third party API service used in the past.<br>
+    - until 5.2:   https://api.fixer.io, see &#x29c9; <a href="https://bugs.launchpad.net/homebank/+bug/1785210" target="_blank">#1785210</a><br>
+    - until 5.1.7: yahoo, see &#x29c9; <a href="https://bugs.launchpad.net/homebank/+bug/1730527" target="_blank">#1730527</a><br>
+  </p>
+
+  </div>
+  </div>
+
+
+
+</body>
+</html>

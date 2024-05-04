@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content="text/html; charset=utf-8" http-equiv="content-type">
+  <meta content="noindex" name="robots">
+  <title>Preferences dialog</title>
+  <link href="help.css" rel="stylesheet" type="text/css">
+</head>
+<body id="top">
+  <div class="dochead">
+    HomeBank User manual
+  </div>
+  <div class="title">
+    <h1>Preferences dialog</h1>
+    <p>The preferences dialog can be accessed from the main window menu, as Edit-Preferences. It lets you customize many aspects of the way HomeBank works.<br>
+    The following sections detail the settings that you can customize, and what they affect.</p>
+    <ul class="toc">
+      <li><a href="#tab1">General</a></li>
+      <li><a href="#tab2">Interface</a></li>
+      <li><a href="#tab3">Locale</a></li>
+      <li><a href="#tab4">Transactions</a></li>
+      <li><a href="#tab5">Import/Export</a></li>
+      <li><a href="#tab6">Report</a></li>
+      <li><a href="#tab7">Backup</a></li>
+      <li><a href="#tab8">Folders</a></li>
+      <li><a href="#tab9">Euro minor</a></li>
+    </ul><!-- separator -->
+  </div>
+
+<div class="row">
+  <div class="gfx">
+    <img class="gtkshot right" src="images/dlg-prefs1.png">
+  </div>
+  <div class="rounded content">
+    <h2><a id="tab1" name="tab1"></a>General</h2>
+    <h3>Program start</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Show splash screen</th>
+        <td>display a splash screen when HomeBank start</td>
+      </tr>
+      <tr>
+        <th>Load last opened file</th>
+        <td>load the last opened file when HomeBank start</td>
+      </tr>
+      <tr>
+        <th>Post pending scheduled transactions</th>
+        <td>append scheduled transaction to accounts when HomeBank start</td>
+      </tr>
+      <tr>
+        <th>Update currencies on-line</th>
+        <td>trigger a on-line update for currencies exchange rate start</td>
+      </tr>
+    </table>
+    <h3>Main window reports</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Range</th>
+        <td>default range initial value for the main window reports</td>
+      </tr>
+      <tr>
+        <th>Max items</th>
+        <td>default number of slice for the pie chart of the main window reports</td>
+      </tr>
+    </table>
+    <!-- separator -->
+    <div class="clear"></div>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+</div>
+<div class="row">
+  <div class="gfx">
+    <img class="gtkshot right" src="images/dlg-prefs2.png">
+  </div>
+  <div class="rounded content">
+    <h2><a id="tab2" name="tab2"></a>Interface</h2>
+    <h3>General</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Tool-bar</th>
+        <td>tool-bar style to be used</td>
+      </tr>
+      <tr>
+        <th>Grid line</th>
+        <td>
+          specify the list grid line option:
+          <ul>
+            <li>None</li>
+            <li>Horizontal</li>
+            <li>Vertical</li>
+            <li>Both</li>
+          </ul>
+        </td>
+      </tr>
+    </table>
+
+    <h3>Gtk settings</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Override font size</th>
+        <td>Enable and define the font size for GTK</td>
+      </tr>
+      <tr>
+        <th>Dark theme</th>
+        <td>well, you know what this is about right ?</td>
+      </tr>
+    </table>
+
+    <h3>Amount colors</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Uses custom colors</th>
+        <td>specify if amounts should be displayed with colors below</td>
+      </tr>
+      <tr>
+        <th>Preset</th>
+        <td>contains some Tango color preset to fast set the amount colors</td>
+      </tr>
+      <tr>
+        <th>Expense</th>
+        <td>color used for expense</td>
+      </tr>
+      <tr>
+        <th>Income</th>
+        <td>color used for incomes</td>
+      </tr>
+      <tr>
+        <th>Warning</th>
+        <td>color used for amount in warning (overdrawn)</td>
+      </tr>
+    </table><!-- separator -->
+    <div class="clear"></div>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+</div>
+<div class="row">
+  <div class="gfx">
+    <img class="gtkshot right" src="images/dlg-prefs3.png">
+  </div>
+  <div class="rounded content">
+    <h2><a id="tab3" name="tab3"></a>Locale</h2>
+
+    <h3>User interface</h3>
+    <table class="widgetinfo">
+       <tr>
+        <th>Language</th>
+        <td>define what language to use for the interface</td>
+      </tr>
+     <tr>
+        <th>Date display</th>
+        <td>A date sample is displayed</td>
+      </tr>
+      <tr>
+        <th>Customize</th>
+        <td>the format used <u>to display the date</u><br>
+        <img src="images/d-warn.png">&nbsp;<span class="warning">the input format rely on your system option, you can see <a href="https://answers.launchpad.net/homebank/+faq/1427">this FAQ</a>.</span>
+        </td>
+      </tr>
+    </table>
+    <h3>Fiscal year</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Start on</th>
+        <td>define on which day and month the fiscal year start</td>
+      </tr>
+    </table>
+    <h3>Measurement units</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Use miles for metre</th>
+        <td>use the mile labels and abbreviation for the vehicle cost</td>
+      </tr>
+      <tr>
+        <th>Use gallon for fuel</th>
+        <td>use the gallon labels and abbreviation for the vehicle cost</td>
+      </tr>
+    </table><!-- separator -->
+    <div class="clear"></div>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+</div>
+<div class="row">
+  <div class="gfx">
+    <img class="gtkshot right" src="images/dlg-prefs4.png">
+  </div>
+  <div class="rounded content">
+    <h2><a id="tab4" name="tab4"></a>Transactions</h2>
+    <h3>Transaction list</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Range</th>
+        <td>Set the default range to be used for account window</td>
+      </tr>
+      <tr>
+        <th>Show future [xx] days ahead</th>
+        <td>set the number of days to force show future transaction<br>
+        Please note the addition is only effective when the range is:<br>
+		THISMONTH, THISQUARTER, THISYEAR<br>
+		LAST30DAYS, LAST60DAYS, LAST90DAYS, LAST12MONTHS
+        </td>
+      </tr>
+      <tr>
+        <th>Hide reconciled</th>
+        <td>set the filter for account window not to default show reconciled transactions</td>
+      </tr>
+      <tr>
+        <th>Always show remind</th>
+        <td>set the remind transaction to always be display (ignore filters)</td>
+      </tr>
+      <tr>
+        <th>Always show void</th>
+        <td>set the void transaction to always be display (ignore filters)</td>
+      </tr>
+      <tr>
+        <th>Include remind into balance</th>
+        <td>set the remind transaction amount to be computed into the balance, ignored otherwise</td>
+      </tr>
+       <tr>
+        <th>Lock reconciled for any changes</th>
+        <td>set the default value for the lock reconciled for any change of the main window</td>
+      </tr>   </table>
+
+    <h3>Transaction dialog</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Keep the last date when multiple add</th>
+        <td>
+          When you add several transaction to the chain, set the date to be kept when:<br>
+          - you use the [Add] button from a <a href="dlg-tran.html">Transaction dialog</a> in Add mode<br>
+          - Inherit a transaction from an <a href="win-account.html">Account window</a><br>
+        </td>
+      </tr>
+      <tr>
+        <td>Transfer target date tolerance [xx] days</td>
+        <td>Define the number of +/- days to search for a target transaction for transfer</td>
+      </tr>
+      <tr>
+        <th>Enable memo autocomplete with [xxx] rolling days</th>
+        <td>Collect and propose memo for autocomplete or not
+        and define how many days into the past to grab memo for autocomplete, if for example 30 days, you will only see the last 30 days autocomplete memo</td>
+      </tr>
+      <tr>
+        <th>Show confirmation text for 5s</th>
+        <td>Will show 5s added confirmation text into the transaction dialog</td>
+      </tr>
+    </table>
+    <!-- separator -->
+    <div class="clear"></div>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+</div>
+<div class="row">
+  <div class="gfx">
+    <img class="gtkshot right" src="images/dlg-prefs5.png">
+  </div>
+  <div class="rounded content">
+    <h2><a id="tab5" name="tab5"></a>Import/Export</h2>
+    <h3>General options</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Date order</th>
+        <td>
+          set the default date order for file import
+          <ul>
+            <li>d-m-y</li>
+            <li>m-d-y</li>
+            <li>y-m-d</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>Sentence case memo/payee</th>
+        <td>will change the case for memo and payee (lowercase starting with a capital letter)</td>
+      </tr>
+    </table>
+    <h3>OFX/QFX options</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>OFX Name</th>
+        <td>
+          define what to do for name field during import:<br>
+          <ul>
+            <li>ignore</li>
+            <li>memo</li>
+            <li>payee</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>OFX Memo</th>
+        <td>
+          define what to do for memo field during import:<br>
+          <ul>
+            <li>ignore</li>
+            <li>append to Info</li>
+            <li>append to Memo</li>
+            <li>append to Payee</li>
+          </ul>
+        </td>
+      </tr>
+    </table>
+    <h3>QIF options</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Import memos</th>
+        <td>to import the M field from files</td>
+      </tr>
+      <tr>
+        <th>Swap memos with payees</th>
+        <td>to swap M and P field from files</td>
+      </tr>
+    </table>
+    <h3>CSV options</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Separator</th>
+        <td>change the separator for transaction import between:<br>
+        Tab, Comma, Semicolon, Space</td>
+      </tr>
+    </table><!-- separator -->
+    <div class="clear"></div>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+</div>
+<div class="row">
+  <div class="gfx">
+    <img class="gtkshot right" src="images/dlg-prefs6.png">
+  </div>
+  <div class="rounded content">
+    <h2><a id="tab6" name="tab6"></a>Report</h2>
+    <h3>Initial filter</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Range</th>
+        <td>Set the default range to be used for account window</td>
+      </tr>
+    </table>
+    <h3>Charts options</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Color scheme</th>
+        <td>
+          Set the default color scheme to be applied for charts
+          <ul>
+            <li>HomeBank</li>
+            <li>Money</li>
+            <li>SAP</li>
+            <li>Quicken</li>
+            <li>Office 2010</li>
+            <li>Office 2013</li>
+            <li>Analytics</li>
+            <li>YNAB</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>Smaller legend font</td>
+        <td>set the font for scale and legend to be smaller</td>
+      </tr>
+    </table>
+    <h3>Statistics options</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Show by amount</th>
+        <td>set the by amount toggle on the statistics window to default be checked</td>
+      </tr>
+      <tr>
+        <th>Show rate column</th>
+        <td>set the rate column to be displayed by default</td>
+      </tr>
+      <tr>
+        <th>Show details</th>
+        <td>set the detail toggle on the statistics window to default be checked</td>
+      </tr>
+      <tr>
+        <th>Include transfer</th>
+        <td>set the internal transfer to be included into te computing of the report</td>
+      </tr>
+    </table>
+    <h3>Budget options</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Show details</th>
+        <td>set the detail toggle on the budget window to default be checked</td>
+      </tr>
+    </table><!-- separator -->
+    <div class="clear"></div>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+</div>
+<div class="row">
+  <div class="gfx">
+    <img class="gtkshot right" src="images/dlg-prefs7.png">
+  </div>
+  <div class="rounded content">
+    <h2><a id="tab7" name="tab7"></a>Backup</h2>
+    <h3>Backup</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Enable automatic backups</th>
+        <td>to activate backup of your xhb files</td>
+      </tr>
+      <tr>
+        <th>Number of backups to keep [xx]</th>
+        <td>the number of backups to keep</td>
+      </tr>
+      <tr>
+        <th>Frequency</th>
+        <td>is once a day<br>
+        which means a backup file will be created the first time you save your file during a day, so if you save it 3 times the same day, only the first save will be backup, so that you can revert to the day before with ease.</td>
+      </tr>
+    </table>
+    <!-- separator -->
+    <div class="clear"></div>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="gfx">
+    <img class="gtkshot right" src="images/dlg-prefs8.png">
+  </div>
+  <div class="rounded content">
+    <h2><a id="tab8" name="tab8"></a>Folders</h2>
+    <h3>HomeBank files</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Default</th>
+        <td>default folder to load/save HomeBank files</td>
+      </tr>
+      <tr>
+        <th>Backups</th>
+        <td>default folder to load/save HomeBank backup files</td>
+      </tr>
+    </table>
+    <h3>Exchange files</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Import</th>
+        <td>default folder to load files to import</td>
+      </tr>
+      <tr>
+        <th>Export</th>
+        <td>default folder to save files to export</td>
+      </tr>
+    </table>
+<!-- separator -->
+    <div class="clear"></div>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+</div>
+<div class="row">
+  <div class="gfx">
+    <img class="gtkshot right" src="images/dlg-prefs9.png">
+  </div>
+  <div class="rounded content">
+    <h2><a id="tab9" name="tab9"></a>Euro minor</h2>
+    <h3>General</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Enable</th>
+        <td>enable Euro minor currency support in HomeBank.<br>
+        see <a href="use-tipsandtricks.html#eurominor">minor currency</a> for more details.</td>
+      </tr>
+    </table>
+    <h3>Currency</h3>
+    <p>A remind of the country is displayed</p>
+    <table class="widgetinfo">
+      <tr>
+        <th>Fill from</th>
+        <td>preselect of parameters for this tab</td>
+      </tr>
+    </table>
+    <h3>Exchange rate</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>1 XXX =</th>
+        <td>change rate (value of 1 Euro in your old national currency)</td>
+      </tr>
+    </table>
+    <h3>Format</h3>
+    <table class="widgetinfo">
+      <p>A sample is displayed and can be customized</p>
+      <tr>
+        <th>Symbol</th>
+        <td>Symbol that prefix the amount</td>
+      </tr>
+      <tr>
+        <th>Is prefix</th>
+        <td>define is the symbol is a prefix symbol</td>
+      </tr>
+      <tr>
+        <th>Decimal char</th>
+        <td>Character to be used as decimal separator</td>
+      </tr>
+      <tr>
+        <th>Frac digits</th>
+        <td>Number of digits after decimal separator</td>
+      </tr>
+      <tr>
+        <th>Grouping char</th>
+        <td>Character to be used as grouping separator</td>
+      </tr>
+    </table>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+</body>
+</html>

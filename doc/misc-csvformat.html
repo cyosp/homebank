@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content="text/html; charset=utf-8" http-equiv="CONTENT-TYPE">
+  <meta content="noindex" name="robots">
+  <title>CSV file format</title>
+  <link href="help.css" rel="stylesheet" type="text/css">
+</head>
+<body id="top">
+  <div class="dochead">
+    HomeBank User manual
+  </div>
+  <div class="title">
+    <h1>File CSV format</h1>
+    <p>With HomeBank you can import/export some of the internal data's in the most common file format that is CSV.</p>
+    <p>Notice: meanwhile CSV should uses comma as separator, HomeBank uses semi-colon as separator (this is most common than comma)</p>
+    <p>The format used for the different files is specific to HomeBank, so don't expect to import files your bank should offers you directly, you will need to arrange it a little in a spreadsheet like Gnumeric before.</p>
+    <p>Below is a description with example of the CSV format that HomeBank uses.</p><!-- separator -->
+    <ul class="toc">
+      <li><a href="#txn">Transaction</a></li>
+      <li><a href="#bud">Budget</a></li>
+      <li><a href="#cat">Category</a></li>
+      <li><a href="#pay">Payee</a></li>
+      <li><a href="#tag">Tag</a></li>
+    </ul>
+  </div>
+
+  <div class="rounded content">
+    <h2><a id="txn" name="txn"></a>Transaction import CSV format</h2>
+    <table class="widgetinfo">
+      <tr>
+        <th>date</th>
+        <td>the date format can be:
+          <ul>
+            <li>y-m-d
+            <li>m-d-y
+            <li>d-m-y
+          </ul>
+          <p>year can be 2 or 4 digits<br>
+          separators can be / . or -</td>
+      </tr>
+      <tr>
+        <th>payment</th>
+        <td>
+          <img src="images/d-warn.png">&nbsp;<span class="warning">You cannot import transaction with payment type=5 (internal xfer)</span><br>
+          from 0=none to 10=FI fee (in the same order of the list)<br>
+        </td>
+      </tr>
+      <tr>
+        <th>info</th>
+        <td>a string</td>
+      </tr>
+      <tr>
+        <th>payee</th>
+        <td>a payee name</td>
+      </tr>
+      <tr>
+        <th>memo</th>
+        <td>a string</td>
+      </tr>
+      <tr>
+        <th>amount</th>
+        <td>a number with a '.' or ',' as decimal separator, ex: -24.12 or 36,75</td>
+      </tr>
+      <tr>
+        <th>category</th>
+        <td>a full category name (category, or category:subcategory)</td>
+      </tr>
+      <tr>
+        <th>tags</th>
+        <td>tags separated by space</td>
+      </tr>
+    </table>
+
+    <p><img src="images/d-info.png" width="16" height="16" />&nbsp;Starting<br>
+    v5.2.5 : you can change the separator for transaction import <a href="dlg-pref.html#tab5">into preferences</a>.<br>
+    v4.5 : tag column is mandatory
+    </p>
+
+    <p>Example:</p>
+    <pre class="csvexample">
+      15-02-04;0;;;Some cash;-40,00;Bill:Withdrawal of cash;tag1 tag2
+      15-02-04;1;;;Internet DSL;-45,00;Inline service/Internet;tag2 my-tag3
+      ...
+    </pre>
+
+    <h2><a id="txn" name="txn"></a>Transaction export CSV format</h2>
+    <p>The format exported is by default the same as for the import (described above).<br>
+      But depending if you export from All transaction or choose some options, it can have more columns:<br>
+
+   <table class="widgetinfo">
+      <tr>
+        <th>from All transaction</th>
+        <td>a first column is added and named: 'account'</td>
+      </tr>
+      <tr>
+        <th>option: Add Status column</th>
+        <td>a 'c' column after the amount, and before category column</td>
+      </tr>
+      <tr>
+        <th>option: Detail split lines</th>
+        <td>transaction with split are exported as extra lines with every split details</td>
+      </tr>
+    </table>
+
+   <table class="widgetinfo">
+      <tr>
+        <th>c</th>
+        <td>is the <a href="00-lexicon.html#txnstatus">status</a> of the transaction:<br>
+          R = Reconciled<br>
+          C = Cleared<br>
+        </td>
+      </tr>
+    </table>
+
+    <p><img src="images/d-info.png" width="16" height="16" />&nbsp;Starting<br>
+    v5.4.3 : you can optionally export every split line<br>
+    v5.4 : the c column was added to the export<br>
+    </p>
+
+    <p>Example:</p>
+    <pre class="csvexample">
+      15-02-04;0;;;Some cash;-40,00;R;Bill:Withdrawal of cash;tag1 tag2
+      15-02-04;1;;;Internet DSL;-45,00;C;Inline service/Internet;tag2 my-tag3
+      ...
+    </pre>
+
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div><!-- separator -->
+  <div class="rounded content">
+    <h2><a id="bud" name="bud"></a>Budget CSV format</h2>
+    <table class="widgetinfo">
+      <tr>
+      <tr>
+        <th>level</th>
+        <td>1 = category<br>
+        2 = subcategory</td>
+      </tr>
+        <th>type</th>
+        <td>* = monthly<br>
+        <em>blank</em> = month value</td>
+      </tr>
+      <tr>
+        <th>category</th>
+        <td>if < 5.4 the category name<br>
+        	if >= 5.4 the FULL category name </td>
+      </tr>
+      <tr>
+        <th>value(s)</th>
+        <td>1 amount : if the type is monthly<br>
+        12 amounts, separated by ';' : if type month value</td>
+      </tr>
+    </table>
+    <p>Example:</p>
+    <pre class="csvexample">
+1;*;Fuel;45.00
+2; ;Domestic animals;1.00;2.00;3.00;4.00;...
+1:*;Food;17.00
+2:*;Phone:Bill;25.00
+2:*;Water:Bill;50.00
+...
+</pre>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div><!-- separator -->
+  <div class="rounded content">
+    <h2><a id="cat" name="cat"></a>Category CSV format</h2>
+    <table class="widgetinfo">
+      <tr>
+        <th>level</th>
+        <td>1 = category<br>
+        2 = subcategory</td>
+      </tr>
+      <tr>
+        <th>type</th>
+        <td>- = expense<br>
+        + = income</td>
+      </tr>
+      <tr>
+        <th>category name</th>
+        <td>the category name</td>
+      </tr>
+    </table>
+    <p>Example:</p>
+    <pre class="csvexample">
+1;-;Food
+2; ;Grocer
+2; ;Restaurant
+1;+;Wage
+...
+</pre>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+  <div class="rounded content">
+    <h2><a id="pay" name="pay"></a>Payee CSV format</h2>
+    <table class="widgetinfo">
+      <tr>
+        <th>payee name</th>
+        <td>the name of the payee</td>
+      </tr>
+      <tr>
+        <th>full category name</th>
+        <td>optional: since 5.1.3<br>the full name of the category</td>
+      </tr>
+    </table>
+    <p>Example:</p>
+    <pre class="csvexample">
+payee_name1;cat1:subcat1
+payee_name2;
+...
+</pre>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div><!-- separator -->
+
+
+  <div class="rounded content">
+    <h2><a id="tag" name="tag"></a>Tag CSV format</h2>
+    <table class="widgetinfo">
+      <tr>
+        <th>tag name</th>
+        <td>the name of the tag</td>
+      </tr>
+    </table>
+    <p>Example:</p>
+    <pre class="csvexample">
+tag_name1
+tag_name2
+...
+</pre>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div><!-- separator -->
+
+</body>
+</html>

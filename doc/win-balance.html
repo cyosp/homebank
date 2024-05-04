@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content="text/html; charset=utf-8" http-equiv="CONTENT-TYPE">
+  <meta content="noindex" name="robots">
+  <title>Balance report</title>
+  <link href="help.css" rel="stylesheet" type="text/css">
+</head>
+<body id="top">
+  <div class="dochead">
+    HomeBank User manual
+  </div>
+  <div class="title">
+    <h1>Balance report</h1>
+    <p>The balance report is an analysis part focused on the balance evolution during the time. A specific purpose will be to visually control your balance.<br>
+    The transactions are displayed ordered by date in order for you to check the balance according to the minimum set in the <a href="win-account.html">account window</a>.<br>
+    The results are displayed into a list or with a line chart, giving a visual view of the account flow.</p>
+    <h2>Window call</h2>
+    <ul>
+      <li>from the main window-menu: Reports / Balance</li>
+      <li>from the main window-tool-bar.</li>
+    </ul>
+  </div>
+
+  <div class="row">
+  <div class="gfx">
+    <img class="gtkshot right" src="images/win-balance1.png"><br>
+    <img class="gtkshot right" src="images/win-balance2.png">
+  </div>
+  <div class="rounded content">
+    <h2>Using balance report</h2>
+
+    <h3><img src="images/1.png" width="15" height="15"> Display</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Interval</th>
+        <td>select the interval to display result for
+          <ul>
+            <li>Day</li>
+            <li>Week</li>
+            <li>Month</li>
+            <li>Quarter</li>
+            <li>Half Year</li>
+            <li>Year</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>Show empty line</th>
+        <td>select to display an interval line while there is no data</td>
+      </tr>
+      <tr>
+        <th>Zoom X</th>
+        <td>select the X zoom factor in real time</td>
+      </tr>
+    </table>
+    <h3><img src="images/2.png" width="15" height="15"> Date filter</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Range</th>
+        <td>fast select a date with predefined range</td>
+      </tr>
+      <tr>
+        <th>From / To</th>
+        <td>specify date bound limit to restrict the results to</td>
+      </tr>
+    </table>
+    
+    <h3><img src="images/3.png" width="15" height="15"> Account filter</h3>
+
+    <table class="widgetinfo">
+      <tr>
+        <th>Select</th>
+        <td>quick change of the selection:<br>All / None / Invert</td>
+      </tr>
+    </table>
+    <p><b>Account listview</b><br>
+    the list of account to include into the result</p>
+
+    <h3><img src="images/4.png" width="15" height="15"> Tool bar</h3>
+    <p>The tool-bar is the main control of the display. All tool-button have a tool-tip that will help you know what action will be launched when you click on the tool-button.</p>
+    
+    <h3><img src="images/5.png" width="15" height="15"> Infos</h3>
+    <p><b>2/28 under £ -500.00</b><br>
+    When a single account is selected AND the interval is day, what is displayed here is the number of overdraft/total transaction and the overdraft limit of <a href="dlg-acco.html">the account</a>.
+    </p>
+
+    <h3><img src="images/6.png" width="15" height="15"> Result list</h3>
+    <p>The result list display according to the current selection.<br>
+    When a single account is selected and the interval is Day, overdraft lines will be displayed in red.</p>
+
+    <h3><img src="images/7.png" width="15" height="15"> Transaction detail list</h3>
+    <p>The transaction detail list will show every transaction of the selected item in the above result list.<br>
+    The columns visible in that list are those configured in the <a href="win-account.html">account window</a>.<br>
+    By default it is not visible. Use the tool-bar 'Toggle detail' button for changing this.<br>
+    </p>
+  </div>
+</body>
+</html>

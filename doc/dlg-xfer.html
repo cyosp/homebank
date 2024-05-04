@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content="text/html; charset=utf-8" http-equiv="CONTENT-TYPE">
+  <meta content="noindex" name="robots">
+  <title>Internal transfer dialog</title>
+  <link href="help.css" rel="stylesheet" type="text/css">
+</head>
+<body id="top">
+  <div class="dochead">
+    HomeBank User manual
+  </div>
+  <div class="title">
+    <h1>Transfer selection dialog</h1>
+    <p>The transfer selection dialog is used to <b>choose an action for target creation</b> for <a href="00-lexicon.html#txntransfer">internal transfer</a> transactions.</p>
+    <h2>Dialog call</h2>
+    <p>Everytime you are about to add a new transfer, or change a normal transaction to a transfer, or check the internal transfer consistency from the register window, HomeBank will check if there is some existing 
+    transaction into the target account that match the source transfer and if there is at least one, this dialog will popup and let you choose what to do.</p>
+  </div>
+
+  <div class="row">
+  <div class="gfx">
+    <img class="gtkshot right" src="images/dlg-xferselection.png">
+  </div>
+  <div class="rounded content">
+    <h2>Using transfer selection dialog</h2>
+
+    <h3><img src="images/1.png" width="15" height="15"> Source transfer</h3>
+    <p>Display the transaction detail that triggered this pop-up</p>
+
+    <h3><img src="images/2.png" width="15" height="15"> Target association suggested</h3>
+    <p>List the transaction that may match the source transfer you just added/changed to a transfer. A matching rate is also computed.</p>
+    <p>The matching criteria are:
+    <ul>
+      <li>currency is the same</li>
+      <li>date +/- xx days (set into preference since v5.3, previous was exact date match)</li>
+      <li>amount is the same</li>
+      <li>transaction not already a transfer</li>
+    </ul>  
+    </p>
+
+
+    <h3><img src="images/3.png" width="15" height="15"> Action button area</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Use Selection</th>
+        <td>After clicking on the correct target into the list (otherwise this button is disabled), this action will link the transfer and the selection as its transfer target.</td>
+      </tr>
+      <tr>
+        <th>Create New</th>
+        <td>will create a new target transfer into the destination account.</td>
+      </tr>
+      <tr>
+        <th>Cancel<br>
+        (or dialog close)</th>
+        <td>
+        <img src="images/d-warn.png">&nbsp;<span class="warning">This will abort the target creation<br>
+        and insert a normal transaction instead.</span> </td>
+      </tr>
+    </table>
+
+  </div>
+  </div>
+
+
+
+</body>
+</html>
