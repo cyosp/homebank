@@ -370,13 +370,17 @@ const gchar *txt;
 
 	txt = gtk_entry_get_text(GTK_ENTRY(spin_button));
 
-	data->isopposite = FALSE;
-	if( ((data->txntype == TXN_TYPE_EXPENSE) && (*txt == '+')) || ((data->txntype == TXN_TYPE_INCOME) && (*txt == '-')) )
+	data->amountsign = SPLIT_AMT_SIGN_OFF;
+	if( *txt == '+' )
 	{
-		data->isopposite = TRUE;
+		data->amountsign = SPLIT_AMT_SIGN_INC;
+	}
+	else if( *txt == '-' )
+	{
+		data->amountsign = SPLIT_AMT_SIGN_EXP;
 	}
 
-	DB( g_print(" txt='%s'\n amt=%.8f\n opp=%d\n", txt, gtk_spin_button_get_value (GTK_SPIN_BUTTON(spin_button)), data->isopposite) );
+	DB( g_print(" txt='%s'\n amt=%.8f\n sign=%d\n", txt, gtk_spin_button_get_value (GTK_SPIN_BUTTON(spin_button)), data->amountsign) );
 
 	return FALSE;
 }
@@ -598,18 +602,24 @@ gdouble amount;
 		amount = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_amount));
 		if(amount)
 		{
-			//by default affect txntype sign
-			if( data->txntype == TXN_TYPE_EXPENSE && amount > 0 )
+			DB( g_print(" raw amt=%.2f\n", amount) );
+			switch( data->amountsign )
 			{
-				DB( g_print(" force expense\n") );
-				amount *= -1;
+				case SPLIT_AMT_SIGN_EXP:
+					if( amount > 0)
+						amount *= -1;
+					break;
+				case SPLIT_AMT_SIGN_INC:
+					if( amount < 0)
+						amount *= -1;
+					break;
+				default:
+					if( hb_amount_type_match(amount, data->txntype) == FALSE )
+						amount *= -1;
+					break;
 			}
-			//but take opposite into account
-			if( data->isopposite == TRUE )
-			{
-				DB( g_print(" force opposite\n") );
-				amount *= -1;
-			}
+
+			DB( g_print(" final amt=%.2f\n", amount) );
 			//split->amount = amount;
 			//#1910819 must round frac digit
 			split->amount = hb_amount_round(amount, data->cur->frac_digits);
@@ -660,11 +670,11 @@ gdouble amount;
 }
 
 
-static void ui_split_dialog_cb_activate_split(GtkWidget *widget, gpointer user_data)
+static void ui_split_dialog_cb_amount_activate(GtkWidget *widget, gpointer user_data)
 {
 struct ui_split_dialog_data *data;
 
-	DB( g_print("\n[ui_split_dialog] cb activate split\n") );
+	DB( g_print("\n[ui_split_dialog] cb amount activate\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(GTK_WIDGET(widget), GTK_TYPE_WINDOW)), "inst_data");
 
@@ -1085,7 +1095,7 @@ gint row;
 
 	g_signal_connect (data->ST_memo  , "insert-text", G_CALLBACK(ui_split_dialog_filter_text_handler), data);
 	g_signal_connect (data->ST_amount, "focus-out-event", G_CALLBACK (ui_split_dialog_cb_amount_focus_out), data);
-	g_signal_connect (data->ST_amount, "activate", G_CALLBACK (ui_split_dialog_cb_activate_split), NULL);
+	g_signal_connect (data->ST_amount, "activate", G_CALLBACK (ui_split_dialog_cb_amount_activate), NULL);
 
 	g_signal_connect (data->BT_add   , "clicked", G_CALLBACK (ui_split_dialog_add_cb), NULL);
 	g_signal_connect (data->BT_apply , "clicked", G_CALLBACK (ui_split_dialog_apply_cb), NULL);

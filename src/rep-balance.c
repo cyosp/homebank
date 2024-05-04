@@ -432,6 +432,9 @@ struct repbalance_data *data;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
+	//#2018039
+	list_txn_set_lockreconciled(GTK_TREE_VIEW(data->LV_detail), PREFS->lockreconciled);
+
 	if(data->detail)
 	{
 	GtkTreeSelection *treeselection;
@@ -739,7 +742,7 @@ gint usrnbacc;
 	gtk_tree_view_columns_autosize (GTK_TREE_VIEW(data->LV_report));
 
 	/* update bar chart */
-	gtk_chart_set_datas(GTK_CHART(data->RE_chart), model, LST_OVER_BALANCE, NULL, NULL);
+	gtk_chart_set_datas_total(GTK_CHART(data->RE_chart), model, LST_OVER_BALANCE, LST_OVER_BALANCE, NULL, NULL);
 	//gtk_chart_set_line_datas(GTK_CHART(data->RE_chart), model, LST_OVER_BALANCE, LST_OVER_DATE);
 
 

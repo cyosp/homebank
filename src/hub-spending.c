@@ -95,7 +95,7 @@ gchar strbuffer[G_ASCII_DTOSTR_BUF_SIZE];
 	gtk_chart_set_color_scheme(GTK_CHART(data->RE_pie), PREFS->report_color_scheme);
 	gtk_chart_set_smallfont (GTK_CHART(data->RE_pie), PREFS->rep_smallfont);
 	gtk_chart_set_currency(GTK_CHART(data->RE_pie), GLOBALS->kcur);
-	gtk_chart_set_datas(GTK_CHART(data->RE_pie), model, LST_TOPSPEND_AMOUNT, title, NULL);
+	gtk_chart_set_datas_total(GTK_CHART(data->RE_pie), model, LST_TOPSPEND_AMOUNT, LST_TOPSPEND_AMOUNT, title, NULL);
 
 	g_free(title);
 

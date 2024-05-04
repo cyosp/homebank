@@ -271,7 +271,7 @@ gchar *title;
 
 	//TRANSLATORS: example 'Category Over Time'
 	title = g_strdup_printf(_("%s Over Time"), hbtk_get_label(CYA_REPORT_SRC_TREND, tmpsrc) );
-	gtk_chart_set_datas(GTK_CHART(data->RE_chart), model, LST_REPTIME_AMOUNT, title, NULL);
+	gtk_chart_set_datas_total(GTK_CHART(data->RE_chart), model, LST_REPTIME_AMOUNT, LST_REPTIME_AMOUNT, title, NULL);
 	g_free(title);
 
 	if(page == 1)
@@ -918,6 +918,9 @@ static void reptime_update_detail(GtkWidget *widget, gpointer user_data)
 struct reptime_data *data;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	//#2018039
+	list_txn_set_lockreconciled(GTK_TREE_VIEW(data->LV_detail), PREFS->lockreconciled);
 
 	if(data->detail)
 	{

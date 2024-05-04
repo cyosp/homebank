@@ -105,6 +105,14 @@ enum
 };
 
 
+enum {
+	ACC_USAGE_NONE,
+	ACC_USAGE_TXN,
+	ACC_USAGE_TXN_XFER,
+	ACC_USAGE_ARC,
+	ACC_USAGE_ARC_XFER
+};
+
 
 Account *da_acc_malloc(void);
 void da_acc_free(Account *item);
@@ -127,7 +135,7 @@ void da_acc_consistency(Account *item);
 
 GtkWindow *account_window(guint32 key);
 void account_transaction_sort(void);
-gboolean account_is_used(guint32 key);
+guint account_is_used(guint32 key);
 gboolean account_exists(gchar *name);
 gboolean account_rename(Account *item, gchar *newname);
 void account_set_currency(Account *item, guint32 kcur);

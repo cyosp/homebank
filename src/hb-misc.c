@@ -51,12 +51,11 @@ double out;
 	//#1977796 fix rounding -0.5 : +0.5... 
 		//out = round(d * fac[digits]) / fac[digits];
 	//#2018206 fix rounding -0.00...
-	out = ((long) (d < 0 ? d * fac[digits] - 0.5 : d * fac[digits] + 0.5)) / fac[digits];
-	//works also in case
-	//out = round((long) (d * fac[digits])) / fac[digits];
+		//out = ((long) (d < 0 ? (d * fac[digits]) - 0.5 : (d * fac[digits]) + 0.5)) / fac[digits];
 
-	//g_print(" in:%17g out:%17g\n", d, out);
-
+	//#2022049 overflow on windows cause compiled 32bits long is int32 4 bytes...
+	out = ((gint64) (d < 0 ? (d * fac[digits]) - 0.5 : (d * fac[digits]) + 0.5)) / fac[digits];
+	//DB( g_print(" in:%17g out:%17g\n", d, out) );
 	return out;
 }
 

@@ -1,16 +1,27 @@
 
 
+2023-06-21  Maxime Doyen
+
+ Made 5.6.5 release
+
+ * bugfix: #2024243	when creating splits for income transactions, expenses are added as incomes regardless of amount sign
+ * bugfix: #2023388	account cannot be deleted message is not precise enough
+ * bugfix: #2022049	windows: displayed values overflow int32 in 5.6.4
+ * bugfix: #2019312	status column included in export detail txn from report break re-import
+ * bugfix: #2018039	lock icon for reconciled txn is not displayed in report detail 
+
+
 2023-05-18  Maxime Doyen
 
  Made 5.6.4 release
 
- * bugfix: #2012576 statistics Report using Balance Mode by time shows odd "total" column
- * bugfix: #2012999 one transaction Imported from QFX file no longer matches 
- * bugfix: #2017435 posting both sides of a scheduled internal transfer posts 2 occurrence
- * bugfix: #2018145 rate calculation on total report values
- * bugfix: #2018206 balance sometimes displays -0.00
- * bugfix: #2018414 tags edit/import faultly enable space and may cause report crash
  * bugfix: #2019876 balance report allow max < min date (crash) and ignore input with All dates range set
+ * bugfix: #2018414 tags edit/import faultly enable space and may cause report crash
+ * bugfix: #2018206 balance sometimes displays -0.00
+ * bugfix: #2018145 rate calculation on total report values
+ * bugfix: #2017435 posting both sides of a scheduled internal transfer posts 2 occurrence
+ * bugfix: #2012999 one transaction Imported from QFX file no longer matches
+ * bugfix: #2012576 statistics Report using Balance Mode by time shows odd "total" column
 
 
 2023-03-20  Maxime Doyen

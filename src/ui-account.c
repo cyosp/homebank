@@ -1443,7 +1443,6 @@ Account *item;
 static void ui_acc_manage_delete(GtkWidget *widget, gpointer user_data)
 {
 struct ui_acc_manage_data *data;
-Account *item;
 guint32 key;
 gint result;
 
@@ -1453,18 +1452,29 @@ gint result;
 	key = ui_acc_listview_get_selected_key(GTK_TREE_VIEW(data->LV_acc));
 	if( key > 0 )
 	{
-		item = da_acc_get(key);
-
-		if( account_is_used(key) == TRUE )
+	Account *item = da_acc_get(key);
+	guint usagecode = account_is_used(key);
+		
+		if( usagecode != ACC_USAGE_NONE )
 		{
-		gchar *title;
+		gchar *title, *reason;
 
 			title = g_strdup_printf (
 				_("Cannot delete account '%s'"), item->name);
 
+			switch(usagecode)
+			{
+				case ACC_USAGE_TXN     : reason = _("It has transaction"); break;
+				case ACC_USAGE_TXN_XFER: reason = _("It is target of xfer transaction"); break;
+				case ACC_USAGE_ARC     : reason = _("It has scheduled/template"); break;
+				case ACC_USAGE_ARC_XFER: reason = _("It is target of xfer scheduled/template"); break;
+				default: reason = ""; break;
+			}
+
 			ui_dialog_msg_infoerror(GTK_WINDOW(data->dialog), GTK_MESSAGE_ERROR,
 				title,
-				_("This account contains transactions and/or is part of internal transfers.")
+				reason
+				//_("This account contains transactions and/or is part of internal transfers.")
 			);
 
 			g_free(title);

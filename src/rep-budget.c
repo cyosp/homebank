@@ -313,6 +313,10 @@ struct repbudget_data *data;
 
 	if(GTK_IS_TREE_VIEW(data->LV_report))
 	{
+
+		//#2018039
+		list_txn_set_lockreconciled(GTK_TREE_VIEW(data->LV_detail), PREFS->lockreconciled);
+
 		if(data->detail)
 		{
 		GtkTreeSelection *treeselection;
