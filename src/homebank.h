@@ -249,6 +249,9 @@ const gchar *homebank_app_get_pixmaps_dir (void);
 const gchar *homebank_app_get_locale_dir (void);
 const gchar *homebank_app_get_help_dir (void);
 const gchar *homebank_app_get_datas_dir (void);
+const char *get_bin_dir (void);
+const char *get_data_dir (void);
+const char *get_share_dir (void);
 guint32 homebank_app_date_get_julian(void);
 
 /* - - - - obsolete/future things - - - - */

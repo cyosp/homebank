@@ -20,6 +20,8 @@
 
 #include "homebank.h"
 
+#include <libgen.h>
+
 #include "dsp-mainwindow.h"
 #include "hb-preferences.h"
 #include "language.h"
@@ -49,6 +51,7 @@ struct Preferences *PREFS;
 
 
 /* installation paths */
+static char *arg0;
 static gchar *config_dir   = NULL;
 static gchar *images_dir   = NULL;
 static gchar *pixmaps_dir  = NULL;
@@ -93,7 +96,7 @@ void homebank_file_ensure_xhb(gchar *filename)
 	if( g_str_has_suffix (filename, ".xhb") == FALSE )
 	{
 	gchar *newfilename;
-	
+
 		newfilename = hb_filename_new_with_extension(filename, "xhb");
 		hbfile_change_filepath(newfilename);
 	}
@@ -146,7 +149,7 @@ gboolean retval = FALSE;
 	{
 		DB( g_print(" - cannot delete: '%s'\n", filepath) );
 	}
-	
+
 	return retval;
 }
 
@@ -169,7 +172,7 @@ gint i;
 	g_free(bakfilename);
 
 	//do safe backup according to user preferences
-	DB( g_print(" user pref backup\n") );	
+	DB( g_print(" user pref backup\n") );
 	if( PREFS->bak_is_automatic == TRUE )
 	{
 		bakfilename = hb_filename_new_for_backup(GLOBALS->xhb_filepath);
@@ -188,18 +191,18 @@ gint i;
 		//#1847645
 		//gchar *dirname = g_path_get_dirname(GLOBALS->xhb_filepath);
 		gchar *dirname = PREFS->path_hbbak;
-		
+
 		for(i=0;i<(gint)array->len;i++)
 		{
 		gchar *offscalefilename = g_ptr_array_index(array, i);
-	
+
 			DB( g_print(" %d : '%s'\n", i, offscalefilename) );
 			if( i >= PREFS->bak_max_num_copies )
 			{
 			gchar *bakdelfilepath = g_build_filename(dirname, offscalefilename, NULL);
 
 				DB( g_print(" - should delete '%s'\n", bakdelfilepath) );
-			
+
 				homebank_file_delete_existing(bakdelfilepath);
 
 				g_free(bakdelfilepath);
@@ -252,7 +255,7 @@ GError *err = NULL;
 	#else
 	retval = gtk_show_uri (gtk_widget_get_screen (GTK_WIDGET (GLOBALS->mainwindow)), url, GDK_CURRENT_TIME, &err);
 	#endif
-	
+
 	if (!retval)
 	{
 		ui_dialog_msg_infoerror(GTK_WINDOW(GLOBALS->mainwindow), GTK_MESSAGE_ERROR,
@@ -377,7 +380,7 @@ GError *error = NULL;
 					g_print("failed: %s\n", error->message);
 					g_error_free (error);
 				}
-				
+
 				g_free(contents);
 				g_key_file_free (keyfile);
 			}
@@ -529,6 +532,26 @@ homebank_app_get_datas_dir (void)
 	return datas_dir;
 }
 
+const char * get_root_dir() {
+    char *result;
+    char *argO_dirname = dirname(arg0);
+    const char *previous_folder = "/..";
+    if(arg0[0]=='/') {
+        result = malloc(strlen(argO_dirname) + strlen(previous_folder) + 1);
+    } else {
+       int MAX_BUF = 512;
+       char path[MAX_BUF];
+       getcwd(path, MAX_BUF);
+
+       result = malloc(strlen(path) + 1 + strlen(argO_dirname) + strlen(previous_folder) + 1);
+       strcpy(result, path);
+       strcat(result, "/");
+    }
+    strcat(result, argO_dirname);
+    strcat(result, previous_folder);
+    return result;
+}
+
 
 /* build package paths at runtime */
 static void
@@ -553,11 +576,11 @@ build_package_paths (void)
 	#endif
 	g_free (prefix);
 #else
-	locale_dir   = g_build_filename (DATA_DIR, "locale", NULL);
-	images_dir   = g_build_filename (SHARE_DIR, "images", NULL);
-	pixmaps_dir  = g_build_filename (DATA_DIR, PACKAGE, "icons", NULL);
-	help_dir     = g_build_filename (DATA_DIR, PACKAGE, "help", NULL);
-	datas_dir    = g_build_filename (DATA_DIR, PACKAGE, "datas", NULL);
+	locale_dir   = g_build_filename (get_root_dir(), "share", PACKAGE, "locale", NULL);
+	images_dir   = g_build_filename (get_root_dir(), "share", PACKAGE, "images", NULL);
+	pixmaps_dir  = g_build_filename (get_root_dir(), "share", PACKAGE, "icons", NULL);
+	help_dir     = g_build_filename (get_root_dir(), "share", PACKAGE, "help", NULL);
+	datas_dir    = g_build_filename (get_root_dir(), "share", PACKAGE, "datas", NULL);
 	config_dir   = g_build_filename(g_get_user_config_dir(), HB_DATA_PATH, NULL);
 
 	//#870023 Ubuntu packages the help files in "/usr/share/doc/homebank-data/help/" for some strange reason
@@ -741,7 +764,7 @@ static gboolean homebank_setup()
 	homebank_pref_load();
 
 	homebank_pref_apply();
-	
+
 	hbfile_setup(TRUE);
 
 	homebank_icon_theme_setup();
@@ -861,6 +884,8 @@ homebank_init_i18n (void)
 int
 main (int argc, char *argv[])
 {
+arg0 = argv[0];
+
 GOptionContext *option_context;
 GOptionGroup *option_group;
 GError *error = NULL;
@@ -955,7 +980,7 @@ GtkWidget *splash = NULL;
 		if(mainwin)
 		{
 		gchar *rawfilepath;
-		
+
 			//todo: pause on splash
 			if( PREFS->showsplash == TRUE )
 			{
@@ -971,7 +996,7 @@ GtkWidget *splash = NULL;
 			rawfilepath = NULL;
 			//priority here:
 			// - command line file
-			// - welcome dialog 
+			// - welcome dialog
 			// - last opened file, if welcome dialog was not opened
 			if( files != NULL )
 			{
@@ -998,7 +1023,7 @@ GtkWidget *splash = NULL;
 
 			DB( g_print(" - gtk_main()\n" ) );
 			gtk_main ();
-	
+
 			DB( g_print(" - call destroy mainwin\n" ) );
 			gtk_widget_destroy(mainwin);
 		}
