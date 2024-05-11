@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+SCRIPT_DIRECTORY=$(dirname $(readlink -f $0))
+DYLD_LIBRARY_PATH=$SCRIPT_DIRECTORY/../lib $SCRIPT_DIRECTORY/../bin/HomeBank

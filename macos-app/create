@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+
+function log() {
+  for i in $(seq $2)
+  do
+    echo -n " "
+  done
+  echo -n $1
+}
+
+function addDependencies() {
+    local source=$1
+    local deep=$2
+
+    for dylib in $(otool -L $source | grep -e "$HOMEBREW_PREFIX" -e "$HOMEBREW_CELLAR" | awk -F' ' '{ print $1 }')
+    do
+      libName=$(basename $dylib)
+      if [ ! -e "$APP_CONTENTS_LIB_FOLDER/$libName" ]
+      then
+         log " - $libName" $deep
+      fi
+
+      if [[ "${dylib: -1:1}" != ':' ]] # Last char is not ':'
+      then
+        if [ ! -e "$APP_CONTENTS_LIB_FOLDER/$libName" ]
+        then
+          echo " (cp)"
+          cp $dylib $APP_CONTENTS_LIB_FOLDER/
+          addDependencies $APP_CONTENTS_LIB_FOLDER/$libName $((deep+1))
+        fi
+      fi
+    done
+}
+
+function addDependency() {
+  find $1 -name $2 -exec echo " cp {}" \; -exec cp "{}" $APP_CONTENTS_LIB_FOLDER \;
+}
+
+set -e
+
+HOMEBANK_HOME_FOLDER=$(dirname $(readlink -f $0))/..
+INSTALL_OUTPUT_FOLDER=$HOMEBANK_HOME_FOLDER/output
+
+APP_NAME=HomeBank
+APP_PACKAGE_NAME=${APP_NAME}.app
+APP_CONTENTS_FOLDER="${APP_PACKAGE_NAME}/Contents";
+APP_MACOS_FOLDER="${APP_CONTENTS_FOLDER}/MacOS";
+APP_ENTRY_POINT=$APP_MACOS_FOLDER/${APP_NAME}
+
+if [ -z "$HOMEBREW_PREFIX" ]
+then
+  export HOMEBREW_PREFIX="/usr/local/opt"
+fi
+if [ -z "$HOMEBREW_CELLAR" ]
+then
+  export HOMEBREW_CELLAR="/usr/local/Cellar"
+fi
+
+mkdir -p $APP_MACOS_FOLDER
+
+APP_CONTENTS_BIN_FOLDER=$APP_CONTENTS_FOLDER/bin
+mkdir -p $APP_CONTENTS_BIN_FOLDER
+HOMEBANK_BIN=$APP_CONTENTS_BIN_FOLDER/HomeBank
+cp $INSTALL_OUTPUT_FOLDER/bin/homebank $HOMEBANK_BIN
+chmod +x $HOMEBANK_BIN
+cp macos-app/HomeBank $APP_ENTRY_POINT
+chmod +x $APP_ENTRY_POINT
+
+APP_CONTENTS_SHARE_FOLDER=$APP_CONTENTS_FOLDER/share
+mkdir -p $APP_CONTENTS_SHARE_FOLDER
+
+cp -a $INSTALL_OUTPUT_FOLDER/share/homebank $APP_CONTENTS_SHARE_FOLDER
+cp -a $(find $INSTALL_OUTPUT_FOLDER -type d -name locale) $APP_CONTENTS_SHARE_FOLDER/homebank
+
+# Add dependency libraries inside app
+APP_CONTENTS_LIB_FOLDER=$APP_CONTENTS_FOLDER/lib
+mkdir -p $APP_CONTENTS_LIB_FOLDER
+echo " - $HOMEBANK_BIN"
+addDependencies $HOMEBANK_BIN 1
+addDependency $HOMEBREW_CELLAR libpixbufloader-svg.so
+addDependency $HOMEBREW_CELLAR librsvg-2.2.dylib
+
+fileicon set ${APP_PACKAGE_NAME} $HOMEBANK_HOME_FOLDER/images/HomeBank.icns

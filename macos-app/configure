@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -e
+
+LIBOFX_PATH=$(brew info libofx | grep libofx | sed '3q;d' | cut -d ' ' -f 1)
+export CFLAGS=-I${LIBOFX_PATH}/include
+export LIBS="-L${LIBOFX_PATH}/lib"
+
+LIBSOUP_PATH=$(brew info libsoup | grep libsoup | sed '3q;d' | cut -d ' ' -f 1)
+export LIBSOUP_CFLAGS=-I${LIBSOUP_PATH}/include/libsoup-3.0
+export LIBSOUP_LIBS="-L${LIBSOUP_PATH}/lib -lsoup-3.0"
+
+./configure --prefix=$(dirname $(readlink -f $0))/../output
