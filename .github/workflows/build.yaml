@@ -1,0 +1,169 @@
+name: Build HomeBank
+on:
+  push:
+    tags:
+      - '*'
+jobs:
+  x86-app:
+    runs-on: macos-13
+    steps:
+      - name: Get tag name
+        id: tag
+        run: echo "NAME=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install XML::Parser
+        run: cpan XML::Parser
+
+      - name: Install prerequisites
+        run: brew install intltool automake libofx libsoup gtk+3 librsvg fileicon create-dmg
+
+      - name: Autoconf
+        run: rm configure && autoconf
+
+      - name: Configure
+        run: ./macos-app/configure
+
+      - name: Make
+        run: make
+
+      - name: Install
+        run: make install
+
+      - name: Create MacOS app
+        run: ./macos-app/create
+
+      - name: Create App installer
+        run:  ./macos-app/package
+
+      - name: Rename DMG file
+        run: mv HomeBank.dmg HomeBank-${{ steps.tag.outputs.NAME }}.x64.dmg
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          path: HomeBank-${{ steps.tag.outputs.NAME }}.x64.dmg
+          name: HomeBank-${{ steps.tag.outputs.NAME }}.x64.dmg
+
+  arm86-app:
+      runs-on: macos-14
+      steps:
+        - name: Get tag name
+          id: tag
+          run: echo "NAME=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
+
+        - name: Checkout
+          uses: actions/checkout@v4
+
+        - name: Install XML::Parser
+          run: cpan XML::Parser
+
+        - name: Install prerequisites
+          run: brew install intltool automake libofx libsoup gtk+3 librsvg fileicon create-dmg
+
+        - name: Autoconf
+          run: rm configure && autoconf
+
+        - name: Configure
+          run: ./macos-app/configure
+
+        - name: Make
+          run: make
+
+        - name: Install
+          run: make install
+
+        - name: Create MacOS app
+          run: ./macos-app/create
+
+        - name: Create App installer
+          run:  ./macos-app/package
+
+        - name: Rename DMG file
+          run: mv HomeBank.dmg HomeBank-${{ steps.tag.outputs.NAME }}.arm64.dmg
+
+        - name: Upload artifact
+          uses: actions/upload-artifact@v4
+          with:
+            path: HomeBank-${{ steps.tag.outputs.NAME }}.arm64.dmg
+            name: HomeBank-${{ steps.tag.outputs.NAME }}.arm64.dmg
+
+  release:
+    runs-on: macos-14
+    needs:
+        - x86-app
+        - arm86-app
+    steps:
+      - name: Get tag name
+        id: tag
+        run: echo "NAME=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install coreutils for sha512sum
+        run: brew install coreutils
+
+      - name: Download x64 app installer
+        uses: actions/download-artifact@v4
+        with:
+          name: HomeBank-${{ steps.tag.outputs.NAME }}.x64.dmg
+
+      - name: Download arm64 app installer
+        uses: actions/download-artifact@v4
+        with:
+          name: HomeBank-${{ steps.tag.outputs.NAME }}.arm64.dmg
+
+      - name: Create check sum file
+        run: sha512sum *.dmg > HomeBank-SHA512.txt
+
+      - name: Create GitHub release
+        id: release
+        uses: actions/create-release@v1.1.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ steps.tag.outputs.NAME }}
+          draft: true
+
+      - name: Upload x64 DMG to release
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.release.outputs.upload_url }}
+          asset_path: HomeBank-${{ steps.tag.outputs.NAME }}.x64.dmg
+          asset_name: HomeBank-${{ steps.tag.outputs.NAME }}.x64.dmg
+          asset_content_type: application/octet-stream
+
+      - name: Upload arm64 DMG to release
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.release.outputs.upload_url }}
+          asset_path: HomeBank-${{ steps.tag.outputs.NAME }}.arm64.dmg
+          asset_name: HomeBank-${{ steps.tag.outputs.NAME }}.arm64.dmg
+          asset_content_type: application/octet-stream
+
+      - name: Upload check sum file to release
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.release.outputs.upload_url }}
+          asset_path: HomeBank-SHA512.txt
+          asset_name: HomeBank-SHA512.txt
+          asset_content_type: text/plain
+
+      - name: Publish release with notes
+        uses: cyosp/publish-release-with-notes@1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          id: ${{ steps.release.outputs.id }}
+          version: ${{ steps.tag.outputs.NAME }}
+          notes: ${{ github.workspace }}/RELEASE-NOTES.md
