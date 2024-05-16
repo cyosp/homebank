@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -e
+
+SCRIPT_FOLDER=$(dirname $(readlink -f $0))
+HOMEBANK_1024_PNG=$SCRIPT_FOLDER/homebank-1024.png
+ICONSET_FOLDER=$SCRIPT_FOLDER/HomeBank.iconset
+
+mkdir $ICONSET_FOLDER
+sips -z 16 16   $HOMEBANK_1024_PNG --out $ICONSET_FOLDER/icon_16x16.png
+sips -z 32 32   $HOMEBANK_1024_PNG --out $ICONSET_FOLDER/icon_16x16@2x.png
+sips -z 32 32   $HOMEBANK_1024_PNG --out $ICONSET_FOLDER/icon_32x32.png
+sips -z 64 64   $HOMEBANK_1024_PNG --out $ICONSET_FOLDER/icon_32x32@2x.png
+sips -z 128 128 $HOMEBANK_1024_PNG --out $ICONSET_FOLDER/icon_128x128.png
+sips -z 256 256 $HOMEBANK_1024_PNG --out $ICONSET_FOLDER/icon_128x128@2x.png
+sips -z 256 256 $HOMEBANK_1024_PNG --out $ICONSET_FOLDER/icon_256x256.png
+sips -z 512 512 $HOMEBANK_1024_PNG --out $ICONSET_FOLDER/icon_256x256@2x.png
+sips -z 512 512 $HOMEBANK_1024_PNG --out $ICONSET_FOLDER/icon_512x512.png
+cp $HOMEBANK_1024_PNG $ICONSET_FOLDER/icon_512x512@2x.png
+iconutil -c icns $ICONSET_FOLDER
+rm -R $ICONSET_FOLDER
