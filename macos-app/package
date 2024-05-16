@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+set -e
+
+SCRIPT_FOLDER=$(dirname $(readlink -f $0))
+IMAGES_FOLDER=$SCRIPT_FOLDER/../images
+HOMEBANK_ICNS=$IMAGES_FOLDER/HomeBank.icns
+DMG_FILE=$SCRIPT_FOLDER/../HomeBank.dmg
+
+create-dmg \
+  --volname "HomeBank" \
+  --volicon $HOMEBANK_ICNS \
+  --background $IMAGES_FOLDER/splash.png  \
+  --icon-size 50  \
+  --window-size 375 295  \
+  --icon "HomeBank.app" 20 70  \
+  --app-drop-link 180 70  \
+  --window-pos 200 120  \
+  $DMG_FILE \
+  HomeBank.app
+
+SETICON_BIN_FILE=$SCRIPT_FOLDER/seticon
+test ! -e $SETICON_BIN_FILE && swiftc $SCRIPT_FOLDER/seticon.swift -o $SETICON_BIN_FILE
+$SETICON_BIN_FILE $HOMEBANK_ICNS $DMG_FILE
+
