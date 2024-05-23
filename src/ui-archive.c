@@ -27,6 +27,7 @@
 #include "ui-split.h"
 #include "ui-tag.h"
 
+#include "list-scheduled.h"
 #include "gtk-dateentry.h"
 
 /****************************************************************************/
@@ -45,24 +46,11 @@ extern struct HomeBank *GLOBALS;
 extern struct Preferences *PREFS;
 
 
-extern gchar *RA_ARC_TYPE[];
-extern gchar *CYA_ARC_UNIT[];
-extern gchar *RA_ARC_WEEKEND[];
-
-extern HbKvData CYA_TXN_STATUS[];
-
-extern gchar *CYA_TXN_TYPE[];
+extern HbKvData CYA_ARC_UNIT[];
+extern HbKvData CYA_ARC_WEEKEND[];
 
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
-
-
-
-
-
-
-/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
-
 
 
 static void ui_arc_listview_select_by_pointer(GtkTreeView *treeview, gpointer user_data)
@@ -81,7 +69,7 @@ Archive *arc = user_data;
 	{
 	Archive *tmp_arc;
 
-		gtk_tree_model_get (model, &iter, LST_DEFARC_DATAS, &tmp_arc, -1);
+		gtk_tree_model_get (model, &iter, LST_DSPUPC_DATAS, &tmp_arc, -1);
 		if( arc == tmp_arc )
 		{
 			gtk_tree_selection_select_iter (selection, &iter);
@@ -91,470 +79,6 @@ Archive *arc = user_data;
 		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
 	}
 }
-
-
-/*
-**
-** The function should return:
-** a negative integer if the first value comes before the second,
-** 0 if they are equal,
-** or a positive integer if the first value comes after the second.
-*/
-static gint ui_arc_listview_compare_func (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b, gpointer userdata)
-{
-gint sortcol = GPOINTER_TO_INT(userdata);
-Archive *item1, *item2;
-gdouble tmpval;
-gint retval = 0;
-
-	gtk_tree_model_get(model, a, LST_DEFARC_DATAS, &item1, -1);
-	gtk_tree_model_get(model, b, LST_DEFARC_DATAS, &item2, -1);
-
-    switch (sortcol)
-    {
-		case LST_DEFARC_SORT_DATE:
-			retval = item1->nextdate - item2->nextdate;
-			//#2024956 default to next date
-			if(!retval)
-				goto domemo;
-			break;
-		case LST_DEFARC_SORT_MEMO:
-domemo:			retval = (item1->flags & GF_INCOME) - (item2->flags & GF_INCOME);
-			if(!retval)
-			{
-				retval = hb_string_utf8_compare(item1->memo, item2->memo);
-			}
-			break;
-		case LST_DEFARC_SORT_PAYEE:
-			{
-			Payee *p1, *p2;
-
-				p1 = da_pay_get(item1->kpay);
-				p2 = da_pay_get(item2->kpay);
-				if( p1 != NULL && p2 != NULL )
-				{
-					retval = hb_string_utf8_compare(p1->name, p2->name);
-				}
-			}
-			break;
-
-		case LST_DEFARC_SORT_CATEGORY:
-			{
-			Category *c1, *c2;
-
-				c1 = da_cat_get(item1->kcat);
-				c2 = da_cat_get(item2->kcat);
-				if( c1 != NULL && c2 != NULL )
-				{
-					retval = hb_string_utf8_compare(c1->fullname, c2->fullname);
-				}
-			}
-			break;
-
-		case LST_DEFARC_SORT_AMOUNT:
-			tmpval = item1->amount - item2->amount;
-			retval = tmpval > 0 ? 1 : -1;
-			break;
-		//#1928147 sort on account as well
-		case LST_DEFARC_SORT_ACCOUNT:
-			{
-			Account *a1, *a2;
-
-				a1 = da_acc_get(item1->kacc);
-				a2 = da_acc_get(item2->kacc);
-				if( a1 != NULL && a2 != NULL )
-				{
-					retval = hb_string_utf8_compare(a1->name, a2->name);
-				}
-			}
-			break;
-			
-		default:
-			g_return_val_if_reached(0);
-	}
-    return retval;
-}
-
-
-static void 
-ui_arc_listview_cell_data_func_icons (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
-{
-Archive *item;
-gchar *iconname = NULL;
-
-	gtk_tree_model_get(model, iter, LST_DEFARC_DATAS, &item, -1);
-
-	switch(GPOINTER_TO_INT(user_data))
-	{
-		case 1:
-			iconname = ( item->flags & OF_PREFILLED  ) ? ICONNAME_HB_OPE_PREFILLED : NULL;
-			break;
-	}
-
-	g_object_set(renderer, "icon-name", iconname, NULL);
-}
-
-
-static void 
-ui_arc_listview_cell_data_function_auto (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
-{
-Archive *item;
-gchar *info, *iconname;
-
-	// get the transaction
-	gtk_tree_model_get(model, iter, LST_DEFARC_DATAS, &item, -1);
-
-	switch(GPOINTER_TO_INT(user_data))
-	{
-		case 1:
-			iconname = ( item->flags & OF_AUTO ) ? ICONNAME_HB_OPE_AUTO : NULL;
-			g_object_set(renderer, "icon-name", iconname, NULL);
-			break;
-		case 2:
-			info = NULL;
-			//TODO: this is crappy/unsafe to call CYA_ARC_UNIT here
-			//#1898294 not translated
-			if( ( item->flags & OF_AUTO ) )
-			   info = g_strdup_printf("%d %s", item->every, _(CYA_ARC_UNIT[item->unit]));
-
-			g_object_set(renderer, "text", info, NULL);
-
-			g_free(info);
-			break;
-	}
-}
-
-
-static void
-ui_arc_listview_cell_data_function_date (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
-{
-Archive *arc;
-gchar buffer[256];
-GDate *date;
-
-	gtk_tree_model_get(model, iter,
-		LST_DEFARC_DATAS, &arc,
-		-1);
-
-	if(arc && (arc->flags & OF_AUTO) )
-	{
-		date = g_date_new_julian (arc->nextdate);
-		g_date_strftime (buffer, 256-1, PREFS->date_format, date);
-		g_date_free(date);
-
-		//g_snprintf(buf, sizeof(buf), "%d", ope->ope_Date);
-
-		g_object_set(renderer, "text", buffer, NULL);
-
-	}
-	else
-		g_object_set(renderer, "text", NULL, NULL);
-
-}
-
-
-static void 
-ui_arc_listview_cell_data_function_memo (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
-{
-Archive *arc;
-gchar *text = NULL;
-
-	gtk_tree_model_get(model, iter, LST_DEFARC_DATAS, &arc, -1);
-	if(arc)
-	{
-		text = arc->memo;
-	}
-	g_object_set(renderer, "text", text, NULL);
-}
-
-
-static void
-ui_arc_listview_cell_data_function_payee (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
-{
-Archive *arc;
-gchar *text = NULL;
-
-	gtk_tree_model_get(model, iter, LST_DEFARC_DATAS, &arc, -1);
-	if(arc)
-	{
-		//#2017436 display xfer dst account as payee
-		if(arc->flags & OF_INTXFER)
-		{
-		Account *acc = da_acc_get(arc->kxferacc);
-
-			//5.6 use acc strings for 5.3 add > < for internal xfer
-			if( acc )
-				text = ( arc->flags & OF_INCOME ) ? acc->xferincname : acc->xferexpname;
-		
-		}
-		else
-		{
-		Payee *pay = da_pay_get(arc->kpay);
-			
-			text = (pay != NULL) ? pay->name : NULL;
-		}
-	}
-	g_object_set(renderer, "text", text, NULL);
-}
-
-
-static void
-ui_arc_listview_cell_data_function_category (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
-{
-Archive *arc;
-gchar *text = NULL;
-
-	gtk_tree_model_get(model, iter, LST_DEFARC_DATAS, &arc, -1);
-	if(arc)
-	{
-		if(arc->flags & OF_SPLIT)
-		{
-			text = _("- split -");
-		}
-		else
-		{
-		Category *cat = da_cat_get(arc->kcat);
-
-			text = (cat != NULL) ? cat->fullname : "";
-		}
-	}
-	g_object_set(renderer, "text", text, NULL);
-}
-
-
-static void 
-ui_arc_listview_cell_data_function_account (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
-{
-Archive *arc;
-gchar *text = NULL;
-
-	gtk_tree_model_get(model, iter, LST_DEFARC_DATAS, &arc, -1);
-	if(arc)
-	{
-	Account *acc = da_acc_get(arc->kacc);
-
-		if(acc != NULL)
-			text = acc->name;
-	}
-	g_object_set(renderer, "text", text, NULL);
-}
-
-
-static void
-ui_arc_listview_cell_data_function_amount (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
-{
-Archive *arc;
-gdouble amount;
-gchar buf[G_ASCII_DTOSTR_BUF_SIZE];
-Account *acc;
-gchar *color;
-gint weight;
-
-	gtk_tree_model_get(model, iter, 
-		LST_DEFARC_DATAS, &arc,
-		-1);
-
-	amount = arc->amount;
-
-	if( amount != 0.0)
-	{
-	acc = da_acc_get(arc->kacc);
-
-		if( acc != NULL )
-			hb_strfmon(buf, G_ASCII_DTOSTR_BUF_SIZE-1, amount, acc->kcur, GLOBALS->minor);
-		else
-			hb_strfmon(buf, G_ASCII_DTOSTR_BUF_SIZE-1, amount, GLOBALS->kcur, GLOBALS->minor);
-
-		color = get_normal_color_amount(amount);
-
-		weight = arc == NULL ? PANGO_WEIGHT_BOLD : PANGO_WEIGHT_NORMAL;
-
-		g_object_set(renderer,
-			"weight", weight,
-			"foreground", color,
-			"text", buf,
-			NULL);
-	}
-	else
-	{
-		g_object_set(renderer, "text", NULL, NULL);
-	}
-	
-}
-
-
-#if MYDEBUG == 1
-static void
-ui_arc_listview_cell_data_function_debugkey (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
-{
-Archive *item;
-gchar *string;
-
-	gtk_tree_model_get(model, iter, LST_DEFARC_DATAS, &item, -1);
-	string = g_strdup_printf ("[%d]", item->key );
-	g_object_set(renderer, "text", string, NULL);
-	g_free(string);
-}
-#endif	
-
-
-static GtkTreeViewColumn *
-ui_arc_listview_column_text_create(gchar *title, gint sortcolumnid, GtkTreeCellDataFunc func, gpointer user_data)
-{
-GtkTreeViewColumn  *column;
-GtkCellRenderer    *renderer;
-
-	renderer = gtk_cell_renderer_text_new ();
-	g_object_set(renderer, 
-		"ellipsize", PANGO_ELLIPSIZE_END,
-	    "ellipsize-set", TRUE,
-		//taken from nemo, not exactly a resize to content, but good compromise
-	    "width-chars", 40,
-	    NULL);
-	
-	column = gtk_tree_view_column_new_with_attributes(title, renderer, NULL);
-
-	//#2004631 date and column title alignement
-	//gtk_tree_view_column_set_alignment (column, 0.5);
-	gtk_tree_view_column_set_resizable(column, TRUE);
-
-	gtk_tree_view_column_set_sort_column_id (column, sortcolumnid);
-	//gtk_tree_view_column_set_reorderable(column, TRUE);
-	gtk_tree_view_column_set_min_width (column, HB_MINWIDTH_COLUMN);
-	gtk_tree_view_column_set_sizing (column, GTK_TREE_VIEW_COLUMN_FIXED);
-	//gtk_tree_view_column_set_sizing (column, GTK_TREE_VIEW_COLUMN_GROW_ONLY);
-	//gtk_tree_view_column_set_expand (column, TRUE);
-	gtk_tree_view_column_set_cell_data_func(column, renderer, func, user_data, NULL);
-
-	return column;
-}
-
-
-//TODO: we could maybe merge this list with the scheduled list
-static GtkWidget *ui_arc_listview_new(void)
-{
-GtkListStore *store;
-GtkWidget *treeview;
-GtkCellRenderer    *renderer;
-GtkTreeViewColumn  *column;
-
-	//store
-	store = gtk_list_store_new (
-		NUM_LST_DEFARC,
-		G_TYPE_POINTER /* scheduled */
-//		G_TYPE_UINT,
-//		G_TYPE_BOOLEAN
-		);
-
-	//treeview
-	treeview = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
-	g_object_unref(store);
-
-	gtk_tree_view_set_grid_lines (GTK_TREE_VIEW (treeview), PREFS->grid_lines);
-
-
-	#if MYDEBUG == 1
-	column = gtk_tree_view_column_new();
-	renderer = gtk_cell_renderer_text_new ();
-	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_arc_listview_cell_data_function_debugkey, NULL, NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
-	#endif
-
-	// column: icons
-	column = gtk_tree_view_column_new();
-	renderer = gtk_cell_renderer_pixbuf_new ();
-	//gtk_cell_renderer_set_fixed_size(renderer, GLOBALS->lst_pixbuf_maxwidth, -1);
-	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_arc_listview_cell_data_func_icons, GINT_TO_POINTER(1), NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
-
-
-	/* column: Scheduled icon */
-	column = gtk_tree_view_column_new();
-	renderer = gtk_cell_renderer_pixbuf_new ();
-	//gtk_cell_renderer_set_fixed_size(renderer, GLOBALS->lst_pixbuf_maxwidth, -1);
-	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_arc_listview_cell_data_function_auto, GINT_TO_POINTER(1), NULL);
-
-	renderer = gtk_cell_renderer_text_new ();
-	g_object_set(renderer, 
-		"ellipsize", PANGO_ELLIPSIZE_END,
-	    "ellipsize-set", TRUE,
-		//taken from nemo, not exactly a resize to content, but good compromise
-	    "width-chars", 40,
-	    NULL);
-	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_arc_listview_cell_data_function_auto, GINT_TO_POINTER(2), NULL);
-	gtk_tree_view_column_set_spacing(column, SPACING_TINY);
-	
-	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
-
-	/* column: Date Next on */
-	renderer = gtk_cell_renderer_text_new ();
-	//#2004631 date and column title alignement
-	//g_object_set(renderer, "xalign", 1.0, NULL);
-	column = gtk_tree_view_column_new();
-	gtk_tree_view_column_set_title(column, _("Next date"));
-	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_arc_listview_cell_data_function_date, NULL, NULL);
-	gtk_tree_view_column_set_sort_column_id (column, LST_DEFARC_SORT_DATE);
-	//#2004631 date and column title alignement
-	//gtk_tree_view_column_set_alignment (column, 0.5);
-	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
-
-	/* column: Payee */
-	column = ui_arc_listview_column_text_create(_("Payee"), LST_DEFARC_SORT_PAYEE, ui_arc_listview_cell_data_function_payee, NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
-
-	/* column: Category */
-	column = ui_arc_listview_column_text_create(_("Category"), LST_DEFARC_SORT_CATEGORY, ui_arc_listview_cell_data_function_category, NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
-
-	/* column: Memo */
-	column = ui_arc_listview_column_text_create(_("Memo"), LST_DEFARC_SORT_MEMO, ui_arc_listview_cell_data_function_memo, NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
-
-	/* column : amount */
-	column = gtk_tree_view_column_new();
-	gtk_tree_view_column_set_title(column, _("Amount"));
-	renderer = gtk_cell_renderer_text_new ();
-	g_object_set(renderer, "xalign", 1.0, NULL);
-	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_arc_listview_cell_data_function_amount, NULL, NULL);
-	gtk_tree_view_column_set_sort_column_id (column, LST_DEFARC_SORT_AMOUNT);
-	//#2004631 date and column title alignement
-	gtk_tree_view_column_set_alignment (column, 1.0);
-	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
-	
-	/* column : Account */
-	column = ui_arc_listview_column_text_create(_("Account"), LST_DEFARC_SORT_ACCOUNT, ui_arc_listview_cell_data_function_account, NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
-
-  	/* column : empty */
-	column = gtk_tree_view_column_new();
-	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
-
-	//sortable
-	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_DEFARC_SORT_DATE, ui_arc_listview_compare_func, GINT_TO_POINTER(LST_DEFARC_SORT_DATE), NULL);
-	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_DEFARC_SORT_MEMO, ui_arc_listview_compare_func, GINT_TO_POINTER(LST_DEFARC_SORT_MEMO), NULL);
-	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_DEFARC_SORT_PAYEE, ui_arc_listview_compare_func, GINT_TO_POINTER(LST_DEFARC_SORT_PAYEE), NULL);
-	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_DEFARC_SORT_CATEGORY, ui_arc_listview_compare_func, GINT_TO_POINTER(LST_DEFARC_SORT_CATEGORY), NULL);
-	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_DEFARC_SORT_AMOUNT, ui_arc_listview_compare_func, GINT_TO_POINTER(LST_DEFARC_SORT_AMOUNT), NULL);
-	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_DEFARC_SORT_ACCOUNT, ui_arc_listview_compare_func, GINT_TO_POINTER(LST_DEFARC_SORT_ACCOUNT), NULL);
-
-	//#2024956 default to next date
-	//gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), LST_DEFARC_SORT_MEMO, GTK_SORT_ASCENDING);
-	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), LST_DEFARC_SORT_DATE, GTK_SORT_ASCENDING);
-
-	//gtk_tree_view_set_headers_visible (GTK_TREE_VIEW(view), FALSE);
-	//gtk_tree_view_set_reorderable (GTK_TREE_VIEW(view), TRUE);
-
-	return(treeview);
-}
-
-
-/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 
 static void
@@ -585,7 +109,7 @@ gboolean selected, sensitive;
 	sensitive = FALSE;
 	if(selected)
 	{
-		gtk_tree_model_get(model, &iter, LST_DEFARC_DATAS, &arc, -1);
+		gtk_tree_model_get(model, &iter, LST_DSPUPC_DATAS, &arc, -1);
 
 		if( arc->flags & OF_AUTO )
 			sensitive = TRUE;
@@ -646,7 +170,7 @@ gboolean selected, sensitive;
 	selected = gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_arc)), &model, &iter);
 	if(selected)
 	{
-		gtk_tree_model_get(model, &iter, LST_DEFARC_DATAS, &arcitem, -1);
+		gtk_tree_model_get(model, &iter, LST_DSPUPC_DATAS, &arcitem, -1);
 
 		arcitem->flags &= ~(OF_AUTO);
 		sensitive = gtk_switch_get_active(GTK_SWITCH(data->CM_auto)) ? TRUE : FALSE;
@@ -713,7 +237,7 @@ gint i, typsch, typtpl;
 			if( qinsert )
 			{
 				gtk_list_store_insert_with_values (GTK_LIST_STORE(model), &iter, -1,
-					LST_DEFARC_DATAS, item,	//data struct
+					LST_DSPUPC_DATAS, item,	//data struct
 //					LST_DEFARC_OLDPOS, i,		//oldpos
 					-1);
 			}
@@ -770,7 +294,7 @@ gboolean result;
 			item->flags |= OF_AUTO;
 
 		item->every = 1;
-		item->unit = 2;
+		item->unit = AUTO_UNIT_MONTH;
 		item->nextdate = GLOBALS->today;
 		
 		//GLOBALS->arc_list = g_list_append(GLOBALS->arc_list, item);
@@ -781,7 +305,7 @@ gboolean result;
 		
 		gtk_list_store_append (GTK_LIST_STORE(model), &iter);
 		gtk_list_store_set (GTK_LIST_STORE(model), &iter,
-			LST_DEFARC_DATAS, item,
+			LST_DSPUPC_DATAS, item,
 //			LST_DEFARC_OLDPOS, 0,
 			-1);
 
@@ -817,7 +341,7 @@ gboolean result;
 	selected = gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_arc)), &model, &iter);
 	if(selected)
 	{
-		gtk_tree_model_get(model, &iter, LST_DEFARC_DATAS, &arcitem, -1);
+		gtk_tree_model_get(model, &iter, LST_DSPUPC_DATAS, &arcitem, -1);
 
 		dialog = create_deftransaction_window(GTK_WINDOW(data->dialog), TXN_DLG_ACTION_EDIT, TXN_DLG_TYPE_TPL, 0);
 
@@ -865,7 +389,7 @@ gint result;
 	gchar *title;
 	gchar *secondtext;
 		
-		gtk_tree_model_get(model, &iter, LST_DEFARC_DATAS, &item, -1);
+		gtk_tree_model_get(model, &iter, LST_DSPUPC_DATAS, &item, -1);
 
 		//5.7.4 check if template is used
 		if( !(item->flags & OF_AUTO) )
@@ -924,19 +448,19 @@ Archive *item;
 
 	if (gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_arc)), &model, &iter))
 	{
-		gtk_tree_model_get(model, &iter, LST_DEFARC_DATAS, &item, -1);
+		gtk_tree_model_get(model, &iter, LST_DSPUPC_DATAS, &item, -1);
 
 		g_signal_handlers_block_by_func (G_OBJECT (data->CM_auto ), G_CALLBACK (ui_arc_manage_cb_schedule_changed), NULL);
 		g_signal_handlers_block_by_func (G_OBJECT (data->CM_limit), G_CALLBACK (ui_arc_manage_cb_schedule_changed), NULL);
 
 		gtk_switch_set_active(GTK_SWITCH(data->CM_auto), (item->flags & OF_AUTO) ? 1 : 0);
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_every), item->every);
-		gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_unit), item->unit);
+		hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_unit), item->unit);
 		gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_next), item->nextdate);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_limit), (item->flags & OF_LIMIT) ? 1 : 0);
 		DB( g_print(" nb_limit = %d %g\n", item->limit, (gdouble)item->limit) );
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_limit), (gdouble)item->limit);
-		gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_weekend), item->weekend);
+		hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_weekend), item->weekend);
 		
 		g_signal_handlers_unblock_by_func (G_OBJECT (data->CM_limit), G_CALLBACK (ui_arc_manage_cb_schedule_changed), NULL);
 		g_signal_handlers_unblock_by_func (G_OBJECT (data->CM_auto ), G_CALLBACK (ui_arc_manage_cb_schedule_changed), NULL);
@@ -956,7 +480,7 @@ gboolean active;
 
 	if (gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_arc)), &model, &iter))
 	{
-		gtk_tree_model_get(model, &iter, LST_DEFARC_DATAS, &item, -1);
+		gtk_tree_model_get(model, &iter, LST_DSPUPC_DATAS, &item, -1);
 
 		//#1863484: reset flag to enable remove auto and limit :)
 		item->flags &= ~(OF_AUTO|OF_LIMIT);
@@ -966,7 +490,7 @@ gboolean active;
 
 		gtk_spin_button_update(GTK_SPIN_BUTTON(data->NB_every));
 		item->every   = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(data->NB_every));
-		item->unit    = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_unit));
+		item->unit    = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_unit));
 		item->nextdate	= gtk_date_entry_get_date(GTK_DATE_ENTRY(data->PO_next));
 
 		active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_limit));
@@ -975,7 +499,7 @@ gboolean active;
 		gtk_spin_button_update(GTK_SPIN_BUTTON(data->NB_limit));
 		item->limit   = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(data->NB_limit));
 
-		item->weekend = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_weekend));
+		item->weekend = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_weekend));
 
 		//#1906953 add ignore weekend
 		scheduled_nextdate_weekend_adjust(item);
@@ -1017,18 +541,22 @@ gboolean selected;
 
 
 
-static gboolean ui_arc_manage_cb_on_key_press(GtkWidget *source, GdkEventKey *event, gpointer user_data)
+static gboolean ui_arc_manage_cb_on_key_press(GtkWidget *source, GdkEvent *event, gpointer user_data)
 {
 struct ui_arc_manage_data *data = user_data;
+GdkModifierType state;
+guint keyval;
+
+	gdk_event_get_state (event, &state);
+	gdk_event_get_keyval(event, &keyval);
 
 	// On Control-f enable search entry
-	if (event->state & GDK_CONTROL_MASK
-		&& event->keyval == GDK_KEY_f)
+	if (state & GDK_CONTROL_MASK && keyval == GDK_KEY_f)
 	{
 		gtk_widget_grab_focus(data->ST_search);
 	}
 	else
-	if (event->keyval == GDK_KEY_Escape && gtk_widget_has_focus(data->ST_search))
+	if (keyval == GDK_KEY_Escape && gtk_widget_has_focus(data->ST_search))
 	{
 		hbtk_entry_set_text(GTK_ENTRY(data->ST_search), NULL);
 		gtk_widget_grab_focus(data->LV_arc);
@@ -1061,7 +589,7 @@ Archive *arcitem;
 
 	if(selected)
 	{
-		gtk_tree_model_get(model, &iter, LST_DEFARC_DATAS, &arcitem, -1);
+		gtk_tree_model_get(model, &iter, LST_DSPUPC_DATAS, &arcitem, -1);
 
 		ui_arc_manage_set(treeview, NULL);
 	}
@@ -1114,7 +642,7 @@ ui_arc_manage_setup(struct ui_arc_manage_data *data)
 
 	DB( g_print(" set widgets default\n") );
 
-	gtk_combo_box_set_active(GTK_COMBO_BOX(data->CY_unit), 2);
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_unit), 2);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->BT_typsch), TRUE);
 
 
@@ -1213,7 +741,7 @@ gint row;
     gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
 	//label = gtk_label_new_with_mnemonic (_("_Unit:"));
     //gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
-	widget = make_cycle(label, CYA_ARC_UNIT);
+	widget = hbtk_combo_box_new_with_data(label, CYA_ARC_UNIT);
 	data->CY_unit = widget;
     gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
 
@@ -1232,7 +760,7 @@ gint row;
 	label = make_label_widget(_("Week end:"));
 	data->LB_weekend = label;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
-	widget = make_cycle(label, RA_ARC_WEEKEND);
+	widget = hbtk_combo_box_new_with_data(label, CYA_ARC_WEEKEND);
 	data->CY_weekend = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
 
@@ -1331,7 +859,7 @@ gint w, h, dw, dh;
 	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	//#1970509 enable hscrollbar
 	//gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	treeview = (GtkWidget *)ui_arc_listview_new();
+	treeview = (GtkWidget *)ui_arc_listview_widget_new();
 	data->LV_arc = treeview;
 	gtk_widget_set_size_request(treeview, HB_MINWIDTH_LIST, -1);
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
@@ -1386,6 +914,7 @@ gint w, h, dw, dh;
 	g_signal_connect (dialog, "map-event", G_CALLBACK (ui_arc_manage_mapped), &dialog);
 	g_signal_connect (dialog, "key-press-event", G_CALLBACK (ui_arc_manage_cb_on_key_press), (gpointer)data);
 
+	ui_arc_listview_widget_columns_order_load(GTK_TREE_VIEW(data->LV_arc));
 
 	// show & run dialog
 	DB( g_print(" run dialog\n") );
@@ -1394,6 +923,8 @@ gint w, h, dw, dh;
 
 	// wait for the user
 	gint result = gtk_dialog_run (GTK_DIALOG (dialog));
+
+	ui_arc_listview_widget_columns_order_save(GTK_TREE_VIEW(data->LV_arc));
 
 	// cleanup and destroy
 	ui_arc_manage_cleanup(data, result);

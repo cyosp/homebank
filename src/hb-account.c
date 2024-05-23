@@ -432,20 +432,6 @@ GList *list = g_hash_table_get_values(GLOBALS->h_acc);
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-GtkWindow *
-account_window(guint32 key)
-{
-Account *acc = da_acc_get(key);
-
-	if( acc != NULL && acc->window != NULL )
-	{
-		if( GTK_IS_WINDOW(acc->window) )
-			return acc->window;
-	}
-	return NULL;
-}
-
-
 void
 account_transaction_sort(void)
 {

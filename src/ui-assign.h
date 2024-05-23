@@ -26,6 +26,7 @@ enum {
 	LST_DEFASG_SORT_SEARCH,
 	LST_DEFASG_SORT_PAYEE,
 	LST_DEFASG_SORT_CATEGORY,
+	LST_DEFASG_SORT_PAYMENT,
 	LST_DEFASG_SORT_NOTES
 };
 
@@ -56,20 +57,19 @@ struct ui_asg_dialog_data
 
 	GtkWidget   *GR_assignment;
 	GtkWidget	*RA_pay;
-	GtkWidget   *LB_pay;
-	GtkWidget   *PO_pay;
+	GtkWidget   *LB_pay, *PO_pay;
 
 	GtkWidget	*RA_cat;
-	GtkWidget   *LB_cat;
-	GtkWidget	*PO_cat;
+	GtkWidget   *LB_cat, *PO_cat;
 
 	GtkWidget	*RA_mod;
-	GtkWidget   *LB_mod;
-	GtkWidget	*NU_mod;
+	GtkWidget   *LB_mod, *NU_mod;
+
+	GtkWidget   *RA_tags;
+	GtkWidget	*LB_tags, *ST_tags, *CY_tags;
 
 	GtkWidget   *GR_misc;
 	GtkWidget	*ST_notes;
-
 };
 
 

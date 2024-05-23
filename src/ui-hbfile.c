@@ -20,6 +20,8 @@
 
 #include "homebank.h"
 
+#include "hbtk-switcher.h"
+
 #include "ui-hbfile.h"
 #include "ui-category.h"
 
@@ -50,89 +52,6 @@ gchar *CYA_TXN_POSTMODE[] = {
 /* = = = = = = = = = = = = = = = = */
 
 
-/*
-** get widgets contents from the selected account
-*/
-static void defhbfile_get(GtkWidget *widget, gpointer user_data)
-{
-struct defhbfile_data *data;
-gchar	*owner;
-guint32	vehicle;
-gint	smode, weekday, nbdays, nbmonths;
-
-	DB( g_print("(ui-hbfile) get\n") );
-
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-
-	// get values
-	owner = (gchar *)gtk_entry_get_text(GTK_ENTRY(data->ST_owner));
-	//vehicle   = ui_cat_comboboxentry_get_key(GTK_COMBO_BOX(data->PO_grp));
-	vehicle   = ui_cat_entry_popover_get_key(GTK_BOX(data->PO_grp));
-
-	smode = hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_postmode));
-	weekday = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->NU_weekday));
-	nbdays  = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->NU_nbdays));
-	nbmonths  = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->NU_nbmonths));
-
-	// check for changes
-	if(strcasecmp(owner, GLOBALS->owner))
-		data->change++;
-	if(vehicle != GLOBALS->vehicle_category)
-		data->change++;
-	if(smode != GLOBALS->auto_smode)
-		data->change++;
-	if(weekday != GLOBALS->auto_weekday)
-		data->change++;
-	if(nbmonths != GLOBALS->auto_nbmonths)
-		data->change++;
-	if(nbdays != GLOBALS->auto_nbdays)
-		data->change++;
-
-	// update
-	if (owner && *owner)
-		hbfile_change_owner(g_strdup(owner));
-
-	GLOBALS->vehicle_category = vehicle;
-	GLOBALS->auto_smode   = smode;
-	GLOBALS->auto_weekday = weekday;
-	GLOBALS->auto_nbmonths  = nbmonths;
-	GLOBALS->auto_nbdays  = nbdays;
-
-	DB( g_print(" -> owner %s\n", GLOBALS->owner) );
-	DB( g_print(" -> ccgrp %d\n", GLOBALS->vehicle_category) );
-	DB( g_print(" -> smode %d\n", GLOBALS->auto_smode) );
-	DB( g_print(" -> weekday %d\n", GLOBALS->auto_weekday) );
-	DB( g_print(" -> nbmonths %d\n", GLOBALS->auto_nbmonths) );
-	DB( g_print(" -> nbdays %d\n", GLOBALS->auto_nbdays) );
-
-}
-
-
-/*
-** set widgets contents from the selected account
-*/
-static void defhbfile_set(GtkWidget *widget, gpointer user_data)
-{
-struct defhbfile_data *data;
-
-	DB( g_print("(ui-hbfile) set\n") );
-
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-
-	DB( g_print(" -> ccgrp %d\n", GLOBALS->vehicle_category) );
-	DB( g_print(" -> autoinsert %d\n", GLOBALS->auto_nbdays) );
-
-	if(GLOBALS->owner) gtk_entry_set_text(GTK_ENTRY(data->ST_owner), GLOBALS->owner);
-	//ui_cat_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_grp), GLOBALS->vehicle_category);
-	ui_cat_entry_popover_set_active(GTK_BOX(data->PO_grp), GLOBALS->vehicle_category);
-
-	hbtk_radio_button_set_active(GTK_CONTAINER(data->RA_postmode), GLOBALS->auto_smode);
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NU_nbdays), GLOBALS->auto_nbdays);
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NU_weekday), GLOBALS->auto_weekday);
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NU_nbmonths), GLOBALS->auto_nbmonths);
-}
-
-
 static void defhbfile_cb_update_maxpostdate(GtkWidget *widget, gpointer user_data)
 {
 struct defhbfile_data *data;
@@ -141,11 +60,11 @@ guint32 maxpostdate;
 gchar buffer[256];
 GDate *date;
 
-	DB( g_print("(ui-hbfile) update maxpostdate\n") );
+	DB( g_print("\n[ui-hbfile] update maxpostdate\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	smode    = hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_postmode));
+	smode    = hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_postmode));
 	nbdays   = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->NU_nbdays));
 
 	weekday  = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->NU_weekday));
@@ -167,16 +86,110 @@ GDate *date;
 }
 
 
+/*
+** get widgets contents from the selected account
+*/
+static void defhbfile_get(GtkWidget *widget, gpointer user_data)
+{
+struct defhbfile_data *data;
+gchar	*owner;
+guint32	vehicle;
+gint	smode, weekday, nbdays, nbmonths;
+gdouble earnbyh;
+
+	DB( g_print("\n[ui-hbfile] get\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	// get values
+	owner = (gchar *)gtk_entry_get_text(GTK_ENTRY(data->ST_owner));
+	//vehicle   = ui_cat_comboboxentry_get_key(GTK_COMBO_BOX(data->PO_grp));
+	vehicle   = ui_cat_entry_popover_get_key(GTK_BOX(data->PO_grp));
+
+	smode = hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_postmode));
+	weekday = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->NU_weekday));
+	nbdays  = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->NU_nbdays));
+	nbmonths  = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->NU_nbmonths));
+
+	earnbyh = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_earnbyh));
+
+	// check for changes
+	if(strcasecmp(owner, GLOBALS->owner))
+		data->change++;
+
+	if(smode != GLOBALS->auto_smode)
+		data->change++;
+	if(weekday != GLOBALS->auto_weekday)
+		data->change++;
+	if(nbmonths != GLOBALS->auto_nbmonths)
+		data->change++;
+	if(nbdays != GLOBALS->auto_nbdays)
+		data->change++;
+
+	if(earnbyh != GLOBALS->lifen_earnbyh)
+		data->change++;
+
+	if(vehicle != GLOBALS->vehicle_category)
+		data->change++;
+
+
+	// update
+	if (owner && *owner)
+		hbfile_change_owner(g_strdup(owner));
+
+	GLOBALS->vehicle_category = vehicle;
+	GLOBALS->auto_smode   = smode;
+	GLOBALS->auto_weekday = weekday;
+	GLOBALS->auto_nbmonths  = nbmonths;
+	GLOBALS->auto_nbdays  = nbdays;
+	
+	GLOBALS->lifen_earnbyh = earnbyh;
+
+	DB( g_print(" -> owner %s\n", GLOBALS->owner) );
+	DB( g_print(" -> ccgrp %d\n", GLOBALS->vehicle_category) );
+	DB( g_print(" -> smode %d\n", GLOBALS->auto_smode) );
+	DB( g_print(" -> weekday %d\n", GLOBALS->auto_weekday) );
+	DB( g_print(" -> nbmonths %d\n", GLOBALS->auto_nbmonths) );
+	DB( g_print(" -> nbdays %d\n", GLOBALS->auto_nbdays) );
+
+}
+
+
+/*
+** set widgets contents from the selected account
+*/
+static void defhbfile_set(GtkWidget *widget, gpointer user_data)
+{
+struct defhbfile_data *data;
+
+	DB( g_print("\n[ui-hbfile] set\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	DB( g_print(" -> ccgrp %d\n", GLOBALS->vehicle_category) );
+	DB( g_print(" -> autoinsert %d\n", GLOBALS->auto_nbdays) );
+
+	if(GLOBALS->owner) gtk_entry_set_text(GTK_ENTRY(data->ST_owner), GLOBALS->owner);
+	//ui_cat_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_grp), GLOBALS->vehicle_category);
+	ui_cat_entry_popover_set_active(GTK_BOX(data->PO_grp), GLOBALS->vehicle_category);
+
+	hbtk_switcher_set_active (HBTK_SWITCHER(data->RA_postmode), GLOBALS->auto_smode);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NU_nbdays), GLOBALS->auto_nbdays);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NU_weekday), GLOBALS->auto_weekday);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NU_nbmonths), GLOBALS->auto_nbmonths);
+
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_earnbyh), GLOBALS->lifen_earnbyh);
+
+	defhbfile_cb_update_maxpostdate(widget, user_data);
+}
+
+
 static void defhbfile_cb_postmode_toggled(GtkWidget *radiobutton, gpointer user_data)
 {
 //struct defhbfile_data *data;
 //gint postmode;
 	
-	//ignore event triggered from inactive radiobutton
-	if( gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(radiobutton)) == FALSE )
-		return;
-
-	DB( g_print("\n(defhbfile_data) toggle postmode\n") );
+	DB( g_print("\n[ui-hbfile] toggle postmode\n") );
 
 	defhbfile_cb_update_maxpostdate(radiobutton, NULL);
 }
@@ -186,7 +199,7 @@ static gboolean defhbfile_cleanup(struct defhbfile_data *data, gint result)
 {
 gboolean doupdate = FALSE;
 
-	DB( g_print("(ui-hbfile) cleanup\n") );
+	DB( g_print("\n[ui-hbfile] cleanup\n") );
 
 	if(result == GTK_RESPONSE_ACCEPT)
 	{
@@ -206,7 +219,7 @@ gboolean doupdate = FALSE;
 
 static void defhbfile_setup(struct defhbfile_data *data)
 {
-	DB( g_print("(ui-hbfile) setup\n") );
+	DB( g_print("\n[ui-hbfile] setup\n") );
 
 	data->change = 0;
 
@@ -225,6 +238,8 @@ GtkWidget *dialog, *content_area, *hbox, *content_grid, *group_grid;
 GtkWidget *label, *widget;
 gint crow, row;
 
+	DB( g_print("\n[ui-hbfile] new\n") );
+
 	data = g_malloc0(sizeof(struct defhbfile_data));
 	if(!data) return NULL;
 
@@ -239,7 +254,7 @@ gint crow, row;
 
 	//store our dialog private data
 	g_object_set_data(G_OBJECT(dialog), "inst_data", (gpointer)data);
-	DB( g_print("(defaccount) dialog=%p, inst_data=%p\n", dialog, data) );
+	DB( g_print(" - window=%p, inst_data=%p\n", dialog, data) );
 
 	gtk_window_set_resizable(GTK_WINDOW (dialog), FALSE);
 
@@ -282,7 +297,8 @@ gint crow, row;
 	row = 1;
 	label = make_label_widget(_("Automatic post:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-	widget = hbtk_radio_button_new(GTK_ORIENTATION_HORIZONTAL, CYA_TXN_POSTMODE, TRUE);
+	widget = hbtk_switcher_new (GTK_ORIENTATION_HORIZONTAL);
+	hbtk_switcher_setup(HBTK_SWITCHER(widget), CYA_TXN_POSTMODE, TRUE);
 	data->RA_postmode = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
@@ -327,6 +343,22 @@ gint crow, row;
 	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(label)), GTK_STYLE_CLASS_DIM_LABEL);
 	gtk_grid_attach (GTK_GRID (group_grid), label, 2, row, 1, 1);
 
+
+	// group :: life energy
+    group_grid = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
+	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+
+	label = make_label_group(_("Life Energy"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
+
+	label = make_label_widget(_("_Earn by hour:"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
+	widget = make_amount_pos(label);
+	data->ST_earnbyh = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+
 	
 	// group :: Vehicle cost
     group_grid = gtk_grid_new ();
@@ -349,16 +381,19 @@ gint crow, row;
 	//connect all our signals
 	g_signal_connect (dialog, "destroy", G_CALLBACK (gtk_widget_destroyed), &dialog);
 
-	hbtk_radio_button_connect (GTK_CONTAINER(data->RA_postmode), "toggled", G_CALLBACK (defhbfile_cb_postmode_toggled), NULL);
-	g_signal_connect (data->NU_nbdays, "value-changed", G_CALLBACK (defhbfile_cb_update_maxpostdate), NULL);
-	g_signal_connect (data->NU_weekday, "value-changed", G_CALLBACK (defhbfile_cb_update_maxpostdate), NULL);
-	g_signal_connect (data->NU_nbmonths, "value-changed", G_CALLBACK (defhbfile_cb_update_maxpostdate), NULL);
 
 	gtk_widget_show_all (dialog);
 
 	//setup, init and show window
 	defhbfile_setup(data);
 	//defhbfile_update(data->LV_arc, NULL);
+
+
+	g_signal_connect (data->RA_postmode, "changed", G_CALLBACK (defhbfile_cb_postmode_toggled), &dialog);
+
+	g_signal_connect (data->NU_nbdays, "value-changed", G_CALLBACK (defhbfile_cb_update_maxpostdate), NULL);
+	g_signal_connect (data->NU_weekday, "value-changed", G_CALLBACK (defhbfile_cb_update_maxpostdate), NULL);
+	g_signal_connect (data->NU_nbmonths, "value-changed", G_CALLBACK (defhbfile_cb_update_maxpostdate), NULL);
 
 
 	//wait for the user

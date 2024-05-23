@@ -48,14 +48,14 @@ gdouble exp, inc, bal;
 
 	gtk_tree_model_get (model, iter,
 		LST_REPORT_KEY    , &key,
-		LST_REPORT_NAME   , &name,
+		LST_REPORT_LABEL   , &name,
 		LST_REPORT_EXPENSE, &exp,
 		LST_REPORT_INCOME , &inc,
 		LST_REPORT_TOTAL, &bal,
 		-1);
 
 	//#2033298 we get fullname for export
-	if( src == REPORT_SRC_CATEGORY )
+	if( src == REPORT_GRPBY_CATEGORY )
 	{
 	Category *catitem = da_cat_get(key);
 		if( catitem != NULL )
@@ -115,43 +115,38 @@ const gchar *format;
 
 
 static void 
-lst_report_name_cell_data_function (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
+lst_report_cell_data_func_label (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
-GtkTreePath *path;
+gchar *label, *overlabel;
 gint pos;
-gchar *text = NULL;
-gint weight = PANGO_WEIGHT_NORMAL;
-gint style  = PANGO_STYLE_NORMAL;
 
 	gtk_tree_model_get(model, iter, 
 		LST_REPORT_POS, &pos,
-		LST_REPORT_NAME, &text,
+		LST_REPORT_LABEL, &label,
+		LST_REPORT_OVERLABEL, &overlabel,
 		-1);
 
-	path = gtk_tree_model_get_path(model, iter);
-	if( gtk_tree_path_get_depth(path) > 1 )
+	if( overlabel != NULL )
 	{
-		style = PANGO_STYLE_OBLIQUE;
+		g_object_set(renderer, 
+			"weight", PANGO_WEIGHT_NORMAL,
+			"markup", overlabel, 
+			NULL);
 	}
-	gtk_tree_path_free(path);
-
-	if( pos == LST_REPORT_POS_TOTAL )
+	else
 	{
-		weight = PANGO_WEIGHT_BOLD;
+		g_object_set(renderer, 
+			"weight", (pos == LST_REPORT_POS_TOTAL) ? PANGO_WEIGHT_BOLD : PANGO_WEIGHT_NORMAL,
+			"text"  , label,
+			NULL);
 	}
 
-	g_object_set(renderer, 
-		"weight", weight,
-		//"style-set", TRUE,
-		"style" , style, 
-		"text", text, 
-		NULL);
-
-	g_free(text);
+	g_free(label);
+	g_free(overlabel);
 }
 
 
-static void lst_report_rate_cell_data_function (GtkTreeViewColumn *col,
+static void lst_report_cell_data_func_rate (GtkTreeViewColumn *col,
                            GtkCellRenderer   *renderer,
                            GtkTreeModel      *model,
                            GtkTreeIter       *iter,
@@ -202,7 +197,8 @@ gchar buf[16], *retval = "";
 }
 
 
-static void lst_report_amount_cell_data_function (GtkTreeViewColumn *col,
+static void
+lst_report_cell_data_func_amount (GtkTreeViewColumn *col,
                            GtkCellRenderer   *renderer,
                            GtkTreeModel      *model,
                            GtkTreeIter       *iter,
@@ -256,7 +252,7 @@ GtkCellRenderer    *renderer;
 	renderer = gtk_cell_renderer_text_new ();
 	g_object_set(renderer, "xalign", 1.0, NULL);
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_report_amount_cell_data_function, GINT_TO_POINTER(id), NULL);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_report_cell_data_func_amount, GINT_TO_POINTER(id), NULL);
 	//#2004631 date and column title alignement
 	gtk_tree_view_column_set_alignment (column, 1.0);
 	//#1933164
@@ -276,7 +272,7 @@ GtkCellRenderer    *renderer;
 	
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	//gtk_tree_view_column_add_attribute(column, renderer, "text", id);
-	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_report_rate_cell_data_function, GINT_TO_POINTER(id), NULL);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_report_cell_data_func_rate, GINT_TO_POINTER(id), NULL);
 	//#2004631 date and column title alignement
 	gtk_tree_view_column_set_alignment (column, 1.0);
 	//gtk_tree_view_column_set_sort_column_id (column, id);
@@ -387,58 +383,10 @@ struct lst_report_data *lst_data;
 }
 
 
-GtkTreeStore *lst_report_new(void)
+void lst_report_add_columns(GtkTreeView *treeview, GtkTreeModel *model)
 {
-GtkTreeStore *store;
-
-	store = gtk_tree_store_new(
-	  	NUM_LST_REPORT,
-		G_TYPE_INT,		//POS keep for compatibility with chart
-	    G_TYPE_INT,		//KEY
-	    //G_TYPE_POINTER,	//ROW
-		G_TYPE_STRING,	//ROWLABEL
-		G_TYPE_DOUBLE,	//EXP
-		G_TYPE_DOUBLE,	//INC
-		G_TYPE_DOUBLE	//TOT
-		);
-
-	return store;
-}
-
-
-/*
-** create our statistic list
-*/
-GtkWidget *lst_report_create(void)
-{
-struct lst_report_data *lst_data;
-GtkTreeStore *store;
-GtkWidget *treeview;
 GtkCellRenderer    *renderer;
 GtkTreeViewColumn  *column;
-
-	DB( g_print("\n[list-report] create\n") );
-
-	lst_data = g_malloc0(sizeof(struct lst_report_data));
-	if(!lst_data) 
-		return NULL;
-
-	// create list store
-	store = lst_report_new();
-
-	// treeview
-	treeview = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
-	g_object_unref(store);
-
-	// store our window private data
-	g_object_set_data(G_OBJECT(treeview), "inst_data", (gpointer)lst_data);
-	DB( g_print(" - treeview=%p, inst_data=%p\n", treeview, lst_data) );
-
-	// connect our dispose function
-	g_signal_connect (treeview, "destroy", G_CALLBACK (lst_report_destroy), NULL);
-
-
-	gtk_tree_view_set_grid_lines (GTK_TREE_VIEW (treeview), PREFS->grid_lines);
 
 	// column: Name
 	renderer = gtk_cell_renderer_text_new ();
@@ -453,8 +401,8 @@ GtkTreeViewColumn  *column;
 	column = gtk_tree_view_column_new();
 	gtk_tree_view_column_set_title(column, _("Result"));
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_report_name_cell_data_function, NULL, NULL);
-	//gtk_tree_view_column_add_attribute(column, renderer, "text", LST_REPORT_NAME);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_report_cell_data_func_label, NULL, NULL);
+	//gtk_tree_view_column_add_attribute(column, renderer, "text", LST_REPORT_LABEL);
 	//#1933164
 	gtk_tree_view_column_set_sort_column_id (column, LST_REPORT_POS);
 	gtk_tree_view_column_set_resizable(column, TRUE);
@@ -484,6 +432,66 @@ GtkTreeViewColumn  *column;
 	// column last: empty
 	column = gtk_tree_view_column_new();
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+
+
+}
+
+
+GtkTreeStore *lst_report_new(void)
+{
+GtkTreeStore *store;
+
+	store = gtk_tree_store_new(
+	  	NUM_LST_REPORT,
+		G_TYPE_INT,		//POS keep for compatibility with chart
+	    G_TYPE_INT,		//KEY
+	    //G_TYPE_POINTER,	//ROW
+		G_TYPE_STRING,	//ROWLABEL
+		G_TYPE_DOUBLE,	//EXP
+		G_TYPE_DOUBLE,	//INC
+		G_TYPE_DOUBLE,	//TOT
+		G_TYPE_STRING	//OVERRIDELABEL
+		);
+
+	return store;
+}
+
+
+/*
+** create our statistic list
+*/
+GtkWidget *lst_report_create(void)
+{
+struct lst_report_data *lst_data;
+GtkTreeStore *store;
+GtkWidget *treeview;
+
+
+	DB( g_print("\n[list-report] create\n") );
+
+	lst_data = g_malloc0(sizeof(struct lst_report_data));
+	if(!lst_data) 
+		return NULL;
+
+	// create list store
+	store = lst_report_new();
+
+	// treeview
+	treeview = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	g_object_unref(store);
+
+	// store our window private data
+	g_object_set_data(G_OBJECT(treeview), "inst_data", (gpointer)lst_data);
+	DB( g_print(" - treeview=%p, inst_data=%p\n", treeview, lst_data) );
+
+	// connect our dispose function
+	g_signal_connect (treeview, "destroy", G_CALLBACK (lst_report_destroy), NULL);
+
+
+	gtk_tree_view_set_grid_lines (GTK_TREE_VIEW (treeview), PREFS->grid_lines);
+
+	lst_report_add_columns(GTK_TREE_VIEW(treeview), GTK_TREE_MODEL(store));
+
 
 	// prevent selection of total
 	gtk_tree_selection_set_select_function(gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview)), lst_report_selectionfunc, NULL, NULL);
@@ -522,7 +530,7 @@ gdouble value;
 		-1);
 
 	//#2033298 we get fullname for export
-	if( src == REPORT_SRC_CATEGORY )
+	if( src == REPORT_GRPBY_CATEGORY )
 	{
 	Category *catitem = da_cat_get(key);
 		if( catitem != NULL )
@@ -658,43 +666,39 @@ gchar *label = NULL;
 
 
 static void 
-lst_rep_time_name_cell_data_function (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
+lst_rep_time_cell_data_func_label (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
-GtkTreePath *path;
+gchar *label, *overlabel;
 gint pos;
-gchar *text = NULL;
-gint weight = PANGO_WEIGHT_NORMAL;
-gint style  = PANGO_STYLE_NORMAL;
 
 	gtk_tree_model_get(model, iter, 
 		LST_REPORT2_POS, &pos,
-		LST_REPORT2_LABEL, &text,
+		LST_REPORT2_LABEL, &label,
+		LST_REPORT2_OVERLABEL, &overlabel,
 		-1);
 
-	path = gtk_tree_model_get_path(model, iter);
-	if( gtk_tree_path_get_depth(path) > 1 )
+	if( overlabel != NULL )
 	{
-		style = PANGO_STYLE_OBLIQUE;
+		g_object_set(renderer, 
+			"weight", PANGO_WEIGHT_NORMAL,
+			"markup", overlabel, 
+			NULL);
 	}
-	gtk_tree_path_free(path);
-
-	if( pos == LST_REPORT_POS_TOTAL )
+	else
 	{
-		weight = PANGO_WEIGHT_BOLD;
+		g_object_set(renderer, 
+			"weight", (pos == LST_REPORT_POS_TOTAL) ? PANGO_WEIGHT_BOLD : PANGO_WEIGHT_NORMAL,
+			"text"  , label,
+			NULL);
 	}
 
-	g_object_set(renderer, 
-		"weight", weight,
-		//"style-set", TRUE,
-		"style" , style, 
-		"text", text, 
-		NULL);
-
-	g_free(text);
+	g_free(label);
+	g_free(overlabel);
 }
 
 
-static void lst_rep_time_amount_cell_data_function (GtkTreeViewColumn *col,
+static void
+lst_rep_time_cell_data_func_amount (GtkTreeViewColumn *col,
                            GtkCellRenderer   *renderer,
                            GtkTreeModel      *model,
                            GtkTreeIter       *iter,
@@ -773,7 +777,7 @@ GtkCellRenderer    *renderer;
 	}
 
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_rep_time_amount_cell_data_function, GINT_TO_POINTER(id), NULL);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_rep_time_cell_data_func_amount, GINT_TO_POINTER(id), NULL);
 	//#2004631 date and column title alignement
 	gtk_tree_view_column_set_alignment (column, 1.0);
 	gtk_tree_view_column_set_sort_column_id (column, id);
@@ -914,7 +918,7 @@ guint i;
 	    NULL);
 
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_rep_time_name_cell_data_function, NULL, NULL);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_rep_time_cell_data_func_label, NULL, NULL);
 	//gtk_tree_view_column_add_attribute(column, renderer, "text", LST_REPORT2_LABEL);
 	gtk_tree_view_column_set_sort_column_id (column, LST_REP_COLID_POS);
 	gtk_tree_view_column_set_resizable(column, TRUE);
@@ -981,7 +985,8 @@ GtkTreeStore *store;
 		G_TYPE_INT,		//POS
 	   	G_TYPE_INT,		//KEY
 		G_TYPE_STRING,	//ROWLABEL
-		G_TYPE_POINTER	//ROWDATA	(pointer to DataRow)
+		G_TYPE_POINTER,	//ROWDATA	(pointer to DataRow)
+		G_TYPE_STRING	//OVERRIDELABEL
 		);
 
 	return store;

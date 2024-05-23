@@ -43,7 +43,6 @@ struct hbfile_data
 {
 	GtkWidget	*window;
 	GtkWidget	*dbgchange;
-	GtkCssProvider *provider;
 
 	GtkWidget	*menubar;
 	GtkWidget	*ME_menufile, *ME_menuedit, *ME_menuview, *ME_menuman, *ME_menutxn, *ME_menurep, *ME_menutool, *ME_menuhelp;
@@ -85,6 +84,7 @@ struct hbfile_data
 	GtkWidget	*CY_hubtot_range;
 	GtkWidget	*RE_hubtot_chart;
 	GSimpleActionGroup *hubtot_action_group;
+	gboolean	hubtot_rawamount;
 
 	//hub time
 	Filter		*hubtim_filter;
@@ -97,7 +97,8 @@ struct hbfile_data
 	gdouble		hubtim_total;
 	GtkWidget	*CY_hubtim_range;
 	GtkWidget	*RE_hubtim_chart;
-	GSimpleActionGroup *hubtim_action_group;	
+	GSimpleActionGroup *hubtim_action_group;
+	gboolean	hubtim_rawamount;	
 
 	//hub scheduled
 	GtkWidget	*GR_upc;

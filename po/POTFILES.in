@@ -16,6 +16,7 @@ src/hb-hbfile.c
 src/hb-payee.c
 src/hb-preferences.c
 src/hb-report.c
+src/hb-transaction.c
 src/homebank.c
 src/hub-account.c
 src/hub-scheduled.c
@@ -43,6 +44,7 @@ src/ui-category.c
 src/ui-currency.c
 src/ui-dialogs.c
 src/ui-filter.c
+src/ui-flt-widget.c
 src/ui-group.c
 src/ui-hbfile.c
 src/ui-payee.c

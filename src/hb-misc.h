@@ -21,26 +21,14 @@
 #define __HB_MISC__H__
 
 
-
-enum
-{
-	PRF_DATEFMT_MDY,
-	PRF_DATEFMT_DMY,
-	PRF_DATEFMT_YMD,
-	NUM_PRF_DATEFMT
-};
-
-
-
-
-
-
 double hb_amount_round(const double x, unsigned int n);
 gdouble hb_amount_base(gdouble value, guint32 kcur);
+gdouble hb_amount_convert(gdouble value, guint32 skcur, guint32 dkcur);
 gdouble hb_amount_to_euro(gdouble amount);
 gboolean hb_amount_type_match(gdouble amount, gint type);
 gboolean hb_amount_equal(gdouble val1, gdouble val2);
 gint hb_amount_compare(gdouble val1, gdouble val2);
+gboolean hb_amount_between(gdouble val, gdouble min, gdouble max);
 
 
 gdouble hb_rate(gdouble value, gdouble total);
@@ -51,6 +39,9 @@ gchar *hb_str_formatd(gchar *outstr, gint outlen, gchar *buf1, Currency *cur, gb
 void hb_strfmon(gchar *outstr, gint outlen, gdouble value, guint32 kcur, gboolean minor);
 void hb_strfmon_int(gchar *outstr, gint outlen, gdouble value, guint32 kcur, gboolean minor);
 void hb_strfnum(gchar *outstr, gint outlen, gdouble value, guint32 kcur, gboolean minor);
+
+void hb_strlifeenergy(gchar *outstr, gint outlen, gdouble value, guint32 kcur, gboolean minor);
+
 
 gint hb_filename_type_get_by_extension(gchar *filepath);
 

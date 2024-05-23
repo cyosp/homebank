@@ -1697,7 +1697,7 @@ gboolean valid = FALSE;
 
 		// update the breadcrumb
 		gtk_tree_model_get (GTK_TREE_MODEL(totmodel), &iter,
-			LST_REPORT_NAME, &itrlabel,
+			LST_REPORT_LABEL, &itrlabel,
 			column1, &value1,
 			-1);
 		
@@ -1746,7 +1746,7 @@ gboolean valid = FALSE;
 
 		gtk_tree_model_get (GTK_TREE_MODEL(totmodel), &iter,
 			LST_REPORT_POS, &pos,	//hold total
-			LST_REPORT_NAME, &label,
+			LST_REPORT_LABEL, &label,
 			//LST_REPORT_ROW, &row,
 			column1, &value1,
 			column2, &value2,
@@ -2786,19 +2786,20 @@ GtkChart *chart = GTK_CHART(user_data);
 
 
 static gboolean
-drawarea_button_press_event (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
+drawarea_button_press_event (GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
 GtkChart *chart = GTK_CHART(user_data);
+guint button = 0;
 
 	if (chart->surface == NULL)
 		return FALSE; /* paranoia check, in case we haven't gotten a configure event */
 
 	DBDT( g_print("\n[gtkchart] mouse button press event\n") );
 
-	if (event->button == GDK_BUTTON_PRIMARY)
-	{
-		DBDT( g_print(" x=%f, y=%f\n", event->x, event->y) );
+	gdk_event_get_button(event, &button);
 
+	if (button == GDK_BUTTON_PRIMARY)
+	{
 		switch( chart->type )
 		{
 			case CHART_TYPE_COL:
@@ -2842,35 +2843,29 @@ GtkChart *chart = GTK_CHART(user_data);
 }
 
 
-static gboolean drawarea_motionnotifyevent_callback(GtkWidget *widget, GdkEventMotion *event, gpointer user_data)
+static gboolean drawarea_motionnotifyevent_callback(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
 GtkChart *chart = GTK_CHART(user_data);
 HbtkDrawContext *drawctx = &chart->context;
 gboolean retval = TRUE;
+gdouble x_win, y_win;
 gint x, y;
 
 	if(chart->surface == NULL || chart->nb_items == 0)
 		return FALSE;
 
 	DBD( g_print("\n[gtkchart] drawarea motionnotifyevent\n") );
-	x = event->x;
-	y = event->y;
+	
+	gdk_event_get_coords(event, &x_win, &y_win);
+	
+	x = x_win;
+	y = y_win;
 
 	//DBD( g_print(" x=%d, y=%d\n", x, y) );
 
 	chart->hover = -1;
 	chart->colhover = -1;
 	chart->drillable = FALSE;
-
-	//todo see this
-	/*if(event->is_hint)
-	{
-		DB( g_print(" is hint\n") );
-
-		gdk_window_get_device_position(event->window, event->device, &x, &y, NULL);
-		//gdk_window_get_pointer(event->window, &x, &y, NULL);
-		//return FALSE;
-	}*/
 
 	switch(chart->type)
 	{
@@ -2993,7 +2988,7 @@ gint x, y;
 		}
 	}
 
-	DBD( g_print(" x=%d, y=%d, time=%d\n", x, y, event->time) );
+	DBD( g_print(" x=%d, y=%d, time=%d\n", x, y, gdk_event_get_time(event)) );
 
 	//if(inlegend != TRUE)
 	//	gtk_tooltip_trigger_tooltip_query(gtk_widget_get_display(chart->drawarea));

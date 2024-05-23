@@ -56,8 +56,6 @@
 #define ICONNAME_LIST_MOVE_UP		"hb-go-up-symbolic"
 #define ICONNAME_LIST_MOVE_DOWN		"hb-go-down-symbolic"
 #define ICONNAME_LIST_MOVE_AFTER	"list-move-after-symbolic"
-#define ICONNAME_CHANGES_PREVENT	"changes-prevent-symbolic"
-#define ICONNAME_CHANGES_ALLOW  	"changes-allow-symbolic"
 #define ICONNAME_SYSTEM_SEARCH		"system-search-symbolic"
 
 
@@ -96,25 +94,30 @@
 #define ICONNAME_HB_HELP            "hb-help"
 #define ICONNAME_HB_DONATE          "hb-donate"
 
-#define ICONNAME_HB_VIEW_LIST	    "hb-view-list"   //"view-list-text"
-#define ICONNAME_HB_VIEW_BAR	    "hb-view-bar"    //"view-chart-bar"
-#define ICONNAME_HB_VIEW_COLUMN	    "hb-view-column" //"view-chart-column"
-#define ICONNAME_HB_VIEW_LINE	    "hb-view-line"   //"view-chart-line"
+#define ICONNAME_HB_VIEW_LIST	    "hb-view-list"   	//"view-list-text"
+#define ICONNAME_HB_VIEW_BAR	    "hb-view-bar"    	//"view-chart-bar"
+#define ICONNAME_HB_VIEW_COLUMN	    "hb-view-column" 	//"view-chart-column"
+#define ICONNAME_HB_VIEW_LINE	    "hb-view-line"   	//"view-chart-line"
 #define ICONNAME_HB_VIEW_PROGRESS	"hb-view-progress"  //"view-chart-progress"
-#define ICONNAME_HB_VIEW_PIE	    "hb-view-pie"    //"view-chart-pie"
-#define ICONNAME_HB_VIEW_DONUT	    "hb-view-donut"  //"view-chart-donut"
-#define ICONNAME_HB_VIEW_STACK	    "hb-view-stack"  //"view-chart-stack"
+#define ICONNAME_HB_VIEW_PIE	    "hb-view-pie"    	//"view-chart-pie"
+#define ICONNAME_HB_VIEW_DONUT	    "hb-view-donut"  	//"view-chart-donut"
+#define ICONNAME_HB_VIEW_STACK	    "hb-view-stack"  	//"view-chart-stack"
 #define ICONNAME_HB_VIEW_STACK100   "hb-view-stack100"  //"view-chart-stack100"
-#define ICONNAME_HB_SHOW_LEGEND	    "hb-legend"		//"view-legend"
+#define ICONNAME_HB_SHOW_LEGEND	    "hb-legend"			//"view-legend"
 #define ICONNAME_HB_SHOW_RATE	    "hb-rate"	    	// obsolete ?
 #define ICONNAME_HB_REFRESH		    "hb-view-refresh"	//"view-refresh"	
-#define ICONNAME_HB_FILTER		    "hb-filter"		//"edit-filter"
+#define ICONNAME_HB_FILTER		    "hb-filter"			//"edit-filter"
+#define ICONNAME_HB_CLEAR			"hb-clear"			//"edit-clear"
+#define ICONNAME_HB_LIFEENERGY		"hb-life-energy"
 
-#define ICONNAME_HB_FILE_NEW		"hb-document-new"		//document-new
+#define ICONNAME_CHANGES_PREVENT	"hb-changes-prevent"
+#define ICONNAME_CHANGES_ALLOW  	"hb-changes-allow"
+
+#define ICONNAME_HB_FILE_NEW		"hb-document-new"	//document-new
 #define ICONNAME_HB_FILE_OPEN		"hb-document-open"	//document-open
 #define ICONNAME_HB_FILE_SAVE		"hb-document-save"	//document-save
-#define ICONNAME_HB_FILE_IMPORT		"hb-file-import"		//document-import
-#define ICONNAME_HB_FILE_EXPORT		"hb-file-export"		//document-export
+#define ICONNAME_HB_FILE_IMPORT		"hb-file-import"	//document-import
+#define ICONNAME_HB_FILE_EXPORT		"hb-file-export"	//document-export
 #define ICONNAME_HB_FILE_VALID		"hb-file-valid"
 #define ICONNAME_HB_FILE_INVALID	"hb-file-invalid"
 

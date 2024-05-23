@@ -23,101 +23,14 @@
 
 /* = = = = = = = = = = = = = = = = = = = = */
 
+//chart
 gchar *CHART_CATEGORY = N_("Category");
-
-
-gchar *CYA_TXN_TYPE[] = { 
-	N_("Expense"),
-	N_("Income"),
-	N_("Transfer"),
-	NULL
-};
-
-
-gchar *CYA_CAT_TYPE[] = { 
-	N_("Expense"), 
-	N_("Income"), 
-	NULL
-};
-
-
-gchar *CYA_ASG_FIELD[] = { 
-	N_("Memo"), 
-	N_("Payee"), 
-	NULL
-};
-
-
-gchar *CYA_REPORT_MODE[] =
-{
-	N_("Total"),
-	N_("Time"),
-	NULL
-};
-
-
-HbKvData CYA_REPORT_SRC[] = {
-	{ REPORT_SRC_CATEGORY,		N_("Category") },
-	//{ REPORT_SRC_SUBCATEGORY,	N_("Subcategory") },
-	{ REPORT_SRC_PAYEE,			N_("Payee") },
-	{ REPORT_SRC_ACCOUNT,		N_("Account") },
-	{ REPORT_SRC_ACCGROUP,		N_("Account Group") },
-	{ REPORT_SRC_TAG,			N_("Tag") },
-	{ REPORT_SRC_MONTH,			N_("Month") },
-	{ REPORT_SRC_YEAR,			N_("Year") },
-	{ 0, NULL }
-};
-
-
-HbKvData CYA_REPORT_TYPE[] = { 
-	{ REPORT_TYPE_EXPENSE,	N_("Expense") },
-	{ REPORT_TYPE_INCOME,	N_("Income") },
-	{ REPORT_TYPE_TOTAL,	N_("Total")} ,
-	{ 0, NULL }
-};
-
-
-HbKvData CYA_REPORT_SRC_TREND[] = {
-	{ REPORT_SRC_ACCOUNT, 	N_("Account") },
-	{ REPORT_SRC_CATEGORY,	N_("Category") },
-	{ REPORT_SRC_PAYEE,		N_("Payee") },
-	{ REPORT_SRC_TAG,		N_("Tag") },
-	{ 0, NULL }
-};
-
-
-HbKvData CYA_REPORT_INTVL[] = {
-	{ REPORT_INTVL_DAY,		  N_("Day") },
-	{ REPORT_INTVL_WEEK,	  N_("Week") },
-	{ REPORT_INTVL_FORTNIGHT, N_("Fortnight") },
-	{ REPORT_INTVL_MONTH,	  N_("Month") },
-	{ REPORT_INTVL_QUARTER,	  N_("Quarter") },
-	{ REPORT_INTVL_HALFYEAR,  N_("Half Year") },
-	{ REPORT_INTVL_YEAR,	  N_("Year") },
-	{ 0, NULL }
-};
-
-
-//soon obsolete for merged trendtime
-gchar *RA_REPORT_TIME_MODE[] = { 
-	N_("Total"), 
-	N_("Trend"), 
-	N_("Balance"),
-	NULL
-};
-
-
-gchar *RA_FILTER_MODE[] =
-{
-	N_("Include"),
-	N_("Exclude"),
-	NULL
-};
 
 
 /* = = = = = = = = = = = = = = = = = = = = */
 
 
+//hub, acc, imp
 HbKvData CYA_ACC_TYPE[] = 
 {
 	{ ACC_TYPE_NONE,		N_("(no type)") },
@@ -135,6 +48,135 @@ HbKvData CYA_ACC_TYPE[] =
 //	{ ACC_TYPE_EQUITY, 		N_("Equity") },
 
 	{ 0, NULL }
+};
+
+//bud, cat
+gchar *CYA_CAT_TYPE[] = { 
+	N_("Expense"), 
+	N_("Income"), 
+	NULL
+};
+
+//arc
+HbKvData CYA_ARC_UNIT[] = {
+	{ AUTO_UNIT_DAY,	N_("Day") },
+	{ AUTO_UNIT_WEEK,	N_("Week") },
+	{ AUTO_UNIT_MONTH,	N_("Month") },
+	{ AUTO_UNIT_YEAR,	N_("Year") },
+	{ 0, NULL }
+};
+
+//arc
+HbKvData CYA_ARC_WEEKEND[] = { 
+	{ ARC_WEEKEND_POSSIBLE,	N_("Possible") },
+	{ ARC_WEEKEND_BEFORE,	N_("Before") },
+	{ ARC_WEEKEND_AFTER,	N_("After") },
+	{ ARC_WEEKEND_SKIP, 	N_("Skip") },	//added 5.6
+	{ 0, NULL }
+};
+
+//txn, arc
+gchar *CYA_TXN_TYPE[] = { 
+	N_("Expense"),
+	N_("Income"),
+	N_("Transfer"),
+	NULL
+};
+
+/*HbKvData CYA_TXN_STATUS[] = 
+{
+	{ TXN_STATUS_NONE,			N_("None") },
+	{ TXN_STATUS_CLEARED, 		N_("Cleared") },
+	{ TXN_STATUS_RECONCILED, 	N_("Reconciled") },
+	{ TXN_STATUS_REMIND, 		N_("Remind") },
+	{ TXN_STATUS_VOID, 			N_("Void") },
+	{ 0, NULL }
+};*/
+
+//this is a test
+//txn
+HbKivData CYA_TXN_STATUSIMG[] = 
+{
+	{ TXN_STATUS_NONE,			NULL, N_("None") },
+	{ TXN_STATUS_CLEARED, 		ICONNAME_HB_OPE_CLEARED, N_("Cleared") },
+	{ TXN_STATUS_RECONCILED, 	ICONNAME_HB_OPE_RECONCILED, N_("Reconciled") },
+	{ TXN_STATUS_REMIND, 		ICONNAME_HB_OPE_REMIND, N_("Remind") },
+	{ TXN_STATUS_VOID, 			ICONNAME_HB_OPE_VOID, N_("Void") },
+	{ 0, NULL, NULL }
+};
+
+//asg
+gchar *CYA_ASG_FIELD[] = { 
+	N_("Memo"), 
+	N_("Payee"), 
+	NULL
+};
+
+
+/* = = = = = = = = = = = = = = = = = = = = */
+
+
+//bal, bud, sta
+gchar *CYA_REPORT_MODE[] =
+{
+	N_("Total"),
+	N_("Time"),
+	NULL
+};
+
+
+HbKvData CYA_REPORT_SRC[] = {
+	{ REPORT_GRPBY_CATEGORY,		N_("Category") },
+	//{ REPORT_GRPBY_SUBCATEGORY,	N_("Subcategory") },
+	{ REPORT_GRPBY_PAYEE,			N_("Payee") },
+	{ REPORT_GRPBY_ACCOUNT,		N_("Account") },
+	{ REPORT_GRPBY_ACCGROUP,		N_("Account Group") },
+	{ REPORT_GRPBY_TAG,			N_("Tag") },
+	{ REPORT_GRPBY_MONTH,			N_("Month") },
+	{ REPORT_GRPBY_YEAR,			N_("Year") },
+	{ 0, NULL }
+};
+
+
+HbKvData CYA_REPORT_TYPE[] = { 
+	{ REPORT_TYPE_EXPENSE,	N_("Expense") },
+	{ REPORT_TYPE_INCOME,	N_("Income") },
+	{ REPORT_TYPE_TOTAL,	N_("Total")} ,
+	{ 0, NULL }
+};
+
+
+HbKvData CYA_REPORT_GRPBY_TREND[] = {
+	{ REPORT_GRPBY_ACCOUNT, 	N_("Account") },
+	{ REPORT_GRPBY_CATEGORY,	N_("Category") },
+	{ REPORT_GRPBY_PAYEE,		N_("Payee") },
+	{ REPORT_GRPBY_TAG,		N_("Tag") },
+	{ 0, NULL }
+};
+
+
+HbKvData CYA_REPORT_INTVL[] = {
+	{ REPORT_INTVL_DAY,		  N_("Day") },
+	{ REPORT_INTVL_WEEK,	  N_("Week") },
+	{ REPORT_INTVL_FORTNIGHT, N_("Fortnight") },
+	{ REPORT_INTVL_MONTH,	  N_("Month") },
+	{ REPORT_INTVL_QUARTER,	  N_("Quarter") },
+	{ REPORT_INTVL_HALFYEAR,  N_("Half Year") },
+	{ REPORT_INTVL_YEAR,	  N_("Year") },
+	{ 0, NULL }
+};
+
+
+
+
+/* = = = = = = = = = = = = = = = = = = = = */
+
+//flt
+gchar *RA_FILTER_MODE[] =
+{
+	N_("Include"),
+	N_("Exclude"),
+	NULL
 };
 
 
@@ -217,137 +259,123 @@ HbKvData CYA_FLT_SCHEDULED[] = {
 };
 
 
-/*HbKvData CYA_TXN_STATUS[] = 
-{
-	{ TXN_STATUS_NONE,			N_("None") },
-	{ TXN_STATUS_CLEARED, 		N_("Cleared") },
-	{ TXN_STATUS_RECONCILED, 	N_("Reconciled") },
-	{ TXN_STATUS_REMIND, 		N_("Remind") },
-	{ TXN_STATUS_VOID, 			N_("Void") },
+
+//repbud
+HbKvData CYA_KIND[] = {
+	{ REPORT_TYPE_ALL, N_("Exp. & Inc.") },
+	{ REPORT_TYPE_EXPENSE, N_("Expense") },
+	{ REPORT_TYPE_INCOME, N_("Income") },
 	{ 0, NULL }
-};*/
-
-
-//this is a test
-HbKivData CYA_TXN_STATUSIMG[] = 
-{
-	{ TXN_STATUS_NONE,			NULL, N_("None") },
-	{ TXN_STATUS_CLEARED, 		ICONNAME_HB_OPE_CLEARED, N_("Cleared") },
-	{ TXN_STATUS_RECONCILED, 	ICONNAME_HB_OPE_RECONCILED, N_("Reconciled") },
-	{ TXN_STATUS_REMIND, 		ICONNAME_HB_OPE_REMIND, N_("Remind") },
-	{ TXN_STATUS_VOID, 			ICONNAME_HB_OPE_VOID, N_("Void") },
-	{ 0, NULL, NULL }
 };
 
 
-gchar *CYA_ARC_UNIT[] = {
-	N_("Day"), 
-	N_("Week"), 
-	N_("Month"), 
-	N_("Year"), 
-	NULL
+//ledger
+HbKvData CYA_FLT_TYPE[] = {
+	{ FLT_TYPE_ALL,	N_("Any Type") },
+	{ HBTK_IS_SEPARATOR, "" },
+	{ FLT_TYPE_EXPENSE,	N_("Expense") },
+	{ FLT_TYPE_INCOME,	N_("Income") },
+	{ FLT_TYPE_INTXFER,	N_("Transfer") },
+	{ 0, NULL }
 };
 
 
-gchar *RA_ARC_WEEKEND[] = { 
-	N_("Possible"), 
-	N_("Before"), 
-	N_("After"), 
-	//added 5.6
-	N_("Skip"), 
-	NULL
-};
-
-
-gchar *CYA_KIND[] = {
-	N_("Exp. & Inc."),
-	N_("Expense"),
-	N_("Income"),
-	NULL
-};
-
-
-gchar *CYA_FLT_TYPE[] = {
-	N_("Any Type"),
-	"",
-	N_("Expense"),
-	N_("Income"),
-	N_("Transfer"),
-	NULL
-};
-
-
-gchar *CYA_FLT_STATUS[] = {
-	N_("Any Status"),
-	"",
-	N_("Cleared"),
-	N_("Uncleared"),
-	N_("Reconciled"),
-	N_("Unreconciled"),
-	"",
-	N_("Uncategorized"),
-	NULL
-};
-
-
-/*gchar *OLD_CYA_FLT_RANGE[] = {
-	N_("This month"),
-	N_("Last month"),
-	N_("This quarter"),
-	N_("Last quarter"),
-	N_("This year"),
-	N_("Last year"),
-	"",
-	N_("Last 30 days"),
-	N_("Last 60 days"),
-	N_("Last 90 days"),
-	N_("Last 12 months"),
-	"",
-	N_("Other..."),
-	"",
-	N_("All date"),
-	NULL
-};*/
-
-
-gchar *CYA_WEEKDAY[] =
-{
-	"",
-	N_("Mon"),
-	N_("Tue"),
-	N_("Wed"),
-	N_("Thu"),
-	N_("Fri"),
-	N_("Sat"),
-	N_("Sun"),
+//ledger
+HbKvData CYA_FLT_STATUS[] = {
+	{ FLT_STATUS_ALL,	N_("Any Status") },
+	{ HBTK_IS_SEPARATOR, "" },
+	{ FLT_STATUS_CLEARED,	N_("Cleared") },
+	{ FLT_STATUS_UNCLEARED,	N_("Uncleared") },
+	{ FLT_STATUS_RECONCILED,	N_("Reconciled") },
+	{ FLT_STATUS_UNRECONCILED,	N_("Unreconciled") },
+	{ HBTK_IS_SEPARATOR, "" },
+	{ FLT_STATUS_UNCATEGORIZED,	N_("Uncategorized") },
+	{ 0, NULL }
 };
 
 
 /* = = = = = = = = = = = = = = = = = = = = */
 
 
-//in prefs.c only
-// in repbudget
-//widget
-gchar *CYA_MONTHS[] =
-{
-	N_("January"),
-	N_("February"),
-	N_("March"),
-	N_("April"),
-	N_("May"),
-	N_("June"),
-	N_("July"),
-	N_("August"),
-	N_("September"),
-	N_("October"),
-	N_("November"),
-	N_("December"),
-	NULL
+HbKvData CYA_TOOLBAR_STYLE[] = {
+	{ 0, N_("System defaults") },
+	{ 1, N_("Icons only") },
+	{ 2, N_("Text only") },
+	{ 3, N_("Text under icons") },
+	{ 4, N_("Text beside icons") },
+	{ 0, NULL }
 };
 
 
-//hb_report.c rep_time.c ui_budget
+HbKvData CYA_GRID_LINES[] = {
+	{ GTK_TREE_VIEW_GRID_LINES_NONE, N_("None") },
+	{ GTK_TREE_VIEW_GRID_LINES_HORIZONTAL, N_("Horizontal") },
+	{ GTK_TREE_VIEW_GRID_LINES_VERTICAL, N_("Vertical") },
+	{ GTK_TREE_VIEW_GRID_LINES_BOTH, N_("Both") },
+	{ 0, NULL }
+};
+
+
+HbKvData CYA_TANGO_COLORS[] = {
+	{ 0, "----" },
+	{ 1, N_("Tango light") },
+	{ 2, N_("Tango medium") },
+	{ 3, N_("Tango dark") },
+	{ 0, NULL }
+};
+
+HbKvData CYA_IMPORT_DATEORDER[] = {
+	{ PRF_DATEFMT_MDY, N_("m-d-y") },
+	{ PRF_DATEFMT_DMY, N_("d-m-y") },
+	{ PRF_DATEFMT_YMD, N_("y-m-d") },
+	{ 0, NULL }
+};
+
+HbKvData CYA_IMPORT_OFXNAME[] = {
+	{ PRF_OFXNAME_IGNORE, N_("Ignore") },
+	{ PRF_OFXNAME_MEMO, N_("Memo") },
+	{ PRF_OFXNAME_PAYEE, N_("Payee") },
+	{ PRF_OFXNAME_NUMBER, N_("Number") },
+	{ 0, NULL }
+};
+
+HbKvData CYA_IMPORT_OFXMEMO[] = {
+	{ PRF_OFXMEMO_IGNORE, N_("Ignore") },
+	{ PRF_OFXMEMO_NUMBER, N_("Append to Number") },
+	{ PRF_OFXMEMO_MEMO, N_("Append to Memo") },
+	{ PRF_OFXMEMO_PAYEE, N_("Append to Payee") },
+	{ 0, NULL }
+};
+
+HbKvData CYA_IMPORT_CSVSEPARATOR[] = {
+	{ PRF_DTEX_CSVSEP_TAB, N_("Tab") },
+	{ PRF_DTEX_CSVSEP_COMMA, N_("Comma") },
+	{ PRF_DTEX_CSVSEP_SEMICOLON, N_("Semicolon") },
+	{ PRF_DTEX_CSVSEP_SPACE, N_("Space") },
+	{ 0, NULL }
+};
+
+
+//pref
+HbKvData CYA_MONTHS[] =
+{
+	{ 1, N_("January") },
+	{ 2, N_("February") },
+	{ 3, N_("March") },
+	{ 4, N_("April") },
+	{ 5, N_("May") },
+	{ 6, N_("June") },
+	{ 7, N_("July") },
+	{ 8, N_("August") },
+	{ 9, N_("September") },
+	{ 10, N_("October") },
+	{ 11, N_("November") },
+	{ 12, N_("December") },
+	{ 0, NULL }
+};
+
+
+//rep, bud, repbud
 gchar *CYA_ABMONTHS[] =
 {
 	NULL,

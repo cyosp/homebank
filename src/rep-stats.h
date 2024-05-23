@@ -48,6 +48,7 @@ struct repstats_data
 	gint		charttype;
 
 	GtkWidget	*window;
+	GActionGroup *actions;
 	gboolean	mapped_done;
 
 	GtkWidget	*TB_bar;
@@ -63,8 +64,6 @@ struct repstats_data
 	GtkWidget	*BT_refresh;
 	GtkWidget	*BT_print;
 	GtkWidget	*BT_export;
-	GtkWidget	*MI_detailtoclip;
-	GtkWidget	*MI_detailtocsv;
 
 	
 	GtkWidget	*TX_info;
@@ -75,13 +74,16 @@ struct repstats_data
 	GtkWidget	*CY_intvl, *LB_intvl;
 	GtkWidget	*CM_forecast;
 
+	GtkWidget	*GR_listbar;
 	GtkWidget	*BT_expand;
 	GtkWidget	*BT_collapse;
 
 	//beta start
 	GtkWidget	*PO_hubfilter;
 	GtkWidget	*BT_reset;
+	GtkWidget	*TX_fltactive, *TT_fltactive;
 	//beat end
+	
 
 	GtkWidget	*RG_zoomx, *LB_zoomx;
 	GtkWidget	*SW_total, *SW_trend;

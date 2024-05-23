@@ -14,9 +14,13 @@
     <h1>Previously on HomeBank...</h1>
     <p>To review the complete list of changes, please use the <i>Help > Release Notes</i> menu from HomeBank program.</p>
 
-    <h1>What's New in HomeBank 5.6</h1>
-    <p>To review the complete list of changes, please use the <i>Help > Release Notes</i> menu from HomeBank program.<br>
-    Older <i>what's new in X.Y</i> can be read into <a href="00-previously.html" target="mainFrame">previously on HomeBank...</a></p>
+    <b>New features in v5.7</b>
+    <ul class="toc">
+      <li><a href="#57cashflow">Cash Flow Forecast</a></li>
+      <li><a href="#57budgtime">Budget Report over time</a></li>
+      <li><a href="#57chartdrill">Chart drill down for categories</a></li>
+      <li><a href="#57newhome">New Home Total and Time chart</a></li>
+    </ul>
 
     <b>New features in v5.6</b>
     <ul class="toc">
@@ -94,12 +98,82 @@
     </ul>
   </div>
 
+  <h2>New features in v5.7</h2>
+
+ <div class="rounded content">
+    <h3><a id="57cashflow" name="57cashflow"></a>Cash Flow Forecast</h3>
+    <img class="gtkshot left" src="images/57cashflow.png">
+    <p>A cash flow forecast is now available for the following report:<br>
+    - home report<br>
+    - statistics report</p>
+    
+    <p>The capture beside is a graph of this year (2023), with a forecast of 8 months ahead, taken in may 2023.<br>
+      Read <a href="00-lexicon.html#forecast">forecast</a> lexicon for more details.
+    </p>
+    
+    <p class="top clear"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+  <div class="rounded content">
+    <h3><a id="57budgtime" name="57budgtime"></a>Budget Report over time</h3>
+    <img class="gtkshot left" src="images/57budgtime.png">
+    <p>It is now possible to view the budget report over time (month based).</p>
+    <p>There was also a few changes made to this report:<br>
+      - a Fulfilled column was added into the listview<br>
+      - the date range selection is now bounded to:<br>
+       From: month/year<br>
+       To: month/year
+    </p>
+    
+    <p class="top clear"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+
+  <div class="rounded content">
+    <h3><a id="57chartdrill" name="57chartdrill"></a>Chart drill down for categories</h3>
+    <img class="gtkshot left" src="images/57chartdrill.png">
+    <p>Chart drill down is now available for report that display categories, including the budget report. It is available as well for donuts chart, than bar chart, and you can also click on the legend text.<br>
+    If a sub-level is available, the cursor will change to an hand, and you must click to drill.<br>
+    Then to go back use the breadcrumb and click back on Category.
+    </p>
+    <p>This new feature, also leads to the removal of Subcategory selection in profit of a 2 level listview onto report, with expand/collapse for categories</p>
+
+    <p class="top clear"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+  <div class="rounded content">
+    <h3><a id="57newhome" name="57newhome"></a>New Home Total and Time chart</h3>
+    <img class="gtkshot left" src="images/57newhome.png">
+    <p>The historical Where your money goes, showing the top x spending by category is replaced by 2 report:<br>
+      A) the total report, which can display the following, you can select using the gear icon button:<br>
+      <ul>
+        <li>Top X Spending / Category</li>
+        <li>Top X Spending / Payee</li>
+        <li>Top X Spending / Account</li>
+        <li>Account Balance</li>
+      </ul>
+      
+      B) the time report, which can display the following, you can select using the gear icon button:<br>
+      <ul>
+        <li>Spending by Month</li>
+        <li>Account Balance</li>
+        <li>Global Balance</li>
+      </ul>
+      This report also show a forecast, when it is enables and in date junction, see <a href="00-lexicon.html#forecast">forecast</a> lexicon for more details.
+
+      </p>
+    
+    <p class="top clear"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+
+
 
   <h2>New features in v5.6</h2>
 
   <div class="rounded content">
     <h3><a id="56stack" name="56stack"></a>Charts for Over Time Statistics report</h3>
-    <img class="gtkshot left" src="images/56stack.png"></p>
+    <img class="gtkshot left" src="images/56stack.png">
     <p>The Over Time part of the <a href="win-statstotal.html">Statistics report</a> was introduced into v5.3 as a standalone table view.<br>
     This version officially introduce the graph part of this waited and powerful feature, so you now have both a Stack bar graph and a 100% Stack bar graph, thus
     those two were already released with a back-port since v5.5.4</p>
@@ -229,7 +303,7 @@
 
   <div class="rounded content">
     <h3><a id="54massasgadd" name="54massasgadd"></a>Mass assignment creation</h3>
-    <p>Like it was possible to create a template from selected transaction into the register list, it is now possible to create
+    <p>Like it was possible to create a template from selected transaction into the transaction list, it is now possible to create
       some assignment as well.
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
@@ -249,7 +323,7 @@
 
   <div class="rounded content">
     <h3><a id="54welcomdiag" name="54welcomdiag"></a>Reworked the welcome dialog</h3>
-    <p>The welcome dialog was reworked: added an icon, relayout, show next time checkbox to enable or disable to show it at start
+    <p>The welcome dialog was reworked: added an icon, re-layout, show next time checkbox to enable or disable to show it at start
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
 
@@ -297,7 +371,7 @@
 
   <div class="rounded content">
     <h3><a id="52alltxn" name="52alltxn"></a> List of all transactions</h3>
-    <p>From the main window transaction menu you can now open a register with all transaction of all accounts.<br>
+    <p>From the main window transaction menu you can now open a ledger window with all transaction of all accounts.<br>
     Most of the action are available here, except:</p>
     <ul>
       <li>export to qif, pdf
@@ -323,8 +397,8 @@
   </div>
   <div class="rounded content">
     <h3><a id="52duplicate" name="52duplicate"></a> Duplicate transaction finder</h3>
-    <p>A duplicate finder is now available from a single account register window in the tools menu. The feature just mark in place the transaction, in bold for the one to keep and strike the potential duplicate called similar.<br>
-    the similarity is evaluated on amount, date (+gap) and memo.</p>
+    <p>A duplicate finder is now available from a single account ledger window in the tools menu. The feature just mark in place the transaction, in bold for the one to keep and strike the potential duplicate called similar.<br>
+    the similarity is evaluated on: amount, date (+gap).</p>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
   <div class="rounded content">
@@ -505,7 +579,7 @@
     <h2><a id="schedul" name="schedul"></a> Scheduled append until a day of month</h2>
     <p>You can now insert transaction within a specific day in the next month.<br>
     So for example, you can add until the 28th of each month, the selected date excluded, which mean transaction that should occurs on 28 will not be inserted.</p>
-    <p>You can keep the previous behaviour to add xx days into the future from today's date.</p>
+    <p>You can keep the previous behavior to add xx days into the future from today's date.</p>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
 </body>

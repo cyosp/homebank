@@ -67,6 +67,7 @@ struct repbudget_data
 
 
 	GtkWidget	*window;
+	GActionGroup *actions;
 	gboolean	mapped_done;
 
 	GtkWidget	*TB_bar;
@@ -76,8 +77,6 @@ struct repbudget_data
 	GtkWidget	*BT_refresh;
 	GtkWidget	*BT_print;
 	GtkWidget	*BT_export;
-	GtkWidget	*MI_detailtoclip;
-	GtkWidget	*MI_detailtocsv;
 	
 	GtkWidget	*TX_info;
 	GtkWidget	*TX_daterange;
@@ -86,6 +85,7 @@ struct repbudget_data
 	GtkWidget	*RA_mode;
 	GtkWidget	*CY_type;
 	
+	GtkWidget	*GR_listbar;
 	GtkWidget	*BT_expand;
 	GtkWidget	*BT_collapse;
 

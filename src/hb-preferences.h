@@ -22,6 +22,7 @@
 
 #include "hb-currency.h"
 #include "list-account.h"
+#include "list-scheduled.h"
 
 
 #define DEFAULT_FORMAT_DATE			"%x"
@@ -44,13 +45,6 @@
 #define DEFAULT_WARN_COLOR		"#a40000"	//Scarlett Red
 
 
-#define PRF_DTEX_CSVSEP_BUFFER "\t,; "
-enum {
-	PRF_DTEX_CSVSEP_TAB,
-	PRF_DTEX_CSVSEP_COMMA,
-	PRF_DTEX_CSVSEP_SEMICOLON,
-	PRF_DTEX_CSVSEP_SPACE,
-};
 
 
 /*
@@ -84,7 +78,8 @@ struct Preferences
 	gshort		gtk_fontsize;
 	gboolean	gtk_darktheme;
 
-	gboolean	icon_symbolic;
+	gchar		*icontheme;
+
 	gboolean	custom_colors;
 	gchar		*color_exp;
 	gchar		*color_inc;
@@ -111,6 +106,7 @@ struct Preferences
 	gboolean	heritdate;
 	gboolean	txn_memoacp;
 	gshort		txn_memoacp_days;
+	gboolean	txn_showtemplate;
 	gboolean	txn_showconfirm;
 
 	//txn xfer
@@ -118,6 +114,8 @@ struct Preferences
 	gshort		xfer_daygap;
 	gboolean	xfer_syncstat;
 
+	//5.8 paymode
+	gint 		lst_paymode[NUM_PAYMODE_KEY+1];
 
 	//import/export
 	gint		dtex_datefmt;
@@ -217,6 +215,8 @@ struct Preferences
 	gshort		hub_tim_view;
 	gshort		hub_tim_range;
 
+	//5.8 scheduled column order
+	gint 		lst_sch_columns[NUM_COL_SCH_UID+1];
 	gshort		pnl_upc_col_pay_show;
 	gshort		pnl_upc_col_pay_width;
 	gshort		pnl_upc_col_cat_show;
@@ -241,13 +241,19 @@ gint homebank_pref_list_column_get(gint *cols_id, gint uid, gint maxcol);
 
 void homebank_pref_setdefault_lst_ope_columns(void);
 void homebank_pref_setdefault_lst_det_columns(void);
+void homebank_pref_setdefault_lst_sch_columns(void);
+
 void homebank_pref_setdefault_win(void);
 void homebank_prefs_set_default(void);
 void homebank_pref_free(void);
 void homebank_pref_createformat(void);
 void homebank_pref_init_measurement_units(void);
 
+
+void homebank_pref_icon_symbolic(gboolean active);
 void homebank_pref_apply(void);
+
+
 gboolean homebank_pref_load(void);
 gboolean homebank_pref_save(void);
 void homebank_pref_setdefault(void);

@@ -53,6 +53,7 @@ static void repbalance_update_daterange(GtkWidget *widget, gpointer user_data);
 static void repbalance_detail(GtkWidget *widget, gpointer user_data);
 static void repbalance_sensitive(GtkWidget *widget, gpointer user_data);
 static void repbalance_compute(GtkWidget *widget, gpointer user_data);
+static void repbalance_filter_setup(struct repbalance_data *data);
 
 static gchar *repbalance_compute_title(gint intvl);
 
@@ -69,8 +70,10 @@ static GString *lst_repbal_to_string(GtkTreeView *treeview, gchar *title, gboole
 extern HbKvData CYA_REPORT_INTVL[];
 
 
-/* action functions -------------------- */
-static void repbalance_action_viewlist(GtkWidget *toolbutton, gpointer user_data)
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+
+static void repbalance_action_viewlist(GtkWidget *widget, gpointer user_data)
 {
 struct repbalance_data *data = user_data;
 
@@ -87,7 +90,7 @@ struct repbalance_data *data = user_data;
 }
 */
 
-static void repbalance_action_viewline(GtkWidget *toolbutton, gpointer user_data)
+static void repbalance_action_viewline(GtkWidget *widget, gpointer user_data)
 {
 struct repbalance_data *data = user_data;
 
@@ -96,13 +99,13 @@ struct repbalance_data *data = user_data;
 }
 
 
-static void repbalance_action_print(GtkWidget *toolbutton, gpointer user_data)
+static void repbalance_action_print(GtkWidget *widget, gpointer user_data)
 {
 struct repbalance_data *data = user_data;
 gint tmpintvl, page;
 gchar *title, *name;
 
-	tmpintvl  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_intvl));
+	tmpintvl  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_intvl));
 	page = gtk_notebook_get_current_page(GTK_NOTEBOOK(data->GR_result));
 
 	name  = g_strdup_printf("hb-repbalance_%s.csv", hbtk_get_label(CYA_REPORT_INTVL, tmpintvl) );
@@ -128,6 +131,19 @@ gchar *title, *name;
 }
 
 
+static void repbalance_action_filter_reset(GtkWidget *widget, gpointer user_data)
+{
+struct repbalance_data *data;
+
+	DB( g_print("\n[repbalance] filter reset\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	repbalance_filter_setup(data);
+	repbalance_compute(data->window, NULL);
+}
+
+
 /* = = = = = = = = = = = = = = = = */
 
 
@@ -147,7 +163,7 @@ static void repbalance_date_change(GtkWidget *widget, gpointer user_data)
 {
 struct repbalance_data *data;
 
-	DB( g_print(" \n[repbalance] date change\n") );
+	DB( g_print("\n[repbalance] date change\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -158,11 +174,10 @@ struct repbalance_data *data;
 	//5.8 check for error
 		gtk_date_entry_set_error(GTK_DATE_ENTRY(data->PO_mindate), ( data->filter->mindate > data->filter->maxdate ) ? TRUE : FALSE);
 		gtk_date_entry_set_error(GTK_DATE_ENTRY(data->PO_maxdate), ( data->filter->maxdate < data->filter->mindate ) ? TRUE : FALSE);
-	
-	g_signal_handler_block(data->CY_range, data->handler_id[HID_REPBALANCE_RANGE]);
-	hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_range), FLT_RANGE_MISC_CUSTOM);
-	g_signal_handler_unblock(data->CY_range, data->handler_id[HID_REPBALANCE_RANGE]);
 
+	g_signal_handler_block(data->CY_range, data->handler_id[HID_REPBALANCE_RANGE]);
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_range), FLT_RANGE_MISC_CUSTOM);
+	g_signal_handler_unblock(data->CY_range, data->handler_id[HID_REPBALANCE_RANGE]);
 
 	repbalance_compute(widget, NULL);
 	repbalance_update_daterange(widget, NULL);
@@ -174,16 +189,16 @@ static void repbalance_update_quickdate(GtkWidget *widget, gpointer user_data)
 {
 struct repbalance_data *data;
 
-	DB( g_print(" \n[repbalance] update quickdate\n") );
+	DB( g_print("\n[repbalance] update quickdate\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
 	g_signal_handler_block(data->PO_mindate, data->handler_id[HID_REPBALANCE_MINDATE]);
 	g_signal_handler_block(data->PO_maxdate, data->handler_id[HID_REPBALANCE_MAXDATE]);
-	
+
 	gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_mindate), data->filter->mindate);
 	gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_maxdate), data->filter->maxdate);
-	
+
 	g_signal_handler_unblock(data->PO_mindate, data->handler_id[HID_REPBALANCE_MINDATE]);
 	g_signal_handler_unblock(data->PO_maxdate, data->handler_id[HID_REPBALANCE_MAXDATE]);
 
@@ -195,11 +210,11 @@ static void repbalance_range_change(GtkWidget *widget, gpointer user_data)
 struct repbalance_data *data;
 gint range;
 
-	DB( g_print(" \n[repbalance] range change\n") );
+	DB( g_print("\n[repbalance] range change\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	range = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_range));
+	range = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_range));
 
 	if(range != FLT_RANGE_MISC_CUSTOM)
 	{
@@ -223,33 +238,13 @@ static void repbalance_update_daterange(GtkWidget *widget, gpointer user_data)
 struct repbalance_data *data;
 gchar *daterange;
 
-	DB( g_print(" \n[repbalance] update daterange\n") );
+	DB( g_print("\n[repbalance] update daterange\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
 	daterange = filter_daterange_text_get(data->filter);
 	gtk_label_set_markup(GTK_LABEL(data->TX_daterange), daterange);
 	g_free(daterange);
-}
-
-
-static void repbalance_selection(GtkTreeSelection *treeselection, gpointer user_data)
-{
-GtkTreeModel *model;
-GtkTreeIter iter;
-guint key = -1;
-
-	DB( g_print(" \n[repbalance] selection\n") );
-
-	if (gtk_tree_selection_get_selected(treeselection, &model, &iter))
-	{
-		gtk_tree_model_get(model, &iter, LST_OVER_KEY, &key, -1);
-	}
-
-	DB( g_print(" - active is %d\n", key) );
-
-	repbalance_detail(GTK_WIDGET(gtk_tree_selection_get_tree_view (treeselection)), GINT_TO_POINTER(key));
-	repbalance_sensitive(GTK_WIDGET(gtk_tree_selection_get_tree_view (treeselection)), NULL);
 }
 
 
@@ -315,10 +310,10 @@ GtkTreeIter  iter, child;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	DB( g_print(" \n[repbalance] detail\n") );
+	DB( g_print("\n[repbalance] detail\n") );
 
-	tmpintvl = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_intvl));
-	
+	tmpintvl = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_intvl));
+
 	/* clear and detach our model */
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_detail));
 	gtk_tree_store_clear (GTK_TREE_STORE(model));
@@ -382,7 +377,6 @@ GtkTreeIter  iter, child;
 		g_object_unref(model);
 
 		gtk_tree_view_columns_autosize( GTK_TREE_VIEW(data->LV_detail) );
-
 	}
 }
 
@@ -402,12 +396,278 @@ struct repbalance_data *data;
 }
 
 
+static void repbalance_compute(GtkWidget *widget, gpointer user_data)
+{
+struct repbalance_data *data;
+gint tmpintvl;
+gboolean showempty;
+GList *lst_acc, *lnk_acc;
+GList *lnk_txn;
+guint32 i, maxkacc;
+gdouble amount;
+GtkTreeModel *model;
+GtkTreeIter  iter;
+//Account *acc;
+gint usrnbacc;
+
+	DB( g_print("----------------\n[repbalance] compute\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	// clear everything
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_report));
+	gtk_list_store_clear (GTK_LIST_STORE(model));
+	gtk_chart_set_datas_none(GTK_CHART(data->RE_chart));
+	//TODO: use a Queue here
+	g_list_free(data->ope_list);
+	data->ope_list = NULL;
+	//reset our data
+	data->nbope = 0;
+	data->nbovrdraft = 0;
+	data->firstbalance = 0.0;
+	repbalance_update_info(widget, user_data);
+
+	//#2019876 return is invalid date range
+	if( data->filter->maxdate < data->filter->mindate )
+		return;
+
+	//get kacc array
+	maxkacc = da_acc_get_max_key();
+	data->tmp_acckeys = g_malloc0((maxkacc+2) * sizeof(guint32));
+
+
+	
+
+	//grab user selection
+	tmpintvl  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_intvl));
+	showempty = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_showempty));
+	usrnbacc  = ui_acc_listview_fill_keys(GTK_TREE_VIEW(data->LV_acc), data->tmp_acckeys, &data->usrkcur);
+
+	DB( g_print(" usr: nbacc:%d, kcur:%d, empty:%d\n\n", usrnbacc, data->usrkcur, showempty) );
+
+	
+	if( (usrnbacc == 0) )
+		goto end;
+
+	//5.8 fake filter
+	if( usrnbacc == 1 )
+		filter_preset_type_set(data->filter, FLT_TYPE_ALL, FLT_OFF);
+	else
+		filter_preset_type_set(data->filter, FLT_TYPE_INTXFER, FLT_EXCLUDE);
+
+	//grab data from user selected account
+	lst_acc = g_hash_table_get_values(GLOBALS->h_acc);
+	lnk_acc = g_list_first(lst_acc);
+	while (lnk_acc != NULL)
+	{
+	Account *acc = lnk_acc->data;
+
+		// avoid unselected and noreport (maybe already filtered into list)
+		if( (acc->flags & (AF_NOREPORT)) || (data->tmp_acckeys[acc->key] == 0) )
+			goto next_acc;
+
+		// set minimum (only used when 1 account is selected)
+		data->minimum = acc->minimum;
+
+		// if more than 1 cur get amount as base currency
+		amount = 0.0;
+		if( (data->usrkcur != acc->kcur) )
+			amount = hb_amount_base(acc->initial, acc->kcur);
+		else
+			amount = acc->initial;
+
+		data->firstbalance += amount;
+		DB( g_print(" - stored initial %.2f for account %d:%s\n", amount, acc->key, acc->name) );
+
+		//collect every txn for account
+		lnk_txn = g_queue_peek_head_link(acc->txn_queue);
+		while (lnk_txn != NULL)
+		{
+		Transaction *txn = lnk_txn->data;
+
+			//5.5 forgot to filter...
+			//#1886123 include remind based on user prefs
+			if( (txn->status == TXN_STATUS_REMIND) && (PREFS->includeremind == FALSE) )
+				goto next_txn;
+
+			if( (txn->status == TXN_STATUS_VOID) )
+				goto next_txn;
+
+			//#2045514 xclude xfer from selected account
+			if( usrnbacc > 1 && data->tmp_acckeys[txn->kacc] != 0 && data->tmp_acckeys[txn->kxferacc] != 0 )
+				goto next_txn;
+
+			//5.3 append is damn slow
+			//list = g_list_append(list, txn);
+			data->ope_list = g_list_prepend(data->ope_list, txn);
+
+		next_txn:
+			lnk_txn = g_list_next(lnk_txn);
+		}
+
+	next_acc:
+		lnk_acc = g_list_next(lnk_acc);
+	}
+	g_list_free(lst_acc);
+
+
+	if(g_list_length(data->ope_list) == 0)
+		goto end;
+
+	// grab nb result and allocate memory
+	//#1958001
+	data->n_result = report_interval_count(tmpintvl, data->filter->mindate, data->filter->maxdate);
+	data->tmp_income  = g_malloc0((data->n_result+2) * sizeof(gdouble));
+	data->tmp_expense = g_malloc0((data->n_result+2) * sizeof(gdouble));
+
+	DB( g_print(" %d days in selection\n", data->filter->maxdate - data->filter->mindate));
+
+	DB( hb_print_date(data->filter->mindate, "min") );
+	DB( hb_print_date(data->filter->maxdate, "max") );
+
+	if(data->tmp_income && data->tmp_expense)
+	{
+	GList *list;
+	gdouble amount;
+
+		/* sort by date & compute the balance */
+		data->ope_list = da_transaction_sort (data->ope_list);
+		list = g_list_first(data->ope_list);
+		while (list != NULL)
+		{
+		Transaction *ope = list->data;
+
+			//if(selkey == ope->kacc || selectall == TRUE)
+			if( (data->tmp_acckeys[ope->kacc] == TRUE) )
+			{
+				// if more than 1 cur get amount as base currency
+				if( (data->usrkcur != ope->kcur) )
+					amount = hb_amount_base(ope->amount, ope->kcur);
+				else
+					amount = ope->amount;
+
+				// cumulate pre-date range balance
+				if( (ope->date < data->filter->mindate) )
+					data->firstbalance += amount;
+
+				if( (ope->date >= data->filter->mindate) && (ope->date <= data->filter->maxdate) )
+				{
+				gint pos = report_interval_get_pos(tmpintvl, data->filter->mindate, ope);
+
+					//deal with transactions
+					if(amount < 0)
+						data->tmp_expense[pos] += amount;
+					else
+						data->tmp_income[pos] += amount;
+				}
+			}
+
+			list = g_list_next(list);
+		}
+	}
+
+
+	// set currency
+	lst_repbal_set_cur(GTK_TREE_VIEW(data->LV_report), data->usrkcur);
+	gtk_chart_set_currency(GTK_CHART(data->RE_chart), data->usrkcur);
+
+	// ref and detach model for speed
+	g_object_ref(model); 
+	gtk_tree_view_set_model(GTK_TREE_VIEW(data->LV_report), NULL);
+
+
+	DB( g_print(" inserting %d results\n", data->n_result) );
+
+	gdouble balance = data->firstbalance;
+	//#1958001
+	for(i=0;i<data->n_result;i++)
+	{
+	gboolean is_ovrdraft = FALSE;
+	gchar intvlname[64];
+
+		balance += data->tmp_expense[i];
+		balance += data->tmp_income[i];
+
+		if( !showempty && (data->tmp_expense[i] == 0 && data->tmp_income[i] == 0) )
+			continue;
+
+		if(usrnbacc == 1)
+			is_ovrdraft = (balance < data->minimum) ? TRUE : FALSE;
+
+		//#1907699 date is wrong
+		report_interval_snprint_name(intvlname, sizeof(intvlname)-1, tmpintvl, data->filter->mindate, i);
+		//report_interval_snprint_name(intvlname, sizeof(intvlname)-1, tmpintvl, jmindate, i);
+
+		DB( g_print(" %3d: %s %f %f\n", i, intvlname, data->tmp_expense[i], data->tmp_income[i]) );
+		
+		/* column 0: pos (gint) */
+		/* not used: column 1: key (gint) */
+		/* column 2: name (gchar) */
+		/* column x: values (double) */
+
+		gtk_list_store_insert_with_values (GTK_LIST_STORE(model), 
+			&iter, -1,
+			LST_OVER_POS, i,
+			LST_OVER_KEY, i,
+			LST_OVER_LABEL, intvlname,
+			LST_OVER_EXPENSE, data->tmp_expense[i],
+			LST_OVER_INCOME , data->tmp_income[i],
+			LST_OVER_TOTAL, balance,
+			LST_OVER_FLAGS, (is_ovrdraft == TRUE) ? REPORT_FLAG_OVER : 0,
+			-1);
+
+		data->nbope++;
+		if(is_ovrdraft == TRUE)
+			data->nbovrdraft++;
+	}
+
+	gboolean visible = (usrnbacc > 1) ? FALSE : TRUE;
+	gtk_widget_set_visible (GTK_WIDGET(data->TX_info), visible);
+	gtk_chart_show_overdrawn(GTK_CHART(data->RE_chart), visible);
+
+	if( visible == TRUE )
+	{
+		repbalance_update_info(widget, NULL);
+		gtk_chart_set_overdrawn(GTK_CHART(data->RE_chart), data->minimum);
+	}
+
+	/* Re-attach model to view */
+	gtk_tree_view_set_model(GTK_TREE_VIEW(data->LV_report), model);
+	g_object_unref(model);
+
+	gtk_tree_view_columns_autosize (GTK_TREE_VIEW(data->LV_report));
+
+	/* update bar chart */
+	gchar *title = repbalance_compute_title(tmpintvl); 
+	gtk_chart_set_datas_total(GTK_CHART(data->RE_chart), model, LST_OVER_TOTAL, LST_OVER_TOTAL, title, NULL);
+	//gtk_chart_set_line_datas(GTK_CHART(data->RE_chart), model, LST_OVER_TOTAL, LST_OVER_DATE);
+	g_free(title);
+
+end:
+	g_free(data->tmp_expense);
+	g_free(data->tmp_income);
+	g_free(data->tmp_acckeys);
+
+	data->tmp_expense = NULL;
+	data->tmp_income  = NULL;
+	data->tmp_acckeys = NULL;
+	
+	//test 5.8
+	//as it is not the filter dialog, count
+	da_flt_count_item(data->filter);
+	gchar *txt = filter_text_summary_get(data->filter);
+	ui_label_set_integer(GTK_LABEL(data->TX_fltactive), data->filter->n_active);
+	gtk_widget_set_tooltip_text(data->TT_fltactive, txt);
+	g_free(txt);
+}
+
 
 static void
 repbalance_cb_acc_changed(GtkCellRendererToggle *cell, gchar *path_str, gpointer user_data)
 {
 struct repbalance_data *data = user_data;
 
+	ui_acc_listview_toggle_to_filter(GTK_TREE_VIEW(data->LV_acc), data->filter);
 	repbalance_compute (GTK_WIDGET(data->LV_acc), NULL);
 }
 
@@ -469,7 +729,6 @@ gboolean result;
 }
 
 
-
 static void repbalance_update_detail(GtkWidget *widget, gpointer user_data)
 {
 struct repbalance_data *data;
@@ -497,8 +756,6 @@ struct repbalance_data *data;
 			repbalance_detail(GTK_WIDGET(gtk_tree_selection_get_tree_view (treeselection)), GINT_TO_POINTER(key));
 		}
 
-
-
 		gtk_widget_show(data->GR_detail);
 	}
 	else
@@ -514,10 +771,10 @@ struct repbalance_data *data;
 
 	data->detail ^= 1;
 
-	DB( g_print(" \n[repbalance] toggledetail to %d\n", (int)data->detail) );
+	DB( g_print("\n[repbalance] toggledetail to %d\n", (int)data->detail) );
 
 	repbalance_update_detail(widget, user_data);
-
+	//repbalance_sensitive(widget, NULL);
 }
 
 
@@ -526,13 +783,13 @@ static void repbalance_zoomx_callback(GtkWidget *widget, gpointer user_data)
 struct repbalance_data *data;
 gdouble value;
 
-	DB( g_print("(statistic) zoomx\n") );
+	DB( g_print("(\n[repbalance] zoomx\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
 	value = gtk_range_get_value(GTK_RANGE(data->RG_zoomx));
 
-	DB( g_print(" + scale is %f\n", value) );
+	DB( g_print(" + scale is %.2f\n", value) );
 
 	gtk_chart_set_barw(GTK_CHART(data->RE_chart), value);
 
@@ -543,7 +800,7 @@ static void repbalance_toggle_minor(GtkWidget *widget, gpointer user_data)
 {
 struct repbalance_data *data;
 
-	DB( g_print(" \n[repbalance] toggle\n") );
+	DB( g_print("\n[repbalance] toggle\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -558,251 +815,25 @@ struct repbalance_data *data;
 }
 
 
-static void repbalance_compute(GtkWidget *widget, gpointer user_data)
+static void repbalance_selection(GtkTreeSelection *treeselection, gpointer user_data)
 {
-struct repbalance_data *data;
-gint tmpintvl;
-gboolean showempty;
-GList *lst_acc, *lnk_acc;
-GList *lnk_txn;
-guint32 i, maxkacc;
-gdouble trn_amount;
 GtkTreeModel *model;
-GtkTreeIter  iter;
-//Account *acc;
-gint usrnbacc;
+GtkTreeIter iter;
+guint key = -1;
 
-	DB( g_print(" \n[repbalance] compute\n") );
+	DB( g_print("\n[repbalance] selection\n") );
 
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-
-	// clear everything
-	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_report));
-	gtk_list_store_clear (GTK_LIST_STORE(model));
-	gtk_chart_set_datas_none(GTK_CHART(data->RE_chart));
-	//TODO: use a Queue here
-	g_list_free(data->ope_list);
-	data->ope_list = NULL;
-	//reset our data
-	data->nbope = 0;
-	data->nbovrdraft = 0;
-	data->firstbalance = 0.0;
-	repbalance_update_info(widget, user_data);
-
-	//#2019876 return is invalid date range
-	if( data->filter->maxdate < data->filter->mindate )
-		return;
-
-	//get kacc array
-	maxkacc = da_acc_get_max_key();
-	data->tmp_acckeys = g_malloc0((maxkacc+2) * sizeof(guint32));
-
-
-	
-
-	//grab user selection
-	tmpintvl  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_intvl));
-	showempty = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_showempty));
-	usrnbacc  = ui_acc_listview_fill_keys(GTK_TREE_VIEW(data->LV_acc), data->tmp_acckeys, &data->usrkcur);
-
-	DB( g_print(" usr: nbacc:%d, kcur:%d, empty:%d\n\n", usrnbacc, data->usrkcur, showempty) );
-
-	
-	if( (usrnbacc == 0) )
-		goto end;
-
-	//grab data from user selected account
-	lst_acc = g_hash_table_get_values(GLOBALS->h_acc);
-	lnk_acc = g_list_first(lst_acc);
-	while (lnk_acc != NULL)
+	if (gtk_tree_selection_get_selected(treeselection, &model, &iter))
 	{
-	Account *acc = lnk_acc->data;
-
-		// avoid unselected and noreport (maybe already filtered into list)
-		if( (acc->flags & (AF_NOREPORT)) || (data->tmp_acckeys[acc->key] == 0) )
-			goto next_acc;
-
-		// set minimum (only used when 1 account is selected)
-		data->minimum = acc->minimum;
-
-		// if more than 1 cur get amount as base currency
-		trn_amount = 0.0;
-		if( (data->usrkcur != acc->kcur) )
-			trn_amount = hb_amount_base(acc->initial, acc->kcur);
-		else
-			trn_amount = acc->initial;
-
-		data->firstbalance += trn_amount;
-		DB( g_print(" - stored initial %.2f for account %d:%s\n", trn_amount, acc->key, acc->name) );
-
-		//collect every txn for account
-		lnk_txn = g_queue_peek_head_link(acc->txn_queue);
-		while (lnk_txn != NULL)
-		{
-		Transaction *txn = lnk_txn->data;
-
-			//5.5 forgot to filter...
-			//#1886123 include remind based on user prefs
-			if( (txn->status == TXN_STATUS_REMIND) && (PREFS->includeremind == FALSE) )
-				goto next_txn;
-
-			if( !(txn->status == TXN_STATUS_VOID) )
-			{
-				//5.3 append is damn slow
-				//list = g_list_append(list, txn);
-				data->ope_list = g_list_prepend(data->ope_list, txn);
-			}
-		next_txn:
-			lnk_txn = g_list_next(lnk_txn);
-		}
-
-	next_acc:
-		lnk_acc = g_list_next(lnk_acc);
-	}
-	g_list_free(lst_acc);
-
-
-	if(g_list_length(data->ope_list) == 0)
-		goto end;
-
-	// grab nb result and allocate memory
-	//#1958001
-	data->n_result = report_interval_count(tmpintvl, data->filter->mindate, data->filter->maxdate);
-	data->tmp_income  = g_malloc0((data->n_result+2) * sizeof(gdouble));
-	data->tmp_expense = g_malloc0((data->n_result+2) * sizeof(gdouble));
-
-	DB( g_print(" %d days in selection\n", data->filter->maxdate - data->filter->mindate));
-
-	DB( hb_print_date(data->filter->mindate, "min") );
-	DB( hb_print_date(data->filter->maxdate, "max") );
-
-	if(data->tmp_income && data->tmp_expense)
-	{
-	GList *list;
-	gdouble trn_amount;
-
-		/* sort by date & compute the balance */
-		data->ope_list = da_transaction_sort (data->ope_list);
-		list = g_list_first(data->ope_list);
-		while (list != NULL)
-		{
-		Transaction *ope = list->data;
-
-			//if(selkey == ope->kacc || selectall == TRUE)
-			if( (data->tmp_acckeys[ope->kacc] == TRUE) )
-			{
-				// if more than 1 cur get amount as base currency
-				if( (data->usrkcur != ope->kcur) )
-					trn_amount = hb_amount_base(ope->amount, ope->kcur);
-				else
-					trn_amount = ope->amount;
-
-				// cumulate pre-date range balance
-				if( (ope->date < data->filter->mindate) )
-					data->firstbalance += trn_amount;
-
-				if( (ope->date >= data->filter->mindate) && (ope->date <= data->filter->maxdate) )
-				{
-				gint pos = report_interval_get_pos(tmpintvl, data->filter->mindate, ope);
-
-					//deal with transactions
-					if(trn_amount < 0)
-						data->tmp_expense[pos] += trn_amount;
-					else
-						data->tmp_income[pos] += trn_amount;
-				}
-			}
-
-			list = g_list_next(list);
-		}
+		gtk_tree_model_get(model, &iter, LST_OVER_KEY, &key, -1);
 	}
 
+	DB( g_print(" - active is %d\n", key) );
 
-	// set currency
-	lst_repbal_set_cur(GTK_TREE_VIEW(data->LV_report), data->usrkcur);
-	gtk_chart_set_currency(GTK_CHART(data->RE_chart), data->usrkcur);
-
-	// ref and detach model for speed
-	g_object_ref(model); 
-	gtk_tree_view_set_model(GTK_TREE_VIEW(data->LV_report), NULL);
-
-
-	DB( g_print(" inserting %d results\n", data->n_result) );
-
-	gdouble balance = data->firstbalance;
-	//#1958001
-	for(i=0;i<data->n_result;i++)
-	{
-	gboolean is_ovrdraft = FALSE;
-	gchar intvlname[64];
-
-		balance += data->tmp_expense[i];
-		balance += data->tmp_income[i];
-
-		if( !showempty && (data->tmp_expense[i] == 0 && data->tmp_income[i] == 0) )
-			continue;
-
-		if(usrnbacc == 1)
-			is_ovrdraft = (balance < data->minimum) ? TRUE : FALSE;
-
-		//#1907699 date is wrong
-		report_interval_snprint_name(intvlname, sizeof(intvlname)-1, tmpintvl, data->filter->mindate, i);
-		//report_interval_snprint_name(intvlname, sizeof(intvlname)-1, tmpintvl, jmindate, i);
-
-		DB( g_print(" %3d: %s %f %f\n", i, intvlname, data->tmp_expense[i], data->tmp_income[i]) );
-		
-		/* column 0: pos (gint) */
-		/* not used: column 1: key (gint) */
-		/* column 2: name (gchar) */
-		/* column x: values (double) */
-
-		gtk_list_store_insert_with_values (GTK_LIST_STORE(model), 
-			&iter, -1,
-			LST_OVER_OVER, is_ovrdraft,
-			//LST_OVER_DATE, posdate,
-			LST_OVER_KEY, i,
-			LST_OVER_DATESTR, intvlname,
-			LST_OVER_EXPENSE, data->tmp_expense[i],
-			LST_OVER_INCOME , data->tmp_income[i],
-			LST_OVER_BALANCE, balance,
-			-1);
-
-		data->nbope++;
-		if(is_ovrdraft == TRUE)
-			data->nbovrdraft++;
-	}
-
-	gboolean visible = (usrnbacc > 1) ? FALSE : TRUE;
-	gtk_widget_set_visible (GTK_WIDGET(data->TX_info), visible);
-	gtk_chart_show_overdrawn(GTK_CHART(data->RE_chart), visible);
-
-	if( visible == TRUE )
-	{
-		repbalance_update_info(widget, NULL);
-		gtk_chart_set_overdrawn(GTK_CHART(data->RE_chart), data->minimum);
-	}
-
-	/* Re-attach model to view */
-	gtk_tree_view_set_model(GTK_TREE_VIEW(data->LV_report), model);
-	g_object_unref(model);
-
-	gtk_tree_view_columns_autosize (GTK_TREE_VIEW(data->LV_report));
-
-	/* update bar chart */
-	gchar *title = repbalance_compute_title(tmpintvl); 
-	gtk_chart_set_datas_total(GTK_CHART(data->RE_chart), model, LST_OVER_BALANCE, LST_OVER_BALANCE, title, NULL);
-	//gtk_chart_set_line_datas(GTK_CHART(data->RE_chart), model, LST_OVER_BALANCE, LST_OVER_DATE);
-	g_free(title);
-
-end:
-	g_free(data->tmp_expense);
-	g_free(data->tmp_income);
-	g_free(data->tmp_acckeys);
-
-	data->tmp_expense = NULL;
-	data->tmp_income  = NULL;
-	data->tmp_acckeys = NULL;
+	repbalance_detail(GTK_WIDGET(gtk_tree_selection_get_tree_view (treeselection)), GINT_TO_POINTER(key));
+	repbalance_sensitive(GTK_WIDGET(gtk_tree_selection_get_tree_view (treeselection)), NULL);
 }
+
 
 
 static GtkWidget *
@@ -839,7 +870,7 @@ GtkWidget *toolbar, *button;
 
 	button = hbtk_toolbar_add_toolbutton(GTK_TOOLBAR(toolbar), ICONNAME_HB_PRINT, _("Print"), _("Print"));
 	data->BT_print = button;
-	
+
 	return toolbar;
 }
 
@@ -852,12 +883,13 @@ static void repbalance_filter_setup(struct repbalance_data *data)
 	filter_reset(data->filter);
 	filter_preset_daterange_set(data->filter, PREFS->date_range_rep, 0);
 	
+	data->filter->option[FLT_GRP_ACCOUNT] = 1;
 }
 
 
 static void repbalance_window_setup(struct repbalance_data *data, guint32 accnum)
 {
-	DB( g_print(" \n[repbalance] setup\n") );
+	DB( g_print("\n[repbalance] setup\n") );
 
 	DB( g_print(" init data\n") );
 
@@ -865,13 +897,12 @@ static void repbalance_window_setup(struct repbalance_data *data, guint32 accnum
 
 
 	DB( g_print(" populate\n") );
-	
 	ui_acc_listview_populate(data->LV_acc, ACC_LST_INSERT_REPORT, NULL);
 
 	DB( g_print(" set widgets default\n") );
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_minor),GLOBALS->minor);
-	hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_range), PREFS->date_range_rep);
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_range), PREFS->date_range_rep);
 
 	//5.6 set default account
 	if(!accnum)
@@ -879,6 +910,7 @@ static void repbalance_window_setup(struct repbalance_data *data, guint32 accnum
 		accnum = da_acc_get_first_key();
 	}
 	ui_acc_listview_set_active(GTK_TREE_VIEW(data->LV_acc), accnum);
+	da_flt_status_acc_set(data->filter, accnum, TRUE);
 
 	g_object_set_data(G_OBJECT(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_report))), "minor", (gpointer)data->CM_minor);
 
@@ -894,9 +926,19 @@ static void repbalance_window_setup(struct repbalance_data *data, guint32 accnum
 
     data->handler_id[HID_REPBALANCE_MINDATE] = g_signal_connect (data->PO_mindate, "changed", G_CALLBACK (repbalance_date_change), (gpointer)data);
     data->handler_id[HID_REPBALANCE_MAXDATE] = g_signal_connect (data->PO_maxdate, "changed", G_CALLBACK (repbalance_date_change), (gpointer)data);
+	g_signal_connect (data->CM_showempty, "toggled", G_CALLBACK (repbalance_compute), NULL);
+
+	g_signal_connect (data->RG_zoomx, "value-changed", G_CALLBACK (repbalance_zoomx_callback), NULL);
 
 	data->handler_id[HID_REPBALANCE_RANGE] = g_signal_connect (data->CY_range, "changed", G_CALLBACK (repbalance_range_change), NULL);
 
+	g_signal_connect (G_OBJECT (data->BT_list), "clicked", G_CALLBACK (repbalance_action_viewlist), (gpointer)data);
+	g_signal_connect (G_OBJECT (data->BT_line), "clicked", G_CALLBACK (repbalance_action_viewline), (gpointer)data);
+	g_signal_connect (G_OBJECT (data->BT_detail), "clicked", G_CALLBACK (repbalance_toggle_detail), (gpointer)data);
+	g_signal_connect (G_OBJECT (data->BT_refresh), "clicked", G_CALLBACK (repbalance_compute), (gpointer)data);
+	g_signal_connect (G_OBJECT (data->BT_print), "clicked", G_CALLBACK (repbalance_action_print), (gpointer)data);
+
+	g_signal_connect (data->BT_reset , "clicked", G_CALLBACK (repbalance_action_filter_reset), NULL);
 
 	// acc treeview
 	g_signal_connect (data->BT_all, "activate-link", G_CALLBACK (repbalance_cb_acc_activate_link), NULL);
@@ -910,19 +952,6 @@ static void repbalance_window_setup(struct repbalance_data *data, guint32 accnum
 	renderer = g_object_get_data(G_OBJECT(data->LV_acc), "togrdr_data");
 	g_signal_connect_after (G_OBJECT(renderer), "toggled", G_CALLBACK (repbalance_cb_acc_changed), (gpointer)data);
 
-	//g_signal_connect (gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_acc)), "changed", G_CALLBACK (repbalance_cb_acc_changed), NULL);
-
-
-	g_signal_connect (data->CM_showempty, "toggled", G_CALLBACK (repbalance_compute), NULL);
-
-	g_signal_connect (data->RG_zoomx, "value-changed", G_CALLBACK (repbalance_zoomx_callback), NULL);
-
-	g_signal_connect (G_OBJECT (data->BT_list), "clicked", G_CALLBACK (repbalance_action_viewlist), (gpointer)data);
-	g_signal_connect (G_OBJECT (data->BT_line), "clicked", G_CALLBACK (repbalance_action_viewline), (gpointer)data);
-	g_signal_connect (G_OBJECT (data->BT_detail), "clicked", G_CALLBACK (repbalance_toggle_detail), (gpointer)data);
-	g_signal_connect (G_OBJECT (data->BT_refresh), "clicked", G_CALLBACK (repbalance_compute), (gpointer)data);
-	g_signal_connect (G_OBJECT (data->BT_print), "clicked", G_CALLBACK (repbalance_action_print), (gpointer)data);
-	
 	g_signal_connect (gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_report)), "changed", G_CALLBACK (repbalance_selection), NULL);
 	
 	g_signal_connect (GTK_TREE_VIEW(data->LV_detail), "row-activated", G_CALLBACK (repbalance_detail_onRowActivated), NULL);
@@ -957,7 +986,7 @@ static gboolean repbalance_window_dispose(GtkWidget *widget, GdkEvent *event, gp
 struct repbalance_data *data = user_data;
 struct WinGeometry *wg;
 
-	DB( g_print(" \n[repbalance] dispose\n") );
+	DB( g_print("\n[repbalance] window dispose\n") );
 
 	g_list_free (data->ope_list);
 
@@ -995,15 +1024,15 @@ static void repbalance_window_acquire(struct repbalance_data *data)
 
 
 // the window creation
-GtkWidget *repbalance_window_new(gint accnum)
+GtkWidget *repbalance_window_new(guint accnum)
 {
 struct repbalance_data *data;
 struct WinGeometry *wg;
-GtkWidget *window, *mainvbox, *hbox, *vbox, *notebook, *scrollwin;
+GtkWidget *window, *mainbox, *hbox, *vbox, *fbox, *bbox, *notebook, *vpaned, *scrollwin;
 GtkWidget *label, *widget, *table, *treebox, *treeview;
 gint row;
 
-	DB( g_print(" \n[repbalance] new\n") );
+	DB( g_print("\n[repbalance] window new\n") );
 
 	data = g_malloc0(sizeof(struct repbalance_data));
 	if(!data) return NULL;
@@ -1021,7 +1050,6 @@ gint row;
 	//ref window to our open window list
 	GLOBALS->openwindows = g_slist_prepend(GLOBALS->openwindows, window);
 
-
 	//store our window private data
 	g_object_set_data(G_OBJECT(window), "inst_data", (gpointer)data);
 	DB( g_print(" - new window=%p, inst_data=%p\n", window, data) );
@@ -1029,31 +1057,58 @@ gint row;
 	gtk_window_set_title (GTK_WINDOW (window), _("Balance report"));
 
 	//window contents
-	mainvbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	gtk_window_set_child(GTK_WINDOW(window), mainvbox);
-
-	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    gtk_box_pack_start (GTK_BOX (mainvbox), hbox, TRUE, TRUE, 0);
+	mainbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	hb_widget_set_margin(GTK_WIDGET(mainbox), SPACING_SMALL);
+	gtk_window_set_child(GTK_WINDOW(window), mainbox);
 
 	//control part
 	table = gtk_grid_new ();
 	gtk_widget_set_hexpand (GTK_WIDGET(table), FALSE);
-	gtk_box_pack_start (GTK_BOX (hbox), table, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (mainbox), table, FALSE, FALSE, 0);
 
-	hb_widget_set_margin(GTK_WIDGET(table), SPACING_SMALL);
 	gtk_grid_set_row_spacing (GTK_GRID (table), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (table), SPACING_MEDIUM);
 
-
 	row = 0;
-	label = make_label_group(_("Display"));
-	gtk_grid_attach (GTK_GRID (table), label, 0, row, 3, 1);
+	//label = make_label_group(_("Display"));
+	//gtk_grid_attach (GTK_GRID (table), label, 0, row, 3, 1);
+
+	//row++;
+	fbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_grid_attach (GTK_GRID (table), fbox, 0, row, 3, 1);
+
+		label = make_label_group(_("Display"));
+		//gtk_grid_attach (GTK_GRID (table), label, 0, row, 3, 1);
+		gtk_box_pack_start (GTK_BOX (fbox), label, FALSE, FALSE, 0);
+		
+		//test button
+		/*
+		bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+		gtk_style_context_add_class (gtk_widget_get_style_context (bbox), GTK_STYLE_CLASS_LINKED);
+		gtk_box_pack_end (GTK_BOX (fbox), bbox, FALSE, FALSE, 0);
+		
+		widget = make_image_radio_button(ICONNAME_HB_VIEW_LIST, _("View results as list"));
+		group = widget;
+		data->BT_list = widget;
+		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+		
+		widget = make_image_radio_button(ICONNAME_HB_VIEW_LINE, _("View results as lines"));
+		gtk_radio_button_join_group(GTK_RADIO_BUTTON(widget), GTK_RADIO_BUTTON(group));
+		data->BT_line = widget;
+		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+		widget = make_image_toggle_button(ICONNAME_HB_OPE_SHOW, _("Toggle detail"));
+		data->BT_detail = widget;
+		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+		widget = make_image_button(ICONNAME_HB_REFRESH, _("Refresh results"));
+		data->BT_refresh = widget;
+		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+		*/
+
 
 	//5.5
 	row++;
 	label = make_label_widget(_("Inter_val:"));
 	gtk_grid_attach (GTK_GRID (table), label, 1, row, 1, 1);
-	//widget = make_cycle(label, CYA_REPORT_INTVL);
 	widget = hbtk_combo_box_new_with_data(label, CYA_REPORT_INTVL);
 	data->CY_intvl = widget;
 	gtk_grid_attach (GTK_GRID (table), widget, 2, row, 1, 1);
@@ -1076,18 +1131,50 @@ gint row;
 	data->RG_zoomx = widget;
 	gtk_grid_attach (GTK_GRID (table), widget, 2, row, 1, 1);
 
+
+	//-- filter
 	row++;
 	widget = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
+	gtk_widget_set_margin_top(widget, SPACING_MEDIUM);
 	gtk_grid_attach (GTK_GRID (table), widget, 0, row, 3, 1);
 
+	//5.8 test
 	row++;
-	label = make_label_group(_("Date filter"));
-	gtk_grid_attach (GTK_GRID (table), label, 0, row, 3, 1);
+	fbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_grid_attach (GTK_GRID (table), fbox, 0, row, 3, 1);
+
+		label = make_label_group(_("Filter"));
+		//gtk_grid_attach (GTK_GRID (table), label, 0, row, 3, 1);
+		gtk_box_pack_start (GTK_BOX (fbox), label, FALSE, FALSE, 0);
+
+		// active
+		label = make_label_widget(_("Active:"));
+		gtk_widget_set_margin_start(label, SPACING_MEDIUM);
+		gtk_box_pack_start (GTK_BOX (fbox), label, FALSE, FALSE, 0);
+		label = make_label(NULL, 0.0, 0.5);
+		data->TX_fltactive = label;
+		gtk_box_pack_start (GTK_BOX (fbox), label, FALSE, FALSE, 0);
+		widget = gtk_image_new_from_icon_name (ICONNAME_INFO, GTK_ICON_SIZE_BUTTON);
+		data->TT_fltactive = fbox;
+		gtk_box_pack_start (GTK_BOX (fbox), widget, FALSE, FALSE, 0);
+		
+		//test button
+		bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+		gtk_style_context_add_class (gtk_widget_get_style_context (bbox), GTK_STYLE_CLASS_LINKED);
+		gtk_box_pack_end (GTK_BOX (fbox), bbox, FALSE, FALSE, 0);
+		widget = make_image_button(ICONNAME_HB_CLEAR, _("Clear filter"));
+		data->BT_reset = widget;
+		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+
+	row++;
+	//label = make_label_group(_("Date filter"));
+	label = make_label_group(_("Date"));
+	gtk_grid_attach (GTK_GRID (table), label, 1, row, 2, 1);
 
 	row++;
 	label = make_label_widget(_("_Range:"));
 	gtk_grid_attach (GTK_GRID (table), label, 1, row, 1, 1);
-	data->CY_range = make_daterange(label, DATE_RANGE_CUSTOM_DISABLE);
+	data->CY_range = make_daterange(label, DATE_RANGE_FLAG_CUSTOM_DISABLE);
 	gtk_grid_attach (GTK_GRID (table), data->CY_range, 2, row, 1, 1);
 
 	row++;
@@ -1102,13 +1189,14 @@ gint row;
 	data->PO_maxdate = gtk_date_entry_new(label);
 	gtk_grid_attach (GTK_GRID (table), data->PO_maxdate, 2, row, 1, 1);
 
-	row++;
-	widget = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
-	gtk_grid_attach (GTK_GRID (table), widget, 0, row, 3, 1);
+	//row++;
+	//widget = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
+	//gtk_grid_attach (GTK_GRID (table), widget, 0, row, 3, 1);
 
 	row++;
-	label = make_label_group(_("Account filter"));
-	gtk_grid_attach (GTK_GRID (table), label, 0, row, 3, 1);
+	//label = make_label_group(_("Account filter"));
+	label = make_label_group(_("Account"));
+	gtk_grid_attach (GTK_GRID (table), label, 1, row, 2, 1);
 
 	row++;
 	treebox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
@@ -1131,11 +1219,9 @@ gint row;
 		data->BT_inv = label;
 		gtk_box_pack_start (GTK_BOX (treebox), label, FALSE, FALSE, 0);
 
-
 	row++;
  	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
  	data->SW_acc = scrollwin;
-	gtk_widget_set_margin_bottom (scrollwin, SPACING_LARGE);
 	treeview = ui_acc_listview_new(TRUE);
 	data->LV_acc = treeview;
 	gtk_widget_set_vexpand (treeview, TRUE);
@@ -1146,18 +1232,17 @@ gint row;
 
 	//part: info + report
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-    gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
-
+	gtk_widget_set_margin_start (vbox, SPACING_SMALL);
+    gtk_box_pack_start (GTK_BOX (mainbox), vbox, TRUE, TRUE, 0);
 
 	//toolbar
 	widget = repbalance_toolbar_create(data);
 	data->TB_bar = widget; 
 	gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 0);
 
-	
 	//infos
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
-	hb_widget_set_margin(GTK_WIDGET(hbox), SPACING_SMALL);
+	gtk_widget_set_margin_bottom (hbox, SPACING_SMALL);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
 	widget = make_label(NULL, 0.5, 0.5);
@@ -1170,6 +1255,7 @@ gint row;
 	gtk_box_pack_end (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
 
+	/* report area */
 	notebook = gtk_notebook_new();
 	data->GR_result = notebook;
 	gtk_widget_show(notebook);
@@ -1179,30 +1265,27 @@ gint row;
     gtk_box_pack_start (GTK_BOX (vbox), notebook, TRUE, TRUE, 0);
 
 	//page: list
-	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, NULL);
+	vpaned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vpaned, NULL);
 
-	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+		scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+		treeview = lst_repbal_create();
+		data->LV_report = treeview;
+		gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
+		gtk_paned_pack1 (GTK_PANED(vpaned), scrollwin, TRUE, TRUE);
 
-	treeview = lst_repbal_create();
-	data->LV_report = treeview;
-	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
-	//gtk_notebook_append_page(GTK_NOTEBOOK(notebook), widget, NULL);
-	gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
+		//detail
+		scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+		data->GR_detail = scrollwin;
+		//gtk_scrolled_window_set_placement(GTK_SCROLLED_WINDOW (scrollwin), GTK_CORNER_TOP_RIGHT);
+		treeview = create_list_transaction(LIST_TXN_TYPE_DETAIL, PREFS->lst_det_columns);
+		data->LV_detail = treeview;
+		gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
+		gtk_paned_pack2 (GTK_PANED(vpaned), scrollwin, TRUE, TRUE);
 
-	//detail
-	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	data->GR_detail = scrollwin;
-	//gtk_scrolled_window_set_placement(GTK_SCROLLED_WINDOW (scrollwin), GTK_CORNER_TOP_RIGHT);
-	treeview = create_list_transaction(LIST_TXN_TYPE_DETAIL, PREFS->lst_det_columns);
-	data->LV_detail = treeview;
-	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
+		list_txn_set_save_column_width(GTK_TREE_VIEW(treeview), TRUE);
 
-    gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
-
-	list_txn_set_save_column_width(GTK_TREE_VIEW(treeview), TRUE);
-
-	//page: 2d lines
+	//page: lines
 	widget = gtk_chart_new(CHART_TYPE_LINE);
 	data->RE_chart = widget;
 	//gtk_chart_set_minor_prefs(GTK_CHART(widget), PREFS->euro_value, PREFS->minor_cur.suffix_symbol);
@@ -1210,7 +1293,7 @@ gint row;
 
 
 	// connect dialog signals
-    g_signal_connect (window, "delete-event", G_CALLBACK (repbalance_window_dispose), (gpointer)data);
+	g_signal_connect (window, "delete-event", G_CALLBACK (repbalance_window_dispose), (gpointer)data);
 	g_signal_connect (window, "map-event"   , G_CALLBACK (repbalance_window_mapped), NULL);
 
 	// setup, init and show window
@@ -1219,7 +1302,7 @@ gint row;
 		gtk_window_move(GTK_WINDOW(window), wg->l, wg->t);
 	gtk_window_resize(GTK_WINDOW(window), wg->w, wg->h);
 
-	// toolbar	
+	// toolbar
 	if(PREFS->toolbar_style == 0)
 		gtk_toolbar_unset_style(GTK_TOOLBAR(data->TB_bar));
 	else
@@ -1232,13 +1315,14 @@ gint row;
 	repbalance_sensitive(window, NULL);
 	repbalance_update_detail(window, NULL);
 
-	return(window);
+	return window;
 }
 
 
 /*
 ** ============================================================================
 */
+
 
 static GString *lst_repbal_to_string(GtkTreeView *treeview, gchar *title, gboolean isclipboard)
 {
@@ -1274,10 +1358,10 @@ gchar sep;
 	gdouble expense, income, balance;
 
 		gtk_tree_model_get (model, &iter,
-			LST_OVER_DATESTR, &intvlname,
+			LST_OVER_LABEL, &intvlname,
 			LST_OVER_EXPENSE, &expense,
 			LST_OVER_INCOME , &income,
-			LST_OVER_BALANCE, &balance,
+			LST_OVER_TOTAL, &balance,
 			-1);
 
 		g_string_append (node, intvlname );	
@@ -1310,19 +1394,19 @@ gchar sep;
 static void lst_repbal_cell_data_function_date (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
 gchar *datestr;
-gboolean is_ovrdraft;
+gint flags;
 gchar *color;
 gint weight;
 
 	gtk_tree_model_get(model, iter,
-		LST_OVER_DATESTR, &datestr,
-		LST_OVER_OVER, &is_ovrdraft,
+		LST_OVER_LABEL, &datestr,
+		LST_OVER_FLAGS, &flags,
 		-1);
 
 	color = NULL;
 	weight = PANGO_WEIGHT_NORMAL;
 
-	if(is_ovrdraft==TRUE)
+	if( flags & REPORT_FLAG_OVER )
 	{
 		if(PREFS->custom_colors == TRUE)
 			color = PREFS->color_warn;
@@ -1349,7 +1433,7 @@ static void lst_repbal_cell_cell_data_function_amount (GtkTreeViewColumn *col,
 {
 gdouble  value;
 gchar buf[G_ASCII_DTOSTR_BUF_SIZE];
-gboolean is_ovrdraft;
+gint flags;
 gchar *color;
 //gint weight;
 guint32 kcur = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(gtk_tree_view_column_get_tree_view(col)), "kcur_data"));
@@ -1357,7 +1441,7 @@ guint32 kcur = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(gtk_tree_view_column_
 
 	//get datas
 	gtk_tree_model_get(model, iter,
-		LST_OVER_OVER, &is_ovrdraft,
+		LST_OVER_FLAGS, &flags,
 		GPOINTER_TO_INT(user_data), &value,
 		-1);
 
@@ -1374,7 +1458,7 @@ guint32 kcur = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(gtk_tree_view_column_
 		if(value != 0.0 && PREFS->custom_colors == TRUE)
 			color = (value > 0.0) ? PREFS->color_inc : PREFS->color_exp;
 
-		if(is_ovrdraft==TRUE)
+		if( flags & REPORT_FLAG_OVER )
 		{
 			if(PREFS->custom_colors == TRUE)
 				color = PREFS->color_warn;
@@ -1428,12 +1512,13 @@ GtkTreeViewColumn  *column;
 	/* create list store */
 	store = gtk_list_store_new(
 	  	NUM_LST_OVER,
-		G_TYPE_BOOLEAN,
-		G_TYPE_INT,
-		G_TYPE_STRING,
-		G_TYPE_DOUBLE,
-		G_TYPE_DOUBLE,
-		G_TYPE_DOUBLE
+		G_TYPE_INT,		//pos
+		G_TYPE_INT,		//key
+		G_TYPE_STRING,	//label
+		G_TYPE_DOUBLE,	//exp
+		G_TYPE_DOUBLE,	//inc
+		G_TYPE_DOUBLE,	//total
+		G_TYPE_INT		//flags
 		);
 
 	//treeview
@@ -1442,29 +1527,16 @@ GtkTreeViewColumn  *column;
 
 	gtk_tree_view_set_grid_lines (GTK_TREE_VIEW (view), PREFS->grid_lines);
 
-	/* column debug balance */
-/*
-	column = gtk_tree_view_column_new();
-	gtk_tree_view_column_set_title(column, "debug balance");
-	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
-	renderer = gtk_cell_renderer_text_new();
-	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	gtk_tree_view_column_add_attribute(column, renderer, "text", LST_OVER_OVER);
-*/
-
-	/* column date */
+	/* column: Label */
 	column = gtk_tree_view_column_new();
 	gtk_tree_view_column_set_title(column, _("Date"));
-	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
 	renderer = gtk_cell_renderer_text_new();
 	//#2004631 date and column title alignement
 	//g_object_set(renderer, "xalign", 1.0, NULL);
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	//gtk_tree_view_column_add_attribute(column, renderer, "text", LST_OVER_DATE);
-	//#2004631 date and column title alignement
-	//gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, lst_repbal_cell_data_function_date, NULL, NULL);
-
+	//gtk_tree_view_column_add_attribute(column, renderer, "text", LST_OVER_DATE);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
 
 	/* column: Expense */
 	column = lst_repbal_column_amount_create(_("Expense"), LST_OVER_EXPENSE);
@@ -1474,8 +1546,8 @@ GtkTreeViewColumn  *column;
 	column = lst_repbal_column_amount_create(_("Income"), LST_OVER_INCOME);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
 
-	/* column: Balance */
-	column = lst_repbal_column_amount_create(_("Balance"), LST_OVER_BALANCE);
+	/* column: Total/Balance */
+	column = lst_repbal_column_amount_create(_("Balance"), LST_OVER_TOTAL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
 
   /* column last: empty */
@@ -1486,3 +1558,5 @@ GtkTreeViewColumn  *column;
 
 	return(view);
 }
+
+

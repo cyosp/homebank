@@ -47,18 +47,18 @@
 	</ul>
 	<p>Those last two option enables you to manage the variable scheduled transactions, for amount variation for example. They will not be posted automatically, and no edit popup will shows during the Post pending scheduled transactions at program start, what would be confusing with no context or window behind.</p>
 
-    <p>You also have more control and can post transaction in advance with preference of the <a href="dlg-wall.html">file properties dialog</a> with 2 options:</p>
-    <ul>
-      <li>Add until xx of each month (excluded)<br>
-      set this to until 25 of each month, will not post until we get over that date (so starting the 26th)
-      </li>
-      <li>Add x days in advance the current date<br>
-      set this to 30 days in advance, rely that the day is over (so current day is excluded)
-      </li>
-    </ul>
-    <p>To insert transaction to their due date again, insert 0 days in advance the current date. You can also reach this configuration dialog from the main-window menu Transaction/Set scheduler...</p>
-    <p>At last, you are able to trigger the insertion from the main-window menu Transaction/Process scheduled...</p>
+    <p>You also have more control and can post transaction in advance with preference of the <a href="dlg-wall.html">file properties dialog</a> with 3 options:</p>
     <p><img class="gtkshot" src="images/use-scheduled2.png"></p>
+    <ul>
+      <li><b>Due Date</b><br>
+      post is done on exact date, so if next occurrence is today, the txn will be added</li>
+      <li><b>Next Payout</b><br>
+      post is done on xx of each yy month</li>
+      <li><b>In Advance</b><br>
+      post is done xx days in advance to the today's date (limit of insertion) when HomeBank insert automated transactions.<br>Example: you specify 30 days here, HomeBank will insert automated transactions that should occur till today + 30 days.</li>
+    </ul>
+    <p>You can also reach this configuration dialog from the main-window menu Transaction/Set scheduler...</p>
+    <p>At last, you are able to trigger the insertion from the main-window menu Transaction/Process scheduled...</p>
   </div>
   <div class="rounded content">
     <h3><a id="list" name="list"></a>Step 3: Control the scheduled transactions</h3>

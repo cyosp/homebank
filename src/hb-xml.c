@@ -533,6 +533,487 @@ GList *lrul, *list;
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
+/*
+** misc xml attributes methods
+*/
+static void hb_xml_append_txt(GString *gstring, gchar *attrname, gchar *value)
+{
+	if(value != NULL && *value != 0)
+	{
+		gchar *escaped = g_markup_escape_text(value, -1);
+		g_string_append_printf(gstring, " %s=\"%s\"", attrname, escaped);
+		g_free(escaped);
+	}
+}
+
+static void
+append_escaped_text (GString     *str,
+                     const gchar *text,
+                     gssize       length)
+{
+  const gchar *p;
+  const gchar *end;
+  gunichar c;
+
+  p = text;
+  end = text + length;
+
+  while (p < end)
+    {
+      const gchar *next;
+      next = g_utf8_next_char (p);
+
+      switch (*p)
+        {
+        case '&':
+          g_string_append (str, "&amp;");
+          break;
+
+        case '<':
+          g_string_append (str, "&lt;");
+          break;
+
+        case '>':
+          g_string_append (str, "&gt;");
+          break;
+
+        case '\'':
+          g_string_append (str, "&apos;");
+          break;
+
+        case '"':
+          g_string_append (str, "&quot;");
+          break;
+
+        default:
+          c = g_utf8_get_char (p);
+          if ((0x1 <= c && c <= 0x8) ||
+              (0xa <= c && c  <= 0xd) ||	//changed here from b<->c to a<->d
+              (0xe <= c && c <= 0x1f) ||
+              (0x7f <= c && c <= 0x84) ||
+              (0x86 <= c && c <= 0x9f))
+            g_string_append_printf (str, "&#x%x;", c);
+          else
+            g_string_append_len (str, p, next - p);
+          break;
+        }
+
+      p = next;
+    }
+}
+
+// we override g_markup_escape_text from glib to encode \n (LF) & \r (CR)
+static void hb_xml_append_txt_crlf(GString *gstring, gchar *attrname, gchar *value)
+{
+	if(value != NULL && *value != 0)
+	{
+	gssize length;
+	GString *escaped;
+		
+		//gchar *escaped = g_markup_escape_text(value, -1);
+		length = strlen (value);
+		escaped = g_string_sized_new (length);
+		append_escaped_text (escaped, value, length);
+		g_string_append_printf(gstring, " %s=\"%s\"", attrname, escaped->str);
+		g_string_free (escaped, TRUE);
+	}
+}
+
+static void hb_xml_append_int0(GString *gstring, gchar *attrname, guint32 value)
+{
+	g_string_append_printf(gstring, " %s=\"%d\"", attrname, value);
+}
+	
+static void hb_xml_append_int(GString *gstring, gchar *attrname, guint32 value)
+{
+	if(value != 0)
+	{
+		hb_xml_append_int0(gstring, attrname, value);
+	}
+}
+
+static void hb_xml_append_amt(GString *gstring, gchar *attrname, gdouble amount)
+{
+char buf[G_ASCII_DTOSTR_BUF_SIZE];
+
+	//we must use this, as fprintf use locale decimal settings and not '.'
+	g_ascii_dtostr (buf, sizeof (buf), amount);
+	g_string_append_printf(gstring, " %s=\"%s\"", attrname, buf);
+}
+
+
+
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+
+static void filter_group_import_keys(Filter *flt, gint group, gchar *text)
+{
+gchar **str_array;
+gboolean is_set;
+gint len, i;
+
+	DB( g_print(" import keys '%s'\n", text) );
+
+	str_array = g_strsplit (text, ",", -1);
+	len = g_strv_length( str_array );
+	for(i=0;i<len;i++)
+	{
+	guint32 key = atoi(str_array[i]);
+
+		//DB( g_print("\n [%d] k=%d", i, key) );
+
+		is_set = FALSE;
+		switch(group)
+		{
+			case FLT_GRP_ACCOUNT:
+				if( da_acc_get(key) )
+				{
+					is_set = da_flt_status_acc_set(flt, key, TRUE);
+				}
+				break;
+			case FLT_GRP_PAYEE:
+				if( da_pay_get(key) )
+				{
+					is_set = da_flt_status_pay_set(flt, key, TRUE);
+				}
+				break;
+			case FLT_GRP_CATEGORY:
+				if( da_cat_get(key) )
+				{
+					is_set = da_flt_status_cat_set(flt, key, TRUE);
+				}
+				break;
+			case FLT_GRP_TAG:
+				if( da_tag_get(key) )
+				{
+					is_set = da_flt_status_tag_set(flt, key, TRUE);
+				}
+				break;
+		}
+
+		DB( g_print(" > '%s'", is_set ? "set" : "**skip**") );
+	}
+	g_strfreev(str_array);
+}
+
+
+static void filter_group_import(Filter *flt, gint group, const gchar *text)
+{
+gchar **str_array = NULL;
+gchar **bol_array = NULL;
+gint i, len;
+
+	g_return_if_fail( flt != NULL );
+
+	DB( g_print("\n[filter] group import '%s'\n", flt->name == NULL ? "noname" : flt->name ) );
+	DB( g_print(" '%d' > '%s'\n", group, text) );
+
+	str_array = g_strsplit (text, "|", 2);
+	if( g_strv_length( str_array ) != 2 )
+		goto end;
+
+	flt->option[group] = atoi(str_array[0]);
+
+	switch(group)
+	{
+		//0:option 1:range 2:min 3:max
+		case FLT_GRP_DATE:
+			bol_array = g_strsplit (str_array[1], ",", 3);
+			len = g_strv_length( bol_array );
+
+			flt->range = atoi(bol_array[0]);
+			if(len >= 2 && flt->range == FLT_RANGE_MISC_CUSTOM)
+			{
+				flt->mindate = atoi(bol_array[1]);
+				flt->maxdate = atoi(bol_array[2]);
+			}
+			g_strfreev(bol_array);
+			break;
+		
+		case FLT_GRP_ACCOUNT:
+			flt->option[group] = atoi(str_array[0]);
+			filter_group_import_keys(flt, FLT_GRP_ACCOUNT, str_array[1]);
+			break;
+
+		case FLT_GRP_PAYEE:
+			flt->option[group] = atoi(str_array[0]);
+			filter_group_import_keys(flt, FLT_GRP_PAYEE, str_array[1]);
+			break;
+
+		case FLT_GRP_CATEGORY:
+			flt->option[group] = atoi(str_array[0]);
+			filter_group_import_keys(flt, FLT_GRP_CATEGORY, str_array[1]);
+			break;
+
+		case FLT_GRP_TAG:
+			flt->option[group] = atoi(str_array[0]);
+			filter_group_import_keys(flt, FLT_GRP_TAG, str_array[1]);
+			break;
+			
+		case FLT_GRP_STATUS:
+			flt->option[group] = atoi(str_array[0]);
+			bol_array = g_strsplit (str_array[1], ",", -1);
+			if( g_strv_length( bol_array ) == 3 )
+			{
+				flt->sta_non = atoi(bol_array[0]);
+				flt->sta_clr = atoi(bol_array[1]);
+				flt->sta_rec = atoi(bol_array[2]);
+			}
+			g_strfreev(bol_array);
+			break;
+
+		case FLT_GRP_TYPE:
+			flt->option[group] = atoi(str_array[0]);
+			bol_array = g_strsplit (str_array[1], ",", -1);
+			if( g_strv_length( bol_array ) == 4 )
+			{
+				flt->typ_nexp = atoi(bol_array[0]);
+				flt->typ_ninc = atoi(bol_array[1]);
+				flt->typ_xexp = atoi(bol_array[2]);
+				flt->typ_xinc = atoi(bol_array[3]);
+			}
+			g_strfreev(bol_array);
+			break;
+
+		case FLT_GRP_PAYMODE:
+			flt->option[group] = atoi(str_array[0]);
+			bol_array = g_strsplit (str_array[1], ",", -1);
+			len = g_strv_length( bol_array );
+			if( len < NUM_PAYMODE_MAX )
+			{
+				for(i=0;i<len;i++)
+				{
+				gint id = MAX(NUM_PAYMODE_MAX-1, atoi(bol_array[i]));
+
+					flt->paymode[id] = TRUE;
+				}
+			}
+			break;
+
+		case FLT_GRP_AMOUNT:
+			flt->option[group] = atoi(str_array[0]);
+			bol_array = g_strsplit (str_array[1], ",", -1);
+			if( g_strv_length( bol_array ) == 2 )
+			{
+				flt->minamount = g_ascii_strtod(bol_array[0], NULL);
+				flt->maxamount = g_ascii_strtod(bol_array[1], NULL);
+			}
+			break;
+
+		case FLT_GRP_TEXT:
+			flt->option[group] = atoi(str_array[0]);
+			bol_array = g_strsplit (str_array[1], "¤", -1);
+			if( g_strv_length( bol_array ) == 3 )
+			{
+				flt->exact = atoi(bol_array[0]);
+				flt->memo  = g_strdup(bol_array[1]);
+				flt->number  = g_strdup(bol_array[2]);
+			}
+			break;
+	}
+
+end:
+	g_strfreev(str_array);
+
+}
+
+
+static gchar *filter_group_export(Filter *flt, gint group)
+{
+gchar *retval = NULL;
+GString *node;
+guint i;
+
+	DB( g_print("\n[filter] group export '%s'\n", flt->name == NULL ? "noname" : flt->name )) ;
+
+	g_return_val_if_fail( flt != NULL, NULL );
+
+
+	switch(group)
+	{
+		case FLT_GRP_DATE:
+			if(flt->option[group] > 0)
+			{
+				//TODO: maybe always keep 4 values here
+				if(flt->range == FLT_RANGE_MISC_CUSTOM)
+					retval = g_strdup_printf("%d|%d,%d,%d", flt->option[group], FLT_RANGE_MISC_CUSTOM, flt->mindate, flt->maxdate);
+				else
+					retval = g_strdup_printf("%d|%d", flt->option[group], flt->range);
+				
+				DB( g_printf(" date > '%s'\n", retval) );
+			}
+			break;
+		case FLT_GRP_ACCOUNT:
+			if(flt->option[group] > 0)
+			{
+				node = g_string_sized_new(flt->gbacc->len);
+				g_string_append_printf(node, "%d|", flt->option[group]);
+				DB( g_printf("acc len:%d\n", flt->gbacc->len) );
+				for(i=0;i<flt->gbacc->len;i++)
+				{
+					if( da_flt_status_acc_get(flt, i) == TRUE )
+						g_string_append_printf(node, "%d,", i);
+				}
+				g_string_erase(node, node->len-1, 1);
+				retval = g_string_free(node, FALSE);
+				DB( g_printf(" acc > '%s'\n", retval) );
+				node = NULL;
+			}
+			break;
+		case FLT_GRP_PAYEE:
+			if(flt->option[group] > 0)
+			{
+				node = g_string_sized_new(flt->gbpay->len);
+				g_string_append_printf(node, "%d|", flt->option[group]);
+				DB( g_printf("pay len:%d\n", flt->gbpay->len) );
+				for(i=0;i<flt->gbpay->len;i++)
+				{
+					if( da_flt_status_pay_get(flt, i) == TRUE )
+						g_string_append_printf(node, "%d,", i);
+				}
+				g_string_erase(node, node->len-1, 1);
+				retval = g_string_free(node, FALSE);
+				DB( g_printf(" pay > '%s'\n", retval) );
+				node = NULL;
+			}
+			break;
+		case FLT_GRP_CATEGORY:
+			if(flt->option[group] > 0)
+			{
+				node = g_string_sized_new(flt->gbcat->len);
+				g_string_append_printf(node, "%d|", flt->option[group]);
+				DB( g_printf("cat len:%d\n", flt->gbcat->len) );
+				for(i=0;i<flt->gbcat->len;i++)
+				{
+					if( da_flt_status_cat_get(flt, i) == TRUE )
+						g_string_append_printf(node, "%d,", i);
+				}
+				g_string_erase(node, node->len-1, 1);
+				retval = g_string_free(node, FALSE);
+
+				DB( g_printf(" cat > '%s'\n", retval) );
+				node = NULL;
+			}
+			break;
+		case FLT_GRP_TAG:
+			if(flt->option[group] > 0)
+			{
+				node = g_string_sized_new(flt->gbtag->len);
+				g_string_append_printf(node, "%d|", flt->option[group]);
+				DB( g_printf("tag len:%d\n", flt->gbtag->len) );
+				for(i=0;i<flt->gbtag->len;i++)
+				{
+					if( da_flt_status_tag_get(flt, i) == TRUE )
+						g_string_append_printf(node, "%d,", i);
+				}
+				g_string_erase(node, node->len-1, 1);
+				retval = g_string_free(node, FALSE);
+				DB( g_printf(" tag > '%s'\n", retval) );
+				node = NULL;
+			}
+			break;
+		case FLT_GRP_STATUS:
+			if(flt->option[group] > 0)
+			{
+				node = g_string_sized_new(30);
+				g_string_append_printf(node, "%d|", flt->option[group]);
+		
+				g_string_append_printf(node, "%d,", flt->sta_non);
+				g_string_append_printf(node, "%d,", flt->sta_clr);
+				g_string_append_printf(node, "%d" , flt->sta_rec);
+
+				retval = g_string_free(node, FALSE);
+				DB( g_printf(" sta > '%s'\n", retval) );
+				node = NULL;
+			}
+			break;
+		case FLT_GRP_TYPE:
+			if(flt->option[group] > 0)
+			{
+				node = g_string_sized_new(30);
+				g_string_append_printf(node, "%d|", flt->option[group]);
+
+				g_string_append_printf(node, "%d,", flt->typ_nexp);
+				g_string_append_printf(node, "%d,", flt->typ_ninc);
+				g_string_append_printf(node, "%d,", flt->typ_xexp);
+				g_string_append_printf(node, "%d" , flt->typ_xinc);
+
+				retval = g_string_free(node, FALSE);
+				DB( g_printf(" typ > '%s'\n", retval) );
+				node = NULL;
+			}
+			break;
+		case FLT_GRP_PAYMODE:
+			if(flt->option[group] > 0)
+			{
+				node = g_string_sized_new(30);
+				g_string_append_printf(node, "%d|", flt->option[group]);
+				for(i=0;i<NUM_PAYMODE_MAX;i++)
+				{
+					if( flt->paymode[i] == TRUE )
+						g_string_append_printf(node, "%d,", i);
+				}
+				g_string_erase(node, node->len-1, 1);
+				retval = g_string_free(node, FALSE);
+				DB( g_printf(" pay > '%s'\n", retval) );
+				node = NULL;
+			}
+			break;
+		case FLT_GRP_AMOUNT:
+			if(flt->option[group] > 0)
+			{
+			char buf[G_ASCII_DTOSTR_BUF_SIZE];
+
+				node = g_string_sized_new(30);
+				g_string_append_printf(node, "%d|", flt->option[group]);
+
+				//we must use this, as fprintf use locale decimal settings and not '.'
+				g_ascii_dtostr (buf, sizeof (buf), flt->minamount);
+				g_string_append(node, buf);
+				g_string_append(node, ",");
+				g_ascii_dtostr (buf, sizeof (buf), flt->maxamount);
+				g_string_append(node, buf);
+				retval = g_string_free(node, FALSE);
+				DB( g_printf(" amt > '%s'\n", retval) );
+				node = NULL;
+			}
+			break;
+		case FLT_GRP_TEXT:
+			if(flt->option[group] > 0)
+			{
+				node = g_string_sized_new(30);
+				g_string_append_printf(node, "%d|", flt->option[group]);
+				g_string_append_printf(node, "%d¤%s¤%s", flt->exact, flt->memo, flt->number);
+				retval = g_string_free(node, FALSE);
+				DB( g_printf(" txt > '%s'\n", retval) );
+				node = NULL;
+			}
+			break;
+	}
+	return retval;
+}
+
+
+
+
+static void hb_xml_append_fltgroup(GString *gstring, gchar *attrname, Filter *flt, gint group)
+{
+gchar *tmpstr;
+
+	DB( g_printf("[xml] append fltgrp for '%s' %d\n", attrname, group) );
+	tmpstr = filter_group_export(flt, group);
+	if(tmpstr)
+	{
+		DB( g_printf(" > '%s'\n", tmpstr) );
+		hb_xml_append_txt(gstring, attrname, tmpstr);
+		g_free(tmpstr);
+	}
+}
+
+
+
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
 
 static void homebank_load_xml_acc(ParseContext *ctx, const gchar **attribute_names, const gchar **attribute_values)
 {
@@ -595,6 +1076,13 @@ gint i;
 		else if(!strcmp (attribute_names[i], "amount"  )) { entry->amount = g_ascii_strtod(attribute_values[i], NULL); }
 		// prior v08
 		else if(!strcmp (attribute_names[i], "exact" )) { exact = atoi(attribute_values[i]); }
+		else if(!strcmp (attribute_names[i], "tags"       ))
+		{
+			if(attribute_values[i] != NULL && strlen(attribute_values[i]) > 0 && strcmp(attribute_values[i],"(null)") != 0 )
+			{
+				entry->tags = tags_parse(attribute_values[i]);
+			}
+		}
 	}
 
 	/* in v08 exact moved to flag */
@@ -645,10 +1133,13 @@ gint i;
 		     if(!strcmp (attribute_names[i], "title"       )) { g_free(GLOBALS->owner); GLOBALS->owner = g_strdup(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "curr"        )) { GLOBALS->kcur = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "car_category")) { GLOBALS->vehicle_category = atoi(attribute_values[i]); }
+		
 		else if(!strcmp (attribute_names[i], "auto_smode"  )) { GLOBALS->auto_smode = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "auto_weekday")) { GLOBALS->auto_weekday = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "auto_nbmonths")) { GLOBALS->auto_nbmonths = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "auto_nbdays" )) { GLOBALS->auto_nbdays = atoi(attribute_values[i]); }
+		
+		else if(!strcmp (attribute_names[i], "earnbyh"     )) { GLOBALS->lifen_earnbyh = g_ascii_strtod(attribute_values[i], NULL); }
 	}
 }
 
@@ -737,6 +1228,42 @@ gint i;
 }
 
 
+static void homebank_load_xml_flt(ParseContext *ctx, const gchar **attribute_names, const gchar **attribute_values)
+{
+Filter *entry = da_flt_malloc();
+gint i;
+
+	for (i = 0; attribute_names[i] != NULL; i++)
+	{
+		//DB( g_print(" att='%s' val='%s'\n", attribute_names[i], attribute_values[i]) );
+
+		     if(!strcmp (attribute_names[i], "key"  )) { entry->key = atoi(attribute_values[i]); }
+		else if(!strcmp (attribute_names[i], "name" )) { entry->name = g_strdup(attribute_values[i]); }
+
+		else if(!strcmp (attribute_names[i], "dat" )) { filter_group_import(entry, FLT_GRP_DATE, attribute_values[i]); }
+		else if(!strcmp (attribute_names[i], "acc" )) { filter_group_import(entry, FLT_GRP_ACCOUNT, attribute_values[i]); }
+		else if(!strcmp (attribute_names[i], "pay" )) { filter_group_import(entry, FLT_GRP_PAYEE, attribute_values[i]); }
+		else if(!strcmp (attribute_names[i], "cat" )) { filter_group_import(entry, FLT_GRP_CATEGORY, attribute_values[i]); }
+		else if(!strcmp (attribute_names[i], "tag" )) { filter_group_import(entry, FLT_GRP_TAG, attribute_values[i]); }
+		else if(!strcmp (attribute_names[i], "txt" )) { filter_group_import(entry, FLT_GRP_TEXT, attribute_values[i]); }
+		else if(!strcmp (attribute_names[i], "amt" )) { filter_group_import(entry, FLT_GRP_AMOUNT, attribute_values[i]); }
+		else if(!strcmp (attribute_names[i], "mod" )) { filter_group_import(entry, FLT_GRP_PAYMODE, attribute_values[i]); }
+		else if(!strcmp (attribute_names[i], "sta" )) { filter_group_import(entry, FLT_GRP_STATUS, attribute_values[i]); }
+		else if(!strcmp (attribute_names[i], "typ" )) { filter_group_import(entry, FLT_GRP_TYPE, attribute_values[i]); }
+	}
+
+	//5.8 force alldate if off
+	if( entry->option[FLT_GRP_DATE] == 0 )
+	{
+		entry->option[FLT_GRP_DATE] = 1;
+		entry->range = FLT_RANGE_MISC_ALLDATE;
+	}
+
+	//all attribute loaded: append
+	da_flt_insert(entry);
+}
+
+
 static void homebank_load_xml_tag(ParseContext *ctx, const gchar **attribute_names, const gchar **attribute_values)
 {
 Tag *entry = da_tag_malloc();
@@ -776,12 +1303,13 @@ gint i;
 		else if(!strcmp (attribute_names[i], "damt"      )) { entry->xferamount = g_ascii_strtod(attribute_values[i], NULL); }
 		else if(!strcmp (attribute_names[i], "dst_account")) { entry->kxferacc = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "paymode"    )) { entry->paymode = atoi(attribute_values[i]); }
+		else if(!strcmp (attribute_names[i], "grpflg"     )) { entry->grpflg = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "st"         )) { entry->status = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "flags"      )) { entry->flags = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "payee"      )) { entry->kpay = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "category"   )) { entry->kcat = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "wording"    )) { if(strcmp(attribute_values[i],"(null)") && attribute_values[i] != NULL) entry->memo = g_strdup(attribute_values[i]); }
-		else if(!strcmp (attribute_names[i], "info"       )) { if(strcmp(attribute_values[i],"(null)") && attribute_values[i] != NULL) entry->info = g_strdup(attribute_values[i]); }
+		else if(!strcmp (attribute_names[i], "info"       )) { if(strcmp(attribute_values[i],"(null)") && attribute_values[i] != NULL) entry->number = g_strdup(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "tags"       ))
 		{
 			if(attribute_values[i] != NULL && strlen(attribute_values[i]) > 0 && strcmp(attribute_values[i],"(null)") != 0 )
@@ -836,12 +1364,13 @@ gint i;
 		else if(!strcmp (attribute_names[i], "damt"      )) { entry->xferamount = g_ascii_strtod(attribute_values[i], NULL); }
 		else if(!strcmp (attribute_names[i], "dst_account")) { entry->kxferacc = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "paymode"    )) { entry->paymode = atoi(attribute_values[i]); }
+		else if(!strcmp (attribute_names[i], "grpflg"     )) { entry->grpflg = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "st"         )) { entry->status = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "flags"      )) { entry->flags = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "payee"      )) { entry->kpay = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "category"   )) { entry->kcat = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "wording"    )) { if(strcmp(attribute_values[i],"(null)") && attribute_values[i] != NULL) entry->memo = g_strdup(attribute_values[i]); }
-		else if(!strcmp (attribute_names[i], "info"       )) { if(strcmp(attribute_values[i],"(null)") && attribute_values[i] != NULL) entry->info = g_strdup(attribute_values[i]); }
+		else if(!strcmp (attribute_names[i], "info"       )) { if(strcmp(attribute_values[i],"(null)") && attribute_values[i] != NULL) entry->number = g_strdup(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "tags"       ))
 		{
 			if(attribute_values[i] != NULL && strlen(attribute_values[i]) > 0 && strcmp(attribute_values[i],"(null)") != 0 )
@@ -955,6 +1484,10 @@ ParseContext *ctx = user_data;
 			if(!strcmp (element_name, "fav"))
 			{
 				homebank_load_xml_fav(ctx, attribute_names, attribute_values);
+			}
+			else if(!strcmp (element_name, "flt"))
+			{
+				homebank_load_xml_flt(ctx, attribute_names, attribute_values);
 			}
 		}
 		break;
@@ -1197,117 +1730,6 @@ gboolean rc, dosanity;
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-/*
-** misc xml attributes methods
-*/
-static void hb_xml_append_txt(GString *gstring, gchar *attrname, gchar *value)
-{
-	if(value != NULL && *value != 0)
-	{
-		gchar *escaped = g_markup_escape_text(value, -1);
-		g_string_append_printf(gstring, " %s=\"%s\"", attrname, escaped);
-		g_free(escaped);
-	}
-}
-
-static void
-append_escaped_text (GString     *str,
-                     const gchar *text,
-                     gssize       length)
-{
-  const gchar *p;
-  const gchar *end;
-  gunichar c;
-
-  p = text;
-  end = text + length;
-
-  while (p < end)
-    {
-      const gchar *next;
-      next = g_utf8_next_char (p);
-
-      switch (*p)
-        {
-        case '&':
-          g_string_append (str, "&amp;");
-          break;
-
-        case '<':
-          g_string_append (str, "&lt;");
-          break;
-
-        case '>':
-          g_string_append (str, "&gt;");
-          break;
-
-        case '\'':
-          g_string_append (str, "&apos;");
-          break;
-
-        case '"':
-          g_string_append (str, "&quot;");
-          break;
-
-        default:
-          c = g_utf8_get_char (p);
-          if ((0x1 <= c && c <= 0x8) ||
-              (0xa <= c && c  <= 0xd) ||	//chnaged here from b<->c to a<->d
-              (0xe <= c && c <= 0x1f) ||
-              (0x7f <= c && c <= 0x84) ||
-              (0x86 <= c && c <= 0x9f))
-            g_string_append_printf (str, "&#x%x;", c);
-          else
-            g_string_append_len (str, p, next - p);
-          break;
-        }
-
-      p = next;
-    }
-}
-
-// we override g_markup_escape_text from glib to encode \n (LF) & \r (CR)
-static void hb_xml_append_txt_crlf(GString *gstring, gchar *attrname, gchar *value)
-{
-	if(value != NULL && *value != 0)
-	{
-	gssize length;
-	GString *escaped;
-		
-		//gchar *escaped = g_markup_escape_text(value, -1);
-		length = strlen (value);
-		escaped = g_string_sized_new (length);
-		append_escaped_text (escaped, value, length);
-		g_string_append_printf(gstring, " %s=\"%s\"", attrname, escaped->str);
-		g_string_free (escaped, TRUE);
-	}
-}
-
-static void hb_xml_append_int0(GString *gstring, gchar *attrname, guint32 value)
-{
-	g_string_append_printf(gstring, " %s=\"%d\"", attrname, value);
-}
-	
-static void hb_xml_append_int(GString *gstring, gchar *attrname, guint32 value)
-{
-	if(value != 0)
-	{
-		hb_xml_append_int0(gstring, attrname, value);
-	}
-}
-
-static void hb_xml_append_amt(GString *gstring, gchar *attrname, gdouble amount)
-{
-char buf[G_ASCII_DTOSTR_BUF_SIZE];
-
-	//we must use this, as fprintf use locale decimal settings and not '.'
-	g_ascii_dtostr (buf, sizeof (buf), amount);
-	g_string_append_printf(gstring, " %s=\"%s\"", attrname, buf);
-}
-
-
-/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
-
 
 /*
 ** XML properties save
@@ -1332,6 +1754,7 @@ GError *error = NULL;
 	hb_xml_append_int(node, "auto_weekday", GLOBALS->auto_weekday);
 	hb_xml_append_int(node, "auto_nbmonths", GLOBALS->auto_nbmonths);
 	hb_xml_append_int(node, "auto_nbdays", GLOBALS->auto_nbdays);
+	hb_xml_append_amt(node, "earnbyh", GLOBALS->lifen_earnbyh);
 
 	g_string_append(node, "/>\n");
 
@@ -1594,6 +2017,64 @@ GError *error = NULL;
 
 
 /*
+** XML filter save
+*/
+static gint homebank_save_xml_flt(GIOChannel *io)
+{
+GList *lflt, *list;
+GString *node;
+gint retval = XML_OK;
+GError *error = NULL;
+
+	node = g_string_sized_new(255);
+
+	lflt = list = filter_glist_sorted(HB_GLIST_SORT_KEY);
+	while (list != NULL)
+	{
+	Filter *item = list->data;
+
+		if(item->key != 0)
+		{
+			g_string_assign(node, "<flt");
+		
+			hb_xml_append_int(node, "key", item->key);
+			//hb_xml_append_int(node, "parent", item->parent);
+			//hb_xml_append_int(node, "flags", item->flags);
+
+			hb_xml_append_fltgroup(node, "dat", item, FLT_GRP_DATE);
+			hb_xml_append_fltgroup(node, "acc", item, FLT_GRP_ACCOUNT);
+			hb_xml_append_fltgroup(node, "pay", item, FLT_GRP_PAYEE);
+			hb_xml_append_fltgroup(node, "cat", item, FLT_GRP_CATEGORY);
+			hb_xml_append_fltgroup(node, "tag", item, FLT_GRP_TAG);
+			hb_xml_append_fltgroup(node, "txt", item, FLT_GRP_TEXT);
+			hb_xml_append_fltgroup(node, "amt", item, FLT_GRP_AMOUNT);
+			hb_xml_append_fltgroup(node, "mod", item, FLT_GRP_PAYMODE);
+			hb_xml_append_fltgroup(node, "sta", item, FLT_GRP_STATUS);
+			hb_xml_append_fltgroup(node, "typ", item, FLT_GRP_TYPE);
+
+			hb_xml_append_txt(node, "name", item->name);
+
+			g_string_append(node, "/>\n");
+			
+			error = NULL;
+			g_io_channel_write_chars(io, node->str, -1, NULL, &error);
+
+			if(error)
+			{
+				retval = XML_IO_ERROR;
+				g_error_free(error);
+			}
+		}
+		list = g_list_next(list);
+	}
+	g_list_free(lflt);
+	g_string_free(node, TRUE);
+	return retval;
+}
+
+
+
+/*
 ** XML tag save
 */
 static gint homebank_save_xml_tag(GIOChannel *io)
@@ -1641,6 +2122,7 @@ GList *lasg, *list;
 GString *node;
 gint retval = XML_OK;
 GError *error = NULL;
+gchar *tagstr;
 
 	node = g_string_sized_new(255);
 	
@@ -1648,6 +2130,8 @@ GError *error = NULL;
 	while (list != NULL)
 	{
 	Assign *item = list->data;
+
+		tagstr = tags_tostring(item->tags);
 
 		//#2018680
 		item->flags &= ~(ASGF_PREFILLED);	//delete flag
@@ -1665,6 +2149,7 @@ GError *error = NULL;
 		hb_xml_append_int(node, "paymode" , item->paymode);
 		//#1999879 assignment by amount do not save
 		hb_xml_append_amt(node, "amount", item->amount);
+		hb_xml_append_txt(node, "tags", tagstr);
 
 		g_string_append(node, "/>\n");
 		
@@ -1688,7 +2173,7 @@ GError *error = NULL;
 /*
 ** XML archive save
 */
-static gint homebank_save_xml_arc(GIOChannel *io)
+static gint homebank_save_xml_fav(GIOChannel *io)
 {
 GList *list;
 GString *node;
@@ -1718,12 +2203,13 @@ GError *error = NULL;
 			hb_xml_append_amt(node, "damt", item->xferamount);
 		hb_xml_append_int(node, "dst_account", item->kxferacc);
 		hb_xml_append_int(node, "paymode", item->paymode);
+		hb_xml_append_int(node, "grpflg", item->grpflg);
 		hb_xml_append_int(node, "st", item->status);
 		hb_xml_append_int(node, "flags", item->flags);
 		hb_xml_append_int(node, "payee", item->kpay);
 		hb_xml_append_int(node, "category", item->kcat);
 		hb_xml_append_txt(node, "wording", item->memo);
-		hb_xml_append_txt(node, "info", item->info);	
+		hb_xml_append_txt(node, "info", item->number);	
 		hb_xml_append_txt(node, "tags", tagstr);	
 		hb_xml_append_int(node, "nextdate", item->nextdate);
 		hb_xml_append_int(node, "every", item->every);
@@ -1807,12 +2293,13 @@ GError *error = NULL;
 				hb_xml_append_amt(node, "damt", item->xferamount);
 			hb_xml_append_int(node, "dst_account", item->kxferacc);
 			hb_xml_append_int(node, "paymode", item->paymode);
+			hb_xml_append_int(node, "grpflg", item->grpflg);
 			hb_xml_append_int(node, "st", item->status);
 			hb_xml_append_int(node, "flags", item->flags);
 			hb_xml_append_int(node, "payee", item->kpay);
 			hb_xml_append_int(node, "category", item->kcat);
 			hb_xml_append_txt(node, "wording", item->memo);	
-			hb_xml_append_txt(node, "info", item->info);	
+			hb_xml_append_txt(node, "info", item->number);	
 			hb_xml_append_txt(node, "tags", tagstr);	
 			hb_xml_append_int(node, "kxfer", item->kxfer);
 
@@ -1892,8 +2379,9 @@ GError *error = NULL;
 	retval = homebank_save_xml_cat(io);
 	retval = homebank_save_xml_tag(io);
 	retval = homebank_save_xml_asg(io);
-	retval = homebank_save_xml_arc(io);
+	retval = homebank_save_xml_fav(io);
 	retval = homebank_save_xml_ope(io);
+	retval = homebank_save_xml_flt(io);
 
 	g_io_channel_write_chars(io, "</homebank>\n", -1, NULL, NULL);
 

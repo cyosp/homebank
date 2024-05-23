@@ -58,6 +58,7 @@ struct list_txn_data
 	gboolean			warnnocategory;
 	gboolean			tvc_is_visible;
 	gboolean			save_column_width;
+	gboolean			life_energy;
 };
 
 
@@ -67,12 +68,14 @@ GtkWidget *create_list_import_transaction(gboolean enable_choose);
 void list_txn_set_warn_nocategory(GtkTreeView *treeview, gboolean warn);
 
 gboolean list_txn_column_id_isvisible(GtkTreeView *treeview, gint sort_id);
+
 void list_txn_set_column_acc_visible(GtkTreeView *treeview, gboolean visible);
+void list_txn_set_life_energy(GtkTreeView *treeview, gboolean life_energy);
 
 Transaction *list_txn_get_surround_transaction(GtkTreeView *treeview, Transaction **prev, Transaction **next);
 Transaction *list_txn_get_active_transaction(GtkTreeView *treeview);
 
-GString *list_txn_to_string(GtkTreeView *treeview, gboolean isclipboard, gboolean hassplit, guint flags);
+GString *list_txn_to_string(GtkTreeView *treeview, gboolean isclipboard, gboolean hassplit, gboolean selectonly, guint flags);
 
 void list_txn_set_lockreconciled(GtkTreeView *treeview, gboolean lockreconciled);
 void list_txn_set_save_column_width(GtkTreeView *treeview, gboolean save_column_width);

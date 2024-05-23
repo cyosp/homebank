@@ -58,36 +58,31 @@ enum {
 	MAX_HID
 };
 
-struct register_panel_data
+struct hub_ledger_data
 {
 	GtkWidget	*window;
+	GActionGroup *actions;
 
 	GtkWidget	*IB_duplicate;
 	GtkWidget	*LB_duplicate;
 	GtkWidget	*NB_txn_daygap;
 	
-	GtkWidget	*ME_menuacc, *ME_menuedit, *ME_menutxn, *ME_menutools, *ME_menustatus;
-	GtkWidget	*MI_exportqif, *MI_exportcsv, *MI_print, *MI_browse, *MI_close;
-	GtkWidget	*MI_copy, *MI_pasten, *MI_pastet;
-	GtkWidget	*MI_add, *MI_herit, *MI_edit;
-	GtkWidget	*MI_statnone, *MI_statclear, *MI_statrecon;
-	GtkWidget	*MI_multiedit, *MI_assign, *MI_template, *MI_delete;
-	GtkWidget	*MI_find;
-	GtkWidget	*MI_markdup, *MI_chkintxfer, *MI_autoassign, *MI_autopayee, *MI_filter, *MI_conveuro;
-
 	GtkWidget	*TB_bar;
 	GtkWidget   *BT_add, *BT_herit, *BT_edit;
 	GtkWidget   *BT_clear, *BT_reconcile;
-	GtkWidget   *BT_multiedit, *BT_template, *BT_delete;
-	GtkWidget	*SP_updown, *BT_up, *BT_down;
+	GtkWidget   *BT_multiedit, *BT_delete;
+	GtkWidget	*BT_up, *BT_down;
 	GtkWidget	*SW_lockreconciled, *IM_lockreconciled, *LB_lockreconciled;
 
 	GtkWidget	*CY_range;
 	GtkWidget	*CM_future;
+	GtkWidget	*CY_flag;
 	GtkWidget	*CY_type;
 	GtkWidget	*CY_status;
 //	GtkWidget	*CY_month, *NB_year;
-	GtkWidget	*BT_reset, *BT_refresh, *BT_filter, *BT_print;
+	GtkWidget	*PO_hubfilter;
+	GtkWidget	*BT_reset, *BT_refresh, *BT_filter;
+	GtkWidget	*BT_lifnrg;
 	GtkWidget	*TX_selection;
 
 	GtkWidget   *ST_search;
@@ -102,13 +97,6 @@ struct register_panel_data
 
 	GtkWidget	*LV_ope;
 
-	GtkWidget	*ME_popmenu, *ME_popmenustatus;
-	GtkWidget	*MI_popadd, *MI_popherit, *MI_popedit;
-	GtkWidget	*MI_popstatnone, *MI_popstatclear, *MI_popstatrecon;
-	GtkWidget	*MI_popmultiedit, *MI_poptemplate, *MI_popassign, *MI_popdelete;
-	GtkWidget	*MI_popcopyamount, *MI_popviewsplit, *MI_poptxnup, *MI_poptxndown;
-	
-
 	gint	busy;
 	gchar	*wintitle;
 
@@ -119,6 +107,8 @@ struct register_panel_data
 	GPtrArray   *gpatxn;		//quickfilter
 	
 	gboolean	showall;
+	gboolean	closed;
+	gboolean	lockreconciled;
 	gboolean	do_sort;
 	
 	/* status counters */
@@ -137,8 +127,8 @@ struct register_panel_data
 
 #define DEFAULT_DELAY 750           /* Default delay in ms */
 
-GtkWidget *register_panel_window_new(Account *acc);
-void register_panel_window_init(GtkWidget *widget, gpointer user_data);
+GtkWidget *hub_ledger_window_new(Account *acc);
+void hub_ledger_window_init(GtkWidget *widget, gpointer user_data);
 
 
 #endif /* __HOMEBANK_DSPACCOUNT_H__ */

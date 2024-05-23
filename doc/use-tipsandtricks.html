@@ -20,6 +20,7 @@
       <li><a href="#datewidget">Date widget key action</a></li>
       <li><a href="#accorder">Change the account order into main window</a></li>
       <li><a href="#autocheck">Automatic check numbering</a></li>
+      <li><a href="#duplicatefinder">Duplicate transaction finder</a></li>
       <li><a href="#autoadd">Add Payee/Categories from transaction dialog</a></li>
       <li><a href="#eurominor">Euro major/minor</a></li>
     </ul>
@@ -47,9 +48,9 @@
 
   <div class="rounded content">
     <h2><a id="listcolwidth" name="listsearch"></a>List-view column width</h2>
-    <p>The column width of some of the listview (register, detail and upcoming) is saved to persist you preference within working session.<br>
+    <p>The column width of some of the listview (ledger, detail and upcoming) is saved to persist you preference within working session.<br>
     At any time you can adjust the width of the column from the header.<br>
-    If you want to autosize the column to its content, just double left click on the header right when you have the resize cusrsor <=>.</p>
+    If you want to auto-size the column to its content, just double left click on the header right when you have the resize cursor <=>.</p>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
 
@@ -89,15 +90,22 @@
     <p>HomeBank also manage automatic check numeration, this will occurs when several condition are satisfied.<br>
     <ul>
       <li>You first need to configure the current check number into the <a href="dlg-acco.html">account dialog</a> of each account you want the automatic numbering take places. You can use 2 pad of check for each account. If you leave 0 for check number, the automatic numbering is disabled.</li>
-      <li>The next check number is prefilled into the Info field when:</li>
+      <li>The next check number is prefilled into the Number field when:</li>
       <ol>
         <li>You are <b>Adding</b> a new transaction</li>
         <li>The transaction type is <b>Expense</b></li>
         <li>The payment is set to <b>Check</b></li>
       </ol>
     </ul>
-    At last, if the type is an income, the info field will be emptied.
+    At last, if the type is an income, the Number field will be emptied.
     </p>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+  <div class="rounded content">
+    <h2><a id="duplicatefinder" name="duplicatefinder"></a>Duplicate transaction finder</h2>
+    <p>A duplicate finder is available from a single account ledger window in the tools menu. The feature just mark in place the transaction, in bold for the one to keep and strike the potential duplicate called similar.<br>
+    the similarity is evaluated on: amount, date (+gap).</p>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
 

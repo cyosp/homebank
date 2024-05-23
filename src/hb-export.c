@@ -69,21 +69,21 @@ gint count, i;
 		//#1270876
 		switch(PREFS->dtex_datefmt)
 		{
-			case 0: //"m-d-y"  
+			case PRF_DATEFMT_MDY: //"m-d-y"  
 				g_string_append_printf (elt, "D%02d/%02d/%04d\n", 
 					g_date_get_month(date),
 					g_date_get_day(date),
 					g_date_get_year(date)
 					);
 				break;
-			case 1: //"d-m-y"
+			case PRF_DATEFMT_DMY: //"d-m-y"
 				g_string_append_printf (elt, "D%02d/%02d/%04d\n", 
 					g_date_get_day(date),
 					g_date_get_month(date),
 					g_date_get_year(date)
 					);
 				break;
-			case 2: //"y-m-d"
+			case PRF_DATEFMT_YMD: //"y-m-d"
 				g_string_append_printf (elt, "D%04d/%02d/%02d\n", 
 					g_date_get_year(date),
 					g_date_get_month(date),
@@ -104,7 +104,7 @@ gint count, i;
 		g_string_append_printf (elt, "C%s\n", sbuf);
 
 		if( txn->paymode == PAYMODE_CHECK)
-			g_string_append_printf (elt, "N%s\n", txn->info);
+			g_string_append_printf (elt, "N%s\n", txn->number);
 
 		//Ppayee
 		payee = da_pay_get(txn->kpay);
@@ -407,13 +407,13 @@ gint text_width, text_height, line_height;
 	pango_font_description_free (desc);
 
 	DB( g_print(" - compute column width - \n") );
-
+	//TODO: maybe for text column we should remove outliers here
 
 	i = 0;
 	count = 0;
 	while (data->lines[i] != NULL)
 	{
-		DB( g_print(" print line %03d: '%s'\n", i, data->lines[i]) );
+		//DB( g_print(" eval line %03d: '%s'\n", i, data->lines[i]) );
 
 		//skip empty lines
 		if( strlen(data->lines[i]) > 1 )

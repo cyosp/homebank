@@ -525,8 +525,7 @@ gint crow, row;
 	g_free(data);
 
 	// make sure dialog is gone
-	while (gtk_events_pending ())
-		gtk_main_iteration ();
+	hb_window_run_pending();
 
 }
 
@@ -1125,7 +1124,7 @@ static gint lst_xfer_columns[NUM_LST_DSPOPE+1] = {
 	LST_DSPOPE_AMOUNT,
 	LST_DSPOPE_CLR,
 	LST_DSPOPE_MEMO,
-	LST_DSPOPE_INFO,
+	LST_DSPOPE_PAYNUMBER,
 	LST_DSPOPE_PAYEE,
 	LST_DSPOPE_CATEGORY,
 	LST_DSPOPE_TAGS,
@@ -1168,6 +1167,8 @@ struct xfer_data *data;
 GtkWidget *dialog, *content, *mainvbox, *scrollwin, *label;
 GtkTreeModel *newmodel;
 GtkTreeIter newiter;
+gint w, h, dw, dh;
+gint nbmatch;
 
 	DB( g_print("\n(xfer select) new\n") );
 
@@ -1187,15 +1188,15 @@ GtkTreeIter newiter;
 	g_object_set_data(G_OBJECT(dialog), "inst_data", (gpointer)data);
 	data->dialog = dialog;
 
-	//5/6 set a nice dialog size
-/*
+	//5.8 set a nice dialog size
+
 	gtk_window_get_size(GTK_WINDOW(GLOBALS->mainwindow), &w, &h);
 	dh = (h*1.33/PHI);
 	//ratio 3:2
 	dw = (dh * 3) / 2;
 	DB( g_print(" main w=%d h=%d => diag w=%d h=%d\n", w, h, dw, dh) );
-	gtk_window_set_default_size (GTK_WINDOW(dialog), dw, dh);
-*/
+	gtk_window_set_default_size (GTK_WINDOW(dialog), dw, -1);
+
 
 	//hide close button
 	//gtk_window_set_deletable(GTK_WINDOW(dialog), FALSE);
@@ -1213,9 +1214,7 @@ GtkTreeIter newiter;
 	gtk_box_pack_start (GTK_BOX (mainvbox), label, FALSE, FALSE, 0);
 
 	// source listview
-	scrollwin = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 //	gtk_widget_set_size_request(sw, -1, HB_MINWIDTH_LIST/2);
 	gtk_widget_set_margin_left(scrollwin, SPACING_MEDIUM);
 	gtk_box_pack_start (GTK_BOX (mainvbox), scrollwin, FALSE, FALSE, 0);
@@ -1241,9 +1240,7 @@ GtkTreeIter newiter;
                              -1);*/
 	gtk_box_pack_start (GTK_BOX (mainvbox), label, FALSE, FALSE, 0);
 
-	scrollwin = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_widget_set_size_request(scrollwin, -1, HB_MINWIDTH_LIST*1.5);
 	gtk_widget_set_margin_left(scrollwin, SPACING_MEDIUM);
 	gtk_box_pack_start (GTK_BOX (mainvbox), scrollwin, TRUE, TRUE, 0);
@@ -1275,6 +1272,7 @@ GtkTreeIter newiter;
 	newmodel = gtk_tree_view_get_model(GTK_TREE_VIEW(data->treeview));
 	gtk_tree_store_clear (GTK_TREE_STORE(newmodel));
 
+	nbmatch = 0;
 	GList *tmplist = g_list_first(matchlist);
 	while (tmplist != NULL)
 	{
@@ -1292,10 +1290,13 @@ GtkTreeIter newiter;
 		//DB( g_print(" - fill: %s %.2f %x\n", item->memo, item->amount, (unsigned int)item->same) );
 
 		tmplist = g_list_next(tmplist);
+		nbmatch++;
 	}
 
-
 	g_signal_connect (gtk_tree_view_get_selection(GTK_TREE_VIEW(data->treeview)), "changed", G_CALLBACK (ui_dialog_transaction_xfer_select_child_selection_cb), NULL);
+
+	//5.8 chnage text
+	gtk_label_set_text(GTK_LABEL(data->lb_several), _("No transaction match.") );
 
 	gtk_widget_show_all(mainvbox);
 

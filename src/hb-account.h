@@ -49,7 +49,6 @@ struct _account
 
 	/* unsaved datas */
 	GQueue		*txn_queue;
-	GtkWindow	*window;	//dsp_account window opened
 
 	gdouble     bal_recon;	//bank balance (reconciled transaction)
 	gdouble		bal_clear;	//cleared
@@ -84,6 +83,7 @@ struct _account
 enum
 {
 // + https://www.kashoo.com/blog/what-are-the-different-account-types-in-accounting/
+// + AceMoney: Bank / Cash / Credit / Investment / Loan
 
 	ACC_TYPE_NONE       = 0,
 	ACC_TYPE_BANK       = 1,	//Banque
@@ -135,7 +135,7 @@ guint32		da_acc_get_first_key(void);
 void da_acc_consistency(Account *item);
 void da_acc_anonymize(Account *item);
 
-GtkWindow *account_window(guint32 key);
+
 void account_transaction_sort(void);
 guint account_is_used(guint32 key);
 gboolean account_has_website(Account *item);

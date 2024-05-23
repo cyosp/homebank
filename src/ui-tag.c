@@ -45,7 +45,7 @@ extern struct Preferences *PREFS;
 
 
 guint32
-ui_tag_combobox_get_key(GtkComboBoxText *combobox)
+ui_tag_combobox_get_key(GtkComboBox *combobox)
 {
 	return hbtk_combo_box_get_active_id(combobox);
 }
@@ -57,7 +57,7 @@ ui_tag_combobox_populate_except(GtkComboBoxText *combobox, guint except_key)
 GList *ltag, *list;
 	
 	//populate template
-	//hbtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(combobox), 0, "----");
+	//hbtk_combo_box_text_append(GTK_COMBO_BOX(combobox), 0, "----");
 	//gtk_combo_box_set_active(GTK_COMBO_BOX(combobox), 0);
 
 	ltag = list = tag_glist_sorted(HB_GLIST_SORT_NAME);
@@ -70,7 +70,7 @@ GList *ltag, *list;
 
 			DB( g_print(" populate: %d\n", item->key) );
 
-			hbtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(combobox), item->key, item->name);
+			hbtk_combo_box_text_append(GTK_COMBO_BOX(combobox), item->key, item->name);
 		}
 
 		list = g_list_next(list);
@@ -601,6 +601,14 @@ GtkTreeViewColumn	*column;
 	    "ellipsize-set", TRUE,
 	    NULL);
 
+	if( withtoggle == FALSE )
+	{
+		g_object_set(renderer, 
+			//taken from nemo, not exactly a resize to content, but good compromise
+			"width-chars", 40,
+			NULL);
+	}
+
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_tag_listview_name_cell_data_function, GINT_TO_POINTER(LST_DEFTAG_DATAS), NULL);
 
@@ -611,6 +619,9 @@ GtkTreeViewColumn	*column;
 	// treeviewattribute
 	//gtk_tree_view_set_headers_visible (GTK_TREE_VIEW(treeview), FALSE);
 	gtk_tree_view_set_reorderable (GTK_TREE_VIEW(treeview), TRUE);
+
+	// treeview attribute
+	gtk_tree_view_set_headers_visible (GTK_TREE_VIEW(treeview), withcount);
 
 
 	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_DEFTAG_SORT_NAME, ui_tag_listview_compare_func, GINT_TO_POINTER(LST_DEFTAG_SORT_NAME), NULL);
@@ -665,7 +676,7 @@ gchar *result = g_new0 (gchar, length+1);
 
 
 static void
-ui_tag_manage_dialog_delete_unused( GtkWidget *widget, gpointer user_data)
+ui_tag_manage_dialog_delete_unused(GSimpleAction *action, GVariant *parameter, gpointer user_data)
 {
 struct ui_tag_manage_dialog_data *data = user_data;
 gboolean result;
@@ -707,7 +718,7 @@ gboolean result;
 
 
 static void
-ui_tag_manage_dialog_load_csv( GtkWidget *widget, gpointer user_data)
+ui_tag_manage_dialog_load_csv(GSimpleAction *action, GVariant *parameter, gpointer user_data)
 {
 struct ui_tag_manage_dialog_data *data = user_data;
 gchar *filename = NULL;
@@ -736,7 +747,7 @@ gchar *error;
 
 
 static void
-ui_tag_manage_dialog_save_csv( GtkWidget *widget, gpointer user_data)
+ui_tag_manage_dialog_save_csv(GSimpleAction *action, GVariant *parameter, gpointer user_data)
 {
 struct ui_tag_manage_dialog_data *data = user_data;
 gchar *filename = NULL;
@@ -1032,7 +1043,7 @@ GtkTreeIter iter;
 		Tag *newtag;
 		guint dsttagkey;
 
-			dsttagkey = ui_tag_combobox_get_key(GTK_COMBO_BOX_TEXT(getwidget));
+			dsttagkey = ui_tag_combobox_get_key(GTK_COMBO_BOX(getwidget));
 
 			//do nothing if src = dst...
 			if( srctag->key != dsttagkey )
@@ -1234,11 +1245,19 @@ struct ui_tag_manage_dialog_data *data;
 }
 
 
+static const GActionEntry win_actions[] = {
+	{ "imp"		, ui_tag_manage_dialog_load_csv, NULL, NULL, NULL, {0,0,0} },
+	{ "exp"		, ui_tag_manage_dialog_save_csv, NULL, NULL, NULL, {0,0,0} },
+	{ "del"		, ui_tag_manage_dialog_delete_unused, NULL, NULL, NULL, {0,0,0} },
+//	{ "actioname"	, not_implemented, NULL, NULL, NULL, {0,0,0} },
+};
+
+
 GtkWidget *ui_tag_manage_dialog (void)
 {
 struct ui_tag_manage_dialog_data *data;
 GtkWidget *dialog, *content, *mainvbox, *box, *bbox, *tbar, *treeview, *scrollwin, *table, *addreveal;
-GtkWidget *menu, *menuitem, *widget, *image;
+GtkWidget *widget, *image;
 gint w, h, dw, dh, row;
 
 	data = g_malloc0(sizeof(struct ui_tag_manage_dialog_data));
@@ -1295,33 +1314,31 @@ gint w, h, dw, dh, row;
 	data->BT_showusage = widget;
 	gtk_box_pack_start(GTK_BOX (bbox), widget, FALSE, FALSE, 0);	
 
-
-	menu = gtk_menu_new ();
-	gtk_widget_set_halign (menu, GTK_ALIGN_END);
-
-	menuitem = gtk_menu_item_new_with_mnemonic (_("_Import CSV"));
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
-	g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (ui_tag_manage_dialog_load_csv), data);
-
-	menuitem = gtk_menu_item_new_with_mnemonic (_("E_xport CSV"));
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
-	g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (ui_tag_manage_dialog_save_csv), data);
-	
-	menuitem = gtk_separator_menu_item_new();
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
-	
-	menuitem = gtk_menu_item_new_with_mnemonic (_("_Delete unused"));
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
-	g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (ui_tag_manage_dialog_delete_unused), data);
-	
-	gtk_widget_show_all (menu);
-
+	//menubutton
 	widget = gtk_menu_button_new();
 	image = gtk_image_new_from_icon_name (ICONNAME_HB_BUTTON_MENU, GTK_ICON_SIZE_MENU);
-	g_object_set (widget, "image", image, "popup", GTK_MENU(menu),  NULL);
+	g_object_set (widget, "image", image,  NULL);
 	gtk_widget_set_halign (widget, GTK_ALIGN_END);
 	gtk_box_pack_end(GTK_BOX (bbox), widget, FALSE, FALSE, 0);
-	//gtk_header_bar_pack_end(GTK_HEADER_BAR (content), widget);
+
+	GMenu *menu = g_menu_new ();
+	GMenu *section = g_menu_new ();
+	g_menu_append_section(menu, NULL, G_MENU_MODEL(section));
+	g_menu_append (section, _("_Import CSV..."), "win.imp");
+	g_menu_append (section, _("E_xport CSV..."), "win.exp");
+	g_object_unref (section);
+
+	section = g_menu_new ();
+	g_menu_append_section(menu, NULL, G_MENU_MODEL(section));
+	g_menu_append (section, _("_Delete unused..."), "win.del");
+	g_object_unref (section);
+
+	GActionGroup *group = (GActionGroup*)g_simple_action_group_new ();
+	data->actions = group;
+	g_action_map_add_action_entries (G_ACTION_MAP (group), win_actions, G_N_ELEMENTS (win_actions), data);
+
+	gtk_widget_insert_action_group (widget, "win", G_ACTION_GROUP(group));
+	gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (widget), G_MENU_MODEL (menu));
 	
 	// list
 	row++;

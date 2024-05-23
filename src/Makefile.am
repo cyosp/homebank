@@ -68,6 +68,8 @@ homebank_SOURCES =  \
 	hb-transaction.h \
 	hb-xml.c \
 	hb-xml.h \
+	hbtk-switcher.c \
+	hbtk-switcher.h \
 	homebank.c \
 	homebank.h \
 	icon-names.h \
@@ -123,6 +125,8 @@ homebank_SOURCES =  \
 	ui-dialogs.h \
 	ui-filter.c \
 	ui-filter.h \
+	ui-flt-widget.c \
+	ui-flt-widget.h \
 	ui-hbfile.c \
 	ui-hbfile.h \
 	ui-group.c \

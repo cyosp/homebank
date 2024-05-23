@@ -26,6 +26,7 @@
 #include "ui-category.h"
 #include "gtk-dateentry.h"
 #include "list-operation.h"
+#include "ui-tag.h"
 
 
 /****************************************************************************/
@@ -68,11 +69,11 @@ gchar *tagstr;
 				gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_amount), ope->amount);
 				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(data->CM_amount), TRUE);
 				break;
-			case LST_DSPOPE_INFO:
+			case LST_DSPOPE_PAYNUMBER:
 				paymode_combo_box_set_active(GTK_COMBO_BOX(data->NU_mode), ope->paymode);
-				gtk_entry_set_text(GTK_ENTRY(data->ST_info), (ope->info != NULL) ? ope->info : "");
+				gtk_entry_set_text(GTK_ENTRY(data->ST_number), (ope->number != NULL) ? ope->number : "");
 				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(data->CM_mode), TRUE);
-				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(data->CM_info), TRUE);
+				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(data->CM_number), TRUE);
 				break;
 			case LST_DSPOPE_PAYEE:
 				//ui_pay_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_pay), ope->kpay);
@@ -113,10 +114,10 @@ struct ui_multipleedit_dialog_data *data;
 	if(data->ST_amount)
 		gtk_widget_set_sensitive (data->ST_amount , gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_amount )) );
 
-	if(data->NU_mode && data->ST_info)
+	if(data->NU_mode && data->ST_number)
 	{
 		gtk_widget_set_sensitive (data->NU_mode, gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_mode)) );
-		gtk_widget_set_sensitive (data->ST_info, gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_info)) );
+		gtk_widget_set_sensitive (data->ST_number, gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_number)) );
 	}
 
 	if(data->PO_acc)
@@ -271,7 +272,7 @@ guint changes;
 			}
 		}
 		
-		if( list_txn_column_id_isvisible(GTK_TREE_VIEW(data->treeview), LST_DSPOPE_INFO) == TRUE )
+		if( list_txn_column_id_isvisible(GTK_TREE_VIEW(data->treeview), LST_DSPOPE_PAYNUMBER) == TRUE )
 		{
 			if( gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_mode)) )
 			{
@@ -279,19 +280,19 @@ guint changes;
 				change = TRUE;
 			}
 		
-			if( gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_info)) )
+			if( gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_number)) )
 			{
-				if(txn->info)
+				if(txn->number)
 				{
-					g_free(txn->info);
-					txn->info = NULL;
+					g_free(txn->number);
+					txn->number = NULL;
 					change = TRUE;
 				}
 
-				txt = gtk_entry_get_text(GTK_ENTRY(data->ST_info));
+				txt = gtk_entry_get_text(GTK_ENTRY(data->ST_number));
 				if (txt && *txt)
 				{
-					txn->info = g_strdup(txt);
+					txn->number = g_strdup(txt);
 					change = TRUE;
 				}
 			}
@@ -405,7 +406,7 @@ guint changes;
 				if( dstkey > 0 )
 				{
 					txn->kxferacc = dstkey;
-					transaction_xfer_search_or_add_child(GTK_WINDOW(data->dialog), txn, dstkey);
+					transaction_xfer_search_or_add_child(GTK_WINDOW(data->dialog), FALSE, txn, dstkey);
 				}
 			}
 		}
@@ -441,7 +442,7 @@ GtkWidget *ui_multipleedit_dialog_new(GtkWindow *parent, GtkTreeView *treeview)
 struct ui_multipleedit_dialog_data *data;
 struct WinGeometry *wg;
 GtkWidget *dialog, *content;
-GtkWidget *group_grid, *label, *widget, *toggle;
+GtkWidget *group_grid, *label, *widget, *toggle, *hbox;
 gint row;
 
 	DB( g_print ("\n[ui-multipleedit] new\n") );
@@ -458,7 +459,6 @@ gint row;
 						GTK_RESPONSE_ACCEPT,
 						NULL);
 
-	//g_signal_connect (dialog, "delete_event", G_CALLBACK (register_panel_dispose), (gpointer)data);
 	g_signal_connect (dialog, "destroy", G_CALLBACK (ui_multipleedit_dialog_destroy), (gpointer)data);
 
 	//store our window private data
@@ -538,7 +538,7 @@ gint row;
 	//gtk_widget_set_margin_top(widget, SPACING_MEDIUM);
 
 	
-	if( list_txn_column_id_isvisible(GTK_TREE_VIEW(data->treeview), LST_DSPOPE_INFO) == TRUE )
+	if( list_txn_column_id_isvisible(GTK_TREE_VIEW(data->treeview), LST_DSPOPE_PAYNUMBER) == TRUE )
 	{
 		row++;
 		label = make_label_widget(_("Pa_yment:"));
@@ -547,7 +547,7 @@ gint row;
 		toggle = gtk_check_button_new();
 		data->CM_mode = toggle;
 		gtk_grid_attach (GTK_GRID (group_grid), toggle, 1, row, 1, 1);
-		widget = make_paymode_nointxfer (label);
+		widget = make_paymode (label);
 		data->NU_mode = widget;
 		//gtk_widget_set_hexpand (widget, TRUE);
 		gtk_widget_set_halign (widget, GTK_ALIGN_START);
@@ -556,17 +556,17 @@ gint row;
 		g_signal_connect (data->CM_mode , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
 
 		row++;
-		label = make_label_widget(_("_Info:"));
+		label = make_label_widget(_("_Number:"));
 		gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
 		widget = gtk_check_button_new();
-		data->CM_info = widget;
+		data->CM_number = widget;
 		gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
 		widget = make_string(label);
-		data->ST_info = widget;
+		data->ST_number = widget;
 		gtk_widget_set_hexpand (widget, TRUE);
 		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 2, 1);
 
-		g_signal_connect (data->CM_info , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
+		g_signal_connect (data->CM_number , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
 	}
 
 	if( list_txn_column_id_isvisible(GTK_TREE_VIEW(data->treeview), LST_DSPOPE_PAYEE) == TRUE )
@@ -627,10 +627,18 @@ gint row;
 		widget = gtk_check_button_new();
 		data->CM_tags = widget;
 		gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
-		widget = make_string(label);
-		data->ST_tags = widget;
-		gtk_widget_set_hexpand (widget, TRUE);
-		gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 4, 1);
+		
+		hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+		gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(hbox)), GTK_STYLE_CLASS_LINKED);
+		gtk_grid_attach (GTK_GRID (group_grid), hbox, 2, row, 4, 1);
+
+			widget = make_string(label);
+			data->ST_tags = widget;
+			gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
+
+			widget = ui_tag_popover_list(data->ST_tags);
+			data->CY_tags = widget;
+			gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
 
 		g_signal_connect (data->CM_tags , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
 	}
@@ -683,7 +691,7 @@ gint row;
 		hb_widget_visible (data->PO_acc, FALSE);
 	}
 
-	if( list_txn_column_id_isvisible(GTK_TREE_VIEW(data->treeview), LST_DSPOPE_INFO) == TRUE )
+	if( list_txn_column_id_isvisible(GTK_TREE_VIEW(data->treeview), LST_DSPOPE_PAYNUMBER) == TRUE )
 	{
 		if(data->has_xfer == TRUE)
 		{

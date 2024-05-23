@@ -487,32 +487,36 @@ guint year, month, day;
 
 
 static gint
-gtk_date_entry_cb_entry_key_pressed (GtkWidget *widget, GdkEventKey *event, gpointer user_data)
+gtk_date_entry_cb_entry_key_pressed (GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
 GtkDateEntry *dateentry = user_data;
 GtkDateEntryPrivate *priv = dateentry->priv;
+GdkModifierType state;
+guint keyval;
 guint action;
 
-	DB( g_print("\n[dateentry] entry key pressed") );
+	DB( g_print("\n[dateentry] '%s' entry key pressed", (gchar *)gtk_widget_get_name(GTK_WIDGET(dateentry))) );
 
+	gdk_event_get_keyval(event, &keyval);
+	gdk_event_get_state (event, &state);
 
-	DB( g_print(" state: %s %s\n", (event->state & GDK_SHIFT_MASK) ? "shift" : "", (event->state & GDK_CONTROL_MASK) ? "ctrl" : "" ) );
-	DB( g_print(" kyval: %s %s\n", (event->keyval == GDK_KEY_Up) ? "up" : "",  (event->keyval == GDK_KEY_Down) ? "down" : "") );
+	DB( g_print(" state: %s %s\n", (state & GDK_SHIFT_MASK) ? "shift" : "", (state & GDK_CONTROL_MASK) ? "ctrl" : "" ) );
+	DB( g_print(" keyval: %s %s\n", (keyval == GDK_KEY_Up) ? "up" : "",  (keyval == GDK_KEY_Down) ? "down" : "") );
 
-	if( (event->type != GDK_KEY_PRESS) )
+	if( (gdk_event_get_event_type(event) != GDK_KEY_PRESS) )
 		return FALSE;
 
 	//#1873643 preserve Up/Down (+ctrl) natural GTK focus change
-	if( (event->state & GDK_CONTROL_MASK) && !(event->state & GDK_SHIFT_MASK) )
+	if( (state & GDK_CONTROL_MASK) && !(state & GDK_SHIFT_MASK) )
 		return FALSE;
 
-	if( (event->keyval == GDK_KEY_Up) || (event->keyval == GDK_KEY_Down) )
+	if( (keyval == GDK_KEY_Up) || (keyval == GDK_KEY_Down) )
 	{
 		//let's bitwise key to an action-id
 		action = 0;
-		action |= (event->state & GDK_SHIFT_MASK)   ? 2 : 0;
-		action |= (event->state & GDK_CONTROL_MASK) ? 4 : 0;
-		action |= (event->keyval == GDK_KEY_Down)   ? 1 : 0;
+		action |= (state & GDK_SHIFT_MASK)   ? 2 : 0;
+		action |= (state & GDK_CONTROL_MASK) ? 4 : 0;
+		action |= (keyval == GDK_KEY_Down)   ? 1 : 0;
 
 		DB( g_print(" action: %d\n", action) );
 

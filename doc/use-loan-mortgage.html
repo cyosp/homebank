@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content="text/html; charset=utf-8" http-equiv="CONTENT-TYPE">
+  <meta content="noindex" name="robots">
+  <title>Loan / Mortgage</title>
+  <link href="help.css" rel="stylesheet" type="text/css">
+</head>
+<body id="top">
+  <div class="dochead">
+    HomeBank User manual
+  </div>
+  <div class="title">
+    <h1>Using HomeBank to follow up a loan or mortgage</h1>
+    <p>As such specific financial operation vary from countries to country, there is no built-in feature to input this, but you
+      can anyway setup and follow the reimbursement/profit with 2 or several accounts.<br>
+    Here is a way of setup and follow-up a loan for a house, it is setup into the example file as well:</p>
+    <ul class="toc">
+      <li>Step 1: <a href="#setacc">Setup the accounts</a></li>
+      <li>Step 2: <a href="#settxn">Setup the recurring transaction</a></li>
+      <li>Step 3: <a href="#setfee">Input or import the monthly fee</a></li>
+      <li>Goal: <a href="#result">Display evolution, progression</a></li>
+    </ul>
+  </div>
+
+  <div class="rounded content">
+    <h3><a id="setacc" name="setacc"></a>Step 1: Setup the accounts</h3>
+    <p>We will setup 2 accounts:<br>
+    - the <b>bank account</b>, this is where the reimbursement will goes to the loan account<br>
+    - the <b>loan (house)</b> account, this is the loan itself<br>
+    - in this account, we input a first expense line with our <b>loan total amount: -166 000.00 €</b></p>
+  </div>
+
+  <div class="rounded content">
+    <h3><a id="settxn" name="settxn"></a>Step 2: Setup the recurring transaction</h3>
+    <p>We will setup 2 recurring transaction separating refund and insurance:<br>
+    - <b>refund</b>: is a monthly <b>transfer of -1053.45 €</b> from 'bank account' to 'loan (house)' account<br>
+    - <b>insurance</b>: is a simple <b>monthly recurring</b> transaction of <b>-33.20 €</b> in 'loan (house)' account</p>
+    <p>The optional setup is not detailed here: payee, category, tag, clear, reconcile, whatever to fit you needs</p>
+  </div>
+
+  <div class="rounded content">
+    <h3><a id="setfee" name="setfee"></a>Step 3: Input or import the monthly fee</h3>
+    <p>As input each month fee will be painful, let's take benefits from the CSV import.</p>
+    <p>From your bank, or a website bank simulator, you will be able to get a full table of your loan with detailed fee.<br>
+      It is quite easy with a spreadsheet program to rearrange this to HomeBank <a href="misc-csvformat.html" target="mainFrame">CSV file format</a>.<br>
+    Then, just import this fees into the 'loan (house)' account.</p>
+  </div>
+
+  <div class="rounded content">
+    <h3><a id="result" name="result"></a>Goal: Display evolution, progression</h3>
+    <p>In the <b>main window</b><br>
+      - 'Your account' shows the remaining due amount, with cleared, reconciled and future depending on your configuration.</p>
+    
+    <p><b>With time report</b><br>
+    To view progression, 2 option:<br>
+    - tick 'Cumulate'<br>
+    - select 'loan (house)' account only<p>
+
+    <p><b>With balance report</b><br>
+    - select 'loan (house)' account only
+
+  <p>Et voilà !<br>
+  You can also use other report with appropriate filter/display configuration</p>
+
+    </div>
+
+
+
+</body>
+</html>

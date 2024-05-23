@@ -37,6 +37,7 @@ enum
 struct ui_tag_manage_dialog_data
 {
 	GtkWidget	*dialog;
+	GActionGroup * actions;
 	gboolean	mapped_done;
 
 	GtkWidget	*BT_showusage;
@@ -63,7 +64,7 @@ struct ui_tag_dialog_data
 
 /* = = = = = = = = = = */
 
-guint32 ui_tag_combobox_get_key(GtkComboBoxText *combobox);
+guint32 ui_tag_combobox_get_key(GtkComboBox *combobox);
 void ui_tag_combobox_populate_except(GtkComboBoxText *combobox, guint except_key);
 void ui_tag_combobox_populate(GtkComboBoxText *combobox);
 GtkWidget *ui_tag_combobox_new(GtkWidget *label);

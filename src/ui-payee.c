@@ -868,12 +868,15 @@ GtkTreeViewColumn	*column;
 
 	// column: hide icon
 	//#1826360 wish: archive payee/category to lighten the lists
-	column = gtk_tree_view_column_new();
-	renderer = gtk_cell_renderer_pixbuf_new ();
-	//gtk_cell_renderer_set_fixed_size(renderer, GLOBALS->lst_pixbuf_maxwidth, -1);
-	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_pay_listview_icon_cell_data_function, NULL, NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+	if( withtoggle == FALSE )
+	{
+		column = gtk_tree_view_column_new();
+		renderer = gtk_cell_renderer_pixbuf_new ();
+		//gtk_cell_renderer_set_fixed_size(renderer, GLOBALS->lst_pixbuf_maxwidth, -1);
+		gtk_tree_view_column_pack_start(column, renderer, TRUE);
+		gtk_tree_view_column_set_cell_data_func(column, renderer, ui_pay_listview_icon_cell_data_function, NULL, NULL);
+		gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+	}
 
 	// column: toggle
 	if( withtoggle == TRUE )
@@ -931,9 +934,15 @@ GtkTreeViewColumn	*column;
 	g_object_set(renderer, 
 		"ellipsize", PANGO_ELLIPSIZE_END,
 	    "ellipsize-set", TRUE,
-		//taken from nemo, not exactly a resize to content, but good compromise
-	    "width-chars", 40,
 	    NULL);
+
+	if( withtoggle == FALSE )
+	{
+		g_object_set(renderer, 
+			//taken from nemo, not exactly a resize to content, but good compromise
+			"width-chars", 40,
+			NULL);
+	}
 
 	column = gtk_tree_view_column_new();
 	gtk_tree_view_column_set_title(column, _("Payee"));
@@ -942,7 +951,7 @@ GtkTreeViewColumn	*column;
 	//#2004631 date and column title alignement
 	//gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_column_set_resizable(column, TRUE);
-	gtk_tree_view_column_set_min_width(column, HB_MINWIDTH_LIST);
+	//gtk_tree_view_column_set_min_width(column, HB_MINWIDTH_LIST);
 	gtk_tree_view_column_set_sort_column_id (column, LST_DEFPAY_SORT_NAME);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
@@ -965,7 +974,7 @@ GtkTreeViewColumn	*column;
 		//#2004631 date and column title alignement
 		//gtk_tree_view_column_set_alignment (column, 0.5);
 		gtk_tree_view_column_set_resizable(column, TRUE);
-		gtk_tree_view_column_set_min_width(column, HB_MINWIDTH_LIST);
+		//gtk_tree_view_column_set_min_width(column, HB_MINWIDTH_LIST);
 		gtk_tree_view_column_set_sort_column_id (column, LST_DEFPAY_SORT_DEFCAT);
 		gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 	}
@@ -983,10 +992,6 @@ GtkTreeViewColumn	*column;
 		gtk_tree_view_column_set_sort_column_id (column, LST_DEFPAY_SORT_DEFPAY);
 		gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 	}	
-
-	/* empty */
-	column = gtk_tree_view_column_new();
-	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
 	if( withtoggle == TRUE )
 		gtk_tree_view_set_search_equal_func(GTK_TREE_VIEW(treeview), ui_pay_listview_search_equal_func, NULL, NULL);
@@ -1024,7 +1029,7 @@ gchar *needle;
 
 
 static void
-ui_pay_manage_dialog_delete_unused( GtkWidget *widget, gpointer user_data)
+ui_pay_manage_dialog_delete_unused(GSimpleAction *action, GVariant *parameter, gpointer user_data)
 {
 struct ui_pay_manage_dialog_data *data = user_data;
 gboolean result;
@@ -1068,7 +1073,7 @@ gboolean result;
  *
  */
 static void
-ui_pay_manage_dialog_load_csv( GtkWidget *widget, gpointer user_data)
+ui_pay_manage_dialog_load_csv(GSimpleAction *action, GVariant *parameter, gpointer user_data)
 {
 struct ui_pay_manage_dialog_data *data = user_data;
 gchar *filename = NULL;
@@ -1100,7 +1105,7 @@ gchar *error;
  *
  */
 static void
-ui_pay_manage_dialog_save_csv( GtkWidget *widget, gpointer user_data)
+ui_pay_manage_dialog_save_csv(GSimpleAction *action, GVariant *parameter, gpointer user_data)
 {
 struct ui_pay_manage_dialog_data *data = user_data;
 gchar *filename = NULL;
@@ -1303,9 +1308,7 @@ guint32 key;
 		row++;
 		label = make_label_widget(_("Pa_yment:"));
 		gtk_grid_attach (GTK_GRID (grid), label, 1, row, 1, 1);
-		//5.2.4 we drop internal xfer here as it will disapear 
-		//widget = make_paymode_nointxfer(label);
-		widget = make_paymode_nointxfer(label);
+		widget = make_paymode(label);
 		NU_mode = widget;
 		gtk_grid_attach (GTK_GRID (grid), widget, 2, row, 1, 1);
 
@@ -1637,18 +1640,22 @@ guint32 key;
 }
 
 
-static gboolean ui_pay_manage_dialog_cb_on_key_press(GtkWidget *source, GdkEventKey *event, gpointer user_data)
+static gboolean ui_pay_manage_dialog_cb_on_key_press(GtkWidget *source, GdkEvent *event, gpointer user_data)
 {
 struct ui_pay_manage_dialog_data *data = user_data;
+GdkModifierType state;
+guint keyval;
+
+	gdk_event_get_state (event, &state);
+	gdk_event_get_keyval(event, &keyval);
 
 	// On Control-f enable search entry
-	if (event->state & GDK_CONTROL_MASK
-		&& event->keyval == GDK_KEY_f)
+	if (state & GDK_CONTROL_MASK && keyval == GDK_KEY_f)
 	{
 		gtk_widget_grab_focus(data->ST_search);
 	}
 	else
-	if (event->keyval == GDK_KEY_Escape && gtk_widget_has_focus(data->ST_search))
+	if (keyval == GDK_KEY_Escape && gtk_widget_has_focus(data->ST_search))
 	{
 		hbtk_entry_set_text(GTK_ENTRY(data->ST_search), NULL);
 		gtk_widget_grab_focus(data->LV_pay);
@@ -1762,11 +1769,19 @@ struct ui_pay_manage_dialog_data *data;
 }
 
 
+static const GActionEntry win_actions[] = {
+	{ "imp"		, ui_pay_manage_dialog_load_csv, NULL, NULL, NULL, {0,0,0} },
+	{ "exp"		, ui_pay_manage_dialog_save_csv, NULL, NULL, NULL, {0,0,0} },
+	{ "del"		, ui_pay_manage_dialog_delete_unused, NULL, NULL, NULL, {0,0,0} },
+//	{ "actioname"	, not_implemented, NULL, NULL, NULL, {0,0,0} },
+};
+
+
 GtkWidget *ui_pay_manage_dialog (void)
 {
 struct ui_pay_manage_dialog_data *data;
 GtkWidget *dialog, *content, *mainvbox, *vbox, *bbox, *treeview, *scrollwin, *table;
-GtkWidget *menu, *menuitem, *widget, *image, *revealer, *tbar;
+GtkWidget *widget, *image, *revealer, *tbar;
 gint w, h, dw, dh, row;
 
 	data = g_malloc0(sizeof(struct ui_pay_manage_dialog_data));
@@ -1828,34 +1843,32 @@ gint w, h, dw, dh, row;
 	data->BT_showusage = widget;
 	gtk_box_pack_start(GTK_BOX (bbox), widget, FALSE, FALSE, 0);	
 
-		
-	menu = gtk_menu_new ();
-	gtk_widget_set_halign (menu, GTK_ALIGN_END);
-
-	menuitem = gtk_menu_item_new_with_mnemonic (_("_Import CSV"));
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
-	g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (ui_pay_manage_dialog_load_csv), data);
-
-	menuitem = gtk_menu_item_new_with_mnemonic (_("E_xport CSV"));
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
-	g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (ui_pay_manage_dialog_save_csv), data);
-	
-	menuitem = gtk_separator_menu_item_new();
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
-	
-	menuitem = gtk_menu_item_new_with_mnemonic (_("_Delete unused"));
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
-	g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (ui_pay_manage_dialog_delete_unused), data);
-	
-	gtk_widget_show_all (menu);
-
-
+	//menubutton
 	widget = gtk_menu_button_new();
 	image = gtk_image_new_from_icon_name (ICONNAME_HB_BUTTON_MENU, GTK_ICON_SIZE_MENU);
-	g_object_set (widget, "image", image, "popup", GTK_MENU(menu),  NULL);
+	g_object_set (widget, "image", image,  NULL);
 	gtk_widget_set_halign (widget, GTK_ALIGN_END);
 	gtk_box_pack_end(GTK_BOX (bbox), widget, FALSE, FALSE, 0);
-	//gtk_header_bar_pack_end(GTK_HEADER_BAR (content), widget);
+
+	GMenu *menu = g_menu_new ();
+	GMenu *section = g_menu_new ();
+	g_menu_append_section(menu, NULL, G_MENU_MODEL(section));
+	g_menu_append (section, _("_Import CSV..."), "win.imp");
+	g_menu_append (section, _("E_xport CSV..."), "win.exp");
+	g_object_unref (section);
+
+	section = g_menu_new ();
+	g_menu_append_section(menu, NULL, G_MENU_MODEL(section));
+	g_menu_append (section, _("_Delete unused..."), "win.del");
+	g_object_unref (section);
+
+	GActionGroup *group = (GActionGroup*)g_simple_action_group_new ();
+	data->actions = group;
+	g_action_map_add_action_entries (G_ACTION_MAP (group), win_actions, G_N_ELEMENTS (win_actions), data);
+
+	gtk_widget_insert_action_group (widget, "win", G_ACTION_GROUP(group));
+	gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (widget), G_MENU_MODEL (menu));
+
 
 	widget = make_search();
 	data->ST_search = widget;
@@ -1867,10 +1880,8 @@ gint w, h, dw, dh, row;
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_grid_attach (GTK_GRID (table), vbox, 0, row, 2, 1);
 
-	scrollwin = gtk_scrolled_window_new(NULL,NULL);
+	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start(GTK_BOX(vbox), scrollwin, TRUE, TRUE, 0);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scrollwin), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scrollwin), HB_MINHEIGHT_LIST);
 	gtk_widget_set_hexpand (scrollwin, TRUE);
 	gtk_widget_set_vexpand (scrollwin, TRUE);

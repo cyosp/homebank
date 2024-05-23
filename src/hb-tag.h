@@ -53,6 +53,7 @@ Tag		*da_tag_get_by_name(gchar *name);
 Tag		*da_tag_get(guint32 key);
 void da_tag_consistency(Tag *item);
 
+gboolean tags_equal(guint32 *stags, guint32 *dtags);
 guint tags_count(guint32 *tags);
 guint32 *tags_clone(guint32 *tags);
 guint32 *tags_parse(const gchar *tagstring);

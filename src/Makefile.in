@@ -110,7 +110,8 @@ am_homebank_OBJECTS = dsp-account.$(OBJEXT) dsp-mainwindow.$(OBJEXT) \
 	hb-import-csv.$(OBJEXT) hb-misc.$(OBJEXT) hb-payee.$(OBJEXT) \
 	hb-group.$(OBJEXT) hb-preferences.$(OBJEXT) \
 	hb-report.$(OBJEXT) hb-tag.$(OBJEXT) hb-split.$(OBJEXT) \
-	hb-transaction.$(OBJEXT) hb-xml.$(OBJEXT) homebank.$(OBJEXT) \
+	hb-transaction.$(OBJEXT) hb-xml.$(OBJEXT) \
+	hbtk-switcher.$(OBJEXT) homebank.$(OBJEXT) \
 	hub-account.$(OBJEXT) hub-reptime.$(OBJEXT) \
 	hub-reptotal.$(OBJEXT) hub-scheduled.$(OBJEXT) \
 	hub-transaction.$(OBJEXT) language.$(OBJEXT) \
@@ -122,9 +123,10 @@ am_homebank_OBJECTS = dsp-account.$(OBJEXT) dsp-mainwindow.$(OBJEXT) \
 	ui-assist-import.$(OBJEXT) ui-assist-start.$(OBJEXT) \
 	ui-budget.$(OBJEXT) ui-budget-tabview.$(OBJEXT) \
 	ui-category.$(OBJEXT) ui-currency.$(OBJEXT) \
-	ui-dialogs.$(OBJEXT) ui-filter.$(OBJEXT) ui-hbfile.$(OBJEXT) \
-	ui-group.$(OBJEXT) ui-payee.$(OBJEXT) ui-pref.$(OBJEXT) \
-	ui-split.$(OBJEXT) ui-tag.$(OBJEXT) ui-transaction.$(OBJEXT) \
+	ui-dialogs.$(OBJEXT) ui-filter.$(OBJEXT) \
+	ui-flt-widget.$(OBJEXT) ui-hbfile.$(OBJEXT) ui-group.$(OBJEXT) \
+	ui-payee.$(OBJEXT) ui-pref.$(OBJEXT) ui-split.$(OBJEXT) \
+	ui-tag.$(OBJEXT) ui-transaction.$(OBJEXT) \
 	ui-txn-multi.$(OBJEXT) ui-widgets-data.$(OBJEXT) \
 	ui-widgets.$(OBJEXT)
 homebank_OBJECTS = $(am_homebank_OBJECTS)
@@ -159,25 +161,27 @@ am__depfiles_remade = ./$(DEPDIR)/dsp-account.Po \
 	./$(DEPDIR)/hb-payee.Po ./$(DEPDIR)/hb-preferences.Po \
 	./$(DEPDIR)/hb-report.Po ./$(DEPDIR)/hb-split.Po \
 	./$(DEPDIR)/hb-tag.Po ./$(DEPDIR)/hb-transaction.Po \
-	./$(DEPDIR)/hb-xml.Po ./$(DEPDIR)/homebank.Po \
-	./$(DEPDIR)/hub-account.Po ./$(DEPDIR)/hub-reptime.Po \
-	./$(DEPDIR)/hub-reptotal.Po ./$(DEPDIR)/hub-scheduled.Po \
-	./$(DEPDIR)/hub-transaction.Po ./$(DEPDIR)/language.Po \
-	./$(DEPDIR)/list-account.Po ./$(DEPDIR)/list-operation.Po \
-	./$(DEPDIR)/list-report.Po ./$(DEPDIR)/list-scheduled.Po \
-	./$(DEPDIR)/rep-balance.Po ./$(DEPDIR)/rep-budget.Po \
-	./$(DEPDIR)/rep-stats.Po ./$(DEPDIR)/rep-time.Po \
-	./$(DEPDIR)/rep-vehicle.Po ./$(DEPDIR)/ui-account.Po \
-	./$(DEPDIR)/ui-archive.Po ./$(DEPDIR)/ui-assign.Po \
-	./$(DEPDIR)/ui-assist-import.Po ./$(DEPDIR)/ui-assist-start.Po \
+	./$(DEPDIR)/hb-xml.Po ./$(DEPDIR)/hbtk-switcher.Po \
+	./$(DEPDIR)/homebank.Po ./$(DEPDIR)/hub-account.Po \
+	./$(DEPDIR)/hub-reptime.Po ./$(DEPDIR)/hub-reptotal.Po \
+	./$(DEPDIR)/hub-scheduled.Po ./$(DEPDIR)/hub-transaction.Po \
+	./$(DEPDIR)/language.Po ./$(DEPDIR)/list-account.Po \
+	./$(DEPDIR)/list-operation.Po ./$(DEPDIR)/list-report.Po \
+	./$(DEPDIR)/list-scheduled.Po ./$(DEPDIR)/rep-balance.Po \
+	./$(DEPDIR)/rep-budget.Po ./$(DEPDIR)/rep-stats.Po \
+	./$(DEPDIR)/rep-time.Po ./$(DEPDIR)/rep-vehicle.Po \
+	./$(DEPDIR)/ui-account.Po ./$(DEPDIR)/ui-archive.Po \
+	./$(DEPDIR)/ui-assign.Po ./$(DEPDIR)/ui-assist-import.Po \
+	./$(DEPDIR)/ui-assist-start.Po \
 	./$(DEPDIR)/ui-budget-tabview.Po ./$(DEPDIR)/ui-budget.Po \
 	./$(DEPDIR)/ui-category.Po ./$(DEPDIR)/ui-currency.Po \
 	./$(DEPDIR)/ui-dialogs.Po ./$(DEPDIR)/ui-filter.Po \
-	./$(DEPDIR)/ui-group.Po ./$(DEPDIR)/ui-hbfile.Po \
-	./$(DEPDIR)/ui-payee.Po ./$(DEPDIR)/ui-pref.Po \
-	./$(DEPDIR)/ui-split.Po ./$(DEPDIR)/ui-tag.Po \
-	./$(DEPDIR)/ui-transaction.Po ./$(DEPDIR)/ui-txn-multi.Po \
-	./$(DEPDIR)/ui-widgets-data.Po ./$(DEPDIR)/ui-widgets.Po
+	./$(DEPDIR)/ui-flt-widget.Po ./$(DEPDIR)/ui-group.Po \
+	./$(DEPDIR)/ui-hbfile.Po ./$(DEPDIR)/ui-payee.Po \
+	./$(DEPDIR)/ui-pref.Po ./$(DEPDIR)/ui-split.Po \
+	./$(DEPDIR)/ui-tag.Po ./$(DEPDIR)/ui-transaction.Po \
+	./$(DEPDIR)/ui-txn-multi.Po ./$(DEPDIR)/ui-widgets-data.Po \
+	./$(DEPDIR)/ui-widgets.Po
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -405,6 +409,8 @@ homebank_SOURCES = \
 	hb-transaction.h \
 	hb-xml.c \
 	hb-xml.h \
+	hbtk-switcher.c \
+	hbtk-switcher.h \
 	homebank.c \
 	homebank.h \
 	icon-names.h \
@@ -460,6 +466,8 @@ homebank_SOURCES = \
 	ui-dialogs.h \
 	ui-filter.c \
 	ui-filter.h \
+	ui-flt-widget.c \
+	ui-flt-widget.h \
 	ui-hbfile.c \
 	ui-hbfile.h \
 	ui-group.c \
@@ -602,6 +610,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hb-tag.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hb-transaction.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hb-xml.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hbtk-switcher.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/homebank.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hub-account.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hub-reptime.Po@am__quote@ # am--include-marker
@@ -629,6 +638,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ui-currency.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ui-dialogs.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ui-filter.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ui-flt-widget.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ui-group.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ui-hbfile.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ui-payee.Po@am__quote@ # am--include-marker
@@ -814,6 +824,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/hb-tag.Po
 	-rm -f ./$(DEPDIR)/hb-transaction.Po
 	-rm -f ./$(DEPDIR)/hb-xml.Po
+	-rm -f ./$(DEPDIR)/hbtk-switcher.Po
 	-rm -f ./$(DEPDIR)/homebank.Po
 	-rm -f ./$(DEPDIR)/hub-account.Po
 	-rm -f ./$(DEPDIR)/hub-reptime.Po
@@ -841,6 +852,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/ui-currency.Po
 	-rm -f ./$(DEPDIR)/ui-dialogs.Po
 	-rm -f ./$(DEPDIR)/ui-filter.Po
+	-rm -f ./$(DEPDIR)/ui-flt-widget.Po
 	-rm -f ./$(DEPDIR)/ui-group.Po
 	-rm -f ./$(DEPDIR)/ui-hbfile.Po
 	-rm -f ./$(DEPDIR)/ui-payee.Po
@@ -924,6 +936,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/hb-tag.Po
 	-rm -f ./$(DEPDIR)/hb-transaction.Po
 	-rm -f ./$(DEPDIR)/hb-xml.Po
+	-rm -f ./$(DEPDIR)/hbtk-switcher.Po
 	-rm -f ./$(DEPDIR)/homebank.Po
 	-rm -f ./$(DEPDIR)/hub-account.Po
 	-rm -f ./$(DEPDIR)/hub-reptime.Po
@@ -951,6 +964,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/ui-currency.Po
 	-rm -f ./$(DEPDIR)/ui-dialogs.Po
 	-rm -f ./$(DEPDIR)/ui-filter.Po
+	-rm -f ./$(DEPDIR)/ui-flt-widget.Po
 	-rm -f ./$(DEPDIR)/ui-group.Po
 	-rm -f ./$(DEPDIR)/ui-hbfile.Po
 	-rm -f ./$(DEPDIR)/ui-payee.Po

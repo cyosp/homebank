@@ -87,6 +87,7 @@ gboolean category_rename(Category *item, const gchar *newname);
 
 gchar *category_find_preset(gchar **lang);
 gint category_type_get(Category *item);
+gint category_root_type_get(guint32 key);
 gchar category_get_type_char(Category *item);
 gint category_change_type(Category *item, gboolean isIncome, gboolean doChild);
 

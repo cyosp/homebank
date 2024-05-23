@@ -47,8 +47,8 @@ da_archive_clean(Archive *item)
 		g_free(item->memo);
 		item->memo = NULL;
 
-		g_free(item->info);
-		item->info = NULL;
+		g_free(item->number);
+		item->number = NULL;
 
 		//5.3 added as it was a leak
 		g_free(item->tags);
@@ -95,7 +95,7 @@ Archive *new_item = g_memdup(src_item, sizeof(Archive));
 	{
 		//duplicate the string
 		new_item->memo = g_strdup(src_item->memo);
-		new_item->info = g_strdup(src_item->info);
+		new_item->number = g_strdup(src_item->number);
 
 		//duplicate tags
 		//no g_free here to avoid free the src tags (memdup copie dthe ptr)
@@ -363,8 +363,8 @@ gint nbt, nbs;
 }
 
 
-//#1872140 don't prefix if not from register
-Archive *da_archive_init_from_transaction(Archive *arc, Transaction *txn, gboolean fromregister)
+//#1872140 don't prefix if not from ledger
+Archive *da_archive_init_from_transaction(Archive *arc, Transaction *txn, gboolean fromledger)
 {
 	DB( g_print("\n[scheduled] init from txn\n") );
 
@@ -383,8 +383,8 @@ Archive *da_archive_init_from_transaction(Archive *arc, Transaction *txn, gboole
 	arc->kcat		= txn->kcat;
 
 	//5.3.3 prefixed with prefilled
-	//#1883063 **PREFILLED** only when fromregister==TRUE, test order was wrogn here
-	if( fromregister == FALSE )
+	//#1883063 **PREFILLED** only when fromledger==TRUE, test order was wrogn here
+	if( fromledger == FALSE )
 	{
 		if(txn->memo != NULL)
 			arc->memo = g_strdup(txn->memo);	
@@ -400,8 +400,8 @@ Archive *da_archive_init_from_transaction(Archive *arc, Transaction *txn, gboole
 		//	arc->memo = g_strdup(_("**PREFILLED**"));
 	}	
 
-	if(txn->info != NULL)
-		arc->info = g_strdup(txn->info);
+	if(txn->number != NULL)
+		arc->number = g_strdup(txn->number);
 
 	arc->tags    = tags_clone(txn->tags);
 	arc->splits  = da_splits_clone(txn->splits);
@@ -548,13 +548,13 @@ gint shift;
 		{
 			switch(arc->weekend)
 			{
-				case 1: /* shift before : sun 7-5=+2 , sat 6-5=+1 */
+				case ARC_WEEKEND_BEFORE: /* shift before : sun 7-5=+2 , sat 6-5=+1 */
 					shift = wday - G_DATE_FRIDAY;
 					DB( g_print("sub=%d\n", shift) );
 					g_date_subtract_days (tmpdate, shift);
 					break;
 
-				case 2: /* shift after : sun 8-7=1 , sat 8-6=2 */
+				case ARC_WEEKEND_AFTER: /* shift after : sun 8-7=1 , sat 8-6=2 */
 					shift = 8 - wday;
 					DB( g_print("add=%d\n", shift) );
 					g_date_add_days (tmpdate, shift);
@@ -757,7 +757,7 @@ guint8 daysinmonth;
 			
 			//TODO: 5.7 probably this is false
 			nxtmonth = ceil((gdouble)g_date_get_month(maxdate)/(gdouble)nbmonth)*(gdouble)nbmonth;
-			DB( g_print("nxtmonth: %f =  ceil( %d / %d) / %d\n", nxtmonth, g_date_get_month(today), month, month) );
+			//DB( g_print("nxtmonth: %f =  ceil( %d / %d) / %d\n", nxtmonth, g_date_get_month(today), month, month) );
 			g_date_set_day(maxdate, auto_weekday);
 			g_date_set_month(maxdate, nxtmonth);
 
@@ -812,11 +812,13 @@ Transaction *txn;
 			DB( g_print(" - every %d limit %d (to %d)\n", arc->every, arc->flags & OF_LIMIT, arc->limit) );
 			DB( hb_print_date(arc->nextdate, "next post") );
 
-			if(arc->nextdate < maxpostdate)
+			//#2064839 <=
+			if(arc->nextdate <= maxpostdate)
 			{
 			guint32 mydate = arc->nextdate;
 
-				while(mydate < maxpostdate)
+				//#2064839 <=
+				while(mydate <= maxpostdate)
 				{
 					DB( hb_print_date(mydate, arc->memo) );
 					//5.5.3 fixed leak as this was outside the loop
@@ -827,7 +829,7 @@ Transaction *txn;
 					/* todo: ? fill in cheque number */
 
 					DB( g_print(" -- post --\n") );
-					transaction_add(NULL, txn);
+					transaction_add(NULL, FALSE, txn);
 
 					da_transaction_free (txn);
 

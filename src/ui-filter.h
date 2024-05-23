@@ -32,6 +32,11 @@
 #define	FLT_PAGE_NAME_TXT		"txt"
 
 
+/* official GTK_RESPONSE are negative */
+#define HB_RESPONSE_FLT_SAVE_USE	33
+#define HB_RESPONSE_FLT_RESET		55
+
+
 enum
 {
 	LST_DEFFLT_TOGGLE,
@@ -51,6 +56,10 @@ struct ui_flt_manage_data
 {
 	Filter		*filter;
 
+	gboolean	saveable;
+	gboolean	show_account;
+
+
 	GtkWidget	*dialog;
 	GtkWidget	*stack;
 
@@ -58,10 +67,12 @@ struct ui_flt_manage_data
 	GtkWidget	*RA_matchmode[FLT_GRP_MAX];
 	GtkWidget	*GR_page[FLT_GRP_MAX];
 
+	GtkWidget	*CY_range;
+	GtkWidget	*LB_mindate, *LB_maxdate;
 	GtkWidget	*PO_mindate, *PO_maxdate;
 	GtkWidget	*CY_month, *NB_year;
 
-	GtkWidget	*CM_typexp, *CM_typinc, *CM_typxfr;
+	GtkWidget	*CM_typnexp, *CM_typninc, *CM_typxexp, *CM_typxinc;
 	
 	GtkWidget	*CM_stanon, *CM_staclr, *CM_starec;
 	
@@ -74,20 +85,14 @@ struct ui_flt_manage_data
 	GtkWidget	*ST_minamount, *ST_maxamount;
 
 	GtkWidget	*CM_exact;
-	GtkWidget	*ST_info, *ST_memo;
+	GtkWidget	*ST_number, *ST_memo;
 
 	GtkWidget	*LV_acc;
 	GtkWidget	*LV_pay;
 	GtkWidget	*LV_tag;
 	GtkWidget	*LV_cat;
 	GtkWidget	*BT_expand, *BT_collapse;
-
-	gboolean	show_account;
-
-
 };
-
-
 
 
 /* = = = = = = = = = = */
@@ -96,3 +101,4 @@ gint ui_flt_manage_dialog_new(GtkWindow *parentwindow, Filter *filter, gboolean 
 
 
 #endif
+

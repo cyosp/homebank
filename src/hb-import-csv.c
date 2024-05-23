@@ -331,6 +331,8 @@ GIOChannel *io;
 
 						DB( g_print(" adding txn\n" ) );
 
+						//5.8 #2063416 same date txn
+						newope->row         = count;
 						/* convert to generic transaction */
 						newope->date		= g_strdup(str_array[0]);			
 						newope->paymode		= atoi(str_array[1]);
@@ -339,7 +341,7 @@ GIOChannel *io;
 						//added 5.1.8 forbid to import 5=internal xfer
 						if(newope->paymode == OLDPAYMODE_INTXFER)
 							newope->paymode = PAYMODE_XFER;
-						newope->rawinfo		= g_strdup(str_array[2]);
+						newope->rawnumber	= g_strdup(str_array[2]);
 						newope->rawpayee	= g_strdup(g_strstrip(str_array[3]));						
 						newope->rawmemo		= g_strdup(str_array[4]);
 						newope->amount		= hb_qif_parser_get_amount(str_array[5]);

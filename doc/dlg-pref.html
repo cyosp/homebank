@@ -19,13 +19,14 @@
       <li><a href="#tab2">Interface</a></li>
       <li><a href="#tab3">Locale</a></li>
       <li><a href="#tab4">Transactions</a></li>
-      <li><a href="#tab5">Import/Export</a></li>
-      <li><a href="#tab6">Report</a></li>
-      <li><a href="#tabF">Forecast</a> <img src="images/new12.png"></li>
-      <li><a href="#tab7">Backup</a></li>
-      <li><a href="#tab8">Folders</a></li>
-      <li><a href="#tab9">Euro minor</a></li>
-      <li><a href="#tabA">Advanced</a></li>
+      <li><a href="#tab5">Payment</a> <img src="images/new12.png"></li>
+      <li><a href="#tab6">Import/Export</a></li>
+      <li><a href="#tab7">Report</a></li>
+      <li><a href="#tabF">Forecast</a></li>
+      <li><a href="#tab8">Backup</a></li>
+      <li><a href="#tab9">Folders</a></li>
+      <li><a href="#tabA">Euro minor</a></li>
+      <li><a href="#tabB">Advanced</a></li>
     </ul><!-- separator -->
   </div>
 
@@ -56,10 +57,6 @@
     </table>
     <h3>Main window reports</h3>
     <table class="widgetinfo">
-      <tr>
-        <th>Range</th>
-        <td>default range initial value for the main window reports</td>
-      </tr>
       <tr>
         <th>Max items</th>
         <td>default number of slice for the pie chart of the main window reports</td>
@@ -94,6 +91,10 @@
           </ul>
         </td>
       </tr>
+      <tr>
+        <th>Icon theme</th>
+        <td>default icon theme, to be enriched in the future</td>
+      </tr>
     </table>
 
     <h3>Gtk settings</h3>
@@ -104,7 +105,8 @@
       </tr>
       <tr>
         <th>Dark theme</th>
-        <td>well, you know what this is about right ?</td>
+        <td>For GNU/Linux users the theme will follow the desktop preference<br>
+        For other users, well, you know what this is about right ?</td>
       </tr>
     </table>
 
@@ -135,6 +137,7 @@
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
 </div>
+
 <div class="row">
   <div class="gfx">
     <img class="gtkshot right" src="images/dlg-prefs3.png">
@@ -169,7 +172,7 @@
     <h3>Measurement units</h3>
     <table class="widgetinfo">
       <tr>
-        <th>Use miles for metre</th>
+        <th>Use miles for meter</th>
         <td>use the mile labels and abbreviation for the vehicle cost</td>
       </tr>
       <tr>
@@ -215,7 +218,7 @@
         <td>set the void transaction to always be display (ignore filters)</td>
       </tr>
       <tr>
-        <th>Include remind into balance</th>
+        <th>Include remind into balance and report</th>
         <td>set the remind transaction amount to be computed into the balance, ignored otherwise</td>
       </tr>
        <tr>
@@ -234,10 +237,6 @@
         </td>
       </tr>
       <tr>
-        <td>Transfer target date tolerance [xx] days</td>
-        <td>Define the number of +/- days to search for a target transaction for transfer</td>
-      </tr>
-      <tr>
         <th>Enable memo autocomplete with [xxx] rolling days</th>
         <td>Collect and propose memo for autocomplete or not
         and define how many days into the past to grab memo for autocomplete, if for example 30 days, you will only see the last 30 days autocomplete memo</td>
@@ -246,19 +245,58 @@
         <th>Show confirmation text for 5s</th>
         <td>Will show 5s added confirmation text into the transaction dialog</td>
       </tr>
+      <tr>
+        <th><img src="images/new12.png"> Show template list when edit</th>
+        <td>this will show the template dropdown list when you edit a transaction</td>
+      </tr>
     </table>
+
+    <h3>Transfer behavior</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th><img src="images/new12.png"> Show action for target creation dialog for Add</th>
+        <td>this will force to show target dialog when you add a transfer</td>
+      </tr>
+      <tr>
+        <th>Transfer target date tolerance [xx] days</th>
+        <td>Define the number of +/- days to search for a target transaction for transfer</td>
+      </tr>
+      <tr>
+        <th><img src="images/new12.png"> Sync transfer status</th>
+        <td>this will force to sync the status of the transfer src and dst when you change it</td>
+      </tr>
+    </table>
+
+
     <!-- separator -->
     <div class="clear"></div>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
-
 </div>
+
 <div class="row">
   <div class="gfx">
     <img class="gtkshot right" src="images/dlg-prefs5.png">
   </div>
   <div class="rounded content">
-    <h2><a id="tab5" name="tab5"></a>Import/Export</h2>
+    <h2><a id="tab5" name="tab5"></a>Payment <img src="images/new24.png"></h2>
+    <h3>Payment shows & chooses</h3>
+
+    <p>This list enables you to select what payment mode to show/hide and in which order !</p>
+
+
+    <!-- separator -->
+    <div class="clear"></div>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="gfx">
+    <img class="gtkshot right" src="images/dlg-prefs6.png">
+  </div>
+  <div class="rounded content">
+    <h2><a id="tab6" name="tab6"></a>Import/Export</h2>
     <h3>General options</h3>
     <table class="widgetinfo">
       <tr>
@@ -328,10 +366,10 @@
 </div>
 <div class="row">
   <div class="gfx">
-    <img class="gtkshot right" src="images/dlg-prefs6.png">
+    <img class="gtkshot right" src="images/dlg-prefs7.png">
   </div>
   <div class="rounded content">
-    <h2><a id="tab6" name="tab6"></a>Report</h2>
+    <h2><a id="tab7" name="tab7"></a>Report</h2>
     <h3>Initial filter</h3>
     <table class="widgetinfo">
       <tr>
@@ -423,15 +461,15 @@
 
 <div class="row">
   <div class="gfx">
-    <img class="gtkshot right" src="images/dlg-prefs7.png">
+    <img class="gtkshot right" src="images/dlg-prefs8.png">
   </div>
   <div class="rounded content">
-    <h2><a id="tab7" name="tab7"></a>Backup</h2>
+    <h2><a id="tab8" name="tab8"></a>Backup</h2>
     <h3>Backup</h3>
     <table class="widgetinfo">
       <tr>
         <th>Enable automatic backups</th>
-        <td>to activate backup of your xhb files</td>
+        <td>to activate backup of your .xhb files</td>
       </tr>
       <tr>
         <th>Number of backups to keep [xx]</th>
@@ -449,10 +487,10 @@
 
 <div class="row">
   <div class="gfx">
-    <img class="gtkshot right" src="images/dlg-prefs8.png">
+    <img class="gtkshot right" src="images/dlg-prefs9.png">
   </div>
   <div class="rounded content">
-    <h2><a id="tab8" name="tab8"></a>Folders</h2>
+    <h2><a id="tab9" name="tab9"></a>Folders</h2>
     <p class="warning"><img src="images/d-warn.png">&nbsp;When you change those folders, HomeBank will not move nor copy files, including any current opened file.</p>
     <p>These folders are the location that the file selector will use as a default when it opens.<br>
     If you want to change the location of your files, change it to the filesystem first, then change it here.</p>
@@ -488,10 +526,10 @@
 
 <div class="row">
   <div class="gfx">
-    <img class="gtkshot right" src="images/dlg-prefs9.png">
+    <img class="gtkshot right" src="images/dlg-prefsA.png">
   </div>
   <div class="rounded content">
-    <h2><a id="tab9" name="tab9"></a>Euro minor</h2>
+    <h2><a id="tabA" name="tabA"></a>Euro minor</h2>
     <h3>General</h3>
     <table class="widgetinfo">
       <tr>
@@ -545,10 +583,10 @@
 
 <div class="row">
   <div class="gfx">
-    <img class="gtkshot right" src="images/dlg-prefsA.png">
+    <img class="gtkshot right" src="images/dlg-prefsB.png">
   </div>
   <div class="rounded content">
-    <h2><a id="tabA" name="tabA"></a>Advanced</h2>
+    <h2><a id="tabB" name="tabB"></a>Advanced</h2>
     <h3>Currency API</h3>
     <table class="widgetinfo">
       <tr>

@@ -1,5 +1,67 @@
 
 
+2024-05-12  Maxime Doyen
+
+ Made 5.8 release
+
+ * new   : statistics report: category sign is now also displayed
+ * new   : added a tooltip to display active filter in all report windows
+ * change: migrating to GTK4 preparation (GdkEvent struct)
+ * change: migrating to GTK4 preparation (GtkApplication, GtkApplicationWindow)
+ * change: migrating to GTK4 preparation (GtkMenu*, GtkToolbar) for ledger
+ * change: 'select action for target xfer' creation cancel now get back to txn dialog
+ * change: reports: moved the collapse/expand buttons to bottom of the list
+ * change: example file addition: split, tags, loan, flags, life-energy
+ * change: the Info field is named as it should have originally: Number
+ * change: added missing enums for most action of combobox
+ * wish  : #2064754 yours account should always display a tooltip for consistency
+ * wish  : #2064520 enable ledger txn reconciled > cleared, like for none
+ * wish  : #2063416 index for importing csv files
+ * wish  : #2060588 widths of memo -v- amount field in split transactions
+ * wish  : #2059733 preference to use the template list when edit a transaction
+ * wish  : #2058696 enrich account transactions list window title with account number and institution name
+ * wish  : #2058566 budget Report - detail pane size not adjustable
+ * wish  : #2056654 add thousand separator when print 'your accounts'
+ * wish  : #2055533 Payment column in auto-assignment window
+ * wish  : #2054906 "Cancel" button on prompt for a target txn when adding xfer should not create a transaction
+ * wish  : #2051758 add a help tip when input amount range in filter
+ * wish  : #2045514 Balance report to exclude transfers when multiple selected accounts
+ * wish  : #2044601 preference to always prompt for a target txn when adding xfer
+ * wish  : #2042674 idiot-proof preference for "Sync transfert Status"
+ * wish  : #2038753 copy transaction to clipboard to paste external apps
+ * wish  : #2037039 amend "Spending By Month" to have income option & both income/expense by month
+ * wish  : #2023696 budget report to show not-budgeted amount
+ * wish  : #2017625 transfer txn widget From vs To field ordering to be static
+ * wish  : #2017437 reorderable columns in the Scheduled/Template window
+ * wish  : #2017436 scheduled/template window show internal transfers "To" account in Payee column
+ * wish  : #2016317 columns for status icon and payment icon in scheduled/template
+ * wish  : #2002177 automatic GTK dark theme switching for Linux (using the Freedesktop standard)
+ * wish  : #1910935 statistic report by accounts groups
+ * wish  : #1909255 report exclude income in transfers
+ * wish  : #1867979 internal transfer edit dialog to show/change date in both accounts
+ * wish  : #1867498 add "Life Energy" attribute
+ * wish  : #1817274 add more paymode + user order position + disable
+ * wish  : #1674016 assignment to assign tags
+ * wish  : #1600356 add colour flag/group to transaction
+ * wish  : #613894 favorite saved filter list to use in report and ledger show all 
+ * bugfix: multiple txn edit tag was not displaying the tag list
+ * bugfix: time report quick filter item list were displaying too much columns
+ * bugfix: #2064839 post of today due date txn do not happen
+ * bugfix: #2063145 top spending pie chart subcategory is not sorted descending
+ * bugfix: #2063135 statistics details export menu items sensitivity update problem
+ * bugfix: #2061979 cross-currency transfer still do not propose target transaction
+ * bugfix: #2060159 window width and height size is reset to an invalid small size after demaximizing on startup
+ * bugfix: #2059709 filter exclusion of payment=none hide transfer
+ * bugfix: #2055101 windows: recent file Clear keep deleted/renamed files
+ * bugfix: #2052678 home time chart spending by month should show net expense
+ * bugfix: #2052304 budget should warn/fix when we input positive number for expense 
+
+
+2024-04-15  Maxime Doyen
+
+ Made 5.8-rc release
+
+
 2024-02-06  Maxime Doyen
 
  Made 5.7.4 release
@@ -14,15 +76,15 @@
  * bugfix: filter for report was faultly show always show items
  * bugfix: update currency was not counting change to enable save
  * bugfix: input a mindate > maxdate from the filter was possible with no warning
- * bugfix: #2051440	export CSV not including memo field from split transactions
- * bugfix: #2051349	add an existing category/payee/tag from manage dialog do not warn user
- * bugfix: #2051307	export CSV not including remind status
- * bugfix: #2050848	skip multiple Scheduled do not refresh as expected
- * bugfix: #2048236	transfer are not included in forecast, balance mode
- * bugfix: #2047647	cross-currency transfer do not propose target transaction
- * bugfix: #2046157	info icon for transfers is not displayed
- * bugfix: #2046032	date filter shows wrong date
- * bugfix: #2043523	exclude zero-sum categories from Top Spending 
+ * bugfix: #2051440 export CSV not including memo field from split transactions
+ * bugfix: #2051349 add an existing category/payee/tag from manage dialog do not warn user
+ * bugfix: #2051307 export CSV not including remind status
+ * bugfix: #2050848 skip multiple Scheduled do not refresh as expected
+ * bugfix: #2048236 transfer are not included in forecast, balance mode
+ * bugfix: #2047647 cross-currency transfer do not propose target transaction
+ * bugfix: #2046157 info icon for transfers is not displayed
+ * bugfix: #2046032 date filter shows wrong date
+ * bugfix: #2043523 exclude zero-sum categories from Top Spending 
 
 
 2023-12-08  Maxime Doyen
@@ -49,19 +111,19 @@
 
  Made 5.7.2 release
 
- * wish  : #2042692	count and show number of selected transactions when suppressing them
+ * wish  : #2042692 count and show number of selected transactions when suppressing them
  * bugfix: crash was possible when no file loaded and change to main chart
- * bugfix: #2043152	lock icon for transaction sometime disapear due to column resize
- * bugfix: #2042771	currency don't update due to wrong api url since 5.7
- * bugfix: #2042770	HomeBank closes after leaving "preferences" menu with no file open.
- * bugfix: #2042668	remove/sanitize GTK listview quicksearch
- * bugfix: #2042484	category popoverlist shows subcat income standalone its expense parent
- * bugfix: #2042463	manage categories add subcategory fail after a search
- * bugfix: #2042035	assign edit cancel faultly persist the rule search
- * bugfix: #2040494	app crashes when exporting a report after I delete a category that contained data
- * bugfix: #2040010	ISO 8601 date format not respected when exporting to clipboard or CSV
- * bugfix: #2039995	budget by time do not filter txn type exp/inc
- * bugfix: #2039493	statistics report crash when opened with a too wide date range 
+ * bugfix: #2043152 lock icon for transaction sometime disapear due to column resize
+ * bugfix: #2042771 currency don't update due to wrong api url since 5.7
+ * bugfix: #2042770 HomeBank closes after leaving "preferences" menu with no file open.
+ * bugfix: #2042668 remove/sanitize GTK listview quicksearch
+ * bugfix: #2042484 category popoverlist shows subcat income standalone its expense parent
+ * bugfix: #2042463 manage categories add subcategory fail after a search
+ * bugfix: #2042035 assign edit cancel faultly persist the rule search
+ * bugfix: #2040494 app crashes when exporting a report after I delete a category that contained data
+ * bugfix: #2040010 ISO 8601 date format not respected when exporting to clipboard or CSV
+ * bugfix: #2039995 budget by time do not filter txn type exp/inc
+ * bugfix: #2039493 statistics report crash when opened with a too wide date range 
 
 
 2023-10-08  Maxime Doyen
@@ -73,7 +135,7 @@
  * change: split dialog: add info+tooltip icon next to the amount input
  * change: split dialog: amount input is named according transaction type
  * wish  : #2038601 "Schedule" and "Template" linked togglebuttons are not mutually exclusive
- * wish  : #2034625	statistics Reportsorting by expense or income when using the Time Mode
+ * wish  : #2034625 statistics Reportsorting by expense or income when using the Time Mode
  * bugfix: dateentry d, dm, md was sometimes wrong
  * bugfix: dateentry 2 year digits fix with 40/60 windowing
  * bugfix: #2037597 top 10 Spending Category chart legend labels sometimes ellipsized
@@ -88,7 +150,7 @@
  * bugfix: #2035129 incorrect values in "tooltip" message for forcast view (subcategory)
  * bugfix: #2034764 statistics Report Total Row not reflecting displayed amounts
  * bugfix: #2034647 trend time Report Title does not match Interval
- * bugfix: #2034618	statistics report sometimes crashes with half year interval 
+ * bugfix: #2034618 statistics report sometimes crashes with half year interval 
 
 
 2023-09-06  Maxime Doyen
@@ -156,10 +218,10 @@
 
  Made 5.6.5 release
 
- * bugfix: #2024243	when creating splits for income transactions, expenses are added as incomes regardless of amount sign
- * bugfix: #2023388	account cannot be deleted message is not precise enough
- * bugfix: #2022049	windows: displayed values overflow int32 in 5.6.4
- * bugfix: #2018039	lock icon for reconciled txn is not displayed in report detail 
+ * bugfix: #2024243 when creating splits for income transactions, expenses are added as incomes regardless of amount sign
+ * bugfix: #2023388 account cannot be deleted message is not precise enough
+ * bugfix: #2022049 windows: displayed values overflow int32 in 5.6.4
+ * bugfix: #2018039 lock icon for reconciled txn is not displayed in report detail 
 
 
 2023-05-18  Maxime Doyen

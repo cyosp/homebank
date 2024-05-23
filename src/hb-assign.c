@@ -624,6 +624,14 @@ guint changes = 0;
 						}
 					}
 					l_tmp = g_list_next(l_tmp);
+					
+					if( (ope->tags == NULL && (rul->flags & ASGF_DOTAG)) || (rul->flags & ASGF_OVWTAG) )
+					{
+						 if(tags_equal(rul->tags, ope->tags) == FALSE) { changed = TRUE; }
+						g_free(ope->tags);
+						ope->tags = tags_clone(rul->tags);
+					}
+
 				}
 				g_list_free(l_match);
 			}

@@ -50,6 +50,7 @@ struct repvehicle_data
 	gdouble		total_misccost;
 
 	GtkWidget	*window;
+	GActionGroup *actions;
 	gboolean	mapped_done;
 
 	GtkWidget	*TB_bar;

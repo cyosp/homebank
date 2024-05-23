@@ -24,6 +24,8 @@
 #include "hb-preferences.h"
 #include "language.h"
 
+#include <libsoup/soup.h>
+
 
 #ifdef G_OS_WIN32
 #include <windows.h>
@@ -59,22 +61,26 @@ static gchar *datas_dir    = NULL;
 
 //#define MARKUP_STRING "<span size='small'>%s</span>"
 
-
 /* Application arguments */
-static gboolean arg_version = FALSE;
-static gchar **files = NULL;
+static gchar *arg_filepath = NULL;
 
-static GOptionEntry option_entries[] =
+
+static const GOptionEntry option_entries[] =
 {
-	{ "version", '\0', 0, G_OPTION_ARG_NONE, &arg_version,
-	  N_("Output version information and exit"), NULL },
+	/* Version */
+	{
+		"version", 'V', 0, G_OPTION_ARG_NONE, NULL,
+		N_("Show the application’s version"), NULL
+	},
 
-	{ G_OPTION_REMAINING, '\0', 0, G_OPTION_ARG_FILENAME_ARRAY, &files,
-	  NULL, N_("[FILE]") },
+	/* collects file arguments */
+	{
+		G_OPTION_REMAINING, '\0', 0, G_OPTION_ARG_FILENAME_ARRAY, NULL, NULL,
+		N_("[FILE]")
+	},
 
 	{ NULL }
 };
-
 
 
 /* = = = = = = = = = = = = = = = = = = = = */
@@ -211,6 +217,76 @@ gint i;
 	}
 
 }
+
+
+/* = = = = = = = = = = = = = = = = = = = = */
+//5.7 test check update online
+
+
+/*
+static gint homebank_util_check_update(GtkWindow *parent)
+{
+SoupSession *session;
+SoupMessage *msg;
+GCancellable *cancellable;
+GBytes *body;
+gchar *query;
+guint status;
+gboolean retval = TRUE;
+
+	DB( g_printf("\n[homebank] check version update\n") );
+
+
+	query = HOMEBANK_URL_BASE "/tools/updates.php?h=d1ea6a421b5ab0d451eead9de647c22e";
+	DB( g_printf("query: '%s'\n", query) );
+
+	session = soup_session_new_with_options (
+		SOUP_SESSION_USER_AGENT, "HomeBankProgram",
+		NULL
+	);
+	
+	msg = soup_message_new ("GET", query);
+	if(msg != NULL)
+	{
+		//soup_session_send_message (session, msg);
+		body = soup_session_send_and_read (session, msg, cancellable, error);
+		
+		status = soup_message_get_status (msg);
+
+		DB( g_print("status_code: %d %d\n", msg->status_code, SOUP_STATUS_IS_SUCCESSFUL(status) ) );
+		DB( g_print("reason: %s\n", msg->reason_phrase) );
+		DB( g_print("datas: %s\n", msg->response_body->data) );
+
+		if( SOUP_STATUS_IS_SUCCESSFUL(status) == TRUE )
+		{
+			//#1750426 ignore the retval here (false when no rate was found, as we don't care)
+			
+			DB( g_print("datas ok: %s\n", msg->response_body->data) );
+		}
+		else
+		{
+			*error = g_error_new_literal(1, status, soup_message_get_reason_phrase(msg) );
+		}
+
+		g_object_unref(msg);
+	}
+	else
+	{
+		error = g_error_new_literal(1, 0, "cannot parse URI");
+	}
+
+	soup_session_abort (session);
+	g_object_unref(session);
+	
+	if( error )
+	{
+		DB( g_print("error: %s\n", error->message) );
+		g_error_free (error);
+	}
+
+	return 0;
+}
+*/
 
 
 /* = = = = = = = = = = = = = = = = = = = = */
@@ -464,9 +540,11 @@ homebank_icon_theme_setup()
 {
 	DB( g_print("\n[homebank] icon_theme_setup\n") );
 
+	//TODO: never used
 	GLOBALS->icontheme = gtk_icon_theme_get_default();
 
 	DB( g_print(" - prepend theme search path: %s\n", homebank_app_get_pixmaps_dir()) );
+	
 	gtk_icon_theme_prepend_search_path (GLOBALS->icontheme, homebank_app_get_pixmaps_dir());
 	//DB( g_print(" - append theme search path: %s\n", homebank_app_get_pixmaps_dir()) );
 	//gtk_icon_theme_append_search_path (GLOBALS->icontheme, homebank_app_get_pixmaps_dir());
@@ -491,6 +569,129 @@ homebank_icon_theme_setup()
 
 
 }
+
+
+//#2002177
+#ifdef G_OS_UNIX
+static void
+_color_scheme_set(GVariant   *variant)
+{
+ColorScheme color_scheme = g_variant_get_uint32 (variant);
+gboolean dark;
+
+	if (color_scheme > PREFER_LIGHT)
+		color_scheme = DEFAULT;
+
+	DB( g_print(" set color-scheme: %d\n", color_scheme) );
+
+	dark = color_scheme == PREFER_DARK;
+	//data->queue_redraw = TRUE;
+	GtkSettings *settings = gtk_settings_get_default();
+	
+	g_object_set(settings, "gtk-application-prefer-dark-theme", dark, NULL);
+	
+}
+
+static void
+_settings_portal_changed_cb (GDBusProxy *proxy,
+                            const char *sender_name,
+                            const char *signal_name,
+                            GVariant   *parameters,
+                            gpointer *user_data)
+{
+  const char *namespace;
+  const char *name;
+  g_autoptr (GVariant) value = NULL;
+
+  if (g_strcmp0 (signal_name, "SettingChanged"))
+    return;
+
+  g_variant_get (parameters, "(&s&sv)", &namespace, &name, &value);
+
+  if (g_strcmp0 (namespace, "org.freedesktop.appearance") ||
+      g_strcmp0 (name, "color-scheme"))
+    return;
+  
+  _color_scheme_set (value);
+}
+
+static gboolean
+_color_scheme_read (GDBusProxy  *proxy,
+                   GVariant   **out)
+{
+  g_autoptr (GError) error = NULL;
+  g_autoptr (GVariant) ret = NULL;
+  g_autoptr (GVariant) child = NULL;
+
+  ret = g_dbus_proxy_call_sync (proxy,
+                                "Read",
+                                g_variant_new ("(ss)",
+                                               "org.freedesktop.appearance",
+                                               "color-scheme"),
+                                G_DBUS_CALL_FLAGS_NONE,
+                                G_MAXINT,
+                                NULL,
+                                &error);
+
+  if (error) {
+    if (error->domain == G_DBUS_ERROR &&
+        error->code == G_DBUS_ERROR_SERVICE_UNKNOWN) {
+      g_debug ("Portal not found: %s", error->message);
+
+      return FALSE;
+    }
+
+    if (error->domain == G_DBUS_ERROR &&
+        error->code == G_DBUS_ERROR_UNKNOWN_METHOD) {
+      g_debug ("Portal doesn't provide settings: %s", error->message);
+
+      return FALSE;
+    }
+
+    g_critical ("Couldn't read the color-scheme setting: %s", error->message);
+
+    return FALSE;
+  }
+
+  g_variant_get (ret, "(v)", &child);
+  g_variant_get (child, "v", out);
+
+  return TRUE;
+}
+
+static void
+init_portal (void)
+{
+  g_autoptr (GError) error = NULL;
+  g_autoptr (GVariant) value = NULL;
+
+  GLOBALS->settings_portal = g_dbus_proxy_new_for_bus_sync (G_BUS_TYPE_SESSION,
+                                                         G_DBUS_PROXY_FLAGS_NONE,
+                                                         NULL,
+                                                         "org.freedesktop.portal.Desktop",
+                                                         "/org/freedesktop/portal/desktop",
+                                                         "org.freedesktop.portal.Settings",
+                                                         NULL,
+                                                         &error);
+  if (error) {
+    g_debug ("Settings portal not found: %s", error->message);
+
+    return;
+  }
+
+  if (!_color_scheme_read (GLOBALS->settings_portal, &value))
+    return;
+
+  _color_scheme_set (value);
+
+  g_signal_connect (GLOBALS->settings_portal, "g-signal",
+                    G_CALLBACK (_settings_portal_changed_cb), NULL);
+}
+
+#endif
+
+
+/* = = = = = = = = = = = = = = = = = = = = */
 
 
 const gchar *
@@ -685,36 +886,30 @@ gboolean exists;
 }
 
 
-/*
-** application cleanup: icons, GList, memory
-*/
-static void homebank_cleanup(void)
+static void free_package_paths(void)
 {
-
-	DB( g_print("\n[homebank] cleanup\n") );
-
-	//v3.4 save windows size/position
-	homebank_pref_save();
-
-	hbfile_cleanup(TRUE);
-
-	/* free our global datas */
-	if( PREFS  )
-	{
-		homebank_pref_free();
-		g_free(PREFS);
-	}
-
-	if(GLOBALS)
-	{
-		g_free(GLOBALS);
-	}
+	DB( g_print("\n[homebank] free package paths\n") );
 
 	g_free (config_dir);
 	g_free (images_dir);
 	g_free (pixmaps_dir);
 	g_free (locale_dir);
 	g_free (help_dir);
+}
+
+
+/*
+** application cleanup: icons, GList, memory
+*/
+static void homebank_cleanup(void)
+{
+
+	DB( g_print("\n[homebank] app cleanup\n") );
+
+	//v3.4 save windows size/position
+	homebank_pref_save();
+
+	hbfile_cleanup(TRUE);
 
 }
 
@@ -726,12 +921,9 @@ static void homebank_cleanup(void)
 static gboolean homebank_setup()
 {
 
-	DB( g_print("\n[homebank] setup\n") );
+	DB( g_print("\n[homebank] app setup\n") );
 
-	GLOBALS = g_malloc0(sizeof(struct HomeBank));
-	if(!GLOBALS) return FALSE;
-	PREFS   = g_malloc0(sizeof(struct Preferences));
-	if(!PREFS) return FALSE;
+
 
 	// check homedir for .homebank dir
 	homebank_check_app_dir();
@@ -776,15 +968,36 @@ static gboolean homebank_setup()
 /* = = = = = = = = = = = = = = = = = = = = */
 /* Main homebank */
 
-static GtkWidget *
-homebank_construct_splash()
+
+static void
+homebank_app_splash_hide(GtkWidget *splash)
 {
-GtkWidget *window;
+
+	DB( g_print("\n[homebank] splash hide\n") );
+
+	if( PREFS->showsplash == TRUE )
+	{
+		gtk_widget_hide (splash);
+		gtk_window_destroy (GTK_WINDOW(splash));
+
+		/* make sure splash is gone */
+		hb_window_run_pending();
+	}
+}
+
+
+static GtkWidget *
+homebank_app_splash_show(void)
+{
+GtkWidget *window = NULL;
 GtkWidget *frame, *vbox, *image;
 //gchar *ver_string, *markup, *version;
 gchar *pathfilename;
 
-		DB( g_print("\n[homebank] app slash show\n") );
+	DB( g_print("\n[homebank] splash show \n") );
+
+	if( PREFS->showsplash == TRUE )
+	{
 
 		window = gtk_window_new(GTK_WINDOW_POPUP);	//TOPLEVEL DONT WORK
 		gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_SPLASHSCREEN);
@@ -818,6 +1031,19 @@ gchar *pathfilename;
 		gtk_box_pack_start (GTK_BOX (vbox), image, FALSE, FALSE, 0);
 		//gtk_box_pack_start (GTK_BOX (vbox), version, FALSE, FALSE, 0);
 
+		gtk_window_set_auto_startup_notification (FALSE);
+		gtk_widget_show_all (window);
+		gtk_window_set_auto_startup_notification (TRUE);
+
+		// make sure splash is up
+		hb_window_run_pending();
+
+		DB( g_print(" splash screen %p\n", gtk_window_get_screen(GTK_WINDOW(window))) );
+
+		g_usleep( G_USEC_PER_SEC * 1 );
+
+	}
+	
 	return window;
 }
 
@@ -858,157 +1084,274 @@ homebank_init_i18n (void)
 }
 
 
-int
-main (int argc, char *argv[])
+GtkWindow *
+homebank_app_find_window(gint needle_key)
 {
-GOptionContext *option_context;
-GOptionGroup *option_group;
-GError *error = NULL;
+GList *l = gtk_application_get_windows(GLOBALS->application);
+GtkWindow *window = NULL;
+gint key;
+
+	DB( g_print("\n[homebank] app find window %d\n", needle_key) );
+
+	g_return_val_if_fail(needle_key != 0, NULL);
+
+	while (l != NULL)
+	{
+	GtkWindow *tmpwin = l->data;
+		
+		key  = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(tmpwin), "key"));
+		DB( g_print(" window: %p: key=%d '%s' \n", tmpwin, key, gtk_window_get_title(tmpwin)) );
+		if( key == needle_key )
+		{
+			DB( g_print(" >found\n") );
+			window = tmpwin;
+			break;
+		}
+		l = g_list_next(l);
+	}
+
+	return window;
+}
+
+
+static gint
+homebank_app_commandline(GApplication *application, GApplicationCommandLine *cl, gpointer user_data)
+{
+GVariantDict *options;
+gchar **remaining_args;
+
+	DB( g_print("\n[homebank] app commandline\n") );
+
+	options = g_application_command_line_get_options_dict (cl);
+
+	/* Parse filenames */
+	if (g_variant_dict_lookup (options, G_OPTION_REMAINING, "^a&ay", &remaining_args))
+	{
+	guint i = g_strv_length(remaining_args);
+
+		if( i > 0 )
+		{
+			arg_filepath = g_strdup(remaining_args[0]);
+		}
+
+		/*for (i = 0; remaining_args[i]; i++)
+		{
+			g_print(" args[%d] ='%s'\n", i, remaining_args[i]);
+		}*/
+
+		g_free (remaining_args);
+	}
+	
+	g_application_activate (application);
+
+	return 0;
+}
+
+
+static void
+homebank_app_activate (GtkApplication *app, gpointer user_data)
+{
 GtkWidget *mainwin;
 GtkWidget *splash = NULL;
 
-	DB( g_print("\n--------------------------------" ) );
-	DB( g_print("\nhomebank starting...\n" ) );
+	DB( g_print("\n[homebank] app activate\n") );
 
-	build_package_paths();
-
-	homebank_init_i18n ();
-
-	/* Set up option groups */
-	option_context = g_option_context_new (NULL);
-
-	//g_option_context_set_summary (option_context, _(""));
-
-	option_group = g_option_group_new ("homebank",
-					   N_("HomeBank options"),
-					   N_("HomeBank options"),
-					   NULL, NULL);
-	g_option_group_add_entries (option_group, option_entries);
-	g_option_context_set_main_group (option_context, option_group);
-	g_option_group_set_translation_domain (option_group, GETTEXT_PACKAGE);
-
-	/* Add Gtk option group */
-	g_option_context_add_group (option_context, gtk_get_option_group (FALSE));
-
-	/* Parse command line */
-	if (!g_option_context_parse (option_context, &argc, &argv, &error))
+	//check if already a window opened
+	//TODO chnage here to enable multiple ?
+	if( GLOBALS->mainwindow != NULL )
 	{
-		g_option_context_free (option_context);
+		gtk_window_present (GTK_WINDOW (GLOBALS->mainwindow));
+	
+	}
+	else
 
-		if (error)
+	//if( homebank_app_commandline(app) == TRUE )
+	{
+		/* Pass NULL here since we parsed the gtk+ args already...
+		 * from this point all we need a DISPLAY variable to be set.
+		 */
+		//gtk_init (NULL, NULL);
+
+		//todo: sanity check gtk version here ?
+
+		if( homebank_setup() )
 		{
-			g_print ("%s\n", error->message);
-			g_error_free (error);
+			GLOBALS->application = app;
+
+			splash = homebank_app_splash_show();
+
+			// change language to the user
+			#if HB_PRIV_FORCE_ENUS == FALSE
+			language_init (PREFS->language);
+			#else
+			// but not for unstable, to always get native app text
+			language_init ("en-US");
+			#endif
+
+			g_set_application_name (APPLICATION_NAME);
+			gtk_window_set_default_icon_name ("homebank");
+
+			DB( g_print(" app creating window\n" ) );
+			mainwin = (GtkWidget *)create_hbfile_window (NULL);
+			if(mainwin)
+			{
+			gchar *rawfilepath = NULL;
+
+				gtk_application_add_window(app, GTK_WINDOW(mainwin));
+				
+				// make sure mainwin is up
+				hb_window_run_pending();
+
+				DB( g_print(" mainwin screen %p\n", gtk_window_get_screen(GTK_WINDOW(mainwin))) );
+				DB( g_print(" - app win should be visible\n" ) );
+				//g_usleep( G_USEC_PER_SEC * 2 );
+
+				homebank_app_splash_hide(splash);
+
+				//priority here:
+				// - command line file
+				// - welcome dialog 
+				// - last opened file, if welcome dialog was not opened
+				if( arg_filepath != NULL )
+				{
+					DB( g_print(" command line open '%s'\n", arg_filepath ) );
+					rawfilepath = g_strdup(arg_filepath);
+					g_free (arg_filepath);
+					ui_mainwindow_open_check(mainwin, rawfilepath);
+				}
+				else
+				if( PREFS->showwelcome )
+				{
+					ui_mainwindow_update(mainwin, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_VISUAL));
+					ui_mainwindow_action_help_welcome();
+				}
+				else
+				if( PREFS->loadlast )
+				{
+					rawfilepath = homebank_lastopenedfiles_load();
+					ui_mainwindow_open_check(mainwin, rawfilepath);
+				}
+				else
+					/* update the mainwin display */
+					ui_mainwindow_update(mainwin, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_VISUAL));
+
+
+				//5.7 test
+				//homebank_util_check_update(mainwin);
+
+
+				/* -- start: hack here to generate a big file -- */
+
+				/* -- end: hack here to generate a big file -- */
+
+				DB( g_print(" app gtk_main()\n" ) );
+				gtk_main ();
+		
+				//DB( g_print(" app call destroy mainwin\n" ) );
+				//gtk_window_destroy (GTK_WINDOW(mainwin));
+
+			}
+
 		}
-		else
-			g_print ("An unknown error occurred\n");
 
-		return -1;
+		homebank_cleanup();
 	}
 
-	g_option_context_free (option_context);
-	option_context = NULL;
+}
 
-	if (arg_version != FALSE)
-	{
-		/* Print version information and exit */
-		g_print ("%s\n", PACKAGE " " VERSION);
-		return 0;
-	}
 
-	/* Pass NULL here since we parsed the gtk+ args already...
-	 * from this point all we need a DISPLAY variable to be set.
-	 */
-	gtk_init (NULL, NULL);
+static void
+homebank_app_open (GApplication  *application,
+                GFile        **files,
+                gint           n_files,
+                const gchar   *hint)
+{
+	
+	DB( g_print("\n[homebank] app open\n") );
+	
+	
+}
 
-	//todo: sanity check gtk version here ?
 
-	g_set_application_name (APPLICATION_NAME);
+static void
+homebank_app_startup (GApplication *application)
+{
+
+	DB( g_print("\n[homebank] app startup\n") );
 
 	#ifdef PORTABLE_APP
 	g_object_set (gtk_settings_get_default (), "gtk-recent-files-enabled", FALSE, NULL);
+	#endif	
+
+	#ifdef G_OS_UNIX
+	init_portal();
 	#endif
+}
 
-	if( homebank_setup() )
-	{
-		/*  change the locale if a language is specified  */
-		language_init (PREFS->language);
 
-		if( PREFS->showsplash == TRUE )
-		{
-			splash = homebank_construct_splash();
-			gtk_window_set_auto_startup_notification (FALSE);
-			gtk_widget_show_all (splash);
-			gtk_window_set_auto_startup_notification (TRUE);
-
-			// make sure splash is up
-			while (gtk_events_pending ())
-				gtk_main_iteration ();
-		}
-
-		gtk_window_set_default_icon_name ("homebank");
-
-		DB( g_print(" - creating window\n" ) );
-
-		mainwin = (GtkWidget *)create_hbfile_window (NULL);
-
-		if(mainwin)
-		{
-		gchar *rawfilepath;
-		
-			//todo: pause on splash
-			if( PREFS->showsplash == TRUE )
-			{
-				//g_usleep( G_USEC_PER_SEC * 1 );
-				gtk_widget_hide(splash);
-				gtk_widget_destroy(splash);
-
-				/* make sure splash is gone */
-				while (gtk_events_pending ())
-					gtk_main_iteration ();
-			}
-
-			rawfilepath = NULL;
-			//priority here:
-			// - command line file
-			// - welcome dialog 
-			// - last opened file, if welcome dialog was not opened
-			if( files != NULL )
-			{
-				DB( g_print(" command line open '%s'\n", files[0] ) );
-				rawfilepath = g_strdup(files[0]);
-				g_strfreev (files);
-			}
-			else
-			if( PREFS->showwelcome )
-			{
-				ui_mainwindow_action_help_welcome();
-			}
-			else
-			if( PREFS->loadlast )
-			{
-				rawfilepath = homebank_lastopenedfiles_load();
-			}
-
-			ui_mainwindow_open_check(mainwin, rawfilepath);
-
-			/* update the mainwin display */
-			//TODO: not sure this is usefull here
-			ui_mainwindow_update(mainwin, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_VISUAL));
-
-			DB( g_print(" - gtk_main()\n" ) );
-			gtk_main ();
+static void
+homebank_app_shutdown (GApplication *app)
+{
 	
-			DB( g_print(" - call destroy mainwin\n" ) );
-			gtk_widget_destroy(mainwin);
-		}
+	DB( g_print("\n[homebank] app shutdown\n") );
 
+}
+
+
+//gtk4 future application id
+// fr.free.mdoyen.HomeBank
+//g_set_prgname("fr.free.mdoyen.HomeBank");
+
+int
+main (int argc, char *argv[])
+{
+GtkApplication *app;
+int exit_code = EXIT_FAILURE;
+
+	DB( g_print("\n--------------------------------" ) );
+	DB( g_print("\n[homebank] main starting\n") );
+
+	GLOBALS = g_malloc0(sizeof(struct HomeBank));
+	PREFS   = g_malloc0(sizeof(struct Preferences));
+
+	if( GLOBALS != NULL && PREFS != NULL )
+	{
+
+		build_package_paths();
+
+		homebank_init_i18n();
+
+		app = gtk_application_new ("fr.free.mdoyen.HomeBank", G_APPLICATION_HANDLES_COMMAND_LINE);
+		//app = gtk_application_new ("fr.free.mdoyen.HomeBank", G_APPLICATION_FLAGS_NONE);
+
+		g_application_add_main_option_entries (G_APPLICATION (app), option_entries);
+
+		g_signal_connect (app, "startup"		, G_CALLBACK (homebank_app_startup)		, NULL);
+		g_signal_connect (app, "command-line"	, G_CALLBACK (homebank_app_commandline)	, NULL);
+		g_signal_connect (app, "activate"		, G_CALLBACK (homebank_app_activate)	, NULL);
+		g_signal_connect (app, "open"			, G_CALLBACK (homebank_app_open)		, NULL);
+		g_signal_connect (app, "shutdown"		, G_CALLBACK (homebank_app_shutdown)	, NULL);
+
+		exit_code = g_application_run (G_APPLICATION (app), argc, argv);
+		g_object_unref (app);
+
+		free_package_paths();
+		exit_code = EXIT_SUCCESS;
 	}
 
+	/* free our global datas */
+	if( PREFS )
+	{
+		homebank_pref_free();
+		g_free(PREFS);
+	}
 
-    homebank_cleanup();
+	if( GLOBALS )
+	{
+		g_free(GLOBALS);
+	}
 
-	return EXIT_SUCCESS;
+	return exit_code;
 }
 
 

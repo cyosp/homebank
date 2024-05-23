@@ -134,7 +134,7 @@ enum
 enum
 {
 	FLT_QSEARCH_MEMO     = 1<<0,
-	FLT_QSEARCH_INFO     = 1<<1,
+	FLT_QSEARCH_NUMBER   = 1<<1,
 	FLT_QSEARCH_PAYEE    = 1<<2,
 	FLT_QSEARCH_CATEGORY = 1<<3,
 	FLT_QSEARCH_TAGS     = 1<<4,
@@ -148,21 +148,21 @@ struct _filter
 {
 	guint32  	key;
 	//gushort 	flags;
+	gchar		*name;
 	gshort		option[FLT_GRP_MAX];
 
 	gint		range;
 	guint32		mindate, maxdate;
 	//gint		rawtype, rawstatus;
-
-	gboolean	typ_exp, typ_inc, typ_xfr;	//5.6
+	//gboolean	typ_exp, typ_inc, typ_xfr;	//5.6
+	gboolean	typ_nexp, typ_ninc, typ_xexp, typ_xinc;	//5.8
 	gboolean	sta_non, sta_clr, sta_rec;	//5.6
 	gboolean	paymode[NUM_PAYMODE_MAX];
 	gdouble		minamount, maxamount;
 
 	gboolean	exact;
 	//pointer here
-	gchar		*name;
-	gchar		*info;
+	gchar		*number;	//old info < 5.8
 	gchar		*memo;
 
 	GArray		*gbacc;
@@ -171,6 +171,9 @@ struct _filter
 	GArray		*gbtag;
 
 	/* unsaved datas */
+	gshort		n_active;
+	gshort		n_item[FLT_GRP_MAX];
+
 	gint		type;		//register combobox type
 	gint		status;
 	gint		nbchanges;
@@ -189,6 +192,8 @@ void da_flt_free(Filter *flt);
 void da_flt_copy(Filter *src, Filter *dst);
 void da_flt_destroy(void);
 void da_flt_new(void);
+
+void da_flt_count_item(Filter *flt);
 
 guint		da_flt_length(void);
 gboolean	da_flt_create_none(void);
@@ -228,7 +233,10 @@ void filter_preset_daterange_add_futuregap(Filter *filter, gint nbdays);
 void filter_set_tag_by_id(Filter *flt, guint32 key);
 void filter_preset_status_set(Filter *flt, gint value);
 
+
 gchar *filter_daterange_text_get(Filter *flt);
+gchar *filter_text_summary_get(Filter *flt);
+
 
 gboolean filter_txn_search_match(gchar *needle, Transaction *txn, gint flags);
 gboolean filter_tpl_search_match(gchar *needle, Archive *arc);

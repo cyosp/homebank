@@ -51,7 +51,7 @@ extern struct Preferences *PREFS;
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 
-static void list_split_number_cell_data_function (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
+static void list_split_cell_data_func_number (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
 GtkTreePath *path;
 gint *indices;
@@ -68,22 +68,19 @@ gchar num[16];
 }
 
 
-static void list_split_amount_cell_data_function (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
+static void list_split_cell_data_func_amount (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
 Split *split;
 gchar buf[G_ASCII_DTOSTR_BUF_SIZE];
-gdouble amount;
-gchar *color, *format;
+gchar *color;
+guint32 kcur;
 
 	gtk_tree_model_get(model, iter, 0, &split, -1);
 
-	//hb_strfmon(buf, G_ASCII_DTOSTR_BUF_SIZE-1, amount, ope->kcur, GLOBALS->minor);
-	format = g_object_get_data(G_OBJECT(col), "format_data");
-	
-	amount = split->amount;
-	g_snprintf(buf, G_ASCII_DTOSTR_BUF_SIZE-1, format, amount);
+	kcur = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(col), "kcur_data"));
+	hb_strfmon(buf, G_ASCII_DTOSTR_BUF_SIZE-1, split->amount, kcur, FALSE);
 
-	color = get_normal_color_amount(amount);
+	color = get_normal_color_amount(split->amount);
 	g_object_set(renderer,
 		"foreground",  color,
 		"text", buf,
@@ -92,7 +89,7 @@ gchar *color, *format;
 }
 
 
-static void list_split_memo_cell_data_function (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
+static void list_split_cell_data_func_memo (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
 Split *split;
 
@@ -102,7 +99,7 @@ Split *split;
 }
 
 
-static void list_split_category_cell_data_function (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
+static void list_split_cell_data_func_category (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
 Split *split;
 Category *cat;
@@ -160,7 +157,7 @@ gint count, i;
 
 
 static GtkWidget *
-list_split_new(gchar *format)
+list_split_new(guint32 kcur)
 {
 GtkListStore *store;
 GtkWidget *treeview;
@@ -186,7 +183,7 @@ GtkTreeViewColumn	*column;
 	g_object_set(renderer, "xalign", 1.0, NULL);
 	column = gtk_tree_view_column_new_with_attributes("#", renderer, NULL);
 	gtk_tree_view_column_set_alignment (column, 1.0);
-	gtk_tree_view_column_set_cell_data_func(column, renderer, list_split_number_cell_data_function, NULL, NULL);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, list_split_cell_data_func_number, NULL, NULL);
 	gtk_tree_view_column_set_sizing (column, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
@@ -197,7 +194,7 @@ GtkTreeViewColumn	*column;
 		"ellipsize", PANGO_ELLIPSIZE_END,
 	    "ellipsize-set", TRUE,
 		//taken from nemo, not exactly a resize to content, but good compromise
-	    "width-chars", 40,
+	    "width-chars", 20,
 	    NULL);
 	
 	column = gtk_tree_view_column_new_with_attributes(_("Category"), renderer, NULL);
@@ -208,7 +205,7 @@ GtkTreeViewColumn	*column;
 	//gtk_tree_view_column_set_sort_column_id (column, sortcolumnid);
 	//gtk_tree_view_column_set_fixed_width( column, HB_MINWIDTH_LIST);
 	gtk_tree_view_column_set_expand (column, TRUE);
-	gtk_tree_view_column_set_cell_data_func(column, renderer, list_split_category_cell_data_function, NULL, NULL);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, list_split_cell_data_func_category, NULL, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 	
 	// column 2: memo
@@ -217,7 +214,7 @@ GtkTreeViewColumn	*column;
 		"ellipsize", PANGO_ELLIPSIZE_END,
 	    "ellipsize-set", TRUE,
 		//taken from nemo, not exactly a resize to content, but good compromise
-	    "width-chars", 40,
+	    "width-chars", 20,
 	    NULL);
 	
 	column = gtk_tree_view_column_new_with_attributes(_("Memo"), renderer, NULL);
@@ -228,7 +225,7 @@ GtkTreeViewColumn	*column;
 	//gtk_tree_view_column_set_sort_column_id (column, sortcolumnid);
 	//gtk_tree_view_column_set_fixed_width( column, HB_MINWIDTH_LIST);
 	gtk_tree_view_column_set_expand (column, TRUE);
-	gtk_tree_view_column_set_cell_data_func(column, renderer, list_split_memo_cell_data_function, NULL, NULL);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, list_split_cell_data_func_memo, NULL, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
 
@@ -237,13 +234,13 @@ GtkTreeViewColumn	*column;
 	g_object_set(renderer, "xalign", 1.0, NULL);
 
 	column = gtk_tree_view_column_new_with_attributes(_("Amount"), renderer, NULL);
-	g_object_set_data(G_OBJECT(column), "format_data", format);
+	g_object_set_data(G_OBJECT(column), "kcur_data", GINT_TO_POINTER(kcur));
 	
 	gtk_tree_view_column_set_alignment (column, 1.0);
-	gtk_tree_view_column_set_resizable(column, TRUE);
+	gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
 	//gtk_tree_view_column_set_sort_column_id (column, sortcolumnid);
-	gtk_tree_view_column_set_fixed_width( column, HB_MINWIDTH_LIST);
-	gtk_tree_view_column_set_cell_data_func(column, renderer, list_split_amount_cell_data_function, NULL, NULL);
+	//gtk_tree_view_column_set_fixed_width( column, HB_MINWIDTH_LIST);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, list_split_cell_data_func_amount, NULL, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
 
@@ -728,7 +725,7 @@ void ui_split_dialog_compute(GtkWidget *widget, gpointer user_data)
 {
 struct ui_split_dialog_data *data;
 gint i, count, nbvalid;
-gchar buf[48];
+gchar buf[G_ASCII_DTOSTR_BUF_SIZE];
 gboolean sensitive;
 GtkTreeModel *model;
 GtkTreeIter	iter;
@@ -791,7 +788,9 @@ gboolean valid;
 		}
 		else
 		{
-			g_snprintf(buf, 48, data->cur->format, data->remsplit);
+			//g_snprintf(buf, G_ASCII_DTOSTR_BUF_SIZE-1, data->cur->format, data->remsplit);
+			hb_strfmon(buf, G_ASCII_DTOSTR_BUF_SIZE-1, data->remsplit, data->cur->key, FALSE);
+
 			//#1845841 bring back checkpoint with initial amount + init remainder
 			//revert, because block any edition/inherit
 			//sensitive = (count > 1) ? FALSE : sensitive;
@@ -805,11 +804,13 @@ gboolean valid;
 
 		gtk_label_set_label(GTK_LABEL(data->LB_remain), buf);
 
-		g_snprintf(buf, 48, data->cur->format, data->amount);
+		//g_snprintf(buf, G_ASCII_DTOSTR_BUF_SIZE-1, data->cur->format, data->amount);
+		hb_strfmon(buf, G_ASCII_DTOSTR_BUF_SIZE-1, data->amount, data->cur->key, FALSE);
 		gtk_label_set_label(GTK_LABEL(data->LB_txnamount), buf);
 	}
 
-	g_snprintf(buf, 48, data->cur->format, data->sumsplit);
+	//g_snprintf(buf, G_ASCII_DTOSTR_BUF_SIZE-1, data->cur->format, data->sumsplit);
+	hb_strfmon(buf, G_ASCII_DTOSTR_BUF_SIZE-1, data->sumsplit, data->cur->key, FALSE);
 	gtk_label_set_text(GTK_LABEL(data->LB_sumsplit), buf);
 
 	//if split sum sign do not match
@@ -855,14 +856,11 @@ GtkWidget *ui_split_view_dialog (GtkWidget *parent, Transaction *ope)
 {
 GtkWidget *dialog, *content, *table, *scrollwin, *treeview;
 gint w, h, dw, dh, row;
-Currency *cur;
 
 	DB( g_print("\n[ui_split_dialog] new view only\n") );
 
 	if( ope->splits == NULL )
 		return NULL;
-
-	cur = da_cur_get(ope->kcur);
 
 	dialog = gtk_dialog_new_with_buttons (_("Transaction splits"),
 					    GTK_WINDOW(parent),
@@ -901,7 +899,7 @@ Currency *cur;
 	gtk_widget_set_size_request(scrollwin, HB_MINWIDTH_LIST, HB_MINHEIGHT_LIST);
 	gtk_widget_set_hexpand (scrollwin, TRUE);
 	gtk_widget_set_vexpand (scrollwin, TRUE);
-	treeview = list_split_new(cur->format);
+	treeview = list_split_new(ope->kcur);
 	gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scrollwin), treeview);
 	gtk_grid_attach (GTK_GRID (table), scrollwin, 0, row, 4, 1);
 
@@ -987,7 +985,7 @@ gint row;
 	gtk_widget_set_size_request(scrollwin, HB_MINWIDTH_LIST, HB_MINHEIGHT_LIST);
 	gtk_widget_set_hexpand (scrollwin, TRUE);
 	gtk_widget_set_vexpand (scrollwin, TRUE);
-	data->LV_split = list_split_new(data->cur->format);
+	data->LV_split = list_split_new(kcur);
 	gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scrollwin), data->LV_split);
 	gtk_grid_attach (GTK_GRID (table), scrollwin, 0, row, 4, 1);
 

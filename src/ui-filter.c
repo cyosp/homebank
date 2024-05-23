@@ -25,6 +25,7 @@
 #include "ui-payee.h"
 #include "ui-category.h"
 #include "ui-tag.h"
+#include "hbtk-switcher.h"
 #include "gtk-dateentry.h"
 
 
@@ -51,6 +52,32 @@ extern gchar *CYA_SELECT[];
 extern gchar *RA_FILTER_MODE[];
 
 extern HbKivData CYA_TXN_PAYMODE[NUM_PAYMODE_MAX];
+
+
+/* = = = = = = = = = = = = = = = = = = = = */
+
+
+static void
+ui_flt_manage_cb_range_change(GtkWidget *widget, gpointer user_data);
+
+static guint 
+_gtkentry_to_filter(GtkEntry *entry, gchar **storage)
+{
+const gchar *txt;
+guint change = 0;
+
+	if(!GTK_IS_ENTRY(entry))
+		return 0;
+
+	txt = gtk_entry_get_text(GTK_ENTRY(entry));
+	if( g_strcmp0(txt, *storage) != 0 )
+	{
+		change++;
+		g_free(*storage);
+		*storage = g_strdup(txt);
+	}
+	return change;
+}
 
 
 /* = = = = = = = = = = = = = = = = = = = = */
@@ -328,19 +355,28 @@ gboolean visible;
 static void ui_flt_manage_update(GtkWidget *widget, gpointer user_data)
 {
 struct ui_flt_manage_data *data;
-gboolean visible, v1, v2;
+gboolean sensitive, visible, v1, v2;
 GtkWidget *child;
 GValue gvalue = G_VALUE_INIT;
+gint range;
 
 
 	DB( g_print("\n[ui_flt_manage] update\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
+	range = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_range));
+
 	g_value_init (&gvalue, G_TYPE_BOOLEAN);
 
 	// date
+	gtk_widget_set_sensitive(data->SW_enabled[FLT_GRP_DATE], FALSE);
 	ui_flt_manage_update_page(FLT_GRP_DATE, FLT_PAGE_NAME_DAT, data);
+	sensitive = (range == FLT_RANGE_MISC_CUSTOM) ? TRUE : FALSE;
+	gtk_widget_set_sensitive(GTK_WIDGET(data->LB_mindate), sensitive);
+	gtk_widget_set_sensitive(GTK_WIDGET(data->LB_maxdate), sensitive);
+	gtk_widget_set_sensitive(GTK_WIDGET(data->PO_mindate), sensitive);
+	gtk_widget_set_sensitive(GTK_WIDGET(data->PO_maxdate), sensitive);
 
 	// type
 	visible = (!gtk_switch_get_active(GTK_SWITCH(data->SW_enabled[FLT_GRP_TYPE]))) ? FALSE : TRUE; 
@@ -401,7 +437,7 @@ gint newoption = gtk_switch_get_active(GTK_SWITCH(data->SW_enabled[index]));
 	//option should be set: 0=off, 1=include, 2=exclude
 	if( newoption == 1 )
 	{
-		if( hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_matchmode[index])) == 1)
+		if( hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_matchmode[index])) == 1)
 			newoption++;
 	}
 	data->filter->option[index] = newoption;
@@ -411,13 +447,22 @@ gint newoption = gtk_switch_get_active(GTK_SWITCH(data->SW_enabled[index]));
 static void ui_flt_manage_get(struct ui_flt_manage_data *data)
 {
 Filter *flt = data->filter;
-gint i;
-gchar *txt;
+gchar *olddigest, *newdigest;
+guint i, length;
+gboolean active;
 
 	DB( g_print("\n[ui_flt_manage] get\n") );
 
 	if(flt != NULL)
 	{
+		//TODO: 5.8 we should count changes into flt->nbchanges
+		length = offsetof(Filter, exact);
+		DB( g_print(" length: %d\n", length) );
+		
+		//use a checksum for non-pointer data
+		olddigest = g_compute_checksum_for_data (G_CHECKSUM_MD5, (const guchar *)flt, length);
+	
+		DB( g_print(" option\n") );
 		ui_flt_manage_get_option(data, FLT_GRP_DATE);
 		ui_flt_manage_get_option(data, FLT_GRP_TYPE);
 		ui_flt_manage_get_option(data, FLT_GRP_STATUS);
@@ -432,14 +477,23 @@ gchar *txt;
 
 	//date
 		DB( g_print(" date\n") );
+		//5.8 date off means show all date
+		if( data->filter->option[FLT_GRP_DATE] == 0 )
+		{
+			data->filter->option[FLT_GRP_DATE] = 1;
+			data->filter->range = FLT_RANGE_MISC_ALLDATE;
+		}
+
+		flt->range   = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_range));
 		flt->mindate = gtk_date_entry_get_date(GTK_DATE_ENTRY(data->PO_mindate));
 		flt->maxdate = gtk_date_entry_get_date(GTK_DATE_ENTRY(data->PO_maxdate));
 
 	//type
 		DB( g_print(" type\n") );
-		flt->typ_exp = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_typexp));
-		flt->typ_inc = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_typinc));
-		flt->typ_xfr = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_typxfr));
+		flt->typ_nexp = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_typnexp));
+		flt->typ_ninc = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_typninc));
+		flt->typ_xexp = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_typxexp));
+		flt->typ_xinc = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_typxinc));
 
 	//status
 		DB( g_print(" status\n") );
@@ -469,54 +523,63 @@ gchar *txt;
 		flt->minamount = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_minamount));
 		flt->maxamount = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_maxamount));
 
+	//5.8 we compute new checksum here to detect changes
+		newdigest = g_compute_checksum_for_data (G_CHECKSUM_MD5, (const guchar *)flt, length);
+		DB( g_print(" checksum: '%s'\n", olddigest) );
+		DB( g_print(" checksum: '%s'\n", newdigest) );
+
+		if (strcmp(olddigest, newdigest) )
+		{
+			flt->nbchanges++;
+			DB( g_print(" > checksum differs\n") );
+		}
+
+		DB( g_print(" changes: %d (post checksum)\n", flt->nbchanges) );
+
+		g_free (olddigest);
+		g_free (newdigest);
+
+	// data below need to detect/count change on their own
+
 	//text:memo
-		flt->exact  = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_exact));
-		//free any previous string
-		if(	flt->memo )
-		{
-			g_free(flt->memo);
-			flt->memo = NULL;
-		}
-		txt = (gchar *)gtk_entry_get_text(GTK_ENTRY(data->ST_memo));
-
-		if (txt && *txt)	// ignore if entry is empty
-		{
-			flt->memo = g_strdup(txt);
-		}
-
 	//text:info
-		//free any previous string
-		if(	flt->info )
+		flt->nbchanges += _gtkentry_to_filter(GTK_ENTRY(data->ST_memo), &flt->memo);
+		flt->nbchanges += _gtkentry_to_filter(GTK_ENTRY(data->ST_number), &flt->number);
+		active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_exact));
+		if( flt->exact != active )
 		{
-			g_free(flt->info);
-			flt->info = NULL;
+			flt->nbchanges++;
+			flt->exact = active;
 		}
-		txt = (gchar *)gtk_entry_get_text(GTK_ENTRY(data->ST_info));
-		// ignore if entry is empty
-		if (txt && *txt)
-		{
-			flt->info = g_strdup(txt);
-		}
+
+		DB( g_print(" changes: %d (post memo/info)\n", flt->nbchanges) );
+
 
 	// account
 		if(data->show_account == TRUE)
 		{
-			ui_acc_listview_toggle_to_filter(GTK_TREE_VIEW(data->LV_acc), flt);
+			flt->nbchanges += ui_acc_listview_toggle_to_filter(GTK_TREE_VIEW(data->LV_acc), flt);
+			DB( g_print(" changes: %d (post acc)\n", flt->nbchanges) );
 		}
 
 	// payee
-		ui_pay_listview_toggle_to_filter(GTK_TREE_VIEW(data->LV_pay), flt);
+		flt->nbchanges += ui_pay_listview_toggle_to_filter(GTK_TREE_VIEW(data->LV_pay), flt);
+		DB( g_print(" changes: %d (post pay)\n", flt->nbchanges) );
 
 	// category
-		ui_cat_listview_toggle_to_filter(GTK_TREE_VIEW(data->LV_cat), flt);
+		flt->nbchanges += ui_cat_listview_toggle_to_filter(GTK_TREE_VIEW(data->LV_cat), flt);
+		DB( g_print(" changes: %d (post cat)\n", flt->nbchanges) );
 
 	// tag
-		ui_tag_listview_toggle_to_filter(GTK_TREE_VIEW(data->LV_tag), flt);
+		flt->nbchanges += ui_tag_listview_toggle_to_filter(GTK_TREE_VIEW(data->LV_tag), flt);
+		DB( g_print(" changes: %d (post tag)\n", flt->nbchanges) );
 
 
 	// active tab
 		g_strlcpy(flt->last_tab, gtk_stack_get_visible_child_name(GTK_STACK(data->stack)), 8);
 		DB( g_print(" page is '%s'\n", flt->last_tab) );
+
+		
 
 	}
 }
@@ -530,7 +593,7 @@ gint tmpoption = data->filter->option[index];
 	gtk_switch_set_active(GTK_SWITCH(data->SW_enabled[index]), tmpoption);
 	if( tmpoption == 2 )
 	{
-		hbtk_radio_button_set_active(GTK_CONTAINER(data->RA_matchmode[index]), 1);
+		hbtk_switcher_set_active (HBTK_SWITCHER(data->RA_matchmode[index]), 1);
 	}
 }
 
@@ -563,14 +626,19 @@ Filter *flt = data->filter;
 		//DB( g_print(" setdate %d to %x\n", 0, data->PO_mindate) );
 	//date
 		DB( g_print(" date\n") );
+		//g_signal_handler_block(data->CY_range, data->handler_id[HID_REPDIST_RANGE]);
+		hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_range), flt->range);
+		//g_signal_handler_unblock(data->CY_range, data->handler_id[HID_REPDIST_RANGE]);
+		
 		gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_mindate), flt->mindate);
 		gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_maxdate), flt->maxdate);
 
 	//type
 		DB( g_print(" type\n") );
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_typexp), flt->typ_exp);
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_typinc), flt->typ_inc);
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_typxfr), flt->typ_xfr);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_typnexp), flt->typ_nexp);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_typninc), flt->typ_ninc);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_typxexp), flt->typ_xexp);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_typxinc), flt->typ_xinc);
 
 	//status
 		DB( g_print(" status/type\n") );
@@ -604,7 +672,7 @@ Filter *flt = data->filter;
 
 	//text
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_exact), flt->exact);
-		gtk_entry_set_text(GTK_ENTRY(data->ST_info), (flt->info != NULL) ? flt->info : "");
+		gtk_entry_set_text(GTK_ENTRY(data->ST_number), (flt->number != NULL) ? flt->number : "");
 		gtk_entry_set_text(GTK_ENTRY(data->ST_memo), (flt->memo != NULL) ? flt->memo : "");
 
 	//account
@@ -701,6 +769,81 @@ gint i;
 }
 
 
+static void
+_checkdate_valid(struct ui_flt_manage_data *data)
+{
+gboolean valid = (data->filter->mindate <= data->filter->maxdate) ? TRUE : FALSE;
+
+	//5.8 check for error
+	gtk_date_entry_set_error(GTK_DATE_ENTRY(data->PO_mindate), !valid);
+	gtk_date_entry_set_error(GTK_DATE_ENTRY(data->PO_maxdate), !valid);
+
+	//disable use if invalid date
+	gtk_dialog_set_response_sensitive(GTK_DIALOG(data->dialog), GTK_RESPONSE_ACCEPT, valid);
+
+}
+
+
+
+
+
+static void
+ui_flt_manage_cb_date_change(GtkWidget *widget, gpointer user_data)
+{
+struct ui_flt_manage_data *data;
+
+	DB( g_print("\n[ui_flt_manage] min/max/date change\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	g_signal_handlers_block_by_func(data->CY_range, G_CALLBACK(ui_flt_manage_cb_range_change), NULL);
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_range), FLT_RANGE_MISC_CUSTOM);
+	g_signal_handlers_unblock_by_func(data->CY_range, G_CALLBACK(ui_flt_manage_cb_range_change), NULL);
+
+	data->filter->mindate = gtk_date_entry_get_date(GTK_DATE_ENTRY(data->PO_mindate));
+	data->filter->maxdate = gtk_date_entry_get_date(GTK_DATE_ENTRY(data->PO_maxdate));
+
+	//5.8 check for error
+	_checkdate_valid(data);
+}
+
+
+static void
+ui_flt_manage_cb_range_change(GtkWidget *widget, gpointer user_data)
+{
+struct ui_flt_manage_data *data;
+gint range;
+
+	//DB( g_print("\n[repdist] range change\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	range = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_range));
+
+	if(range != FLT_RANGE_MISC_CUSTOM)
+	{
+		filter_preset_daterange_set(data->filter, range, 0);
+
+
+		g_signal_handlers_block_by_func(data->PO_mindate, G_CALLBACK(ui_flt_manage_cb_date_change), NULL);
+		g_signal_handlers_block_by_func(data->PO_maxdate, G_CALLBACK(ui_flt_manage_cb_date_change), NULL);
+		
+		gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_mindate), data->filter->mindate);
+		gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_maxdate), data->filter->maxdate);
+		
+		g_signal_handlers_unblock_by_func(data->PO_mindate, G_CALLBACK(ui_flt_manage_cb_date_change), NULL);
+		g_signal_handlers_unblock_by_func(data->PO_maxdate, G_CALLBACK(ui_flt_manage_cb_date_change), NULL);
+
+		//#2046032 set min/max date for both widget
+		_checkdate_valid(data);
+
+	}
+
+	ui_flt_manage_update(widget, NULL);
+	
+}
+
+
 /* = = = = = = = = = = = = = = = = */
 
 
@@ -724,7 +867,8 @@ gint row;
 	data->SW_enabled[index] = widget;
 	gtk_grid_attach (GTK_GRID (grid), widget, 1, row, 1, 1);
 
-	widget = hbtk_radio_button_new(GTK_ORIENTATION_HORIZONTAL, RA_FILTER_MODE, FALSE);
+	widget = hbtk_switcher_new (GTK_ORIENTATION_HORIZONTAL);
+	hbtk_switcher_setup(HBTK_SWITCHER(widget), RA_FILTER_MODE, FALSE);
 	data->RA_matchmode[index] = widget;
 	//gtk_widget_set_halign(widget, GTK_ALIGN_CENTER);
 	gtk_grid_attach (GTK_GRID (grid), widget, 2, row, 1, 1);
@@ -942,7 +1086,16 @@ gint row;
 	gtk_box_pack_start (GTK_BOX (part), grid, FALSE, FALSE, 0);
 
 	row = 0;
+	label = make_label_widget(_("_Range:"));
+	gtk_grid_attach (GTK_GRID (grid), label, 0, row, 1, 1);
+	data->CY_range = make_daterange(label, DATE_RANGE_FLAG_NONE);
+	gtk_grid_attach (GTK_GRID (grid), data->CY_range, 1, row, 1, 1);
+	gtk_widget_set_margin_bottom(label, SPACING_MEDIUM);
+	gtk_widget_set_margin_bottom(data->CY_range, SPACING_MEDIUM);
+
+	row++;
 	label = make_label_widget(_("_From:"));
+	data->LB_mindate = label;
 	gtk_grid_attach (GTK_GRID (grid), label, 0, row, 1, 1);
 	widget = gtk_date_entry_new(label);
 	data->PO_mindate = widget;
@@ -950,6 +1103,7 @@ gint row;
 
 	row++;
 	label = make_label_widget(_("_To:"));
+	data->LB_maxdate = label;
 	gtk_grid_attach (GTK_GRID (grid), label, 0, row, 1, 1);
 	widget = gtk_date_entry_new(label);
 	data->PO_maxdate = widget;
@@ -963,7 +1117,7 @@ gint row;
 
 static GtkWidget *ui_flt_page_amounttext(struct ui_flt_manage_data *data)
 {
-GtkWidget *part, *grid, *label;
+GtkWidget *part, *grid, *hbox, *widget, *label;
 gint row;
 
 	part = gtk_box_new(GTK_ORIENTATION_VERTICAL, SPACING_LARGE);
@@ -992,6 +1146,17 @@ gint row;
 	data->ST_maxamount = make_amount(label);
 	gtk_grid_attach (GTK_GRID (grid), data->ST_maxamount, 1, row, 1, 1);
 
+	//#2051758 idiot-proof input help
+	row++;
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
+	//gtk_widget_set_hexpand (hbox, TRUE);
+	gtk_grid_attach (GTK_GRID (grid), hbox, 1, row, 2, 1);
+
+		widget = gtk_image_new_from_icon_name (ICONNAME_INFO, GTK_ICON_SIZE_BUTTON);
+		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+		label = make_label_widget(_("Input From -30 To -15 to filter on expense"));
+		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+
 
 	// header
 	grid = ui_flt_page_misc_header(_("Text"), FLT_GRP_TEXT, data);
@@ -1013,12 +1178,12 @@ gint row;
 	gtk_grid_attach (GTK_GRID (grid), data->ST_memo, 1, row, 1, 1);
 
 	row++;
-	label = make_label_widget(_("_Info:"));
+	label = make_label_widget(_("_Number:"));
 	//----------------------------------------- l, r, t, b
 	gtk_grid_attach (GTK_GRID (grid), label, 0, row, 1, 1);
-	data->ST_info = make_string(label);
-	gtk_widget_set_hexpand (data->ST_info, TRUE);
-	gtk_grid_attach (GTK_GRID (grid), data->ST_info, 1, row, 1, 1);
+	data->ST_number = make_string(label);
+	gtk_widget_set_hexpand (data->ST_number, TRUE);
+	gtk_grid_attach (GTK_GRID (grid), data->ST_number, 1, row, 1, 1);
 
 	row++;
 	data->CM_exact = gtk_check_button_new_with_mnemonic (_("Case _sensitive"));
@@ -1054,7 +1219,7 @@ gint i, row;
 
 	grid = gtk_grid_new ();
 	//gtk_grid_set_row_spacing (GTK_GRID (grid), SPACING_SMALL);
-	//gtk_grid_set_column_spacing (GTK_GRID (grid), SPACING_SMALL);
+	gtk_grid_set_column_spacing (GTK_GRID (grid), SPACING_SMALL);
 	//gtk_box_pack_start (GTK_BOX (vbox2), grid, FALSE, FALSE, 0);
 	gtk_frame_set_child(GTK_FRAME(frame), grid);
 	
@@ -1111,17 +1276,22 @@ gint row;
 
 	row = 0;
 	widget = gtk_toggle_button_new_with_label(_("Expense"));
-	data->CM_typexp = widget;
+	data->CM_typnexp = widget;
 	gtk_grid_attach (GTK_GRID (grid), widget, 0, row, 1, 1);
 
 	row++;
 	widget = gtk_toggle_button_new_with_label(_("Income"));
-	data->CM_typinc = widget;
+	data->CM_typninc = widget;
 	gtk_grid_attach (GTK_GRID (grid), widget, 0, row, 1, 1);
 
 	row++;
-	widget = gtk_toggle_button_new_with_label(_("Transfer"));
-	data->CM_typxfr = widget;
+	widget = gtk_toggle_button_new_with_label(_("Expense Transfer"));
+	data->CM_typxexp = widget;
+	gtk_grid_attach (GTK_GRID (grid), widget, 0, row, 1, 1);
+
+	row++;
+	widget = gtk_toggle_button_new_with_label(_("Income Transfer"));
+	data->CM_typxinc = widget;
 	gtk_grid_attach (GTK_GRID (grid), widget, 0, row, 1, 1);
 
 	return part;
@@ -1170,13 +1340,21 @@ gint ui_flt_manage_dialog_new(GtkWindow *parentwindow, Filter *filter, gboolean 
 {
 struct ui_flt_manage_data *data;
 GtkWidget *dialog, *content, *mainbox, *sidebar, *stack, *grid, *page, *label, *widget;
+gchar *wintitle;
 gint w, h, dw, dh;
+
+	DB( g_print("\n\n------------------------\n") );
+	DB( g_print("\n[ui-filter] new\n") );
 
 	data = g_malloc0(sizeof(struct ui_flt_manage_data));
 
-	data->filter = filter;
+	DB( g_print(" key;%d name: '%s'\n", filter->key, filter->name) );
+	DB( g_print(" show_account:%d, txnmode:%d\n", show_account, txnmode) );
 
-	data->dialog = dialog = gtk_dialog_new_with_buttons (_("Edit filter"),
+	data->filter   = filter;
+	data->saveable = filter->key > 0 ? TRUE : FALSE;
+
+	data->dialog = dialog = gtk_dialog_new_with_buttons (NULL,
 			GTK_WINDOW (parentwindow),
 			0,	//no flags
 			NULL, //no buttons
@@ -1184,12 +1362,20 @@ gint w, h, dw, dh;
 
 	if(!txnmode)
 	{
-		widget = gtk_dialog_add_button(GTK_DIALOG(dialog), _("_Reset"),	55);
+		widget = gtk_dialog_add_button(GTK_DIALOG(dialog), _("_Reset"),	HB_RESPONSE_FLT_RESET);
 		gtk_widget_set_margin_end(widget, SPACING_LARGE);
 	}
 
 	gtk_dialog_add_button(GTK_DIALOG(dialog), _("_Cancel"),	GTK_RESPONSE_REJECT);
+	if( data->saveable )
+		gtk_dialog_add_button(GTK_DIALOG(dialog), _("_Save & Use"), HB_RESPONSE_FLT_SAVE_USE);
+
 	gtk_dialog_add_button(GTK_DIALOG(dialog), _("_Use"),    GTK_RESPONSE_ACCEPT);
+
+	//window title
+	wintitle = g_strdup_printf("%s - %s", _("Edit filter"), data->saveable ? filter->name : _("default") );
+	gtk_window_set_title(GTK_WINDOW(dialog), wintitle );
+	g_free(wintitle);
 
 	//set a nice dialog size
 	gtk_window_get_size(GTK_WINDOW(parentwindow), &w, &h);
@@ -1201,7 +1387,7 @@ gint w, h, dw, dh;
 
 	//store our window private data
 	g_object_set_data(G_OBJECT(dialog), "inst_data", (gpointer)data);
-	DB( g_print("\n[ui_flt_manage] window=%p, inst_data=%p\n", dialog, data) );
+	DB( g_print(" - window=%p, inst_data=%p\n", dialog, data) );
 
     g_signal_connect (dialog, "destroy",
 			G_CALLBACK (gtk_widget_destroyed), &dialog);
@@ -1235,7 +1421,7 @@ gint w, h, dw, dh;
 
 	//old: date/status/payments/amounts/texts/Cat/Payee
 
-	//TODO: needs to keep this until we enable from/to into register
+	//TODO: needs to keep this until we enable from/to into ledger
 	page = ui_flt_page_date(data);
 	gtk_stack_add_titled (GTK_STACK (stack), page, FLT_PAGE_NAME_DAT, _("Date"));
 
@@ -1305,7 +1491,7 @@ gint w, h, dw, dh;
 	ui_flt_manage_set(data);
 
 	/* signal connect */
-	g_signal_connect (data->SW_enabled[FLT_GRP_DATE]    , "notify::active", G_CALLBACK (ui_flt_manage_update), NULL);
+	//g_signal_connect (data->SW_enabled[FLT_GRP_DATE]    , "notify::active", G_CALLBACK (ui_flt_manage_update), NULL);
 	g_signal_connect (data->SW_enabled[FLT_GRP_TYPE]    , "notify::active", G_CALLBACK (ui_flt_manage_update), NULL);
 	g_signal_connect (data->SW_enabled[FLT_GRP_STATUS]    , "notify::active", G_CALLBACK (ui_flt_manage_update), NULL);
 	g_signal_connect (data->SW_enabled[FLT_GRP_PAYEE]   , "notify::active", G_CALLBACK (ui_flt_manage_update), NULL);
@@ -1316,6 +1502,10 @@ gint w, h, dw, dh;
 	g_signal_connect (data->SW_enabled[FLT_GRP_TEXT]    , "notify::active", G_CALLBACK (ui_flt_manage_update), NULL);
 	g_signal_connect (data->SW_enabled[FLT_GRP_AMOUNT]  , "notify::active", G_CALLBACK (ui_flt_manage_update), NULL);
 	g_signal_connect (data->SW_enabled[FLT_GRP_PAYMODE] , "notify::active", G_CALLBACK (ui_flt_manage_update), NULL);
+
+	g_signal_connect (data->CY_range  , "changed", G_CALLBACK (ui_flt_manage_cb_range_change), NULL);
+	g_signal_connect (data->PO_mindate, "changed", G_CALLBACK (ui_flt_manage_cb_date_change), NULL);
+	g_signal_connect (data->PO_maxdate, "changed", G_CALLBACK (ui_flt_manage_cb_date_change), NULL);
 
 
 	gtk_widget_show_all (dialog);
@@ -1342,24 +1532,23 @@ gint w, h, dw, dh;
 
 		switch (retval)
 	    {
+		case HB_RESPONSE_FLT_SAVE_USE:
 		case GTK_RESPONSE_ACCEPT:
 		   //do_application_specific_something ();
 			ui_flt_manage_get(data);
+			da_flt_count_item(filter);
 			break;
 		//case 55:	reset will be treated in calling window
-	    }
+		}
 	//}
 
 	// cleanup and destroy
 	//ui_flt_manage_cleanup(&data, result);
 
-
-	DB( g_print(" free\n") );
-	//g_free(data);
-
 	DB( g_print(" destroy\n") );
 	gtk_window_destroy (GTK_WINDOW(dialog));
 
+	DB( g_print(" free\n") );
 	g_free(data);
 	
 	DB( g_print(" end dialog filter all ok\n") );
