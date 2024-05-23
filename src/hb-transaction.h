@@ -33,7 +33,8 @@ struct _transaction
 {
 	gdouble		amount;
 	guint32		kacc;
-	gushort		paymode;
+	guchar		paymode;
+	guchar		grpflg;
 	gushort		flags;
 	guint32		kpay;
 	guint32		kcat;
@@ -42,7 +43,7 @@ struct _transaction
 	guint32		date;
 	gushort		pos;
 	gushort     status;
-	gchar		*info;
+	gchar		*number;	//info < 5.8
 	guint32		*tags;
 	guint32		kxfer;		//strong link xfer key
 	guint32		kxferacc;
@@ -155,7 +156,7 @@ guint da_transaction_length(void);
 void transaction_remove(Transaction *ope);
 void transaction_changed(Transaction *txn, gboolean saverecondate);
 gboolean da_transaction_insert_memo(gchar *memo, guint32 date);
-Transaction *transaction_add(GtkWindow *parent, Transaction *ope);
+Transaction *transaction_add(GtkWindow *parent, gboolean addmode, Transaction *ope);
 
 gchar *transaction_get_status_string(Transaction *txn);
 gboolean transaction_is_balanceable(Transaction *ope);
@@ -163,7 +164,7 @@ gboolean transaction_acc_move(Transaction *txn, guint32 okacc, guint32 nkacc);
 
 Transaction *transaction_xfer_child_new_from_txn(Transaction *txn);
 Transaction *transaction_xfer_child_strong_get(Transaction *src);
-void transaction_xfer_search_or_add_child(GtkWindow *parent, Transaction *ope, guint32 kdstacc);
+gint transaction_xfer_search_or_add_child(GtkWindow *parent, gboolean addmode, Transaction *ope, guint32 kdstacc);
 void transaction_xfer_change_to_normal(Transaction *ope);
 void transaction_xfer_change_to_child(Transaction *ope, Transaction *child);
 void transaction_xfer_child_sync(Transaction *s_txn, Transaction *child);

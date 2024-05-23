@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.71])
-AC_INIT([homebank],[5.7.4.1 ⑂ CYOSP])
+AC_INIT([homebank],[5.8.0.1 ⑂ CYOSP])
 #AC_INIT([homebank],[x.x-rc])
 
 AC_CONFIG_HEADERS(config.h)
@@ -91,7 +91,7 @@ AC_C_VOLATILE
 AC_CHECK_FUNCS([floor localeconv memset modf pow setlocale sqrt strcasecmp strtoul])
 
 # International support
-ALL_LINGUAS="ar ast be bg br ca ckb cs cy da de el en_AU en_CA en_GB eo es et eu fa fi fr_CA fr gl he hr hu id is it ja ko lt lv ms nb nds nl oc pl pt_BR pt pt_PT ro ru si sk sl sr sv ta tr uk uz vi zh_CN zh_TW"
+ALL_LINGUAS="af ar be bg br ca ckb cs cy da de el en_AU en_CA en_GB es et eu fa fi fr_CA fr gl he hr hu id is it ja ko lt lv ms nb nds nl oc pl pt_BR pt pt_PT ro ru si sl sq sr sv ta tr uk vi zh_CN zh_TW"
 
 AM_GLIB_GNU_GETTEXT
 

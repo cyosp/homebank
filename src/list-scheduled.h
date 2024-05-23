@@ -17,13 +17,20 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __LIST_UPCOMING__H__
-#define __LIST_UPCOMING__H__
+#ifndef __LIST_SCHEDULED__H__
+#define __LIST_SCHEDULED__H__
 
 
 enum
 {
-	LST_DSPUPC_DATAS,
+	LIST_SCH_TYPE_MANAGE = 0,
+	LIST_SCH_TYPE_DISPLAY
+};
+
+
+enum
+{
+	LST_DSPUPC_DATAS,	//shared
 	LST_DSPUPC_NEXT,
 	LST_DSPUPC_MEMO,
 	LST_DSPUPC_EXPENSE,
@@ -32,20 +39,25 @@ enum
 	NUM_LST_DSPUPC
 };
 
-
+// UID are used to save column position
 enum
 {
-	COL_DSPUPC_LATE = 1,
-	COL_DSPUPC_STILL,
-	COL_DSPUPC_NEXTDATE,
-	COL_DSPUPC_PAYEE,
-	COL_DSPUPC_CATEGORY,
-	COL_DSPUPC_MEMO,
-	COL_DSPUPC_EXPENSE,
-	COL_DSPUPC_INCOME,
-	COL_DSPUPC_ACCOUNT,
-	NUM_LST_COL_DSPUPC
+	COL_SCH_UID_LATE = 1,
+	COL_SCH_UID_STILL,
+	//-- last fixed
+	COL_SCH_UID_NEXTDATE = 9,
+	//-- allow reorder start here --
+	COL_SCH_UID_PAYNUMBER = 10,
+	COL_SCH_UID_PAYEE,
+	COL_SCH_UID_CATEGORY,
+	COL_SCH_UID_CLR,
+	COL_SCH_UID_AMOUNT,
+	COL_SCH_UID_EXPENSE,
+	COL_SCH_UID_INCOME,
+	COL_SCH_UID_MEMO,
+	COL_SCH_UID_ACCOUNT
 };
+#define NUM_COL_SCH_UID 9
 
 
 struct lst_sch_data
@@ -55,7 +67,12 @@ struct lst_sch_data
 };
 
 
-GtkWidget *lst_sch_widget_new(void);
+void ui_arc_listview_widget_columns_order_load(GtkTreeView *treeview);
+void ui_arc_listview_widget_columns_order_save(GtkTreeView *treeview);
+
+
+GtkWidget *lst_sch_widget_new(gint listtype);
+GtkWidget *ui_arc_listview_widget_new(void);
 
 
 #endif

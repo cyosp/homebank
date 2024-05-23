@@ -38,9 +38,6 @@
 #endif
 
 
-#define SHOW_TREE_VIEW	0
-
-
 /* our global datas */
 extern struct HomeBank *GLOBALS;
 extern struct Preferences *PREFS;
@@ -111,7 +108,7 @@ void ui_hub_reptotal_update(GtkWidget *widget, gpointer user_data)
 {
 struct hbfile_data *data;
 GtkTreeModel *model;
-gchar *title = NULL;
+gchar *title = NULL, *fmt;
 gchar strbuffer[G_ASCII_DTOSTR_BUF_SIZE];
 
 	DB( g_print("\n[hub-total] update\n") );
@@ -123,14 +120,24 @@ gchar strbuffer[G_ASCII_DTOSTR_BUF_SIZE];
 
 	switch( PREFS->hub_tot_view )
 	{
-		case HUB_TOT_VIEW_TOPCAT: 
-			title = g_strdup_printf(_("Top %d Spending / Category"), PREFS->rep_maxspenditems);
+		//todo: rework this
+		case HUB_TOT_VIEW_TOPCAT:
+			fmt = _("Top %d Spending / Category");
+			if(data->hubtot_rawamount)
+				fmt = _("Top %d Expense / Category");
+			title = g_strdup_printf(fmt, PREFS->rep_maxspenditems);
 			break;
 		case HUB_TOT_VIEW_TOPPAY:
-			title = g_strdup_printf(_("Top %d Spending / Payee"), PREFS->rep_maxspenditems);
+			fmt = _("Top %d Spending / Payee");
+			if(data->hubtot_rawamount)
+				fmt = _("Top %d Expense / Payee");
+			title = g_strdup_printf(fmt, PREFS->rep_maxspenditems);
 			break;
 		case HUB_TOT_VIEW_TOPACC:
-			title = g_strdup_printf(_("Top %d Spending / Account"), PREFS->rep_maxspenditems);
+			fmt = _("Top %d Spending / Account");
+			if(data->hubtot_rawamount)
+				fmt = _("Top %d Expense / Account");
+			title = g_strdup_printf(fmt, PREFS->rep_maxspenditems);
 			break;
 		case HUB_TOT_VIEW_ACCBAL: 
 			title = g_strdup_printf(_("Account Balance"));
@@ -175,7 +182,7 @@ GtkTreeIter  iter, parent, *tmpparent;
 DataTable *dt;
 gint range;
 gint tmpsrc;
-guint i, max_items;
+guint i, max_items, flags;
 gdouble total, other;
 gboolean tmpaccbal, valid;
 
@@ -186,27 +193,32 @@ gboolean tmpaccbal, valid;
 	if( data->hubtot_filter == NULL)
 		return;
 
-	tmpsrc = REPORT_SRC_CATEGORY;
-	//tmptype = REPORT_TYPE_EXPENSE;
+	tmpsrc = REPORT_GRPBY_CATEGORY;
 	tmpaccbal = FALSE;
 
 	switch( PREFS->hub_tot_view )
 	{
-		case HUB_TOT_VIEW_TOPCAT: tmpsrc = REPORT_SRC_CATEGORY; break;
-		case HUB_TOT_VIEW_TOPPAY: tmpsrc = REPORT_SRC_PAYEE; break;
-		case HUB_TOT_VIEW_TOPACC: tmpsrc = REPORT_SRC_ACCOUNT; break;
+		case HUB_TOT_VIEW_TOPCAT: 
+			tmpsrc = REPORT_GRPBY_CATEGORY;
+			break;
+		case HUB_TOT_VIEW_TOPPAY:
+			tmpsrc = REPORT_GRPBY_PAYEE;
+			break;
+		case HUB_TOT_VIEW_TOPACC:
+			tmpsrc = REPORT_GRPBY_ACCOUNT;
+			break;
 		case HUB_TOT_VIEW_ACCBAL: 
-			tmpsrc = REPORT_SRC_ACCOUNT; 
+			tmpsrc = REPORT_GRPBY_ACCOUNT; 
 			tmpaccbal = TRUE;
 			break;
 		case HUB_TOT_VIEW_GRPBAL: 
-			tmpsrc = REPORT_SRC_ACCGROUP; 
+			tmpsrc = REPORT_GRPBY_ACCGROUP; 
 			tmpaccbal = TRUE;
 			break;
 	}
 
 	//type  = hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_type));
-	range = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_hubtot_range));
+	range = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_hubtot_range));
 	PREFS->hub_tot_range = range;
 
 	DB( g_print(" range=%d\n", range) );
@@ -228,13 +240,25 @@ gboolean tmpaccbal, valid;
 	total = 0.0;
 
 	GQueue *txn_queue = hbfile_transaction_get_partial(data->hubtot_filter->mindate, data->hubtot_filter->maxdate);
-	if(!tmpaccbal)
+
+	flags = REPORT_COMP_FLG_NONE;
+
+	if(tmpaccbal)
+		flags |= REPORT_COMP_FLG_BALANCE;
+
+	if( !tmpaccbal )
 	{
-		dt = report_compute(tmpsrc, REPORT_INTVL_NONE, data->hubtot_filter, txn_queue, FALSE, FALSE);
+		DB( g_print(" - rawamount=%d\n", is_raw) );
+		if( data->hubtot_rawamount == FALSE )
+			flags |= REPORT_COMP_FLG_CATSIGN;
+
+		//todo: future option
+		flags |= REPORT_COMP_FLG_SPENDING;
+		//flags |= REPORT_COMP_FLG_REVENUE;
 	}
-	else
-		dt = report_compute(tmpsrc, REPORT_INTVL_NONE, data->hubtot_filter, txn_queue, FALSE, TRUE);
-		//dt = report_compute_balance(tmpsrc, REPORT_INTVL_NONE, data->hubtot_filter, TRUE);
+
+	dt = report_compute(tmpsrc, REPORT_INTVL_NONE, data->hubtot_filter, txn_queue, flags);
+
 	g_queue_free (txn_queue);
 
 	if(dt)
@@ -269,7 +293,7 @@ gboolean tmpaccbal, valid;
 				continue;
 			}
 
-			//if( tmpsrc == REPORT_SRC_ACCOUNT && (i == 0) )
+			//if( tmpsrc == REPORT_GRPBY_ACCOUNT && (i == 0) )
 			//	continue;
 
 			//#2031245
@@ -283,7 +307,7 @@ gboolean tmpaccbal, valid;
 			
 			// manage the toplevel for category
 			tmpparent = NULL;
-			if( tmpsrc == REPORT_SRC_CATEGORY )
+			if( tmpsrc == REPORT_GRPBY_CATEGORY )
 			{
 			Category *tmpcat = da_cat_get(reskey);
 				if( tmpcat != NULL)
@@ -340,20 +364,35 @@ gboolean tmpaccbal, valid;
 			max_items = (guint)PREFS->rep_maxspenditems;
 
 			{
-			GtkTreeIter remiter;
+			GtkTreeIter remiter, child;
 			gdouble othamt;
-			gboolean do_remove;
+			gboolean okchilditer, do_remove;
+			gint cpos;
 
 				DB( g_print(" aggregate items\n") );
 				valid = gtk_tree_model_get_iter_first(model, &iter);
 				while( valid )
 				{
+					DB( g_print(" freeze position %d\n", i) );
 					gtk_tree_store_set(GTK_TREE_STORE(model), &iter,
 						  LST_TOPSPEND_POS, i++,
 						  -1);
+					
+					//2063145 also store child position
+					okchilditer = gtk_tree_model_iter_children (GTK_TREE_MODEL(model), &child, &iter);
+					cpos = 0;
+					while( okchilditer )
+					{
+						DB( g_print("  freeze child position %d\n", cpos) );
 
+						gtk_tree_store_set(GTK_TREE_STORE(model), &child,
+							  LST_TOPSPEND_POS, cpos++,
+							  -1);
+
+						okchilditer = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &child);
+					}
+					
 					do_remove = (i > max_items ) ? TRUE : FALSE;
-
 					remiter = iter;
 					valid = gtk_tree_model_iter_next(model, &iter);
 
@@ -388,6 +427,7 @@ gboolean tmpaccbal, valid;
 
 			}
 
+			//sort by pos to have Other at bottom
 			gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), LST_TOPSPEND_POS, GTK_SORT_ASCENDING);
 		}
 
@@ -453,9 +493,33 @@ GVariant *old_state, *new_state;
 }
 
 
+static void
+ui_hub_reptotal_activate_toggle (GSimpleAction *action, GVariant *parameter, gpointer user_data)
+{
+struct hbfile_data *data = user_data;
+GVariant *old_state, *new_state;
+
+	old_state = g_action_get_state (G_ACTION (action));
+	new_state = g_variant_new_boolean (!g_variant_get_boolean (old_state));
+
+	DB( g_print ("Toggle action %s activated, state changes from %d to %d\n",
+		g_action_get_name (G_ACTION (action)),
+		g_variant_get_boolean (old_state),
+		g_variant_get_boolean (new_state)) );
+
+	g_simple_action_set_state (action, new_state);
+	g_variant_unref (old_state);
+	
+	data->hubtot_rawamount = g_variant_get_boolean (new_state);
+	ui_hub_reptotal_populate(GLOBALS->mainwindow, NULL);
+	
+}
+
+
 static const GActionEntry actions[] = {
 //	name, function(), type, state, 
-	{ "view", ui_hub_reptotal_activate_radio ,  "s", "'topcat'", NULL, {0,0,0} }
+	{ "view", ui_hub_reptotal_activate_radio ,  "s", "'topcat'", NULL, {0,0,0} },
+	{ "raw"	, ui_hub_reptotal_activate_toggle, NULL, "false" , NULL, {0,0,0} },
 };
 
 
@@ -469,7 +533,7 @@ GVariant *new_state;
 	data->hubtot_filter = da_flt_malloc();
 	filter_reset(data->hubtot_filter);
 	
-	hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_hubtot_range), PREFS->hub_tot_range);
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_hubtot_range), PREFS->hub_tot_range);
 
 	//#1989211 option to include xfer by default
 	if(PREFS->stat_includexfer == FALSE)
@@ -524,14 +588,6 @@ GtkWidget *label, *widget, *image;
 	hb_widget_set_margins(GTK_WIDGET(hub), 0, SPACING_SMALL, SPACING_SMALL, SPACING_SMALL);
 	data->GR_hubtot = hub;
 
-#if SHOW_TREE_VIEW == 1
-	GtkWidget *scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_box_pack_start (GTK_BOX(hub), scrollwin, TRUE, TRUE, 0);
-	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), data->LV_hubtot);
-	gtk_tree_view_set_grid_lines (GTK_TREE_VIEW (data->LV_hubtot), GTK_TREE_VIEW_GRID_LINES_BOTH);
-#endif
-
-
 	/* chart + listview */
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start (GTK_BOX (hub), hbox, TRUE, TRUE, 0);
@@ -579,7 +635,14 @@ GMenu *menu, *section;
 	g_menu_append (section, _("Category") , "actions.view::topcat");
 	g_menu_append (section, _("Payee")    , "actions.view::toppay");
 	g_menu_append (section, _("Account")  , "actions.view::topacc");
+	//g_object_unref (section);
+
+	//5.8
+	//section = g_menu_new ();
+	//g_menu_append_section (menu, NULL, G_MENU_MODEL(section));
+	g_menu_append (section, _("Raw amount"), "actions.raw");
 	g_object_unref (section);
+
 
 	section = g_menu_new ();
 	g_menu_append_section (menu, _("Balance"), G_MENU_MODEL(section));	
@@ -590,7 +653,7 @@ GMenu *menu, *section;
 	gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (widget), G_MENU_MODEL (menu));
 
 
-	data->CY_hubtot_range = make_daterange(NULL, DATE_RANGE_CUSTOM_HIDDEN);
+	data->CY_hubtot_range = make_daterange(NULL, DATE_RANGE_FLAG_CUSTOM_HIDDEN);
 	gtk_box_pack_end (GTK_BOX (tbar), data->CY_hubtot_range, FALSE, FALSE, 0);
 
 	//hbtk_radio_button_connect (GTK_CONTAINER(data->RA_type), "toggled", G_CALLBACK (ui_hub_reptotal_populate), NULL);

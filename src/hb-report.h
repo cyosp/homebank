@@ -23,20 +23,22 @@
 
 typedef enum
 {
-	REPORT_SRC_NONE,
-	REPORT_SRC_CATEGORY,
-	//REPORT_SRC_SUBCATEGORY,
-	REPORT_SRC_PAYEE,
-	REPORT_SRC_ACCOUNT,
-	REPORT_SRC_TAG,
-	REPORT_SRC_MONTH,
-	REPORT_SRC_YEAR,
-	//5.7.3
-	REPORT_SRC_ACCGROUP,
-} HbReportSrc;
+	REPORT_GRPBY_NONE,
+	REPORT_GRPBY_CATEGORY,
+	//REPORT_GRPBY_SUBCATEGORY,
+	REPORT_GRPBY_PAYEE,
+	REPORT_GRPBY_ACCOUNT,
+	REPORT_GRPBY_TAG,
+	REPORT_GRPBY_MONTH,
+	REPORT_GRPBY_YEAR,
+	REPORT_GRPBY_ACCGROUP,	//5.7.3
+	REPORT_GRPBY_TYPE		//5.8
+} HbReportGrpBy;
 
 
 typedef enum {
+	REPORT_TYPE_NONE,
+	REPORT_TYPE_ALL,
 	REPORT_TYPE_EXPENSE,
 	REPORT_TYPE_INCOME,
 	REPORT_TYPE_TOTAL
@@ -52,7 +54,7 @@ typedef enum
 	REPORT_INTVL_MONTH,
 	REPORT_INTVL_QUARTER,
 	REPORT_INTVL_HALFYEAR,
-	REPORT_INTVL_YEAR,
+	REPORT_INTVL_YEAR
 } HbReportIntvl;
 
 
@@ -60,8 +62,19 @@ typedef enum
 {
 	REPORT_RESULT_TOTAL,
 	REPORT_RESULT_CUMUL,
-	REPORT_RESULT_BALANCE,
+	REPORT_RESULT_BALANCE
 } HbReportResult;
+
+
+//5.8 compute option flags
+typedef enum {
+	REPORT_COMP_FLG_NONE		= 0,
+	REPORT_COMP_FLG_CATSIGN		= 1 << 1,
+	REPORT_COMP_FLG_SPENDING	= 1 << 2,
+	REPORT_COMP_FLG_REVENUE		= 1 << 3,
+	REPORT_COMP_FLG_BALANCE		= 1 << 8,
+	REPORT_COMP_FLG_FORECAST	= 1 << 9,
+} HbReportCompFlag;
 
 
 typedef struct _datatable DataTable;
@@ -100,12 +113,11 @@ void da_datatable_free(DataTable *dt);
 
 gdouble da_datarow_get_cell_sum(DataRow *dr, guint32 index);
 
-
-DataTable *report_compute(gint src, gint intvl, Filter *flt, GQueue *txn_queue, gboolean do_forecast, gboolean do_balance);
+DataTable *report_compute(gint grpby, gint intvl, Filter *flt, GQueue *txn_queue, gint flags);
 
 DataCol *report_data_get_col(DataTable *dt, guint32 idx);
 DataRow *report_data_get_row(DataTable *dt, guint32 row);
-guint report_items_get_key(gint tmpsrc, guint jfrom, Transaction *ope);
+guint report_items_get_key(gint tmpgrpby, guint jfrom, Transaction *ope);
 
 gint report_interval_get_pos(gint intvl, guint jfrom, Transaction *ope);
 gint report_interval_count(gint intvl, guint32 jfrom, guint32 jto);
@@ -150,6 +162,9 @@ struct _datatable
 	guint32		nbrows;		//nb of items (length): cat/subcat/pay/acc/...
 	guint32		nbcols;		//nb of intervals: d, w, m, q, hy, y
 	guint32		maxpostdate;
+	guint		flags;
+	guint		grpby;
+	guint		intvl;
 
 	guint32		*keyindex;	//array of correspondance key => index in rows
 	guint32		*keylist;

@@ -68,21 +68,26 @@
 #define N_(str) gettext_noop (str)
 
 /* = = = = = = = = = = = = = = = = */
+/* = = = = = = = = = = = = = = = = = = = = = = = = */
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
+#define HB_PRIV_FUNC		FALSE
+#define HB_PRIV_FORCE_ENUS	FALSE
+
+
 #define HB_UNSTABLE			FALSE
-#define HB_UNSTABLE_SHOW	FALSE
+#define HB_UNSTABLE_SHOW	FALSE	//show user RC header
 
 
 #define HOMEBANK_MAJOR	5
-#define HOMEBANK_MINOR	7
-#define HOMEBANK_MICRO	4
+#define HOMEBANK_MINOR	8
+#define HOMEBANK_MICRO	0
 
-#define HB_VERSION		"5.7.4"
+#define HB_VERSION		"5.8"
 #define HB_VERSION_NUM	(HOMEBANK_MAJOR*10000) + (HOMEBANK_MINOR*100) + HOMEBANK_MICRO
 
-#define FILE_VERSION		1.4
-#define PREF_VERSION		574
+#define FILE_VERSION		1.5
+#define PREF_VERSION		580
 
 #if HB_UNSTABLE == FALSE
 	#define	PROGNAME		"HomeBank"
@@ -187,7 +192,8 @@ struct HomeBank
 
 	GHashTable		*h_rul;			//assign rules
 	GHashTable		*h_tag;			//tags
-
+	GHashTable		*h_flt;			//filters
+	GtkListStore	*fltmodel;
 
 	GHashTable		*h_memo;		//memo/description
 
@@ -198,12 +204,13 @@ struct HomeBank
 	GSList			*openwindows;	//added 5.5.1
 	GSList			*deltxn_list;
 
-	// hbfile (saved properties)
+	// hbfile (wallet saved properties)
 	gchar			*owner;
 	gshort			auto_smode;
 	gshort			auto_weekday;
 	gshort			auto_nbmonths;
 	gshort			auto_nbdays;
+	gdouble			lifen_earnbyh;
 
 	guint32			vehicle_category;
 	guint32			kcur;			// base currency
@@ -223,11 +230,15 @@ struct HomeBank
 	gint			define_off;		//>0 when a stat, account window is opened
 	gboolean		minor;
 
+	GtkApplication  *application;	
 	GtkWidget		*mainwindow;	//should be global to access attached window data
-	GtkWidget		*alltxnwindow;	//window to mutex all txn show
+
+	GtkCssProvider	*provider;
 	GtkIconTheme	*icontheme;
 	//GdkPixbuf		*lst_pixbuf[NUM_LST_PIXBUF];
 	//gint			lst_pixbuf_maxwidth;
+	
+	GDBusProxy		*settings_portal;
 
 };
 
@@ -253,6 +264,8 @@ const char *get_bin_dir (void);
 const char *get_data_dir (void);
 const char *get_share_dir (void);
 guint32 homebank_app_date_get_julian(void);
+
+GtkWindow *homebank_app_find_window(gint needle_key);
 
 /* - - - - obsolete/future things - - - - */
 

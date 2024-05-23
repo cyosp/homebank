@@ -73,7 +73,7 @@ struct repvehicle_data *data;
 		gtk_date_entry_set_error(GTK_DATE_ENTRY(data->PO_maxdate), ( data->filter->maxdate < data->filter->mindate ) ? TRUE : FALSE);
 
 	g_signal_handler_block(data->CY_range, data->handler_id[HID_REPVEHICLE_RANGE]);
-	hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_range), FLT_RANGE_MISC_CUSTOM);
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_range), FLT_RANGE_MISC_CUSTOM);
 	g_signal_handler_unblock(data->CY_range, data->handler_id[HID_REPVEHICLE_RANGE]);
 
 
@@ -107,7 +107,7 @@ gint range;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	range = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_range));
+	range = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_range));
 
 	if(range != FLT_RANGE_MISC_CUSTOM)
 	{
@@ -528,7 +528,7 @@ guint lastmeter = 0;
 	gint dist;
 	gdouble centkm;
 	gdouble distbyvol;
-	gdouble trn_amount;
+	gdouble amount;
 
 		itemcat = da_cat_get(item->kcat);
 		if(! itemcat )
@@ -538,11 +538,11 @@ guint lastmeter = 0;
 		{
 			DB( g_print(" add treeview kcat=%d %s\n", item->kcat, item->memo) );
 
-			trn_amount = item->amount;
+			amount = item->amount;
 
 			if( item->meter == 0 )
 			{
-				data->total_misccost += trn_amount;
+				data->total_misccost += amount;
 			}
 			else
 			{
@@ -560,7 +560,7 @@ guint lastmeter = 0;
 				lastmeter = item->meter;
 				nb_refuel++;
 
-				//DB( g_print("\n eval %02d :: d=%d v=%.2f $%.2f dist=%d\n", nb_refuel, item->meter, item->fuel, trn_amount, item->dist) );
+				//DB( g_print("\n eval %02d :: d=%d v=%.2f $%.2f dist=%d\n", nb_refuel, item->meter, item->fuel, amount, item->dist) );
 				//DB( g_print(" + %s :: pf=%.2f pd=%d\n", item->partial ? "partial" : "full", partial_fuel, partial_dist) );
 
 				centkm = 0;
@@ -613,19 +613,19 @@ guint lastmeter = 0;
 					LST_CAR_MEMO    , item->memo,
 					LST_CAR_METER   , item->meter,
 					LST_CAR_FUEL    , item->fuel,
-					LST_CAR_PRICE   , ABS(trn_amount) / item->fuel,
-					LST_CAR_AMOUNT  , trn_amount,
+					LST_CAR_PRICE   , ABS(amount) / item->fuel,
+					LST_CAR_AMOUNT  , amount,
 					LST_CAR_DIST    , dist,
 					LST_CAR_100KM   , centkm,
 				    LST_CAR_DISTBYVOL, distbyvol,
 				    LST_CAR_PARTIAL, item->partial,
 					-1);
 
-				//DB( g_print("\n insert d=%d v=%4.2f $%8.2f %d %5.2f\n", item->meter, item->fuel, trn_amount, dist, centkm) );
+				//DB( g_print("\n insert d=%d v=%4.2f $%8.2f %d %5.2f\n", item->meter, item->fuel, amount, dist, centkm) );
 
 				if(item->dist)
 				{
-					data->total_fuelcost += trn_amount;
+					data->total_fuelcost += amount;
 					data->total_fuel     += item->fuel;
 					data->total_dist     += item->dist;
 				}
@@ -835,7 +835,7 @@ static void repvehicle_window_setup(struct repvehicle_data *data)
 
 	DB( g_print(" set widgets default\n") );
 
-	hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_range), PREFS->date_range_rep);
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_range), PREFS->date_range_rep);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_minor),GLOBALS->minor);
 
 	g_object_set_data(G_OBJECT(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_report))), "minor", (gpointer)data->CM_minor);
@@ -933,7 +933,7 @@ GtkWidget *repvehicle_window_new(void)
 {
 struct repvehicle_data *data;
 struct WinGeometry *wg;
-GtkWidget *window, *mainvbox, *hbox, *vbox, *scrollwin, *treeview;
+GtkWidget *window, *mainbox, *vbox, *scrollwin, *treeview;
 GtkWidget *label, *widget, *table;
 gint row, col;
 
@@ -961,18 +961,15 @@ gint row, col;
 	gtk_window_set_title (GTK_WINDOW (window), _("Vehicle cost report"));
 
 	//window contents
-	mainvbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	gtk_window_set_child(GTK_WINDOW(window), mainvbox);
-
-	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-    gtk_box_pack_start (GTK_BOX (mainvbox), hbox, TRUE, TRUE, 0);
+	mainbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	hb_widget_set_margin(GTK_WIDGET(mainbox), SPACING_SMALL);
+	gtk_window_set_child(GTK_WINDOW(window), mainbox);
 
 	//control part
 	table = gtk_grid_new ();
 	gtk_widget_set_hexpand (GTK_WIDGET(table), FALSE);
-    gtk_box_pack_start (GTK_BOX (hbox), table, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (mainbox), table, FALSE, FALSE, 0);
 
-	hb_widget_set_margin(GTK_WIDGET(table), SPACING_SMALL);
 	gtk_grid_set_row_spacing (GTK_GRID (table), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (table), SPACING_MEDIUM);
 
@@ -996,18 +993,26 @@ gint row, col;
 	data->CM_minor = widget;
 	gtk_grid_attach (GTK_GRID (table), widget, 2, row, 1, 1);
 
+
+	//-- filter
 	row++;
 	widget = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
+	gtk_widget_set_margin_top(widget, SPACING_MEDIUM);
 	gtk_grid_attach (GTK_GRID (table), widget, 0, row, 3, 1);
 
 	row++;
-	label = make_label_group(_("Date filter"));
+	label = make_label_group(_("Filter"));
 	gtk_grid_attach (GTK_GRID (table), label, 0, row, 3, 1);
+	
+	row++;
+	//label = make_label_group(_("Date filter"));
+	label = make_label_group(_("Date"));
+	gtk_grid_attach (GTK_GRID (table), label, 1, row, 2, 1);
 
 	row++;
 	label = make_label_widget(_("_Range:"));
 	gtk_grid_attach (GTK_GRID (table), label, 1, row, 1, 1);
-	data->CY_range = make_daterange(label, DATE_RANGE_CUSTOM_DISABLE);
+	data->CY_range = make_daterange(label, DATE_RANGE_FLAG_CUSTOM_DISABLE);
 	gtk_grid_attach (GTK_GRID (table), data->CY_range, 2, row, 1, 1);
 
 	row++;
@@ -1025,7 +1030,8 @@ gint row, col;
 
 	//part: info + report
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-    gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
+	gtk_widget_set_margin_start (vbox, SPACING_SMALL);
+    gtk_box_pack_start (GTK_BOX (mainbox), vbox, TRUE, TRUE, 0);
 
 	widget = repvehicle_toolbar_create(data);
 	data->TB_bar = widget;

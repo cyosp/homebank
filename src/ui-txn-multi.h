@@ -29,11 +29,11 @@ struct ui_multipleedit_dialog_data
 	GtkWidget	*CM_amount, *ST_amount;
 	GtkWidget	*LB_acc, *CM_acc, *PO_acc;
 	GtkWidget	*LB_mode, *CM_mode, *NU_mode;
-	GtkWidget	*CM_info, *ST_info;
+	GtkWidget	*CM_number, *ST_number;
 	GtkWidget	*CM_pay, *PO_pay;
 	GtkWidget	*CM_cat, *PO_cat;
 	GtkWidget	*CM_memo, *ST_memo;
-	GtkWidget	*CM_tags, *ST_tags;
+	GtkWidget	*CM_tags, *ST_tags, *CY_tags;
 	GtkWidget	*CM_xfer, *PO_accto;
 	 
 	GtkTreeView	*treeview;

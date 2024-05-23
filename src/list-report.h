@@ -25,13 +25,15 @@ enum
 {
 	LST_REPORT_POS,	//keep for compatibility with chart
 	LST_REPORT_KEY,
-	LST_REPORT_NAME,
+	LST_REPORT_LABEL,
 	//LST_REPORT_ROW,
 	LST_REPORT_EXPENSE,
 	LST_REPORT_INCOME,
 	LST_REPORT_TOTAL,
+	LST_REPORT_OVERLABEL,
 	NUM_LST_REPORT
 };
+
 
 #define LST_REPORT_POS_TOTAL	G_MAXINT
 
@@ -52,6 +54,7 @@ enum {
 	LST_REPORT2_KEY,
 	LST_REPORT2_LABEL,
 	LST_REPORT2_ROW,
+	LST_REPORT2_OVERLABEL,
 	NUM_LST_REPORT2
 };
 
@@ -72,6 +75,7 @@ struct lst_report_data
 
 GtkTreeStore *lst_report_new(void);
 GtkWidget *lst_report_create(void);
+void lst_report_add_columns(GtkTreeView *treeview, GtkTreeModel *model);
 gboolean lst_report_get_top_level (GtkTreeModel *liststore, guint32 key, GtkTreeIter *return_iter);
 GString *lst_report_to_string(GtkTreeView *treeview, gint src, gchar *title, gboolean clipboard);
 

@@ -38,6 +38,8 @@ enum
 struct ui_pay_manage_dialog_data
 {
 	GtkWidget	*dialog;
+	GActionGroup * actions;
+
 	gboolean	mapped_done;
 
 	GtkWidget	*BT_showhidden;

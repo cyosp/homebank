@@ -67,7 +67,7 @@ struct lst_accview_data
 };
 
 
-GString *lst_accview_to_string(GtkTreeView *treeview, gboolean clipboard);
+GString *lst_accview_to_string(GtkTreeView *treeview, ToStringMode mode);
 
 gboolean list_account_level1_expanded(GtkTreeView *treeview, gchar *name);
 

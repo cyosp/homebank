@@ -441,7 +441,7 @@ GString *node;
 
 	//g_print ("Action %s activated\n", g_action_get_name (G_ACTION (action)));
 
-	node = lst_accview_to_string(GTK_TREE_VIEW(data->LV_acc), TRUE);
+	node = lst_accview_to_string(GTK_TREE_VIEW(data->LV_acc), HB_STRING_PRINT);
 	hb_print_listview(GTK_WINDOW(data->window), node->str, NULL, _("Your accounts"), NULL, FALSE);
 
 	g_string_free(node, TRUE);

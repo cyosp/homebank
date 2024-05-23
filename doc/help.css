@@ -19,7 +19,8 @@ material design
 
 /* suggested line-height:140% */
 body {
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Helvetica Neue", Arial, sans-serif;
+	/*font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Helvetica Neue", Arial, sans-serif;*/
+	font-family: system-ui, sans-serif;
 	font-size: 14px/18px;
 	line-height:140%;
 	color: #333;
@@ -27,8 +28,11 @@ body {
 }
 
 a { color: #33691e; }
-
 a:hover { color: #629749; }
+
+a.lex { color: #69331e; }
+a.lex:hover { color: #976249; }
+
 
 h1,h2,h3,h4,h5,h6 {
 /*font-family: Times, 'Times New Roman', serif; font-style:italic;*/

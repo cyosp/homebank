@@ -39,8 +39,6 @@
 #define DB(x);
 #endif
 
-#define SHOW_TREE_VIEW	0
-
 
 /* our global datas */
 extern struct HomeBank *GLOBALS;
@@ -120,7 +118,19 @@ gboolean showmono = TRUE;
 	switch( PREFS->hub_tim_view )
 	{
 		case HUB_TIM_VIEW_SPENDING: 
-			title = _("Spending by Month");
+			title = _("Spending");
+			if(data->hubtim_rawamount)
+				title = _("Expense");
+			break;
+		case HUB_TIM_VIEW_REVENUE: 
+			title = _("Revenue");
+			if(data->hubtim_rawamount)
+				title = _("Income");
+			break;
+		case HUB_TIM_VIEW_SPEREV: 
+			title = _("Spending & Revenue");
+			if(data->hubtim_rawamount)
+				title = _("Expense & Income");
 			break;
 		case HUB_TIM_VIEW_ACCBALANCE:
 			title = _("Account Balance");
@@ -162,7 +172,7 @@ GtkTreeIter iter;
 DataTable *dt;
 gint range;
 gint tmpview, tmpsrc, tmpintvl;
-guint i, n_inserted;
+guint i, n_inserted, flags;
 
 	DB( g_print("\n[hub-time] populate\n") );
 
@@ -172,27 +182,25 @@ guint i, n_inserted;
 		return;
 
 	tmpview = PREFS->hub_tim_view;
-	tmpsrc = REPORT_SRC_ACCOUNT;
-	//tmptype = REPORT_TYPE_EXPENSE;
+
+	//default value
+	tmpsrc   = REPORT_GRPBY_TYPE;
 	tmpintvl = REPORT_INTVL_MONTH;
 
 	switch( tmpview )
 	{
-		case HUB_TIM_VIEW_SPENDING:
-			tmpsrc = REPORT_SRC_NONE;
-			break;
 		case HUB_TIM_VIEW_ACCBALANCE:
-			tmpsrc = REPORT_SRC_ACCOUNT;
+			tmpsrc = REPORT_GRPBY_ACCOUNT;
 			break;
 		case HUB_TIM_VIEW_GRPBALANCE:
-			tmpsrc = REPORT_SRC_ACCGROUP;
+			tmpsrc = REPORT_GRPBY_ACCGROUP;
 			break;
 		case HUB_TIM_VIEW_ALLBALANCE:
-			tmpsrc = REPORT_SRC_NONE;
+			tmpsrc = REPORT_GRPBY_NONE;
 			break;
 	}
 
-	range = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_hubtim_range));
+	range = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_hubtim_range));
 	PREFS->hub_tim_range = range;
 
 	DB( g_print(" - range=%d\n", range) );
@@ -212,15 +220,40 @@ guint i, n_inserted;
 	}
 
 	GQueue *txn_queue = hbfile_transaction_get_partial(data->hubtim_filter->mindate, data->hubtim_filter->maxdate);
-	if( tmpview == HUB_TIM_VIEW_SPENDING )
+
+	flags = REPORT_COMP_FLG_NONE;
+	DB( g_print(" - forecast=%d\n", PREFS->rep_forcast) );
+	if( PREFS->rep_forcast == TRUE )
+		flags |= REPORT_COMP_FLG_FORECAST;
+
+
+	if( tmpview == HUB_TIM_VIEW_SPENDING || 
+	    tmpview == HUB_TIM_VIEW_REVENUE ||
+	    tmpview == HUB_TIM_VIEW_SPEREV
+	  )
 	{
-		filter_preset_type_set(data->hubtim_filter, FLT_TYPE_EXPENSE, FLT_INCLUDE);
-		dt = report_compute(tmpsrc, tmpintvl, data->hubtim_filter, txn_queue, PREFS->rep_forcast, FALSE);
+		DB( g_print(" mode: spending/revenue\n") );
+		DB( g_print(" - rawamount=%d\n", data->hubtim_rawamount) );
+		if( data->hubtim_rawamount == FALSE )
+			flags |= REPORT_COMP_FLG_CATSIGN;
+
+		flags |= REPORT_COMP_FLG_SPENDING;
+		flags |= REPORT_COMP_FLG_REVENUE;
+
+		if( tmpview == HUB_TIM_VIEW_SPENDING )
+			flags &= ~REPORT_COMP_FLG_REVENUE;
+		if( tmpview == HUB_TIM_VIEW_REVENUE )
+			flags &= ~REPORT_COMP_FLG_SPENDING;
+
+		//filter_preset_type_set(data->hubtim_filter, FLT_TYPE_EXPENSE, FLT_INCLUDE);
+		dt = report_compute(tmpsrc, tmpintvl, data->hubtim_filter, txn_queue, flags);
+
 	}
 	else
 	{
+		DB( g_print(" mode: balance\n") );
 		filter_preset_type_set(data->hubtim_filter, FLT_TYPE_ALL, FLT_OFF);
-		dt = report_compute(tmpsrc, tmpintvl, data->hubtim_filter, txn_queue, PREFS->rep_forcast, TRUE);
+		dt = report_compute(tmpsrc, tmpintvl, data->hubtim_filter, txn_queue, flags | REPORT_COMP_FLG_BALANCE);
 		//dt = report_compute_balance(tmpsrc, tmpintvl, data->hubtim_filter);
 	}
 	g_queue_free (txn_queue);
@@ -236,6 +269,7 @@ guint i, n_inserted;
 		g_object_ref(model); // Make sure the model stays with us after the tree view unrefs it
 		gtk_tree_view_set_model(GTK_TREE_VIEW(data->LV_hubtim), NULL); // Detach model from view
 
+		//tooltip get column label, so keep this
 		lst_rep_time_renewcol(GTK_TREE_VIEW(data->LV_hubtim), model, dt, TRUE);
 
 		n_inserted = 0;
@@ -252,11 +286,11 @@ guint i, n_inserted;
 			//#2024940 test on exp/inc individually
 			if( hb_amount_equal(dr->rowexp, 0.0) && hb_amount_equal(dr->rowinc, 0.0))
 			{
-				DB( g_printf("  >skip: no data\n") );
+				DB( g_printf("  >skip: no data %.2f %2f\n", dr->rowexp, dr->rowinc) );
 				continue;
 			}
 
-			//if( tmpsrc == REPORT_SRC_ACCOUNT && (i == 0) )
+			//if( tmpsrc == REPORT_GRPBY_ACCOUNT && (i == 0) )
 			//	continue;
 
 			n_inserted++;
@@ -329,7 +363,13 @@ GVariant *old_state, *new_state;
 
 	if( !strcmp("expmon", g_variant_get_string(new_state, NULL)) )
 		PREFS->hub_tim_view = HUB_TIM_VIEW_SPENDING;
-	else	
+	else
+	if( !strcmp("incmon", g_variant_get_string(new_state, NULL)) )
+		PREFS->hub_tim_view = HUB_TIM_VIEW_REVENUE;
+	else
+	if( !strcmp("expinc", g_variant_get_string(new_state, NULL)) )
+		PREFS->hub_tim_view = HUB_TIM_VIEW_SPEREV;
+	else
 	if( !strcmp("accbal", g_variant_get_string(new_state, NULL)) )
 		PREFS->hub_tim_view = HUB_TIM_VIEW_ACCBALANCE;
 	else
@@ -344,11 +384,36 @@ GVariant *old_state, *new_state;
 
 	ui_hub_reptime_populate(GLOBALS->mainwindow, NULL);
 }
+	
+
+static void
+ui_hub_reptime_activate_toggle (GSimpleAction *action, GVariant *parameter, gpointer user_data)
+{
+struct hbfile_data *data = user_data;
+GVariant *old_state, *new_state;
+
+	old_state = g_action_get_state (G_ACTION (action));
+	new_state = g_variant_new_boolean (!g_variant_get_boolean (old_state));
+
+	DB( g_print ("Toggle action %s activated, state changes from %d to %d\n",
+		g_action_get_name (G_ACTION (action)),
+		g_variant_get_boolean (old_state),
+		g_variant_get_boolean (new_state)) );
+
+	g_simple_action_set_state (action, new_state);
+	g_variant_unref (old_state);
+	
+	data->hubtim_rawamount = g_variant_get_boolean (new_state);
+	ui_hub_reptime_populate(GLOBALS->mainwindow, NULL);
+	
+}
 
 
 static const GActionEntry actions[] = {
 //	name, function(), type, state, 
-	{ "view", ui_hub_reptime_activate_radio ,  "s", "'cat'", NULL, {0,0,0} }
+	{ "view", ui_hub_reptime_activate_radio ,  "s", "'cat'", NULL, {0,0,0} },
+	{ "raw"	, ui_hub_reptime_activate_toggle, NULL, "false" , NULL, {0,0,0} },
+
 };
 
 
@@ -362,7 +427,7 @@ GVariant *new_state;
 	data->hubtim_filter = da_flt_malloc();
 	filter_reset(data->hubtim_filter);
 
-	hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_hubtim_range), PREFS->hub_tim_range);
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_hubtim_range), PREFS->hub_tim_range);
 
 	if( !G_IS_SIMPLE_ACTION_GROUP(data->hubtim_action_group) )
 		return;
@@ -375,6 +440,8 @@ GVariant *new_state;
 		switch( PREFS->hub_tim_view )
 		{
 			case HUB_TIM_VIEW_SPENDING  : value = "expmon"; break;
+			case HUB_TIM_VIEW_REVENUE   : value = "incmon"; break;
+			case HUB_TIM_VIEW_SPEREV    : value = "expinc"; break;
 			case HUB_TIM_VIEW_ACCBALANCE: value = "accbal"; break;
 			case HUB_TIM_VIEW_GRPBALANCE: value = "grpbal"; break;
 			case HUB_TIM_VIEW_ALLBALANCE: value = "allbal"; break;
@@ -420,13 +487,6 @@ GtkWidget *label, *widget, *image;
 	hb_widget_set_margins(GTK_WIDGET(hub), 0, SPACING_SMALL, SPACING_SMALL, SPACING_SMALL);
 	data->GR_hubtim = hub;
 
-#if SHOW_TREE_VIEW == 1
-	GtkWidget *scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_box_pack_start (GTK_BOX(hub), scrollwin, TRUE, TRUE, 0);
-	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), data->LV_hubtim);
-	gtk_tree_view_set_grid_lines (GTK_TREE_VIEW (data->LV_hubtim), GTK_TREE_VIEW_GRID_LINES_BOTH);
-#endif
-
 	/* chart + listview */
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start (GTK_BOX (hub), hbox, TRUE, TRUE, 0);
@@ -463,9 +523,19 @@ GMenu *menu, *section;
 	menu = g_menu_new ();
 	section = g_menu_new ();
 	g_menu_append_section(menu, NULL, G_MENU_MODEL(section));
-	g_menu_append (section, _("Spending/Month")  , "actions.view::expmon");
+	g_menu_append (section, _("Spending")  , "actions.view::expmon");
+	//5.7.5
+	g_menu_append (section, _("Revenue")   , "actions.view::incmon");
+	g_menu_append (section, _("Spending & Revenue"), "actions.view::expinc");
+	//g_object_unref (section);
+
+	//5.8
+	//section = g_menu_new ();
+	//g_menu_append_section (menu, NULL, G_MENU_MODEL(section));
+	g_menu_append (section, _("Raw amount"), "actions.raw");
 	g_object_unref (section);
-	
+
+
 	section = g_menu_new ();
 	g_menu_append_section(menu, _("Balance"), G_MENU_MODEL(section));
 	g_menu_append (section, _("Account")      , "actions.view::accbal");
@@ -481,7 +551,7 @@ GMenu *menu, *section;
 	gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (widget), G_MENU_MODEL (menu));
 
 
-	data->CY_hubtim_range = make_daterange(NULL, DATE_RANGE_CUSTOM_HIDDEN);
+	data->CY_hubtim_range = make_daterange(NULL, DATE_RANGE_FLAG_CUSTOM_HIDDEN);
 	gtk_box_pack_end (GTK_BOX (tbar), data->CY_hubtim_range, FALSE, FALSE, 0);
 
 

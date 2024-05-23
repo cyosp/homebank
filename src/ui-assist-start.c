@@ -661,7 +661,7 @@ Account *item;
 		}
 
 		item->kcur = GLOBALS->kcur;
-		item->type = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_type));
+		item->type = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_type));
 
 		da_acc_append(item);
 		GLOBALS->changes_count++;

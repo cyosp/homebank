@@ -252,6 +252,7 @@ GenTxn tran = { 0 };
 	gchar *value = NULL;
 	GenAcc tmpgenacc = { 0 };
 	GenAcc *genacc;
+	guint row = 0;
 
 		DB( g_print(" -> encoding should be %s\n", genfile->encoding) );
 		if( genfile->encoding != NULL )
@@ -406,9 +407,9 @@ GenTxn tran = { 0 };
 						{
 							if(*value != '\0')
 							{
-								g_free(tran.info);
+								g_free(tran.number);
 								g_strstrip(value);
-								tran.info = g_strdup(value);
+								tran.number = g_strdup(value);
 							}
 							break;
 						}
@@ -508,6 +509,9 @@ GenTxn tran = { 0 };
 							//fix: 380550
 							if( tran.date )
 							{
+								//5.8 #2063416 same date txn
+								tran.row = row++;
+								
 								//ensure we have an account
 								//todo: check this
 								if(genacc == NULL)

@@ -68,8 +68,8 @@ static void ui_chart_progress_destroy         (GtkWidget     *chart);
 static gboolean drawarea_configure_event_callback (GtkWidget *widget, GdkEventConfigure *event, gpointer user_data);
 static gboolean drawarea_draw_callback(GtkWidget *widget, cairo_t *cr, gpointer user_data);
 static void drawarea_style_changed_callback(GtkWidget *widget, gpointer   user_data);
-static gboolean drawarea_scroll_event_callback( GtkWidget *widget, GdkEventScroll *event, gpointer user_data);
-static gboolean drawarea_motionnotifyevent_callback(GtkWidget *widget, GdkEventMotion *event, gpointer user_data);
+static gboolean drawarea_scroll_event_callback( GtkWidget *widget, GdkEvent *event, gpointer user_data);
+static gboolean drawarea_motionnotifyevent_callback(GtkWidget *widget, GdkEvent *event, gpointer user_data);
 static void ui_chart_progress_first_changed( GtkAdjustment *adj, gpointer user_data);
 
 //static void ui_chart_progress_clear(ChartProgress *chart);
@@ -379,6 +379,17 @@ gboolean valid = FALSE;
 			LST_BUDGET_STATUS, &status,
 			-1);
 
+		//#2023696 add unbudgeted into listview & exclude from charts
+		if( pos == LST_BUDGET_POS_UNBUDGETED )
+		{
+			//subtract the LST_REPORT_POS_TOTAL line not to be drawed
+			chart->nb_items--;
+			//fix leak
+			g_free(label);
+			g_free(status);
+			goto next;
+		}
+
 		item.label = label;
 		item.spent = value1;
 		item.budget = value2;
@@ -401,7 +412,7 @@ gboolean valid = FALSE;
 
 		//don't g_free(label); here done into chart_clear
 		//don't g_free(status); here done into chart_clear
-
+next:
 		i++;
 		valid = gtk_tree_model_iter_next (model, &iter);
 	}
@@ -1132,19 +1143,20 @@ ChartProgress *chart = GTK_CHARTPROGRESS(user_data);
 
 
 static gboolean
-drawarea_cb_button_press_event (GtkWidget *widget, GdkEventButton *event, gpointer user_data)
+drawarea_cb_button_press_event (GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
 ChartProgress *chart = GTK_CHARTPROGRESS(user_data);
+guint button = 0;
 
 	if (chart->surface == NULL)
 		return FALSE; /* paranoia check, in case we haven't gotten a configure event */
 
 	DB( g_print("\n[chartprogress] mouse button press event\n") );
 
-	if (event->button == GDK_BUTTON_PRIMARY)
-	{
-		DB( g_print(" x=%f, y=%f\n", event->x, event->y) );
+	gdk_event_get_button(event, &button);
 
+	if (button == GDK_BUTTON_PRIMARY)
+	{
 		if( chart->hover >= 0 )
 		{
 		StackItem *item = &g_array_index(chart->items, StackItem, chart->hover);
@@ -1165,31 +1177,24 @@ ChartProgress *chart = GTK_CHARTPROGRESS(user_data);
 
 
 
-static gboolean drawarea_motionnotifyevent_callback(GtkWidget *widget, GdkEventMotion *event, gpointer user_data)
+static gboolean drawarea_motionnotifyevent_callback(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
 ChartProgress *chart = GTK_CHARTPROGRESS(user_data);
 HbtkDrawProgContext *context = &chart->context;
+gdouble x_win, y_win;
 gint x, y;
 
 	if(chart->surface == NULL || chart->nb_items == 0)
 		return FALSE;
 
 	DBD( g_print("\n[chartprogress] drawarea motion cb\n") );
-	x = event->x;
-	y = event->y;
 
-	//todo see this
-	if(event->is_hint)
-	{
-		//DB( g_print(" is hint\n") );
-
-		gdk_window_get_device_position(event->window, event->device, &x, &y, NULL);
-		//gdk_window_get_pointer(event->window, &x, &y, NULL);
-		//return FALSE;
-	}
+	gdk_event_get_coords(event, &x_win, &y_win);
+	
+	x = x_win;
+	y = y_win;
 
 	chart->hover = ui_chart_progress_get_hover(widget, x, y, chart);
-
 
 	// rollover redraw ?
 	DBD( g_print(" %d, %d :: hover: last=%d, curr=%d\n", x, y, chart->lasthover, chart->hover) );
@@ -1238,10 +1243,11 @@ gint x, y;
 }
 
 
-static gboolean drawarea_scroll_event_callback( GtkWidget *widget, GdkEventScroll *event, gpointer user_data)
+static gboolean drawarea_scroll_event_callback( GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
 ChartProgress *chart = GTK_CHARTPROGRESS(user_data);
 GtkAdjustment *adj = chart->adjustment;
+GdkScrollDirection direction;
 gdouble first, upper, pagesize;
 
 	DB( g_print("\n[chartprogress] scroll\n") );
@@ -1253,7 +1259,9 @@ gdouble first, upper, pagesize;
 
 	DB( g_print("- pos is %.2f, [%.2f - %.2f]\n", first, 0.0, upper) );
 
-	switch(event->direction)
+	gdk_event_get_scroll_direction(event, &direction);
+
+	switch(direction)
 	{
 		case GDK_SCROLL_UP:
 			gtk_adjustment_set_value(adj, first - 1);

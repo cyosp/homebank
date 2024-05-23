@@ -21,6 +21,7 @@ private_icons = \
 	hicolor_actions_24x24_hb-assign-run.png \
 	hicolor_actions_24x24_hb-budget.png \
 	hicolor_actions_24x24_hb-category.png \
+	hicolor_actions_24x24_hb-clear.png \
 	hicolor_actions_24x24_hb-currency.png \
 	hicolor_actions_24x24_hb-donate.png \
 	hicolor_actions_24x24_hb-file-export.png \
@@ -32,6 +33,7 @@ private_icons = \
 	hicolor_actions_24x24_hb-go-up.png \
 	hicolor_actions_24x24_hb-help.png \
 	hicolor_actions_24x24_hb-legend.png \
+	hicolor_actions_24x24_hb-life-energy.png \
 	hicolor_actions_24x24_hb-ope-add.png \
 	hicolor_actions_24x24_hb-ope-cleared.png \
 	hicolor_actions_24x24_hb-ope-delete.png \
@@ -58,6 +60,15 @@ private_icons = \
 	hicolor_actions_24x24_hb-view-refresh.png \
 	hicolor_actions_24x24_hb-view-stack.png \
 	hicolor_actions_24x24_hb-view-stack100.png \
+	hicolor_status_16x16_hb-changes-allow.png \
+	hicolor_status_16x16_hb-changes-prevent.png \
+	hicolor_status_16x16_hb-gf-blue.png \
+	hicolor_status_16x16_hb-gf-green.png \
+	hicolor_status_16x16_hb-gf-none.png \
+	hicolor_status_16x16_hb-gf-orange.png \
+	hicolor_status_16x16_hb-gf-purple.png \
+	hicolor_status_16x16_hb-gf-red.png \
+	hicolor_status_16x16_hb-gf-yellow.png \
 	hicolor_status_16x16_hb-ope-auto.png \
 	hicolor_status_16x16_hb-ope-budget.png \
 	hicolor_status_16x16_hb-ope-cleared.png \
@@ -70,19 +81,19 @@ private_icons = \
 	hicolor_status_16x16_hb-ope-remind.png \
 	hicolor_status_16x16_hb-ope-similar.png \
 	hicolor_status_16x16_hb-ope-void.png \
-	hicolor_status_16x16_hb-pm-none.png \
-	hicolor_status_16x16_hb-pm-ccard.png \
-	hicolor_status_16x16_hb-pm-dcard.png \
-	hicolor_status_16x16_hb-pm-check.png \
 	hicolor_status_16x16_hb-pm-cash.png \
-	hicolor_status_16x16_hb-pm-transfer.png \
+	hicolor_status_16x16_hb-pm-ccard.png \
+	hicolor_status_16x16_hb-pm-check.png \
+	hicolor_status_16x16_hb-pm-dcard.png \
+	hicolor_status_16x16_hb-pm-deposit.png \
+	hicolor_status_16x16_hb-pm-directdebit.png \
+	hicolor_status_16x16_hb-pm-epayment.png \
+	hicolor_status_16x16_hb-pm-fifee.png \
 	hicolor_status_16x16_hb-pm-intransfer.png \
 	hicolor_status_16x16_hb-pm-none.png \
+	hicolor_status_16x16_hb-pm-mobphone.png \
 	hicolor_status_16x16_hb-pm-standingorder.png \
-	hicolor_status_16x16_hb-pm-epayment.png \
-	hicolor_status_16x16_hb-pm-deposit.png \
-	hicolor_status_16x16_hb-pm-fifee.png \
-	hicolor_status_16x16_hb-pm-directdebit.png \
+	hicolor_status_16x16_hb-pm-transfer.png \
 	hicolor_status_48x48_prf-advanced.png \
 	hicolor_status_48x48_prf-backup.png \
 	hicolor_status_48x48_prf-columns.png \
@@ -93,6 +104,7 @@ private_icons = \
 	hicolor_status_48x48_prf-import.png \
 	hicolor_status_48x48_prf-interface.png \
 	hicolor_status_48x48_prf-locale.png \
+	hicolor_status_48x48_prf-payment.png \
 	hicolor_status_48x48_prf-report.png \
 	hicolor_actions_scalable_edit-split-symbolic.svg \
 	hicolor_actions_scalable_eye-not-looking-symbolic.svg \
@@ -123,7 +135,7 @@ gtk_update_icon_cache = gtk-update-icon-cache -f -t
 
 update-icon-cache:
 	@-if test -z "$(DESTDIR)"; then \
-		echo "Updating Gtk icon cache."; \
+		echo "Updating Gtk icon cache in '$(DESTDIR)'"; \
 		for theme in $(public_icons_themes); do \
 			$(gtk_update_icon_cache) $(datadir)/icons/$$theme; \
 		done; \

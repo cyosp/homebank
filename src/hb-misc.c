@@ -86,9 +86,42 @@ Currency *cur;
 
 	cur = da_cur_get(kcur);
 	if(cur == NULL || cur->rate == 0.0)
-		return 0;
+		return 0.0;
 
 	newvalue = value / cur->rate;
+	return hb_amount_round(newvalue, cur->frac_digits);
+}
+
+
+/* we have rate versus base curency */
+gdouble hb_amount_convert(gdouble value, guint32 skcur, guint32 dkcur)
+{
+gdouble newvalue;
+Currency *cur;
+
+	if( skcur == dkcur )
+		return value;
+
+	/* we can't convert if no base currency as src or dst */ 
+	if( skcur != GLOBALS->kcur && dkcur != GLOBALS->kcur )
+		return 0.0;
+
+	if(dkcur == GLOBALS->kcur)
+	{
+		cur = da_cur_get(skcur);
+		if(cur == NULL || cur->rate == 0.0)
+			return 0.0;
+		newvalue = value / cur->rate;
+	}
+
+	if(skcur == GLOBALS->kcur)
+	{
+		cur = da_cur_get(dkcur);
+		if(cur == NULL || cur->rate == 0.0)
+			return 0.0;
+		newvalue = value * cur->rate;
+	}
+
 	return hb_amount_round(newvalue, cur->frac_digits);
 }
 
@@ -101,6 +134,20 @@ gboolean retval = TRUE;
 		retval = FALSE;
 	if( (type == TXN_TYPE_INCOME ) && (amount < 0) )
 		retval = FALSE;
+
+	return retval;
+}
+
+
+gboolean hb_amount_between(gdouble val, gdouble min, gdouble max)
+{
+gboolean retval = FALSE;
+
+	if(val > 0.0)
+		retval = (val >= min && val <= max);
+	else
+	if(val < 0.0)
+		retval = (val <= min && val >= max);
 
 	return retval;
 }
@@ -290,7 +337,6 @@ gdouble monval;
 		g_ascii_formatd(formatd_buf, outlen, cur->format, monval);
 		hb_str_formatd(outstr, outlen, formatd_buf, cur, TRUE);
 	}
-
 }
 
 
@@ -344,6 +390,30 @@ gdouble monval;
 		monval = hb_amount_to_euro(value);
 		//#1868185 print raw number, not with monetary
 		g_ascii_formatd(outstr, outlen, "%.2f", monval);
+	}
+}
+
+
+void hb_strlifeenergy(gchar *outstr, gint outlen, gdouble value, guint32 kcur, gboolean minor)
+{
+gchar buf_energy[16];
+gdouble monval;
+gdouble intval, fracval;
+gshort h, m;
+
+	//first print monetary
+	hb_strfmon(outstr, outlen, value, kcur, minor);
+
+	if( !hb_amount_equal(GLOBALS->lifen_earnbyh, 0.0) && value < 0.0)
+	{
+		monval = hb_amount_base(value, kcur);
+		fracval = modf(ABS(monval) / GLOBALS->lifen_earnbyh, &intval); 
+		h = (gint)intval;
+		m = (gint)(fracval*60);
+		if( (gint)(m / 60) > 30 ) m++;
+
+		g_sprintf(buf_energy, " (%dh%02dm)", h, m);
+		strcat(outstr, buf_energy);
 	}
 }
 

@@ -52,8 +52,8 @@ static void da_flt_clean(Filter *flt)
 		g_free(flt->memo);
 		flt->memo = NULL;
 
-		g_free(flt->info);
-		flt->info = NULL;
+		g_free(flt->number);
+		flt->number = NULL;
 
 		g_free(flt->name);
 		flt->name = NULL;
@@ -90,6 +90,11 @@ static void da_flt_init(Filter *flt)
 
 	DB( g_print("da_flt_init\n") );
 
+	//5.8 init range to min/max glib bound
+	flt->range   = FLT_RANGE_MISC_ALLDATE;
+	flt->mindate = HB_MINDATE;	//1;
+	flt->maxdate = HB_MAXDATE;	//G_MAXUINT32;
+
 	//always allocate 1 elt minimum
 	// /!\ each array still ->len = 0
 	flt->gbacc = g_array_sized_new(FALSE, TRUE, sizeof(gchar), 1);
@@ -124,6 +129,44 @@ Filter *flt;
 }
 
 
+static guint count_garray(GArray *array)
+{
+guint count, i;
+	
+	for(i=0,count=0 ; i < array->len ; i++)
+	{
+		if( array->data[i] == 1 )
+			count++;
+	}
+	return count;
+}
+
+
+void da_flt_count_item(Filter *flt)
+{
+guint i, count;
+
+	flt->n_active = 0;
+	for(i=0;i<FLT_GRP_MAX;i++)
+	{
+		if( flt->option[i] == 1 )
+		flt->n_active++;	
+	}
+
+	flt->n_item[FLT_GRP_ACCOUNT]  = count_garray(flt->gbacc);
+	flt->n_item[FLT_GRP_PAYEE]    = count_garray(flt->gbpay);
+	flt->n_item[FLT_GRP_CATEGORY] = count_garray(flt->gbcat);
+	flt->n_item[FLT_GRP_TAG]      = count_garray(flt->gbtag);
+
+	for(i=0, count=0;i<NUM_PAYMODE_MAX;i++)
+	{
+		if( flt->paymode[i] == TRUE )
+			count++;
+	}
+	flt->n_item[FLT_GRP_PAYMODE] = count;
+}
+
+
 void da_flt_copy(Filter *src, Filter *dst)
 {
 	DB( g_print("da_flt_copy\n") );
@@ -143,9 +186,9 @@ void da_flt_copy(Filter *src, Filter *dst)
 	memcpy(dst, src, sizeof(Filter));
 
 	//duplicate extra memory
-	dst->name = g_strdup(src->name);
-	dst->info = g_strdup(src->info);
-	dst->memo = g_strdup(src->memo);
+	dst->name   = g_strdup(src->name);
+	dst->number = g_strdup(src->number);
+	dst->memo   = g_strdup(src->memo);
 	
 	dst->gbacc = g_array_copy(src->gbacc);
 	dst->gbpay = g_array_copy(src->gbpay);
@@ -158,11 +201,194 @@ void da_flt_copy(Filter *src, Filter *dst)
 
 	DB( g_print(" copied\n\n") );
 
+	da_flt_count_item(dst);
+}
+
+
+void
+da_flt_destroy(void)
+{
+	DB( g_print("da_flt_destroy\n") );
+	g_hash_table_destroy(GLOBALS->h_flt);
+}
+
+
+void
+da_flt_new(void)
+{
+//Filter *item;
+
+	DB( g_print("da_flt_new\n") );
+	GLOBALS->h_flt = g_hash_table_new_full(g_int_hash, g_int_equal, (GDestroyNotify)g_free, (GDestroyNotify)da_flt_free);
 }
 
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
+
+guint
+da_flt_length(void)
+{
+	return g_hash_table_size(GLOBALS->h_flt);
+}
+
+
+static void da_flt_max_key_ghfunc(gpointer key, Filter *item, guint32 *max_key)
+{
+	*max_key = MAX(*max_key, item->key);
+}
+
+guint32
+da_flt_get_max_key(void)
+{
+guint32 max_key = 0;
+
+	g_hash_table_foreach(GLOBALS->h_flt, (GHFunc)da_flt_max_key_ghfunc, &max_key);
+	return max_key;
+}
+
+
+gboolean
+da_flt_remove(guint32 key)
+{
+	DB( g_print("da_flt_remove %d\n", key) );
+
+
+
+	return g_hash_table_remove(GLOBALS->h_flt, &key);
+}
+
+
+gboolean
+da_flt_insert(Filter *item)
+{
+guint32 *new_key;
+GtkTreeIter iter;
+
+	DB( g_print("da_flt_insert\n") );
+
+	new_key = g_new0(guint32, 1);
+	*new_key = item->key;
+	g_hash_table_insert(GLOBALS->h_flt, new_key, item);
+
+	//limit to 20 char
+	if( strlen(item->name) > 20 )
+	{
+	gchar *truncname = g_strdup_printf("%.20s...", item->name);
+	
+		gtk_list_store_insert_with_values(GTK_LIST_STORE(GLOBALS->fltmodel), &iter, 0,
+			0, item->key,
+			1, truncname,
+			-1);
+
+		g_free(truncname);
+	}
+	else
+	{
+		//add to model
+		gtk_list_store_insert_with_values(GTK_LIST_STORE(GLOBALS->fltmodel), &iter, 0,
+			0, item->key,
+			1, item->name,
+			-1);
+	}
+
+	return TRUE;
+}
+
+
+gboolean
+da_flt_append(Filter *item)
+{
+Filter *existitem;
+
+	DB( g_print("da_flt_append\n") );
+
+	existitem = da_flt_get_by_name( item->name );
+	if( existitem == NULL )
+	{
+		item->key = da_flt_get_max_key() + 1;
+		da_flt_insert(item);
+		return TRUE;
+	}
+
+	DB( g_print(" -> %s already exist: %d\n", item->name, item->key) );
+
+	return FALSE;
+}
+
+
+static gboolean da_flt_name_grfunc(gpointer key, Filter *item, gchar *name)
+{
+	if( name && item->name )
+	{
+		if(!strcasecmp(name, item->name))
+			return TRUE;
+	}
+	return FALSE;
+}
+
+
+Filter *
+da_flt_get_by_name(gchar *rawname)
+{
+Filter *retval = NULL;
+gchar *stripname;
+
+	DB( g_print("da_flt_get_by_name\n") );
+
+	if( rawname )
+	{
+		stripname = g_strdup(rawname);
+		g_strstrip(stripname);
+		if( strlen(stripname) > 0 )
+			retval = g_hash_table_find(GLOBALS->h_flt, (GHRFunc)da_flt_name_grfunc, stripname);
+
+		g_free(stripname);
+	}
+
+	return retval; 
+}
+
+
+Filter *
+da_flt_get(guint32 key)
+{
+	//DB( g_print("da_flt_get\n") );
+
+	return g_hash_table_lookup(GLOBALS->h_flt, &key);
+}
+
+
+void da_flt_consistency(Filter *item)
+{
+	g_strstrip(item->name);
+}
+
+
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
+
+static gint
+filter_glist_key_compare_func(Filter *a, Filter *b)
+{
+	return a->key - b->key;
+}
+
+
+GList *filter_glist_sorted(gint column)
+{
+GList *list = g_hash_table_get_values(GLOBALS->h_flt);
+
+	switch(column)
+	{
+		default:
+			return g_list_sort(list, (GCompareFunc)filter_glist_key_compare_func);
+			break;
+	}
+}
+
+
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
 #if MYDEBUG == 1
 static void my_debug_garray(gchar *type, GArray *array)
@@ -337,6 +563,8 @@ gint i;
 
 	DB( g_print("\n[filter] default reset all %p\n", flt) );
 
+	flt->key = 0;
+
 	for(i=0;i<FLT_GRP_MAX;i++)
 	{
 		flt->option[i] = 0;
@@ -475,9 +703,9 @@ gboolean retval = FALSE;
 		date1 = g_date_new_julian(GLOBALS->today);
 		date2 = g_date_new_julian(flt->maxdate);
 
-		if( date2 > date1
-		 && (g_date_get_year(date2) == g_date_get_year(date1)
-		 && g_date_get_month(date2) == g_date_get_month(date1)) )
+		if( (flt->maxdate > GLOBALS->today)
+		 && (g_date_get_year(date2) == g_date_get_year(date1))
+		 && (g_date_get_month(date2) == g_date_get_month(date1)) )
 		{
 			retval = TRUE;
 		}
@@ -518,7 +746,7 @@ guint32 retval;
 }
 
 
-//used only in register
+//used only in ledger
 void filter_preset_daterange_add_futuregap(Filter *flt, gint nbdays)
 {
 	g_return_if_fail( flt != NULL );
@@ -738,9 +966,10 @@ void filter_preset_type_set(Filter *flt, gint type, gint mode)
 
 	flt->option[FLT_GRP_TYPE] = FLT_OFF;
 	flt->type = type;
-	flt->typ_exp = FALSE;
-	flt->typ_inc = FALSE;
-	flt->typ_xfr = FALSE;
+	flt->typ_nexp = FALSE;
+	flt->typ_ninc = FALSE;
+	flt->typ_xexp = FALSE;
+	flt->typ_xinc = FALSE;
 
 	if( type != FLT_TYPE_ALL )
 	{
@@ -749,13 +978,14 @@ void filter_preset_type_set(Filter *flt, gint type, gint mode)
 		switch(type)
 		{
 			case FLT_TYPE_EXPENSE:
-				flt->typ_exp = TRUE;
+				flt->typ_nexp = TRUE;
 				break;
 			case FLT_TYPE_INCOME:
-				flt->typ_inc = TRUE;
+				flt->typ_ninc = TRUE;
 				break;
 			case FLT_TYPE_INTXFER:
-				flt->typ_xfr = TRUE;
+				flt->typ_xexp = TRUE;
+				flt->typ_xinc = TRUE;
 				break;
 		}
 	}
@@ -790,7 +1020,7 @@ void filter_preset_status_set(Filter *flt, gint status)
 	//flt->forcechg = TRUE;
 
 	//#1860356 keep widget active_id
-	//#1873324 register status quick filter do not reset
+	//#1873324 ledger status quick filter do not reset
 	//note: status revert to UNRECONCILED here is normal if PREFS->hidereconciled=TRUE
 	//flt->rawstatus = status;
 
@@ -875,6 +1105,106 @@ gchar *retval = NULL;
 }
 
 
+gchar *filter_text_summary_get(Filter *flt)
+{
+GString *node;
+
+	node = g_string_sized_new(128);
+
+	if( flt->option[FLT_GRP_TYPE] )
+	{ 
+		g_string_append_printf(node, "%c%s: ", 
+			flt->option[FLT_GRP_TYPE] == FLT_INCLUDE ? '+' : '-',
+			_("Type"));
+		if(flt->typ_nexp)
+		///TRANSLATORS: n-exp > normal espense
+		{	g_string_append(node, _("n-exp")); g_string_append(node, " "); }
+		if(flt->typ_ninc)
+		///TRANSLATORS: n-inc > normal income
+		{	g_string_append(node, _("n-inc")); g_string_append(node, " "); }
+		if(flt->typ_xexp)
+		///TRANSLATORS: x-exp > transfer espense
+		{	g_string_append(node, _("x-exp")); g_string_append(node, " "); }
+		if(flt->typ_xinc)
+		///TRANSLATORS: x-inc > transfer income
+		{	g_string_append(node, _("x-inc")); g_string_append(node, " "); }
+		g_string_append(node, "\n");
+	}
+
+	if( flt->option[FLT_GRP_STATUS] )
+	{
+		g_string_append_printf(node, "%c%s: ", 
+			flt->option[FLT_GRP_STATUS] == FLT_INCLUDE ? '+' : '-',
+			_("Status"));
+		if(flt->sta_non)
+		{	g_string_append(node, _("none")); g_string_append(node, " "); }
+		if(flt->sta_clr)
+		{	g_string_append(node, _("cleared")); g_string_append(node, " "); }
+		if(flt->sta_rec)
+		{	g_string_append(node, _("reconciled")); g_string_append(node, " "); }
+		g_string_append(node, "\n");
+	}
+
+	if( flt->option[FLT_GRP_ACCOUNT] )
+	{
+		DB( my_debug_garray("acc", flt->gbacc) );
+		g_string_append_printf(node, "%c%s: %d\n", 
+			flt->option[FLT_GRP_ACCOUNT] == FLT_INCLUDE ? '+' : '-',
+			_("Account"), flt->n_item[FLT_GRP_ACCOUNT]);
+	}
+
+	if( flt->option[FLT_GRP_PAYEE] )
+	{ 
+		DB( my_debug_garray("pay", flt->gbpay) );
+
+		g_string_append_printf(node, "%c%s: %d\n", 
+			flt->option[FLT_GRP_PAYEE] == FLT_INCLUDE ? '+' : '-',
+			_("Payee"), flt->n_item[FLT_GRP_PAYEE]);
+	}
+
+	if( flt->option[FLT_GRP_CATEGORY] )
+	{ 
+		g_string_append_printf(node, "%c%s: %d\n", 
+			flt->option[FLT_GRP_CATEGORY] == FLT_INCLUDE ? '+' : '-',
+			_("Category"), flt->n_item[FLT_GRP_CATEGORY]);
+	}
+
+	if( flt->option[FLT_GRP_TAG] )
+	{ 
+		g_string_append_printf(node, "%c%s: %d\n", 
+			flt->option[FLT_GRP_TAG] == FLT_INCLUDE ? '+' : '-',
+			_("Tag"), flt->n_item[FLT_GRP_TAG]);
+	}
+
+	if( flt->option[FLT_GRP_PAYMODE] )
+	{ 
+		g_string_append_printf(node, "%c%s: %d\n", 
+			flt->option[FLT_GRP_PAYMODE] == FLT_INCLUDE ? '+' : '-',
+			_("Payment"), flt->n_item[FLT_GRP_PAYMODE]);
+	}
+
+	if( flt->option[FLT_GRP_AMOUNT] )
+	{ 
+		g_string_append_printf(node, "%c%s: [%.2f | +%.2f]\n", 
+			flt->option[FLT_GRP_AMOUNT] == FLT_INCLUDE ? '+' : '-',
+			_("Amount"), flt->minamount, flt->maxamount);
+	}
+
+	if( flt->option[FLT_GRP_TEXT] )
+	{ 
+		g_string_append_printf(node, "%c%s: '%s', '%s'\n", 
+			flt->option[FLT_GRP_TEXT] == FLT_INCLUDE ? '+' : '-',
+			_("Text"), flt->memo, flt->number);
+	}
+
+	//remove last \n
+	if( node->len > 5 )
+		g_string_erase(node, node->len-1, 1);
+
+	return g_string_free(node, FALSE);
+}
+
+
 /* = = = = = = = = = = = = = = = = */
 
 
@@ -913,9 +1243,9 @@ Payee *payitem;
 	}
 	if(retval) goto end;
 	
-	if(arc->info)
+	if(arc->number)
 	{
-		retval |= hb_string_utf8_strstr(arc->info, needle, FALSE);
+		retval |= hb_string_utf8_strstr(arc->number, needle, FALSE);
 	}
 	if(retval) goto end;
 
@@ -1027,11 +1357,11 @@ gchar *tags;
 		if(retval) goto end;
 	}
 	
-	if(flags & FLT_QSEARCH_INFO)
+	if(flags & FLT_QSEARCH_NUMBER)
 	{
-		if(txn->info)
+		if(txn->number)
 		{
-			retval |= hb_string_utf8_strstr(txn->info, needle, FALSE);
+			retval |= hb_string_utf8_strstr(txn->number, needle, FALSE);
 		}
 		if(retval) goto end;
 	}
@@ -1199,7 +1529,8 @@ gint insert;
 	if(!insert) goto end;
 
 /* tag */
-	if(flt->option[FLT_GRP_TAG]) {
+	if(flt->option[FLT_GRP_TAG])
+	{
 		status = filter_txn_tag_match(flt, txn->tags);
 		insert = ( status == TRUE ) ? 1 : 0;
 		if(flt->option[FLT_GRP_TAG] == 2) insert ^= 1;
@@ -1209,11 +1540,21 @@ gint insert;
 /* type */
 	if(flt->option[FLT_GRP_TYPE])
 	{
-	gint typ1 = ( (flt->typ_exp == TRUE) && !(txn->flags & (OF_INCOME|OF_INTXFER)) ) ? 1 : 0;
-	gint typ2 = ( (flt->typ_inc == TRUE) && (txn->flags & (OF_INCOME)) ) ? 1 : 0;
-	gint typ3 = ( (flt->typ_xfr == TRUE) && (txn->flags & (OF_INTXFER)) ) ? 1 : 0;
+	gint ntyp1, ntyp2, xtyp1, xtyp2;
 
-		insert = typ1 || typ2 || typ3;
+		ntyp1 = ( (flt->typ_nexp == TRUE) && !(txn->flags & (OF_INCOME)) ) ? 1 : 0;
+		ntyp2 = ( (flt->typ_ninc == TRUE) && (txn->flags & (OF_INCOME)) ) ? 1 : 0;
+		if( (txn->flags & (OF_INTXFER)) )
+		{
+			xtyp1 = ( (flt->typ_xexp == TRUE) && !(txn->flags & (OF_INCOME)) ) ? 1 : 0;
+			xtyp2 = ( (flt->typ_xinc == TRUE) && (txn->flags & (OF_INCOME)) ) ? 1 : 0;
+		}
+		else
+		{
+			xtyp1 = xtyp2 = 0;
+		}
+
+		insert = ntyp1 || ntyp2 || xtyp1 || xtyp2;
 		if(flt->option[FLT_GRP_TYPE] == 2) insert ^= 1;
 	}
 	if(!insert) goto end;
@@ -1231,17 +1572,21 @@ gint insert;
 	if(!insert) goto end;
 
 /* paymode */
-	if(flt->option[FLT_GRP_PAYMODE]) {
-		insert = ( flt->paymode[txn->paymode] == TRUE) ? 1 : 0;
-		if(flt->option[FLT_GRP_PAYMODE] == 2) insert ^= 1;
+	//#2059709 ignore paymode for xfer
+	if( !(txn->flags & (OF_INTXFER)) )
+	{
+		if(flt->option[FLT_GRP_PAYMODE])
+		{
+			insert = ( flt->paymode[txn->paymode] == TRUE) ? 1 : 0;
+			if(flt->option[FLT_GRP_PAYMODE] == 2) insert ^= 1;
+		}
+		if(!insert) goto end;
 	}
-	if(!insert) goto end;
 
 /* amount */
 	if(flt->option[FLT_GRP_AMOUNT])
 	{
 		insert = ( (txn->amount >= flt->minamount) && (txn->amount <= flt->maxamount) ) ? 1 : 0;
-
 		if(flt->option[FLT_GRP_AMOUNT] == 2) insert ^= 1;
 	}
 	if(!insert) goto end;
@@ -1252,11 +1597,11 @@ gint insert;
 	gint insert1, insert2;
 
 		insert1 = insert2 = 0;
-		if(flt->info)
+		if(flt->number)
 		{
-			if(txn->info)
+			if(txn->number)
 			{
-				insert1 = hb_string_utf8_strstr(txn->info, flt->info, flt->exact);
+				insert1 = hb_string_utf8_strstr(txn->number, flt->number, flt->exact);
 			}
 		}
 		else

@@ -31,7 +31,8 @@ struct _archive
 
 	gdouble		amount;
 	guint32		kacc;
-	gushort		paymode;
+	guchar		paymode;
+	guchar		grpflg;
 	gushort		flags;
 	guint32		kpay;
 	guint32		kcat;
@@ -40,7 +41,7 @@ struct _archive
 	//guint32		date;
 	//gushort		pos;
 	gushort     status;
-	gchar		*info;
+	gchar		*number;	//info < 5.8
 	guint32		*tags;
 	//guint32		kxfer;		//strong link xfer key
 	guint32		kxferacc;
@@ -54,16 +55,6 @@ struct _archive
 	gushort		unit;
 	gushort		limit;
 	gushort		weekend;
-};
-
-
-/* list define archive (defarchive) */
-enum
-{
-	LST_DEFARC_DATAS,
-//	LST_DEFARC_OLDPOS,
-//	LST_DEFARC_AUTO,
-	NUM_LST_DEFARC
 };
 
 
@@ -129,7 +120,7 @@ Archive *da_archive_get(guint32 key);
 void da_archive_get_display_label(GString *tpltitle, Archive *item);
 void da_archive_consistency(Archive *item);
 
-Archive *da_archive_init_from_transaction(Archive *arc, Transaction *txn, gboolean fromregister);
+Archive *da_archive_init_from_transaction(Archive *arc, Transaction *txn, gboolean fromledger);
 
 GList *da_archive_glist_sorted(gint column);
 

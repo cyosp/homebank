@@ -20,6 +20,28 @@
 #ifndef __HOMEBANK_REPBALANCE_H__
 #define __HOMEBANK_REPBALANCE_H__
 
+
+
+
+/* list stat */
+enum
+{
+	LST_OVER_POS,
+	LST_OVER_KEY,
+	LST_OVER_LABEL,
+	LST_OVER_EXPENSE,
+	LST_OVER_INCOME,
+	LST_OVER_TOTAL,
+	LST_OVER_FLAGS,
+	NUM_LST_OVER
+};
+
+
+/* -- flags -- */
+#define	REPORT_FLAG_OVER	(1<<1)
+#define	REPORT_FLAG_TODAY	(1<<2)
+
+
 enum {
 	HID_REPBALANCE_MINDATE,
 	HID_REPBALANCE_MAXDATE,
@@ -27,18 +49,6 @@ enum {
 	MAX_REPBALANCE_HID
 };
 
-
-/* list stat */
-enum
-{
-	LST_OVER_OVER,
-	LST_OVER_KEY,
-	LST_OVER_DATESTR,
-	LST_OVER_EXPENSE,
-	LST_OVER_INCOME,
-	LST_OVER_BALANCE,
-	NUM_LST_OVER
-};
 
 struct repbalance_data
 {
@@ -61,6 +71,7 @@ struct repbalance_data
 	guint32		usrkcur;
 
 	GtkWidget	*window;
+	GActionGroup *actions;
 	gboolean	mapped_done;
 
 	GtkWidget	*TB_bar;
@@ -68,9 +79,11 @@ struct repbalance_data
 	GtkWidget	*BT_line;
 	GtkWidget	*BT_detail;
 	GtkWidget	*BT_refresh;
+	GtkWidget	*BT_reset;
 	GtkWidget	*BT_print;
 	
 	GtkWidget	*TX_info;
+	GtkWidget	*TX_fltactive, *TT_fltactive;
 	GtkWidget	*TX_daterange;
 	GtkWidget	*CM_minor;
 	GtkWidget	*LV_report;
@@ -92,14 +105,11 @@ struct repbalance_data
 	GtkWidget	*GR_detail;
 	GtkWidget	*LV_detail;
 
-
 	gulong		handler_id[MAX_REPBALANCE_HID];
-
-
 };
 
 
-GtkWidget *repbalance_window_new(gint32 accnum);
+GtkWidget *repbalance_window_new(guint32 accnum);
 
 
 #endif

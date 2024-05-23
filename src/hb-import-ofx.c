@@ -165,6 +165,7 @@ ofx_proc_transaction_cb(const struct OfxTransactionData data, ImportContext *ctx
 struct tm *temp_tm;
 GDate date;
 GenTxn *gentxn;
+guint row = 0;
 
 	DB( g_print("** ofx_proc_transaction_cb()\n") );
 
@@ -207,7 +208,7 @@ GenTxn *gentxn;
 	//However the spec allows for up to 12 digits, so it is not garanteed to work
 	if(data.check_number_valid==true)
 	{
-		gentxn->rawinfo = g_strdup(data.check_number);
+		gentxn->rawnumber = g_strdup(data.check_number);
 	}
 	//todo: reference_number ?Might present in addition to or instead of a check_number. Not necessarily a number 
 
@@ -299,11 +300,14 @@ GenTxn *gentxn;
 
 	if( ctx->curr_acc )
 	{
+		//5.8 #2063416 same date txn
+		gentxn->row = row++;
+	
 		gentxn->account = g_strdup(ctx->curr_acc->name);
 
 		#if MYDEBUG == 1
-		if(gentxn->rawinfo)
-			g_print(" len info %d %ld\n", (int)strlen(gentxn->rawinfo) , g_utf8_strlen(gentxn->rawinfo, -1));
+		if(gentxn->rawnumber)
+			g_print(" len number %d %ld\n", (int)strlen(gentxn->rawnumber) , g_utf8_strlen(gentxn->rawnumber, -1));
 		if(gentxn->rawmemo)
 			g_print(" len memo %d %ld\n", (int)strlen(gentxn->rawmemo) , g_utf8_strlen(gentxn->rawmemo, -1));
 		if(gentxn->rawpayee)
@@ -327,7 +331,7 @@ GenTxn *gentxn;
 		#ifndef G_OS_UNIX
 		DB( g_print(" ensure UTF-8\n") );
 
-		gentxn->rawinfo  = homebank_utf8_ensure(gentxn->rawinfo);
+		gentxn->rawnumber  = homebank_utf8_ensure(gentxn->rawnumber);
 		gentxn->rawmemo  = homebank_utf8_ensure(gentxn->rawmemo);
 		gentxn->rawpayee = homebank_utf8_ensure(gentxn->rawpayee);
 		#endif

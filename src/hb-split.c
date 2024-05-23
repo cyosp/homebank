@@ -257,7 +257,7 @@ GString *cat_a, *amt_a , *mem_a;
 			g_string_append(cat_a, "||");
 			g_string_append(amt_a, "||");
 			g_string_append(mem_a, "||");
-		}		
+		}
 	}	
 
 	*cats = g_string_free(cat_a, FALSE);
@@ -285,6 +285,7 @@ guint i;
 		{
 			g_warning("split consistency: fixed invalid split cat %d", split->kcat);
 			split->kcat = 0;
+			GLOBALS->changes_count++;
 		}
 		//TODO #1910819 must round frac digit, should have beed done > 5.5
 		//split->amount = hb_amount_round(split->amount, cur->frac_digits);

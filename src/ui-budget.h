@@ -37,6 +37,8 @@ struct ui_bud_manage_data
 	Category	*lastcatitem;
 
 	GtkWidget	*dialog;
+	GActionGroup * actions;
+
 	gboolean	mapped_done;
 
 	GtkWidget	*LV_cat;

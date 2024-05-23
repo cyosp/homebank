@@ -20,6 +20,8 @@
 
 #include "homebank.h"
 
+#include "hbtk-switcher.h"
+
 #include "ui-category.h"
 #include "ui-budget.h"
 
@@ -394,7 +396,7 @@ gint pos = 0;
 }
 
 
-static void ui_bud_manage_load_csv( GtkWidget *widget, gpointer user_data)
+static void ui_bud_manage_load_csv(GSimpleAction *action, GVariant *parameter, gpointer user_data)
 {
 struct ui_bud_manage_data *data = user_data;
 gchar *filename = NULL;
@@ -540,7 +542,7 @@ const gchar *encoding;
 }
 
 
-static void ui_bud_manage_save_csv( GtkWidget *widget, gpointer user_data)
+static void ui_bud_manage_save_csv(GSimpleAction *action, GVariant *parameter, gpointer user_data)
 {
 struct ui_bud_manage_data *data = user_data;
 gchar *filename = NULL;
@@ -819,7 +821,10 @@ static void ui_bud_manage_get(struct ui_bud_manage_data *data, Category *item)
 		{
 			prvsum += item->budget[i];
 			gtk_spin_button_update(GTK_SPIN_BUTTON(data->spinner[i]));
-			item->budget[i] = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->spinner[i]));
+			//#2052304 ensure sign
+			item->budget[i] = ABS(gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->spinner[i])));
+			if( !(item->flags & GF_INCOME) )
+				item->budget[i] *= -1;
 			sum += item->budget[i];
 			if( item->budget[i] )
 				item->flags |= GF_BUDGET;
@@ -1019,7 +1024,7 @@ gint type;
 
 	DB( g_print("\n[ui-budget] populate listview\n") );
 	
-	type = hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_type)) == 1 ? CAT_TYPE_INCOME : CAT_TYPE_EXPENSE;
+	type = hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_type)) == 1 ? CAT_TYPE_INCOME : CAT_TYPE_EXPENSE;
 
 	ui_cat_listview_populate(data->LV_cat, type, NULL, TRUE);
 	//gtk_tree_view_expand_all (GTK_TREE_VIEW(data->LV_cat));
@@ -1036,10 +1041,6 @@ static void ui_bud_manage_selection(GtkTreeSelection *treeselection, gpointer us
 
 static void ui_bud_manage_cb_type_changed (GtkToggleButton *button, gpointer user_data)
 {
-	//ignore event triggered from inactive radiobutton
-	if( gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button)) == FALSE )
-		return;
-
 	ui_bud_manage_populate_listview(user_data);
 	//g_print(" toggle type=%d\n", gtk_toggle_button_get_active(button));
 }
@@ -1088,7 +1089,7 @@ static void ui_bud_manage_setup(struct ui_bud_manage_data *data)
 
 	DB( g_print(" connect widgets signals\n") );
 
-	hbtk_radio_button_connect (GTK_CONTAINER(data->RA_type), "toggled", G_CALLBACK (ui_bud_manage_cb_type_changed), data);
+	g_signal_connect (data->RA_type, "changed", G_CALLBACK (ui_bud_manage_cb_type_changed), data);
 
 	g_signal_connect (gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_cat)), "changed", G_CALLBACK (ui_bud_manage_selection), NULL);
 	//g_signal_connect (GTK_TREE_VIEW(data->LV_cat), "row-activated", G_CALLBACK (ui_bud_manage_onRowActivated), NULL);
@@ -1127,13 +1128,20 @@ struct ui_bud_manage_data *data;
 }
 
 
+static const GActionEntry win_actions[] = {
+	{ "imp"		, ui_bud_manage_load_csv, NULL, NULL, NULL, {0,0,0} },
+	{ "exp"		, ui_bud_manage_save_csv, NULL, NULL, NULL, {0,0,0} },
+//	{ "actioname"	, not_implemented, NULL, NULL, NULL, {0,0,0} },
+};
+
+
 GtkWidget *ui_bud_manage_dialog (void)
 {
 struct ui_bud_manage_data *data;
 GtkWidget *dialog, *content_area;
 GtkWidget *content_grid, *group_grid, *scrollwin, *label;
 GtkWidget *treeview, *hpaned, *bbox, *vbox, *hbox;
-GtkWidget *menu, *menuitem, *widget, *image, *tbar;
+GtkWidget *widget, *image, *tbar;
 GList *fchain;
 guint i;
 gint w, h, dw, dh;
@@ -1180,37 +1188,32 @@ gint crow, row;
 	gtk_widget_set_margin_bottom(hbox, SPACING_MEDIUM);
 	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
 
-	bbox = hbtk_radio_button_new(GTK_ORIENTATION_HORIZONTAL, CYA_CAT_TYPE, TRUE);
-	data->RA_type = bbox;
-	gtk_widget_set_halign (bbox, GTK_ALIGN_CENTER);
-	gtk_box_pack_start (GTK_BOX (hbox), bbox, TRUE, TRUE, 0);
+	widget = hbtk_switcher_new (GTK_ORIENTATION_HORIZONTAL);
+	hbtk_switcher_setup(HBTK_SWITCHER(widget), CYA_CAT_TYPE, TRUE);
+	data->RA_type = widget;
+	gtk_widget_set_halign (widget, GTK_ALIGN_CENTER);
+	gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
 
-	// menu
-	menu = gtk_menu_new ();
-	gtk_widget_set_halign (menu, GTK_ALIGN_END);
-
-	menuitem = gtk_menu_item_new_with_mnemonic (_("_Import CSV"));
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
-	g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (ui_bud_manage_load_csv), data);
-
-	menuitem = gtk_menu_item_new_with_mnemonic (_("E_xport CSV"));
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
-	g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (ui_bud_manage_save_csv), data);
-	
-	gtk_widget_show_all (menu);
-	
+	//menubutton
 	widget = gtk_menu_button_new();
 	image = gtk_image_new_from_icon_name (ICONNAME_HB_BUTTON_MENU, GTK_ICON_SIZE_MENU);
-
-	//gchar *thename;
-	//gtk_image_get_icon_name(image, &thename, NULL);
-	//g_print("the name is %s\n", thename);
-
-	g_object_set (widget, "image", image, "popup", GTK_MENU(menu),  NULL);
-
-	gtk_widget_set_hexpand (widget, FALSE);
+	g_object_set (widget, "image", image,  NULL);
 	gtk_widget_set_halign (widget, GTK_ALIGN_END);
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	gtk_box_pack_end(GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+
+	GMenu *menu = g_menu_new ();
+	GMenu *section = g_menu_new ();
+	g_menu_append_section(menu, NULL, G_MENU_MODEL(section));
+	g_menu_append (section, _("_Import CSV..."), "win.imp");
+	g_menu_append (section, _("E_xport CSV..."), "win.exp");
+	g_object_unref (section);
+
+	GActionGroup *group = (GActionGroup*)g_simple_action_group_new ();
+	data->actions = group;
+	g_action_map_add_action_entries (G_ACTION_MAP (group), win_actions, G_N_ELEMENTS (win_actions), data);
+
+	gtk_widget_insert_action_group (widget, "win", G_ACTION_GROUP(group));
+	gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (widget), G_MENU_MODEL (menu));
 
 
 	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);

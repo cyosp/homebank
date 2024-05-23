@@ -95,18 +95,20 @@ struct _generic_txn
 
 	gchar		*account;
 
-	gchar		*rawinfo;	//<n/a> ; check_number
+	gchar		*rawnumber;	//<n/a> ; check_number
 	gchar	    *rawpayee;	//P ; name
 	gchar	    *rawmemo;	//M ; memo
 	
 	gchar		*fitid;		// 5.5.1 add OFX fitid
 	gchar		*date;		//D ; date_posted
-	gchar		*info;		//N ; <rawinfo> 
+	gchar		*number;	//N ; <rawnumber> 
 	gchar		*payee;
 	gchar		*memo;
 	gchar		*category;  //L
 	gchar		*tags;		//<n/a>
 	
+	guint		row;		//5.8 #2063416 same date txn
+
 	guint32		julian;
 	gushort		paymode;	//<n/a> ; transactiontype
 	gdouble		amount;		//T ; amount

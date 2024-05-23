@@ -118,7 +118,7 @@ Transaction *txn;
 	if(result == HB_RESPONSE_ADD || result == GTK_RESPONSE_ACCEPT)
 	{
 		deftransaction_get(window, NULL);
-		transaction_add(GTK_WINDOW(GLOBALS->mainwindow), txn);
+		transaction_add(GTK_WINDOW(GLOBALS->mainwindow), FALSE, txn);
 		GLOBALS->changes_count++;
 
 		scheduled_date_advance(arc);
@@ -196,7 +196,7 @@ GList *selection, *list;
 
 				da_transaction_init_from_template(txn, arc);
 				txn->date = scheduled_get_postdate(arc, arc->nextdate);
-				transaction_add(GTK_WINDOW(GLOBALS->mainwindow), txn);
+				transaction_add(GTK_WINDOW(GLOBALS->mainwindow), FALSE, txn);
 
 				GLOBALS->changes_count++;
 				scheduled_date_advance(arc);
@@ -459,9 +459,11 @@ GDate *date;
 	g_object_ref(model); /* Make sure the model stays with us after the tree view unrefs it */
 	gtk_tree_view_set_model(GTK_TREE_VIEW(data->LV_upc), NULL); /* Detach model from view */
 
+	ui_arc_listview_widget_columns_order_load(GTK_TREE_VIEW(data->LV_upc));
+
 	homebank_app_date_get_julian();
 
-	PREFS->pnl_upc_range = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_sched_range));
+	PREFS->pnl_upc_range = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_sched_range));
 
 	//set tooltip text
 	maxpostdate = scheduled_date_get_post_max(GLOBALS->today, GLOBALS->auto_smode, GLOBALS->auto_nbdays, GLOBALS->auto_weekday, GLOBALS->auto_nbmonths);
@@ -620,12 +622,10 @@ GtkWidget *label, *widget;
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start (GTK_BOX (hub), vbox, TRUE, TRUE, 0);
 
-	scrollwin = gtk_scrolled_window_new (NULL, NULL);
-	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrollwin), GTK_SHADOW_ETCHED_IN);
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrollwin), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
 	
-	treeview = (GtkWidget *)lst_sch_widget_new();
+	treeview = (GtkWidget *)lst_sch_widget_new(LIST_SCH_TYPE_DISPLAY);
 	data->LV_upc = treeview;
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
 
@@ -668,8 +668,7 @@ GtkWidget *label, *widget;
 
 
 	//setup
-	hbtk_combo_box_set_active_id (GTK_COMBO_BOX_TEXT(data->CY_sched_range), PREFS->pnl_upc_range);
-
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_sched_range), PREFS->pnl_upc_range);
 
 	g_signal_connect (gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_upc)), "changed", G_CALLBACK (ui_hub_scheduled_selection_cb), NULL);
 	g_signal_connect (GTK_TREE_VIEW(data->LV_upc), "row-activated", G_CALLBACK (ui_hub_scheduled_onRowActivated), NULL);

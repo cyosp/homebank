@@ -112,6 +112,8 @@ void homebank_pref_free(void)
 	g_free(PREFS->api_rate_url);
 	g_free(PREFS->api_rate_key);
 
+	g_free(PREFS->icontheme);
+
 	g_free(PREFS->color_exp);
 	g_free(PREFS->color_inc);
 	g_free(PREFS->color_warn);
@@ -157,7 +159,7 @@ gint i = 0;
 
 	PREFS->lst_det_columns[i++] = LST_DSPOPE_STATUS;  //always displayed
 	PREFS->lst_det_columns[i++] = LST_DSPOPE_DATE;	  //always displayed
-	PREFS->lst_det_columns[i++] = -LST_DSPOPE_INFO;
+	PREFS->lst_det_columns[i++] = -LST_DSPOPE_PAYNUMBER;
 	PREFS->lst_det_columns[i++] = LST_DSPOPE_PAYEE;
 	PREFS->lst_det_columns[i++] = LST_DSPOPE_CATEGORY;
 	PREFS->lst_det_columns[i++] = -LST_DSPOPE_TAGS;
@@ -169,6 +171,7 @@ gint i = 0;
 	PREFS->lst_det_columns[i++] = LST_DSPOPE_MEMO;
 	PREFS->lst_det_columns[i++] = LST_DSPOPE_ACCOUNT;
 	PREFS->lst_det_columns[i++] = LST_DSPOPE_MATCH;
+	PREFS->lst_det_columns[i++] = LST_DSPOPE_GRPFLAG;
 
 	for( i=0;i<NUM_LST_DSPOPE;i++)
 		PREFS->lst_det_col_width[i] = -1;
@@ -181,7 +184,7 @@ gint i = 0;
 
 	PREFS->lst_ope_columns[i++] = LST_DSPOPE_STATUS;  //always displayed
 	PREFS->lst_ope_columns[i++] = LST_DSPOPE_DATE;	  //always displayed
-	PREFS->lst_ope_columns[i++] = LST_DSPOPE_INFO;
+	PREFS->lst_ope_columns[i++] = LST_DSPOPE_PAYNUMBER;
 	PREFS->lst_ope_columns[i++] = LST_DSPOPE_PAYEE;
 	PREFS->lst_ope_columns[i++] = LST_DSPOPE_CATEGORY;
 	PREFS->lst_ope_columns[i++] = LST_DSPOPE_TAGS;
@@ -193,7 +196,7 @@ gint i = 0;
 	PREFS->lst_ope_columns[i++] = LST_DSPOPE_MEMO;
 	PREFS->lst_ope_columns[i++] = -LST_DSPOPE_ACCOUNT;
 	PREFS->lst_ope_columns[i++] = -LST_DSPOPE_MATCH;
-
+	PREFS->lst_ope_columns[i++] = LST_DSPOPE_GRPFLAG;
 
 	PREFS->lst_ope_sort_id    = LST_DSPOPE_DATE;
 	PREFS->lst_ope_sort_order = GTK_SORT_ASCENDING;
@@ -204,6 +207,30 @@ gint i = 0;
 }
 
 
+void homebank_pref_setdefault_lst_sch_columns(void)
+{
+gint i = 0;
+								  //nextdate here
+	PREFS->lst_sch_columns[i++] = COL_SCH_UID_PAYNUMBER;
+	PREFS->lst_sch_columns[i++] = COL_SCH_UID_PAYEE;
+	PREFS->lst_sch_columns[i++] = COL_SCH_UID_CATEGORY;
+	PREFS->lst_sch_columns[i++] = COL_SCH_UID_CLR;
+	PREFS->lst_sch_columns[i++] = COL_SCH_UID_AMOUNT;
+	PREFS->lst_sch_columns[i++] = COL_SCH_UID_EXPENSE;
+	PREFS->lst_sch_columns[i++] = COL_SCH_UID_INCOME;
+	PREFS->lst_sch_columns[i++] = COL_SCH_UID_MEMO;
+	PREFS->lst_sch_columns[i++] = COL_SCH_UID_ACCOUNT;
+
+	PREFS->pnl_upc_col_pay_show  = 1;
+	PREFS->pnl_upc_col_pay_width = -1;
+	PREFS->pnl_upc_col_cat_show  = 1;
+	PREFS->pnl_upc_col_cat_width = -1;
+	PREFS->pnl_upc_col_mem_show  = 1;
+	PREFS->pnl_upc_col_mem_width = -1;
+	PREFS->pnl_upc_range = FLT_SCHEDULED_ALLDATE;
+}
+
+
 void homebank_pref_setdefault_win(void)
 {
 gint w = 1024, h = 600;
@@ -211,10 +238,6 @@ gint w = 1024, h = 600;
 	// windows position/size 1024x600 for netbook
 	// see https://gs.statcounter.com/screen-resolution-stats/desktop/worldwide
 	// and gnome HIG
-
-#if HB_UNSTABLE == TRUE
-	w = 1366; h = 768;
-#endif
 
 	homebank_pref_init_wingeometry(&PREFS->wal_wg, 0, 0, w, h);
 	homebank_pref_init_wingeometry(&PREFS->acc_wg, 0, 0, w, h);
@@ -247,7 +270,8 @@ gint i;
 	PREFS->path_hbbak  = g_strdup_printf("%s", g_get_home_dir ());
 	PREFS->path_import = g_strdup_printf("%s", g_get_home_dir ());
 	PREFS->path_export = g_strdup_printf("%s", g_get_home_dir ());
-	//PREFS->path_navigator = g_strdup(DEFAULT_PATH_NAVIGATOR);
+
+
 
 	PREFS->showsplash = TRUE;
 	PREFS->showwelcome = TRUE;
@@ -260,6 +284,7 @@ gint i;
 
 	PREFS->heritdate = FALSE;
 	PREFS->txn_showconfirm = FALSE;
+	PREFS->txn_showtemplate = FALSE;
 	PREFS->hidereconciled = FALSE;
 	PREFS->showremind = TRUE;
 	//#1918334 no reason to show void by default
@@ -270,6 +295,24 @@ gint i;
 	//#1673048
 	PREFS->txn_memoacp = TRUE;
 	PREFS->txn_memoacp_days = 365;
+
+	//5.8 paymode
+	i = 0;
+	PREFS->lst_paymode[i++] = PAYMODE_NONE;
+	PREFS->lst_paymode[i++] = PAYMODE_CCARD;
+	PREFS->lst_paymode[i++] = PAYMODE_CHECK;
+	PREFS->lst_paymode[i++] = PAYMODE_CASH;
+	PREFS->lst_paymode[i++] = PAYMODE_XFER;
+	PREFS->lst_paymode[i++] = PAYMODE_DCARD;
+	PREFS->lst_paymode[i++] = PAYMODE_REPEATPMT;
+	PREFS->lst_paymode[i++] = PAYMODE_EPAYMENT;
+	PREFS->lst_paymode[i++] = PAYMODE_DEPOSIT;
+	PREFS->lst_paymode[i++] = PAYMODE_FEE;
+	PREFS->lst_paymode[i++] = PAYMODE_DIRECTDEBIT;
+	PREFS->lst_paymode[i++] = PAYMODE_MOBPHONE;
+
+	//#2044601
+	PREFS->xfer_showdialog = TRUE;
 	//#1887212
 	PREFS->xfer_daygap = 2;
 	PREFS->xfer_syncstat = FALSE;
@@ -280,6 +323,8 @@ gint i;
 	PREFS->gtk_override = FALSE;
 	PREFS->gtk_fontsize = 10;
 
+	PREFS->icontheme = g_strdup("legacy");
+	
 	PREFS->custom_colors = TRUE;
 	PREFS->color_exp  = g_strdup(DEFAULT_EXP_COLOR);
 	PREFS->color_inc  = g_strdup(DEFAULT_INC_COLOR);
@@ -316,19 +361,14 @@ gint i;
 	PREFS->lst_acc_columns[i++] = COL_DSPACC_TODAY;
 	PREFS->lst_acc_columns[i++] = COL_DSPACC_FUTURE;
 
-	PREFS->pnl_upc_col_pay_show  = 1;
-	PREFS->pnl_upc_col_pay_width = -1;
-	PREFS->pnl_upc_col_cat_show  = 1;
-	PREFS->pnl_upc_col_cat_width = -1;
-	PREFS->pnl_upc_col_mem_show  = 1;
-	PREFS->pnl_upc_col_mem_width = -1;
-	PREFS->pnl_upc_range = FLT_SCHEDULED_ALLDATE;
+	//5.8 schedule/upcoming
+	homebank_pref_setdefault_lst_sch_columns();
 
 	i = 0;
 	PREFS->lst_impope_columns[i++] = LST_DSPOPE_DATE;	  //always displayed
 	PREFS->lst_impope_columns[i++] = LST_DSPOPE_MEMO;
 	PREFS->lst_impope_columns[i++] = LST_DSPOPE_AMOUNT;
-	PREFS->lst_impope_columns[i++] = LST_DSPOPE_INFO;
+	PREFS->lst_impope_columns[i++] = LST_DSPOPE_PAYNUMBER;
 	PREFS->lst_impope_columns[i++] = LST_DSPOPE_PAYEE;
 	PREFS->lst_impope_columns[i++] = LST_DSPOPE_CATEGORY;
 	PREFS->lst_impope_columns[i++] = -LST_DSPOPE_CLR;
@@ -338,6 +378,7 @@ gint i;
 	PREFS->lst_impope_columns[i++] = -LST_DSPOPE_BALANCE;
 	PREFS->lst_impope_columns[i++] = -LST_DSPOPE_ACCOUNT;
 	PREFS->lst_impope_columns[i++] = -LST_DSPOPE_MATCH;
+	PREFS->lst_impope_columns[i++] = -LST_DSPOPE_GRPFLAG;
 
 	//book list column
 	homebank_pref_setdefault_lst_ope_columns();
@@ -437,6 +478,33 @@ static void homebank_pref_get_wingeometry(
 }
 
 
+static void homebank_pref_get_intlist(
+	GKeyFile *key_file,
+    const gchar *group_name,
+    const gchar *key,
+	gint *storage,
+	gsize maxlength)
+{
+
+	DB( g_print(" search %s in %s\n", key, group_name) );
+
+	if( g_key_file_has_key(key_file, group_name, key, NULL) )
+	{
+	gint *src;
+	gsize length;
+
+		src = g_key_file_get_integer_list(key_file, group_name, key, &length, NULL);
+
+		DB( g_print(" - length %d (max=%d)\n", (int)length, maxlength) );
+		if( length == maxlength )
+		{
+			DB( g_print(" > storing\n") );
+			memcpy(storage, src, length*sizeof(gint));
+		}
+		
+		g_free(src);
+	}
+}
 
 
 static void homebank_pref_get_boolean(
@@ -584,9 +652,38 @@ static void homebank_pref_currfmt_convert(Currency *cur, gchar *prefix, gchar *s
 }
 
 
+//#beta start
+
+void homebank_pref_icon_symbolic(gboolean active)
+{
+	//ensure we have a provider
+	if(!GLOBALS->provider)
+	{
+		GLOBALS->provider = gtk_css_provider_new ();
+        gtk_style_context_add_provider_for_screen (gdk_screen_get_default (),
+                   GTK_STYLE_PROVIDER (GLOBALS->provider),
+                   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+	}
+
+	if( active )
+	{
+		gtk_css_provider_load_from_data (GLOBALS->provider, "* {-gtk-icon-style: symbolic;}", -1, NULL);
+	}
+	else if(GLOBALS->provider != NULL )
+	{
+		gtk_style_context_remove_provider_for_screen (gdk_screen_get_default (),
+						  GTK_STYLE_PROVIDER (GLOBALS->provider));
+		
+		g_clear_object (&GLOBALS->provider);
+	}
+}
+//#beta end
+
+
 void homebank_pref_apply(void)
 {
 GtkSettings *settings = gtk_settings_get_default();
+gboolean symbolic;
 
 	DB( g_print("\n[preferences] pref apply\n") );
 
@@ -616,6 +713,14 @@ GtkSettings *settings = gtk_settings_get_default();
 
 	g_object_set(settings, "gtk-application-prefer-dark-theme", PREFS->gtk_darktheme, NULL);
 	//gtk_settings_reset_property(settings, "gtk-application-prefer-dark-theme");
+
+	//beta
+	symbolic = ( !strcmp(PREFS->icontheme, "symbolic") ) ? TRUE : FALSE;
+
+	//gtk_settings_set_string_property (gtk_settings_get_default (), "gtk-icon-theme-name", PREFS->icontheme, "gtkrc:0");
+	g_object_set(gtk_settings_get_default (), "gtk-icon-theme-name", PREFS->icontheme, NULL);
+
+	homebank_pref_icon_symbolic(symbolic);
 
 }
 
@@ -676,6 +781,9 @@ GError *error = NULL;
 				homebank_pref_get_boolean(keyfile, group, "GtkOverride", &PREFS->gtk_override);
 				homebank_pref_get_short(keyfile, group, "GtkFontSize" , &PREFS->gtk_fontsize);
 				homebank_pref_get_boolean(keyfile, group, "GtkDarkTheme", &PREFS->gtk_darktheme);
+
+				//beta
+				homebank_pref_get_string(keyfile, group, "IconTheme", &PREFS->icontheme);
 
 				if(version <= 2)	// retrieve old settings
 				{
@@ -744,6 +852,7 @@ GError *error = NULL;
 
 				homebank_pref_get_boolean(keyfile, group, "HeritDate", &PREFS->heritdate);
 				homebank_pref_get_boolean(keyfile, group, "ShowConfirm", &PREFS->txn_showconfirm);
+				homebank_pref_get_boolean(keyfile, group, "ShowTemplate", &PREFS->txn_showtemplate);
 				homebank_pref_get_boolean(keyfile, group, "HideReconciled", &PREFS->hidereconciled);
 				homebank_pref_get_boolean(keyfile, group, "ShowRemind", &PREFS->showremind);
 				homebank_pref_get_boolean(keyfile, group, "ShowVoid", &PREFS->showvoid);
@@ -751,6 +860,8 @@ GError *error = NULL;
 				homebank_pref_get_boolean(keyfile, group, "LockReconciled", &PREFS->lockreconciled);
 				homebank_pref_get_boolean(keyfile, group, "TxnMemoAcp", &PREFS->txn_memoacp);
 				homebank_pref_get_short  (keyfile, group, "TxnMemoAcpDays", &PREFS->txn_memoacp_days);
+				
+				homebank_pref_get_boolean(keyfile, group, "TxnXferShowDialog", &PREFS->xfer_showdialog);
 				homebank_pref_get_short  (keyfile, group, "TxnXferDayGap", &PREFS->xfer_daygap);
 				homebank_pref_get_boolean(keyfile, group, "TxnXferSyncStatus", &PREFS->xfer_syncstat);
 				
@@ -828,25 +939,8 @@ GError *error = NULL;
 
 				}
 
-				if( g_key_file_has_key(keyfile, group, "ColumnsOpeWidth", NULL) )
-				{
-				gint *src;
-				gsize length;
 
-					src = g_key_file_get_integer_list(keyfile, group, "ColumnsOpeWidth", &length, NULL);
-
-					DB( g_print(" - length %d (max=%d)\n", (int)length, NUM_LST_DSPOPE) );
-
-					if( length == NUM_LST_DSPOPE )
-					{
-						DB( g_print(" - copying column width from pref file\n") );
-						memcpy(PREFS->lst_ope_col_width, src, length*sizeof(gint));
-					}
-
-					//leak
-					g_free(src);
-					
-				}
+				homebank_pref_get_intlist(keyfile, group, "ColumnsOpeWidth", PREFS->lst_ope_col_width, NUM_LST_DSPOPE);
 
 				homebank_pref_get_integer(keyfile, group, "OpeSortId", &PREFS->lst_ope_sort_id);
 				homebank_pref_get_integer(keyfile, group, "OpeSortOrder", &PREFS->lst_ope_sort_order);
@@ -854,44 +948,17 @@ GError *error = NULL;
 			    DB( g_print(" - set sort to %d %d\n", PREFS->lst_ope_sort_id, PREFS->lst_ope_sort_order) );
 
 				//detail list
-				if( g_key_file_has_key(keyfile, group, "ColumnsDet", NULL) )
-				{
-				gint *src;
-				gsize length;
+				homebank_pref_get_intlist(keyfile, group, "ColumnsDet", PREFS->lst_det_columns, NUM_LST_DSPOPE);
 
-					src = g_key_file_get_integer_list(keyfile, group, "ColumnsDet", &length, NULL);
+				homebank_pref_get_intlist(keyfile, group, "ColumnsDetWidth", PREFS->lst_det_col_width, NUM_LST_DSPOPE);
 
-					DB( g_print(" - length %d (max=%d)\n", (int)length, NUM_LST_DSPOPE) );
-					if( length == NUM_LST_DSPOPE )
-					{
-						DB( g_print(" - copying column order from pref file\n") );
-						memcpy(PREFS->lst_det_columns, src, length*sizeof(gint));
-					}
-					
-					g_free(src);
-				}
-
-				if( g_key_file_has_key(keyfile, group, "ColumnsDetWidth", NULL) )
-				{
-				gint *src;
-				gsize length;
-
-					src = g_key_file_get_integer_list(keyfile, group, "ColumnsDetWidth", &length, NULL);
-
-					DB( g_print(" - length %d (max=%d)\n", (int)length, NUM_LST_DSPOPE) );
-
-					if( length == NUM_LST_DSPOPE )
-					{
-						DB( g_print(" - copying column width from pref file\n") );
-						memcpy(PREFS->lst_det_col_width, src, length*sizeof(gint));
-					}
-
-					//leak
-					g_free(src);
-				}
 
 				homebank_pref_get_short(keyfile, group, "FiscYearDay", &PREFS->fisc_year_day);
 				homebank_pref_get_short(keyfile, group, "FiscYearMonth", &PREFS->fisc_year_month);
+
+				//5.8 payment
+				PREFS->lst_paymode[0] = PAYMODE_NONE;
+				homebank_pref_get_intlist(keyfile, group, "Payment", &PREFS->lst_paymode[1], NUM_PAYMODE_KEY);
 
 
 			group = "Windows";
@@ -960,7 +1027,24 @@ GError *error = NULL;
 				homebank_pref_get_short(keyfile, group, "HubTimView" , &PREFS->hub_tim_view);
 				homebank_pref_get_short(keyfile, group, "HubTimViewRange", &PREFS->hub_tim_range);
 
-				//upcoming
+				//scheduled/upcoming
+				if( g_key_file_has_key(keyfile, group, "ColumnsSch", NULL) )
+				{
+				gint *src;
+				gsize length;
+
+					src = g_key_file_get_integer_list(keyfile, group, "ColumnsSch", &length, NULL);
+
+					DB( g_print(" - length %d (max=%d)\n", (int)length, NUM_COL_SCH_UID) );
+					if( length == NUM_COL_SCH_UID )
+					{
+						DB( g_print(" - copying column order from pref file\n") );
+						memcpy(PREFS->lst_sch_columns, src, length*sizeof(gint));
+					}
+					
+					g_free(src);
+				}
+
 				homebank_pref_get_short(keyfile, group, "UpcColPayV", &PREFS->pnl_upc_col_pay_show);
 				homebank_pref_get_short(keyfile, group, "UpcColCatV", &PREFS->pnl_upc_col_cat_show);
 				homebank_pref_get_short(keyfile, group, "UpcColMemV", &PREFS->pnl_upc_col_mem_show);
@@ -1198,6 +1282,7 @@ GError *error = NULL;
 		g_key_file_set_integer (keyfile, group, "GtkFontSize", PREFS->gtk_fontsize);
 		g_key_file_set_boolean (keyfile, group, "GtkDarkTheme", PREFS->gtk_darktheme);
 
+		g_key_file_set_string (keyfile, group, "IconTheme", PREFS->icontheme);
 
 		g_key_file_set_boolean (keyfile, group, "CustomColors", PREFS->custom_colors);
 		g_key_file_set_string (keyfile, group, "ColorExp" , PREFS->color_exp);
@@ -1210,7 +1295,7 @@ GError *error = NULL;
 		homebank_pref_set_string  (keyfile, group, "BackupPath"   , PREFS->path_hbbak);
 		homebank_pref_set_string  (keyfile, group, "ImportPath"   , PREFS->path_import);
 		homebank_pref_set_string  (keyfile, group, "ExportPath"   , PREFS->path_export);
-		//g_key_file_set_string  (keyfile, group, "NavigatorPath", PREFS->path_navigator);
+
 
 		g_key_file_set_boolean (keyfile, group, "BakIsAutomatic", PREFS->bak_is_automatic);
 		g_key_file_set_integer (keyfile, group, "BakMaxNumCopies", PREFS->bak_max_num_copies);
@@ -1223,6 +1308,7 @@ GError *error = NULL;
 
 		g_key_file_set_boolean (keyfile, group, "HeritDate", PREFS->heritdate);
 		g_key_file_set_boolean (keyfile, group, "ShowConfirm", PREFS->txn_showconfirm);
+		g_key_file_set_boolean (keyfile, group, "ShowTemplate", PREFS->txn_showtemplate);
 		g_key_file_set_boolean (keyfile, group, "HideReconciled", PREFS->hidereconciled);
 		g_key_file_set_boolean (keyfile, group, "ShowRemind", PREFS->showremind);
 		g_key_file_set_boolean (keyfile, group, "ShowVoid", PREFS->showvoid);
@@ -1230,6 +1316,8 @@ GError *error = NULL;
 		g_key_file_set_boolean (keyfile, group, "LockReconciled", PREFS->lockreconciled);
 		g_key_file_set_boolean (keyfile, group, "TxnMemoAcp", PREFS->txn_memoacp);
 		g_key_file_set_integer (keyfile, group, "TxnMemoAcpDays" , PREFS->txn_memoacp_days);
+		
+		g_key_file_set_boolean (keyfile, group, "TxnXferShowDialog", PREFS->xfer_showdialog);
 		g_key_file_set_integer (keyfile, group, "TxnXferDayGap" , PREFS->xfer_daygap);
 		g_key_file_set_boolean (keyfile, group, "TxnXferSyncStatus", PREFS->xfer_syncstat);
 
@@ -1245,6 +1333,9 @@ GError *error = NULL;
 
 		g_key_file_set_integer     (keyfile, group, "FiscYearDay" , PREFS->fisc_year_day);
 		g_key_file_set_integer     (keyfile, group, "FiscYearMonth" , PREFS->fisc_year_month);
+
+		//5.8 payment
+		g_key_file_set_integer_list(keyfile, group, "Payment", &PREFS->lst_paymode[1], NUM_PAYMODE_KEY-1);
 
 		// added v3.4
 		DB( g_print(" -> ** windows\n") );
@@ -1282,7 +1373,8 @@ GError *error = NULL;
 		g_key_file_set_integer(keyfile, group, "HubTimView" , PREFS->hub_tim_view);
 		g_key_file_set_integer(keyfile, group, "HubTimViewRange" , PREFS->hub_tim_range);
 
-		//upcoming
+		//scheduled/upcoming
+		g_key_file_set_integer_list(keyfile, group, "ColumnsSch", PREFS->lst_sch_columns, NUM_COL_SCH_UID);
 		g_key_file_set_integer(keyfile, group, "UpcColPayV", PREFS->pnl_upc_col_pay_show);
 		g_key_file_set_integer(keyfile, group, "UpcColCatV", PREFS->pnl_upc_col_cat_show);
 		g_key_file_set_integer(keyfile, group, "UpcColMemV", PREFS->pnl_upc_col_mem_show);

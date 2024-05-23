@@ -40,9 +40,10 @@ struct _hbtk_kiv_data {
 
 
 typedef enum {
-	DATE_RANGE_BUDGET_MODE    = 1 << 1,
-	DATE_RANGE_CUSTOM_HIDDEN  = 1 << 8,
-	DATE_RANGE_CUSTOM_DISABLE = 1 << 9
+	DATE_RANGE_FLAG_NONE			  = 0,
+	DATE_RANGE_FLAG_BUDGET_MODE    = 1 << 1,
+	DATE_RANGE_FLAG_CUSTOM_HIDDEN  = 1 << 8,
+	DATE_RANGE_FLAG_CUSTOM_DISABLE = 1 << 9
 } HbDateRangeFlags;
 
 
@@ -79,8 +80,9 @@ GtkWidget *hbtk_menu_add_menuitem(GtkWidget *menu, gchar *label);
 
 GtkWidget *hbtk_toolbar_add_toolbutton(GtkToolbar *toolbar, gchar *icon_name, gchar *label, gchar *tooltip_text);
 
-GtkWidget *make_image_toggle_button(gchar *icon_name, gchar *tooltip_text);
 GtkWidget *make_image_button(gchar *icon_name, gchar *tooltip_text);
+GtkWidget *make_image_toggle_button(gchar *icon_name, gchar *tooltip_text);
+GtkWidget *make_image_radio_button(gchar *icon_name, gchar *tooltip_text);
 
 GtkWidget *make_memo_entry(GtkWidget *label);
 GtkWidget *make_string_maxlength(GtkWidget *label, guint max_length);
@@ -88,18 +90,23 @@ GtkWidget *make_string_maxlength(GtkWidget *label, guint max_length);
 GtkWidget *make_entry_numeric(GtkWidget *label, gint min, gint max);
 
 GtkWidget *make_amount(GtkWidget *label);
+GtkWidget *make_amount_pos(GtkWidget *label);
+
 GtkWidget *make_exchange_rate(GtkWidget *label);
 GtkWidget *make_numeric(GtkWidget *label, gdouble min, gdouble max);
+GtkWidget *make_scrolled_window_ns(GtkPolicyType hscrollbar_policy, GtkPolicyType vscrollbar_policy);
 GtkWidget *make_scrolled_window(GtkPolicyType hscrollbar_policy, GtkPolicyType vscrollbar_policy);
 GtkWidget *make_scale(GtkWidget *label);
 GtkWidget *make_long(GtkWidget *label);
+
+gchar *hb_get_scheduled_unit(gint unit);
 
 guint32 hbtk_monthyear_getmin(GtkSpinButton *spin);
 guint32 hbtk_monthyear_getmax(GtkSpinButton *spin);
 void hbtk_monthyear_set(GtkSpinButton *spin, guint32 julian);
 GtkWidget *make_monthyear(GtkWidget *label);
 //GtkWidget *make_year(GtkWidget *label);
-GtkWidget *make_cycle(GtkWidget *label, gchar **items);
+
 GtkWidget *make_daterange(GtkWidget *label, HbDateRangeFlags flags);
 
 GtkWidget *create_popover (GtkWidget *parent, GtkWidget *child, GtkPositionType pos);
@@ -112,20 +119,13 @@ void hbtk_tree_store_remove_iter_with_child(GtkTreeModel *model, GtkTreeIter *it
 GtkTreeViewColumn *hbtk_treeview_get_column_by_id(GtkTreeView *treeview, gint search_id);
 
 gchar *hbtk_get_label(HbKvData *kvdata, guint32 key);
-guint32 hbtk_combo_box_get_active_id (GtkComboBoxText *combobox);
-void hbtk_combo_box_set_active_id (GtkComboBoxText *combobox, guint32 active_id);
-void hbtk_combo_box_text_append (GtkComboBoxText *combobox, guint32 key, gchar *text);
+guint32 hbtk_combo_box_get_active_id (GtkComboBox *combobox);
+void hbtk_combo_box_set_active_id (GtkComboBox *combobox, guint32 active_id);
+void hbtk_combo_box_text_append (GtkComboBox *combobox, guint32 key, gchar *text);
 GtkWidget *hbtk_combo_box_new (GtkWidget *label);
 GtkWidget *hbtk_combo_box_new_with_data (GtkWidget *label, HbKvData *kvdata);
+GtkWidget *hbtk_combo_box_new_with_array (GtkWidget *label, gchar **items);
 
-gint hbtk_radio_button_get_active (GtkContainer *container);
-void hbtk_radio_button_set_active (GtkContainer *container, gint active);
-GtkWidget *hbtk_radio_button_get_nth (GtkContainer *container, gint nth);
-void hbtk_radio_button_unblock_by_func(GtkContainer *container, GCallback c_handler, gpointer data);
-void hbtk_radio_button_block_by_func(GtkContainer *container, GCallback c_handler, gpointer data);
-void hbtk_radio_button_connect(GtkContainer *container, const gchar *detailed_signal, GCallback c_handler, gpointer data);
-GtkWidget *hbtk_radio_button_new (GtkOrientation orientation, gchar **items, gboolean buttonstyle);
-GtkWidget *hbtk_radio_button_new_with_data (HbKivData *kivdata, gboolean buttonstyle);
 
 #ifdef G_OS_WIN32
 void hbtk_assistant_hack_button_order(GtkAssistant *assistant);
@@ -133,6 +133,7 @@ void hbtk_assistant_hack_button_order(GtkAssistant *assistant);
 
 void gimp_label_set_attributes (GtkLabel *label, ...);
 
+void hb_window_run_pending(void);
 
 void hb_widget_set_margins(GtkWidget *widget, gint top, gint right, gint bottom, gint left);
 void hb_widget_set_margin(GtkWidget *widget, gint margin);
@@ -158,13 +159,19 @@ GtkWidget *make_popcategory(GtkWidget *label);
 
 gint hb_clicklabel_to_int(const gchar *uri);
 
+const gchar *get_grpflag_icon_name(guint32 key);
+
+GtkWidget *make_fltgrpflag(GtkWidget *label);
+
 const gchar *get_paymode_icon_name(guint32 key);
 
 guint32 paymode_combo_box_get_active (GtkComboBox *combo_box);
 void paymode_combo_box_set_active (GtkComboBox *combo_box, guint32 active_key);
 
+void paymode_list_get_order(GtkTreeView *treeview);
+
+GtkWidget *make_paymode_list(void);
 GtkWidget *make_paymode(GtkWidget *label);
-GtkWidget *make_paymode_nointxfer(GtkWidget *label);
-GtkWidget *make_nainex(GtkWidget *label);
+
 
 #endif

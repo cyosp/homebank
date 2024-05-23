@@ -20,6 +20,7 @@
 
 #include "homebank.h"
 
+#include "hbtk-switcher.h"
 #include "ui-category.h"
 
 /****************************************************************************/
@@ -1269,12 +1270,15 @@ GtkTreeViewColumn	*column;
 
 	// column: hide icon
 	//#1826360 wish: archive payee/category to lighten the lists
-	column = gtk_tree_view_column_new();
-	renderer = gtk_cell_renderer_pixbuf_new ();
-	//gtk_cell_renderer_set_fixed_size(renderer, GLOBALS->lst_pixbuf_maxwidth, -1);
-	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_cat_listview_icon_cell_data_function, NULL, NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+	if( withtoggle == FALSE )
+	{
+		column = gtk_tree_view_column_new();
+		renderer = gtk_cell_renderer_pixbuf_new ();
+		//gtk_cell_renderer_set_fixed_size(renderer, GLOBALS->lst_pixbuf_maxwidth, -1);
+		gtk_tree_view_column_pack_start(column, renderer, TRUE);
+		gtk_tree_view_column_set_cell_data_func(column, renderer, ui_cat_listview_icon_cell_data_function, NULL, NULL);
+		gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+	}
 
 	// column: toggle
 	if( withtoggle == TRUE )
@@ -1330,9 +1334,15 @@ GtkTreeViewColumn	*column;
 	g_object_set(renderer, 
 		"ellipsize", PANGO_ELLIPSIZE_END,
 	    "ellipsize-set", TRUE,
-		//taken from nemo, not exactly a resize to content, but good compromise
-	    "width-chars", 40,
 	    NULL);
+
+	if( withtoggle == FALSE )
+	{
+		g_object_set(renderer, 
+			//taken from nemo, not exactly a resize to content, but good compromise
+			"width-chars", 40,
+			NULL);
+	}
 
 	column = gtk_tree_view_column_new();
 	gtk_tree_view_column_set_title(column, _("Category"));
@@ -1341,15 +1351,11 @@ GtkTreeViewColumn	*column;
 	//#2004631 date and column title alignement
 	//gtk_tree_view_column_set_alignment (column, 0.5);
 	gtk_tree_view_column_set_resizable(column, TRUE);
-	gtk_tree_view_column_set_min_width(column, HB_MINWIDTH_LIST);
+	//gtk_tree_view_column_set_min_width(column, HB_MINWIDTH_LIST);
 	gtk_tree_view_column_set_sort_column_id (column, LST_DEFCAT_SORT_NAME);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
 	gtk_tree_view_set_expander_column(GTK_TREE_VIEW(treeview), column);
-
-	/* empty */
-	column = gtk_tree_view_column_new();
-	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
 	if( withtoggle == TRUE )
 		gtk_tree_view_set_search_equal_func(GTK_TREE_VIEW(treeview), ui_cat_listview_search_equal_func, NULL, NULL);
@@ -1418,7 +1424,7 @@ gchar *needle;
 
 	DB( g_print("\n[ui-cat-manage] refilter\n") );
 
-	type = hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_type)) == 1 ? CAT_TYPE_INCOME : CAT_TYPE_EXPENSE;
+	type = hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_type)) == 1 ? CAT_TYPE_INCOME : CAT_TYPE_EXPENSE;
 	needle = (gchar *)gtk_entry_get_text(GTK_ENTRY(data->ST_search));
 	showhidden = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->BT_showhidden));
 	ui_cat_listview_populate(data->LV_cat, type, needle, showhidden);
@@ -1427,7 +1433,7 @@ gchar *needle;
 
 
 static void
-ui_cat_manage_dialog_delete_unused( GtkWidget *widget, gpointer user_data)
+ui_cat_manage_dialog_delete_unused(GSimpleAction *action, GVariant *parameter, gpointer user_data)
 {
 struct ui_cat_manage_dialog_data *data = user_data;
 gboolean result;
@@ -1467,7 +1473,7 @@ gboolean result;
 
 
 static void
-ui_cat_manage_dialog_load_csv( GtkWidget *widget, gpointer user_data)
+ui_cat_manage_dialog_load_csv(GSimpleAction *action, GVariant *parameter, gpointer user_data)
 {
 struct ui_cat_manage_dialog_data *data = user_data;
 gchar *filename = NULL;
@@ -1497,7 +1503,7 @@ gchar *error;
 
 
 static void
-ui_cat_manage_dialog_save_csv( GtkWidget *widget, gpointer user_data)
+ui_cat_manage_dialog_save_csv(GSimpleAction *action, GVariant *parameter, gpointer user_data)
 {
 struct ui_cat_manage_dialog_data *data = user_data;
 gchar *filename = NULL;
@@ -1598,7 +1604,7 @@ gint type;
 		/* if cat use new id */
 		if(subcat == FALSE)
 		{
-			type = hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_type));
+			type = hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_type));
 			if(type == 1)
 				item->flags |= GF_INCOME;
 
@@ -2186,18 +2192,22 @@ gboolean haschild = FALSE;
 
 
 static gboolean
-ui_cat_manage_dialog_cb_on_key_press(GtkWidget *source, GdkEventKey *event, gpointer user_data)
+ui_cat_manage_dialog_cb_on_key_press(GtkWidget *source, GdkEvent *event, gpointer user_data)
 {
 struct ui_cat_manage_dialog_data *data = user_data;
+GdkModifierType state;
+guint keyval;
+
+	gdk_event_get_state (event, &state);
+	gdk_event_get_keyval(event, &keyval);
 
 	// On Control-f enable search entry
-	if (event->state & GDK_CONTROL_MASK
-		&& event->keyval == GDK_KEY_f)
+	if (state & GDK_CONTROL_MASK && keyval == GDK_KEY_f)
 	{
 		gtk_widget_grab_focus(data->ST_search);
 	}
 	else
-	if (event->keyval == GDK_KEY_Escape && gtk_widget_has_focus(data->ST_search))
+	if (keyval == GDK_KEY_Escape && gtk_widget_has_focus(data->ST_search))
 	{
 		hbtk_entry_set_text(GTK_ENTRY(data->ST_search), NULL);
 		gtk_widget_grab_focus(data->LV_cat);
@@ -2265,10 +2275,6 @@ gboolean doupdate = FALSE;
 static void
 ui_cat_manage_type_changed_cb (GtkToggleButton *button, gpointer user_data)
 {
-	//ignore event triggered from inactive radiobutton
-	if( gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button)) == FALSE )
-		return;
-
 	ui_cat_manage_dialog_refilter(user_data);
 	//g_print(" toggle type=%d\n", gtk_toggle_button_get_active(button));
 }
@@ -2314,7 +2320,7 @@ ui_cat_manage_dialog_setup(struct ui_cat_manage_dialog_data *data)
     g_signal_connect (G_OBJECT (data->BT_showhidden), "toggled", G_CALLBACK (ui_cat_manage_dialog_cb_show_hidden), NULL);
     g_signal_connect (G_OBJECT (data->BT_showusage) , "toggled", G_CALLBACK (ui_cat_manage_dialog_cb_show_usage), NULL);
 
-	hbtk_radio_button_connect (GTK_CONTAINER(data->RA_type), "toggled", G_CALLBACK (ui_cat_manage_type_changed_cb), data);
+	g_signal_connect (G_OBJECT (data->RA_type), "changed", G_CALLBACK (ui_cat_manage_type_changed_cb), data);
 
 	g_object_bind_property (data->BT_add, "active", data->RE_addreveal, "reveal-child", G_BINDING_BIDIRECTIONAL);
 
@@ -2365,11 +2371,19 @@ struct ui_cat_manage_dialog_data *data;
 }
 
 
+static const GActionEntry win_actions[] = {
+	{ "imp"		, ui_cat_manage_dialog_load_csv, NULL, NULL, NULL, {0,0,0} },
+	{ "exp"		, ui_cat_manage_dialog_save_csv, NULL, NULL, NULL, {0,0,0} },
+	{ "del"		, ui_cat_manage_dialog_delete_unused, NULL, NULL, NULL, {0,0,0} },
+//	{ "actioname"	, not_implemented, NULL, NULL, NULL, {0,0,0} },
+};
+
+
 GtkWidget *ui_cat_manage_dialog (void)
 {
 struct ui_cat_manage_dialog_data *data;
 GtkWidget *dialog, *content, *mainvbox, *bbox, *table, *hbox, *vbox, *label, *scrollwin, *treeview;
-GtkWidget *menu, *menuitem, *widget, *image, *tbar, *revealer;
+GtkWidget *widget, *image, *tbar, *revealer;
 gint w, h, dw, dh, row;
 
 	DB( g_print("\n[ui-cat-manage] new\n") );
@@ -2425,41 +2439,38 @@ gint w, h, dw, dh, row;
 	data->BT_showusage = widget;
 	gtk_box_pack_start(GTK_BOX (bbox), widget, FALSE, FALSE, 0);
 	
-	widget = hbtk_radio_button_new(GTK_ORIENTATION_HORIZONTAL, CYA_CAT_TYPE, TRUE);
+	widget = hbtk_switcher_new (GTK_ORIENTATION_HORIZONTAL);
+	hbtk_switcher_setup(HBTK_SWITCHER(widget), CYA_CAT_TYPE, TRUE);
 	data->RA_type = widget;
 	//gtk_widget_set_halign (bbox, GTK_ALIGN_CENTER);
 	gtk_box_pack_start(GTK_BOX (bbox), widget, FALSE, FALSE, 0);
 
-	menu = gtk_menu_new ();
-	gtk_widget_set_halign (menu, GTK_ALIGN_END);
-
-	menuitem = gtk_menu_item_new_with_mnemonic (_("_Import CSV"));
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
-	g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (ui_cat_manage_dialog_load_csv), data);
-
-	menuitem = gtk_menu_item_new_with_mnemonic (_("E_xport CSV"));
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
-	g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (ui_cat_manage_dialog_save_csv), data);
-
-	menuitem = gtk_separator_menu_item_new();
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
-	
-	menuitem = gtk_menu_item_new_with_mnemonic (_("_Delete unused"));
-	gtk_menu_shell_append (GTK_MENU_SHELL (menu), menuitem);
-	g_signal_connect (G_OBJECT (menuitem), "activate", G_CALLBACK (ui_cat_manage_dialog_delete_unused), data);
-
-	gtk_widget_show_all (menu);
-	
+	//menubutton
 	widget = gtk_menu_button_new();
 	image = gtk_image_new_from_icon_name (ICONNAME_HB_BUTTON_MENU, GTK_ICON_SIZE_MENU);
-
-	//gchar *thename;
-	//gtk_image_get_icon_name(image, &thename, NULL);
-	//g_print("the name is %s\n", thename);
-
-	g_object_set (widget, "image", image, "popup", GTK_MENU(menu),  NULL);
+	g_object_set (widget, "image", image,  NULL);
 	gtk_widget_set_halign (widget, GTK_ALIGN_END);
 	gtk_box_pack_end(GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+
+	GMenu *menu = g_menu_new ();
+	GMenu *section = g_menu_new ();
+	g_menu_append_section(menu, NULL, G_MENU_MODEL(section));
+	g_menu_append (section, _("_Import CSV..."), "win.imp");
+	g_menu_append (section, _("E_xport CSV..."), "win.exp");
+	g_object_unref (section);
+
+	section = g_menu_new ();
+	g_menu_append_section(menu, NULL, G_MENU_MODEL(section));
+	g_menu_append (section, _("_Delete unused..."), "win.del");
+	g_object_unref (section);
+
+	GActionGroup *group = (GActionGroup*)g_simple_action_group_new ();
+	data->actions = group;
+	g_action_map_add_action_entries (G_ACTION_MAP (group), win_actions, G_N_ELEMENTS (win_actions), data);
+
+	gtk_widget_insert_action_group (widget, "win", G_ACTION_GROUP(group));
+	gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (widget), G_MENU_MODEL (menu));
+
 	
 	widget = make_search();
 	data->ST_search = widget;

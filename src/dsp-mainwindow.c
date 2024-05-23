@@ -92,7 +92,7 @@ void ui_mainwindow_open(GtkWidget *widget, gpointer user_data);
 
 void ui_mainwindow_save(GtkWidget *widget, gpointer user_data);
 void ui_mainwindow_revert(GtkWidget *widget, gpointer user_data);
-void ui_mainwindow_action(GtkWidget *widget, gpointer user_data);
+
 void ui_mainwindow_toggle_minor(GtkWidget *widget, gpointer user_data);
 void ui_mainwindow_clear(GtkWidget *widget, gpointer user_data);
 
@@ -102,6 +102,7 @@ void ui_mainwindow_recent_add (struct hbfile_data *data, const gchar *path);
 
 void ui_mainwindow_recent_add (struct hbfile_data *data, const gchar *path);
 
+static void ui_mainwindow_close_openbooks(void);
 
 static void ui_mainwindow_action_toggle_minor(GtkCheckMenuItem *menuitem, gpointer     user_data);
 
@@ -299,6 +300,8 @@ GtkWidget *widget = GLOBALS->mainwindow;
 
 static void ui_mainwindow_action_quit(void)
 {
+	DB( g_print("\n[ui-mainwindow] action quit\n") );
+
 	gtk_window_close(GTK_WINDOW(GLOBALS->mainwindow));
 }
 
@@ -518,6 +521,7 @@ struct hbfile_data *data = g_object_get_data(G_OBJECT(GLOBALS->mainwindow), "ins
 
 	// top spending
 	gtk_chart_show_minor(GTK_CHART(data->RE_hubtot_chart), GLOBALS->minor);
+	gtk_chart_show_minor(GTK_CHART(data->RE_hubtim_chart), GLOBALS->minor);
 	
 	ui_hub_reptotal_update(data->window, data);
 	ui_hub_reptime_update(data->window, data);
@@ -526,20 +530,18 @@ struct hbfile_data *data = g_object_get_data(G_OBJECT(GLOBALS->mainwindow), "ins
 
 
 static void
-ui_mainwindow_action_showalltransactions(GtkMenuItem *menuitem, gpointer     user_data)
+ui_mainwindow_action_showalltransactions(GtkMenuItem *menuitem, gpointer user_data)
 {
-GtkWidget *window;
-		
-	if( GLOBALS->alltxnwindow == NULL )
+GtkWindow *window;
+
+	window = homebank_app_find_window(-1);
+	if( !window )
 	{
-		window = register_panel_window_new(NULL);
-		register_panel_window_init(window, NULL);
+		window = GTK_WINDOW(hub_ledger_window_new(NULL));
+		hub_ledger_window_init(GTK_WIDGET(window), NULL);
 	}
 	else
-	{
-		if(GTK_IS_WINDOW(GLOBALS->alltxnwindow))
-			gtk_window_present(GTK_WINDOW(GLOBALS->alltxnwindow));
-	}
+		gtk_window_present(GTK_WINDOW(window));
 }
 
 
@@ -547,20 +549,20 @@ static void
 ui_mainwindow_action_showtransactions(GtkMenuItem *menuitem, gpointer     user_data)
 {
 struct hbfile_data *data = g_object_get_data(G_OBJECT(GLOBALS->mainwindow), "inst_data");
-GtkWidget *window;
-		
+GtkWindow *window;
+
 	//TODO: change this
-	if( data->acc && data->acc->window == NULL )
+	if(data->acc == NULL)
+		return;
+
+	window = homebank_app_find_window(data->acc->key);
+	if( !window )
 	{
-		window = register_panel_window_new(data->acc);
-		register_panel_window_init(window, NULL);
+		window = GTK_WINDOW(hub_ledger_window_new(data->acc));
+		hub_ledger_window_init(GTK_WIDGET(window), NULL);
 	}
 	else
-	{
-		if(GTK_IS_WINDOW(data->acc->window))
-			gtk_window_present(GTK_WINDOW(data->acc->window));
-	}
-	
+		gtk_window_present(GTK_WINDOW(window));
 }
 
 
@@ -864,27 +866,28 @@ static void ui_mainwindow_selection(GtkTreeSelection *treeselection, gpointer us
 
 static void ui_mainwindow_close_openbooks(void)
 {
-GList *lacc, *elt;
+GList *l = gtk_application_get_windows(GLOBALS->application);
 
-	DB( g_print("\n[ui-mainwindow] close openbooks\n") );
-
-	lacc = elt = g_hash_table_get_values(GLOBALS->h_acc);
-	while (elt != NULL)
+	while (l != NULL)
 	{
-	Account *item = elt->data;
-
-		if(item->window)
+	GtkWindow *window = l->data;
+	gint key;
+		
+		key  = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(window), "key"));
+		DB( g_print(" window: %p: key=%d '%s'\n", window, key, gtk_window_get_title(window)) );
+		if( key != 0 )	//wallet have no key
 		{
-			gtk_window_destroy (GTK_WINDOW(item->window));
-			item->window = NULL;
+			DB( g_print(" >closing\n") );
+			gtk_window_close (GTK_WINDOW(window));
 		}
-
-		elt = g_list_next(elt);
+		l = g_list_next(l);
 	}
-	g_list_free(lacc);
+
+	//empty loop before doing any further
+	//this will safely close any window
+	hb_window_run_pending();
 
 }
-
 
 
 /*
@@ -915,12 +918,16 @@ GSList *list;
 			gtk_window_get_window_type(window),
 			gtk_window_get_title(window) ));
 
-		gtk_window_destroy (GTK_WINDOW(window));
+		gtk_window_close (GTK_WINDOW(window));
 		list = g_slist_next(list);	
 	}
-	
-	gtk_tree_store_clear(GTK_TREE_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_acc))));
 
+	//empty loop before doing any further
+	//this will safely close any window
+	hb_window_run_pending();
+
+
+	gtk_tree_store_clear(GTK_TREE_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_acc))));
 	gtk_list_store_clear(GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_upc))));
 	
 	//TODO those 2 do nothing
@@ -936,10 +943,13 @@ GSList *list;
 
 	ui_hub_reptime_dispose(data);
 	ui_hub_reptime_setup(data);
-	
+
+	hb_window_run_pending();
+
 	hbfile_cleanup(file_clear);
 	hbfile_setup(file_clear);
 
+	hb_window_run_pending();
 }
 
 
@@ -968,6 +978,7 @@ Transaction *ope;
 	count = 0;
 	while(result == HB_RESPONSE_ADD || result == HB_RESPONSE_ADDKEEP)
 	{
+		DB( g_print(" - last result %d\n", result) );
 		/* fill in the transaction */
 		if( result == HB_RESPONSE_ADD )
 		{
@@ -982,17 +993,31 @@ Transaction *ope;
 
 		if(result == HB_RESPONSE_ADD || result == HB_RESPONSE_ADDKEEP || result == GTK_RESPONSE_ACCEPT)
 		{
+		Transaction *addtxn;
+		
 			deftransaction_get(window, NULL);
-			transaction_add(GTK_WINDOW(GLOBALS->mainwindow), ope);
-			//#1831975
-			if(PREFS->txn_showconfirm)
-				deftransaction_external_confirm(window, ope);
-			
-			DB( g_print(" - added 1 transaction to %d\n", ope->kacc) );
 
-			ui_hub_account_compute(GLOBALS->mainwindow, NULL);
-			
-			count++;
+			//addtxn = transaction_add(GTK_WINDOW(GLOBALS->mainwindow), TRUE, ope);
+			addtxn = transaction_add(GTK_WINDOW(window), TRUE, ope);
+			//2044601 if NULL xfer may have beed aborted
+			if( addtxn != NULL )
+			{
+				//#1831975
+				if(PREFS->txn_showconfirm)
+					deftransaction_external_confirm(window, ope);
+				
+				DB( g_print(" - added 1 transaction to %d\n", ope->kacc) );
+
+				ui_hub_account_compute(GLOBALS->mainwindow, NULL);
+				
+				count++;
+			}
+			else
+			{
+				//2044601 keep actual txn
+				result = HB_RESPONSE_ADDKEEP;
+				DB( g_print(" - no add, keep current\n") );
+			}
 		}
 	}
 
@@ -1288,7 +1313,15 @@ void ui_mainwindow_update(GtkWidget *widget, gpointer user_data)
 struct hbfile_data *data;
 gint flags;
 
-	DB( g_print("\n[ui-mainwindow] update %p\n", user_data) );
+	DB( g_print("\n[ui-mainwindow] update\n") );
+
+	//todo: remove this later
+	//as we direct call from destroy of other window, widget might already be gone
+	if( !GTK_IS_WIDGET(widget) )	//TODO: hit
+	{
+		DB( g_print(" bad widget prevent !\n") );
+		return;
+	}
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 	//data = INST_DATA(widget);
@@ -1435,8 +1468,6 @@ gint flags;
 	// no active account: disable Edit, Over
 		DB( g_print(" account active ?\n") );
 		sensitive = (active == TRUE ) ? TRUE : FALSE;
-		if(data->acc && data->acc->window != NULL)
-			sensitive = FALSE;
 		gtk_widget_set_sensitive(data->MI_txnshow, sensitive);
 		gtk_widget_set_sensitive(data->BT_txnshow, sensitive);
 	}
@@ -1490,7 +1521,6 @@ gint flags;
 			ui_hub_transaction_populate(data);
 		}
 	}
-
 }
 
 
@@ -1527,9 +1557,32 @@ static void
   }
 
 
-static void ui_mainwindow_destroy(GtkTreeView *treeview, gpointer user_data)
+static void ui_mainwindow_destroy(GtkWidget *widget, gpointer user_data)
 {
-	DB( g_print("\n[ui-mainwindow] destroy\n") );
+struct hbfile_data *data;
+
+	DB( g_print("\n[ui-mainwindow] -- destroy\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	DB( g_print(" destroy hubtot\n") );
+	//ui_hub_xxx_dispose(data);
+	gtk_widget_destroy(data->LV_hubtot);
+	ui_hub_reptotal_dispose(data);
+
+	DB( g_print(" destroy hubtim\n") );
+	gtk_widget_destroy(data->LV_hubtim);
+	ui_hub_reptime_dispose(data);
+
+	DB( g_print(" destroy hubacc\n") );
+	ui_hub_account_dispose(data);
+	
+	DB( g_print(" destroy free data\n") );
+	g_free(data->wintitle);
+	g_free(user_data);
+	
+	DB( g_print(" gtk_main_quit\n") );
+	gtk_main_quit();
 
 }
 
@@ -1539,11 +1592,15 @@ static void ui_mainwindow_destroy(GtkTreeView *treeview, gpointer user_data)
 */
 static gboolean ui_mainwindow_dispose(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
-struct hbfile_data *data = user_data;
+struct hbfile_data *data;
 struct WinGeometry *wg;
 gboolean retval = FALSE;
 
-	DB( g_print("\n[ui-mainwindow] delete-event\n") );
+	DB( g_print("\n[ui-mainwindow] -- delete-event\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	ui_mainwindow_close_openbooks();
 
 	//store position and size
 	wg = &PREFS->wal_wg;
@@ -1567,25 +1624,8 @@ gboolean retval = FALSE;
 	{
 		retval = TRUE;
 	}
-	else
-	{
-		//TODO: retval is useless and below should move to destroy
-		retval = TRUE;
 
-		//ui_hub_xxx_dispose(data);
-		gtk_widget_destroy(data->LV_hubtot);
-		ui_hub_reptotal_dispose(data);
-
-		gtk_widget_destroy(data->LV_hubtim);
-		ui_hub_reptime_dispose(data);
-
-		ui_hub_account_dispose(data);
-		
-		g_free(data->wintitle);
-		g_free(user_data);
-		
-		gtk_main_quit();
-	}
+	DB( g_print("retval: %d\n", retval) );
 
 	//TRUE:stop other handlers from being invoked for the event | FALSE: propagate
 	return retval;
@@ -1604,21 +1644,31 @@ GList *list;
 	while (list != NULL)
 	{
 	GtkRecentInfo *recentinfo = list->data;
+	const gchar *uri;
 
-		if( !g_strcmp0(HB_MIMETYPE, gtk_recent_info_get_mime_type(recentinfo)) )
+		uri = gtk_recent_info_get_uri(recentinfo);
+		if( uri != NULL )
 		{
-		GError *error = NULL;
-		const gchar *uri = gtk_recent_info_get_uri(recentinfo);
-			
-			//DB( g_print(" mime-type='%s'\n", gtk_recent_info_get_mime_type(recentinfo)) );
+		size_t len = strlen(uri);
+		
+			DB( g_print(" uri: '%s' %ld\n", uri, len ) );
 
-			gtk_recent_manager_remove_item(data->recent_manager, uri, &error);
-			if (error)
+			//if( !g_strcmp0(HB_MIMETYPE, gtk_recent_info_get_mime_type(recentinfo)) )
+			if( len > 4 && g_ascii_strcasecmp(uri + len - 4, ".xhb") == 0 )
 			{
-				g_warning ("Could not remove uri \"%s\": %s", uri, error->message);
-				g_error_free (error);
-			}
-		}		
+			GError *error = NULL;
+			const gchar *uri = gtk_recent_info_get_uri(recentinfo);
+				
+				DB( g_print(" > should remove\n") );
+				gtk_recent_manager_remove_item(data->recent_manager, uri, &error);
+				
+				if (error)
+				{
+					g_warning ("Could not remove uri \"%s\": %s", uri, error->message);
+					g_error_free (error);
+				}
+			}		
+		}
 		gtk_recent_info_unref(recentinfo);
 		list = g_list_next(list);
 	}
@@ -1915,18 +1965,21 @@ GtkAccelGroup *accel_group = NULL;
 		data->MI_manacc = hbtk_menu_add_menuitem(menu, _("Acc_ounts..."));
 		data->MI_manpay = hbtk_menu_add_menuitem(menu, _("_Payees..."));
 		data->MI_mancat = hbtk_menu_add_menuitem(menu, _("Categories..."));
+		data->MI_mantag = hbtk_menu_add_menuitem(menu, _("Tags..."));
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), gtk_separator_menu_item_new());
 		data->MI_mantpl = hbtk_menu_add_menuitem(menu, _("Scheduled/Template..."));
-		data->MI_manbud = hbtk_menu_add_menuitem(menu, _("Budget..."));
-		data->MI_manbudtable = hbtk_menu_add_menuitem(menu, _("Budget (table view)..."));
 		data->MI_manasg = hbtk_menu_add_menuitem(menu, _("Assignments..."));
 		data->MI_mancur = hbtk_menu_add_menuitem(menu, _("Currencies..."));
-		data->MI_mantag = hbtk_menu_add_menuitem(menu, _("Tags..."));
+		gtk_menu_shell_append (GTK_MENU_SHELL (menu), gtk_separator_menu_item_new());
+		data->MI_manbud = hbtk_menu_add_menuitem(menu, _("Budget..."));
+		data->MI_manbudtable = hbtk_menu_add_menuitem(menu, _("Budget (table view)..."));
 	
 	menu = hbtk_menubar_add_menu(menubar, _("_Transactions"), &data->ME_menutxn);
 
+		data->MI_txnshowall   = menuitem = hbtk_menu_add_menuitem(menu, _("Show All...") );
+		gtk_widget_add_accelerator(menuitem, "activate", accel_group, GDK_KEY_a, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 		data->MI_txnadd       = hbtk_menu_add_menuitem(menu, _("Add..."));
 		data->MI_txnshow      = hbtk_menu_add_menuitem(menu, _("Show..."));
-		data->MI_txnshowall   = hbtk_menu_add_menuitem(menu, _("Show all...") );
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), gtk_separator_menu_item_new());
 		data->MI_scheduler    = hbtk_menu_add_menuitem(menu, _("Set scheduler..."));
 		data->MI_addscheduled = hbtk_menu_add_menuitem(menu, _("Post scheduled"));
@@ -2033,7 +2086,8 @@ GtkWidget *window;
 	data = g_malloc0(sizeof(struct hbfile_data));
 	if(!data) return NULL;
 
-    window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	window = gtk_application_window_new(GLOBALS->application);
+	gtk_widget_set_name(GTK_WIDGET(window), "homebank");
 
 	//store our window private data
 	g_object_set_data(G_OBJECT(window), "inst_data", (gpointer)data);
@@ -2198,8 +2252,8 @@ GtkWidget *window;
 	g_signal_connect (GTK_TREE_VIEW(data->LV_acc    ), "row-activated", G_CALLBACK (ui_mainwindow_onRowActivated), GINT_TO_POINTER(2));
 
 	/* GtkWindow events */
-    g_signal_connect (window, "delete-event", G_CALLBACK (ui_mainwindow_dispose), (gpointer)data);
 	g_signal_connect (window, "destroy", G_CALLBACK (ui_mainwindow_destroy), NULL);
+    g_signal_connect (window, "delete-event", G_CALLBACK (ui_mainwindow_dispose), (gpointer)data);
 
 	//menu signals
 	g_signal_connect (data->MI_new , "activate", G_CALLBACK (ui_mainwindow_action_new), (gpointer)data);

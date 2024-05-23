@@ -21,6 +21,7 @@
 #include "hb-hbfile.h"
 #include "hb-archive.h"
 #include "hb-transaction.h"
+#include "ui-flt-widget.h"
 
 
 /****************************************************************************/
@@ -505,8 +506,8 @@ guint cnt;
 		{
 		Transaction *item = lnk_txn->data;
 
-			g_free(item->info);
-			item->info = NULL;
+			g_free(item->number);
+			item->number = NULL;
 			g_free(item->memo);
 			item->memo = g_strdup_printf("memo %d", item->date);
 			GLOBALS->changes_count++;
@@ -571,6 +572,10 @@ GSList *list;
 	da_transaction_destroy();
 	da_archive_destroy(GLOBALS->arc_list);
 	g_hash_table_destroy(GLOBALS->h_memo);
+
+	da_flt_destroy();
+	g_object_unref(GLOBALS->fltmodel);
+
 	da_asg_destroy();
 	da_tag_destroy();
 	da_cat_destroy();
@@ -585,6 +590,8 @@ GSList *list;
 		hbfile_change_filepath(NULL);
 
 }
+
+
 
 
 void hbfile_setup(gboolean file_clear)
@@ -602,7 +609,9 @@ void hbfile_setup(gboolean file_clear)
 	da_cat_new();
 	da_tag_new();
 	da_asg_new();
-	//txn queue is allocated into account
+
+	GLOBALS->fltmodel = lst_lst_favfilter_model_new();
+	da_flt_new();
 
 	GLOBALS->h_memo = g_hash_table_new_full(g_str_hash, g_str_equal, (GDestroyNotify)g_free, NULL);
 	GLOBALS->arc_list = NULL;

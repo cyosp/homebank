@@ -51,10 +51,10 @@ da_transaction_clean(Transaction *item)
 			g_free(item->memo);
 			item->memo = NULL;
 		}
-		if(item->info != NULL)
+		if(item->number != NULL)
 		{
-			g_free(item->info);
-			item->info = NULL;
+			g_free(item->number);
+			item->number = NULL;
 		}
 		if(item->tags != NULL)
 		{
@@ -139,8 +139,8 @@ guint32 date;
 	txn->xferamount = arc->xferamount;
 	if(arc->memo != NULL)
 		txn->memo	    = g_strdup(arc->memo);
-	if(arc->info != NULL)
-		txn->info	    = g_strdup(arc->info);
+	if(arc->number != NULL)
+		txn->number	    = g_strdup(arc->number);
 
 	txn->tags = tags_clone(arc->tags);
 
@@ -184,7 +184,7 @@ Transaction *new_item = g_memdup(src_item, sizeof(Transaction));
 	{
 		//duplicate the string
 		new_item->memo = g_strdup(src_item->memo);
-		new_item->info = g_strdup(src_item->info);
+		new_item->number = g_strdup(src_item->number);
 
 		//duplicate tags/splits
 		//no g_free here to avoid free the src tags (memdup copied the ptr)
@@ -250,7 +250,7 @@ GList *lacc, *list;
 }
 
 
-// used from register only
+// used from ledger only
 static gint da_transaction_compare_datafunc(Transaction *a, Transaction *b, gpointer data)
 {
 gint retval = (gint)a->date - b->date;
@@ -477,7 +477,7 @@ guint nbsplit;
 		//# 1416624 empty category when split
 		if(nbsplit > 0 && item->kcat > 0)
 		{
-			g_warning("txn consistency: fixed invalid cat on split txn");
+			g_warning("txn consistency: fixed invalid cat %d for split txn", item->kcat);
 			item->kcat = 0;
 			GLOBALS->changes_count++;
 		}
@@ -657,28 +657,23 @@ gint rate = 100;
 		//#1987975 only suggest opposite sign amount txn
 		if( stxn->amount == -dtxn->amount )
 		{
+			DB( g_print(" >found same curr + same amt\n") );
 			retval = TRUE;
 		}
 	}
 	//#2047647 cross currency target txn proposal, with 10% gap
 	else
 	{
-	Currency *dstcur;
-	gdouble rawamt, minamt, maxamt;
+	gdouble minamt = stxn->xferamount * 0.9;
+	gdouble maxamt = stxn->xferamount * 1.1;
 
-		dstcur = da_cur_get(dtxn->kcur);
-		rawamt = -hb_amount_round((stxn->amount * dstcur->rate), dstcur->frac_digits);
-		minamt = rawamt * 0.9;
-		maxamt = rawamt * 1.1;
-
-		if( (dtxn->amount <= maxamt) && (dtxn->amount >= minamt) )
+		DB( g_print(" >check %.2f [%.2f...%.2f]\n", dtxn->amount, minamt, maxamt) );
+		if( hb_amount_between(dtxn->amount, minamt, maxamt) == TRUE)
 		{
-			rate -= ABS(dtxn->amount - rawamt); 
-			DB( g_print(" gap = %f\n", ABS(dtxn->amount - rawamt) / rawamt) );		
-			retval = TRUE; 
+			rate -= ABS(dtxn->amount - stxn->xferamount); 
+			DB( g_print(" >found !=curr\n") );		
+			retval = TRUE;
 		}
-		DB( g_print(" cross might: raw %f / min %f max %f, dst %f, retval=%d\n", 
-			rawamt,	minamt, maxamt, dtxn->amount, retval) );
 	}
 	
 	//other rate
@@ -693,7 +688,7 @@ gint rate = 100;
 	rate = CLAMP(rate, 0, 100);
 	*matchrate = rate;
 
-	//DB( g_print(" return %d\n", retval) );
+	DB( g_print(" >return %d\n\n", retval) );
 	return retval;
 }
 
@@ -722,11 +717,14 @@ GList *list, *matchlist = NULL;
 	
 				// no need to go higher than src txn date - daygap
 				if(item->date < (ope->date - PREFS->xfer_daygap))
+				{
+					DB( g_print(" break date: %d < %d\n", item->date , (ope->date - PREFS->xfer_daygap)) );
 					break;
-		
+				}
+
 				if( transaction_xfer_child_might(ope, item, &item->matchrate) == TRUE )
 				{
-					//DB( g_print(" - match %3d: %d %s %f %d=>%d\n", item->matchrate, item->date, item->memo, item->amount, item->kacc, item->kxferacc) );
+					DB( g_print(" - match %3d: %d %s %f %d=>%d\n", item->matchrate, item->date, item->memo, item->amount, item->kacc, item->kxferacc) );
 					matchlist = g_list_append(matchlist, item);
 				}
 				list = g_list_previous(list);
@@ -741,50 +739,67 @@ GList *list, *matchlist = NULL;
 }
 
 
-void transaction_xfer_search_or_add_child(GtkWindow *parent, Transaction *ope, guint32 kdstacc)
+gint transaction_xfer_search_or_add_child(GtkWindow *parent, gboolean addmode, Transaction *ope, guint32 kdstacc)
 {
 GList *matchlist;
 gint count;
+gint result = GTK_RESPONSE_NONE;
+Transaction *child = NULL;
 
 	DB( g_print("\n[transaction] xfer_search_or_add_child\n") );
 
 	matchlist = transaction_xfer_child_might_list_get(ope, kdstacc);
 	count = g_list_length(matchlist);
 
-	DB( g_print(" - found %d might match, switching\n", count) );
-
+	DB( g_print(" matchlist : %d match found\n", count) );
+	//#2044601 user pref always popup in addmode
+	//prior if count=0 we were inserting without asking user
 	if( count == 0 )
 	{
 		//we should create the child
-		transaction_xfer_create_child(ope);
+		DB( g_print(" force create new\n") );
+		result = HB_RESPONSE_CREATE_NEW;
 	}
-	//the user must choose himself
-	else
-	{
-	gint result;
-	Transaction *child = NULL;
 
+	//#2044601 addmode=1 means we add from main/ledger window
+	DB( g_print(" addmode   : %d\n", addmode) );
+	DB( g_print(" showdialog: %d\n", PREFS->xfer_showdialog) );
+
+	if( (result == GTK_RESPONSE_NONE) || (addmode == TRUE && PREFS->xfer_showdialog == TRUE ) )
+	{
+		DB( g_print(" popup action txn target\n") );
 		result = ui_dialog_transaction_xfer_select_child(parent, ope, matchlist, &child);
-		switch( result )
-		{
-			case HB_RESPONSE_SELECTION:
-				//#1827193 in case child is null...
-				DB( g_print(" child %p\n", child) );
-				if( child != NULL )
-					transaction_xfer_change_to_child(ope, child);
-				break;
-			case HB_RESPONSE_CREATE_NEW:
-				transaction_xfer_create_child(ope);
-				break;
-			default:
-				DB( g_print(" add normal txn\n") );
+	}
+
+	switch( result )
+	{
+		case HB_RESPONSE_SELECTION:
+			//#1827193 in case child is null...
+			DB( g_print(" link to child %p\n", child) );
+			if( child != NULL )
+				transaction_xfer_change_to_child(ope, child);
+			break;
+		case HB_RESPONSE_CREATE_NEW:
+			DB( g_print(" create child\n") );
+			transaction_xfer_create_child(ope);
+			break;
+		//GTK_RESPONSE_CANCEL
+		default:
+			//#2044601 addmode no action if user cancel
+			if( addmode == FALSE )
+			{
+				DB( g_print(" change normal txn\n") );
 				transaction_xfer_change_to_normal(ope);
 				da_transaction_set_flag(ope);				
-				break;			
-		}
+			}
+			ope->flags &= ~(OF_CHANGED);
+			break;
 	}
 
 	g_list_free(matchlist);
+
+	DB( g_print(" > return %d\n", result) );
+	return result;
 }
 
 
@@ -939,9 +954,9 @@ Account *acc;
 	if(child->memo)
 		g_free(child->memo);
 	child->memo	= g_strdup(s_txn->memo);
-	if(child->info)
-		g_free(child->info);
-	child->info		= g_strdup(s_txn->info);
+	if(child->number)
+		g_free(child->number);
+	child->number		= g_strdup(s_txn->number);
 
 	account_balances_add (child);
 
@@ -1124,12 +1139,15 @@ Account *acc;
 }
 
 
-Transaction *transaction_add(GtkWindow *parent, Transaction *ope)
+Transaction *transaction_add(GtkWindow *parent, gboolean addmode, Transaction *ope)
 {
 Transaction *newope;
-Account *acc;
+Account *acc, *dacc;
+gboolean do_add;
 
 	DB( g_print("\n[transaction] transaction_add\n") );
+
+	do_add = TRUE;
 
 	//controls accounts valid (archive scheduled maybe bad)
 	acc = da_acc_get(ope->kacc);
@@ -1139,61 +1157,61 @@ Account *acc;
 
 	DB( g_print(" acc is '%s' %d\n", acc->name, acc->key) );
 
-	ope->kcur = acc->kcur;
-	
 	if(ope->flags & OF_INTXFER)
 	{
-		acc = da_acc_get(ope->kxferacc);
+		//controls accounts valid (archive scheduled maybe bad)
+		dacc = da_acc_get(ope->kxferacc);
 		//#1972078 forbid on a closed account
-		if( (acc == NULL) || (acc->flags & AF_CLOSED) ) 
+		if( (dacc == NULL) || (dacc->flags & AF_CLOSED) ) 
 			return NULL;
-		
-		// delete any splits
-		da_split_destroy(ope->splits);
-		ope->splits = NULL;
-		ope->flags &= ~(OF_SPLIT); //Flag that Splits are cleared
 	}
 
+	//affect currency, mandatory to get a valid display in xfer selection dialog
+	ope->kcur = acc->kcur;
 
 	//allocate a new entry and copy from our edited structure
 	newope = da_transaction_clone(ope);
 
-	//init flag and keep remind status
-	// already done in deftransaction_get
-	//ope->flags |= (OF_ADDED);
-	//remind = (ope->flags & OF_REMIND) ? TRUE : FALSE;
-	//ope->flags &= (~OF_REMIND);
-
-	/* cheque number is already stored in deftransaction_get */
-	/* todo:move this to transaction add
-		store a new cheque number into account ? */
-
-	if( (newope->paymode == PAYMODE_CHECK) && (newope->info) && !(newope->flags & OF_INCOME) )
+	//let the user select a xfer action if necessary
+	if(ope->flags & OF_INTXFER)
 	{
-	guint cheque;
+	gint response_id;
 
-		/* get the active account and the corresponding cheque number */
-		acc = da_acc_get( newope->kacc);
-		if( acc != NULL )
-		{
-			cheque = atol(newope->info);
+		//#2044601 can return GTK_RESPONSE_CANCEL
+		response_id = transaction_xfer_search_or_add_child(parent, addmode, newope, newope->kxferacc);
 
-			//DB( g_print(" -> should store cheque number %d to %d", cheque, newope->account) );
-			if( newope->flags & OF_CHEQ2 )
-			{
-				acc->cheque2 = MAX(acc->cheque2, cheque);
-			}
-			else
-			{
-				acc->cheque1 = MAX(acc->cheque1, cheque);
-			}
-		}
+		if( response_id == GTK_RESPONSE_CANCEL )
+			do_add = FALSE;
 	}
 
-	/* add normal transaction */
-	acc = da_acc_get( newope->kacc);
-	if(acc != NULL)
+	DB( g_print(" do_add = %d\n", do_add) );
+	//real addition here
+	if( do_add == TRUE )
 	{
+		//todo: a deplacer dans account
+		/* store a new cheque number into account */
+		if( (newope->paymode == PAYMODE_CHECK) && (newope->number) && !(newope->flags & OF_INCOME) )
+		{
+		guint cheque;
+
+			/* get the active account and the corresponding cheque number */
+			acc = da_acc_get( newope->kacc);
+			if( acc != NULL )
+			{
+				cheque = atol(newope->number);
+
+				//DB( g_print(" -> should store cheque number %d to %d", cheque, newope->account) );
+				if( newope->flags & OF_CHEQ2 )
+				{
+					acc->cheque2 = MAX(acc->cheque2, cheque);
+				}
+				else
+				{
+					acc->cheque1 = MAX(acc->cheque1, cheque);
+				}
+			}
+		}
+
 		acc->flags |= AF_ADDED;
 
 		DB( g_print(" + add normal %p to acc %d\n", newope, acc->key) );
@@ -1204,12 +1222,21 @@ Account *acc;
 
 		if(newope->flags & OF_INTXFER)
 		{
-			transaction_xfer_search_or_add_child(parent, newope, newope->kxferacc);
+			// delete any splits
+			da_split_destroy(ope->splits);
+			ope->splits = NULL;
+			ope->flags &= ~(OF_SPLIT); //Flag that Splits are cleared
 		}
 
 		//#1581863 store reconciled date
 		if( newope->status == TXN_STATUS_RECONCILED )
 			acc->rdate = GLOBALS->today;
+	}
+	else
+	{
+		DB( g_print(" clean newope and return NULL\n") );
+		da_transaction_clean(newope);
+		newope = NULL;
 	}
 	
 	return newope;
@@ -1264,11 +1291,13 @@ gboolean retval = FALSE;
 
 	DB( g_print(" date: %d - %d = %d\n", stxn->date, dtxn->date, stxn->date - dtxn->date) );
 	
-	if( stxn->kcur == dtxn->kcur
-	 &&	stxn->amount == dtxn->amount
-	 && ( (stxn->date - dtxn->date) <= daygap )
-	 //todo: at import we also check payee, but maybe too strict here
-	 && (hb_string_compare(stxn->memo, dtxn->memo) == 0)
+	if( ( stxn->kcur == dtxn->kcur )
+		&& ( dtxn->date <= (stxn->date + daygap) )
+		&& ( dtxn->date >= (stxn->date - daygap) )
+		&& ( hb_amount_equal(stxn->amount, dtxn->amount) )
+	 	//5.8 removed memo, later propose option
+		//&& (hb_string_compare(stxn->memo, dtxn->memo) == 0)
+		//todo: later propose option category/payee
 	  )
 	{
 		retval = TRUE;
@@ -1337,14 +1366,14 @@ gint nbdup = 0;
 
 		//if(stxn->date < minjulian)
 		//	break;
-		DB( g_print("------\n eval src: %d, '%s', '%s', %.2f\n", stxn->date, stxn->info, stxn->memo, stxn->amount) );
+		DB( g_print("------\n eval src: %d, '%s', '%s', %.2f\n", stxn->date, stxn->number, stxn->memo, stxn->amount) );
 
 		list2 = g_list_previous(lnk_txn);
 		while (list2 != NULL)
 		{
 		Transaction *dtxn = list2->data;
 
-			DB( g_print(" + with dst: %d, '%s', '%s', %.2f\n", dtxn->date, dtxn->info, dtxn->memo, dtxn->amount) );
+			DB( g_print(" + with dst: %d, '%s', '%s', %.2f\n", dtxn->date, dtxn->number, dtxn->memo, dtxn->amount) );
 
 			if( (stxn->date - dtxn->date) > daygap )
 			{
@@ -1493,7 +1522,7 @@ gint gapday = 0, i;
 
 		//if(stxn->date < minjulian)
 		//	break;
-		DB( g_print("------\n eval src: %d, '%s', '%s', %2.f\n", stxn->date, stxn->info, stxn->memo, stxn->amount) );
+		DB( g_print("------\n eval src: %d, '%s', '%s', %2.f\n", stxn->date, stxn->number, stxn->memo, stxn->amount) );
 
 		stxn->marker = 0;
 		list2 = g_list_previous(lnk_txn);
@@ -1505,7 +1534,7 @@ gint gapday = 0, i;
 			if( (dtxn->date + gapday) < (stxn->date + gapday) )
 				break;
 
-			DB( g_print(" + with dst: %d, '%s', '%s', %2.f\n", dtxn->date, dtxn->info, dtxn->memo, dtxn->amount) );
+			DB( g_print(" + with dst: %d, '%s', '%s', %2.f\n", dtxn->date, dtxn->number, dtxn->memo, dtxn->amount) );
 
 			if( transaction_similar_match(stxn, dtxn, gapday) )
 			{

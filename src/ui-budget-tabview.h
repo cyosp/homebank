@@ -26,6 +26,8 @@
 struct ui_bud_tabview_data
 {
 	GtkWidget *dialog;
+	GActionGroup * actions;
+
 
 	// Number of changes to notify globally
 	gint change;

@@ -31,6 +31,7 @@ struct defhbfile_data
 	GtkWidget	*LB_maxpostdate;
 
 	GtkWidget	*PO_grp;
+	GtkWidget	*ST_earnbyh;
 
 	gint		change;
 };

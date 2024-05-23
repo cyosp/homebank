@@ -47,7 +47,7 @@ extern struct Preferences *PREFS;
 extern gchar *CYA_ABMONTHS[];
 
 
-static void _datatable_init_count_key_row(DataTable *dt, gint src, Filter *flt);
+static void _datatable_init_count_key_row(DataTable *dt, gint grpby, Filter *flt);
 
 
 /* = = = = = = = = = = = = = = = = = = = = */
@@ -173,7 +173,7 @@ guint i;
 }
 
 
-static DataTable *da_datatable_malloc(gint src, gint intvl, Filter *flt)
+static DataTable *da_datatable_malloc(gint grpby, gint intvl, Filter *flt)
 {
 DataTable *dt = g_malloc0(sizeof(DataTable));
 guint i;
@@ -183,13 +183,13 @@ guint i;
 	if(!dt)
 		return NULL;
 
-	_datatable_init_count_key_row(dt, src, flt);
+	_datatable_init_count_key_row(dt, grpby, flt);
 	dt->nbcols = report_interval_count(intvl, flt->mindate, flt->maxdate);
 	//dt->nbkeys = maximum keys for acc/pay/cat/tag
 	//dt->nbrows = nb of items
 	//dt->nbcols = nb of cols
 
-	DB1( g_print(" src:%d\n intvl:%d\n maxk:%d\n rows:%d\n cols:%d\n", src, intvl, dt->nbkeys, dt->nbrows, dt->nbcols) );
+	DB1( g_print(" grpby:%d\n intvl:%d\n maxk:%d\n rows:%d\n cols:%d\n", grpby, intvl, dt->nbkeys, dt->nbrows, dt->nbcols) );
 
 	DB1( g_print(" alloc %d keyindex\n", dt->nbkeys) );
 	dt->keyindex = g_malloc0(dt->nbkeys * sizeof(gpointer));
@@ -471,37 +471,41 @@ static void datatable_set_keyindex(DataTable *dt, guint32 key, guint32 idx)
 		g_warning("datatable invalid set keyindex %d of %d", key , dt->nbkeys);
 }
 
-static void _datatable_init_count_key_row(DataTable *dt, gint src, Filter *flt)
+static void _datatable_init_count_key_row(DataTable *dt, gint grpby, Filter *flt)
 {
 guint n_row, n_key;
 
 	n_row = n_key = 0;
-	if( src != REPORT_SRC_MONTH && src != REPORT_SRC_YEAR )
+	if( grpby != REPORT_GRPBY_MONTH && grpby != REPORT_GRPBY_YEAR )
 	{
-		switch(src)
+		switch(grpby)
 		{
-			case REPORT_SRC_NONE:
+			case REPORT_GRPBY_NONE:
 				n_row = 1;
 				n_key = 1;
 				break;
-			case REPORT_SRC_CATEGORY:
+			case REPORT_GRPBY_TYPE:
+				n_row = 2;
+				n_key = 2;
+				break;
+			case REPORT_GRPBY_CATEGORY:
 				n_row = da_cat_length();
 				n_key = da_cat_get_max_key();
 				break;
-			case REPORT_SRC_PAYEE:
+			case REPORT_GRPBY_PAYEE:
 				n_row = da_pay_length();
 				n_key = da_pay_get_max_key();
 				break;
 			//5.7: todo check this +1
-			case REPORT_SRC_ACCOUNT:
+			case REPORT_GRPBY_ACCOUNT:
 				n_row = da_acc_length();
 				n_key = da_acc_get_max_key();
 				break;
-			case REPORT_SRC_ACCGROUP:
+			case REPORT_GRPBY_ACCGROUP:
 				n_row = da_grp_length();
 				n_key = da_grp_get_max_key();
 				break;
-			case REPORT_SRC_TAG:
+			case REPORT_GRPBY_TAG:
 				n_row = da_tag_length();
 				n_key = da_tag_get_max_key();
 				break;
@@ -512,13 +516,13 @@ guint n_row, n_key;
 	GDate *date1 = g_date_new_julian(flt->mindate);
 	GDate *date2 = g_date_new_julian(flt->maxdate);
 	
-		switch(src)
+		switch(grpby)
 		{
-			case REPORT_SRC_MONTH:
+			case REPORT_GRPBY_MONTH:
 				n_row = ((g_date_get_year(date2) - g_date_get_year(date1)) * 12) + g_date_get_month(date2) - g_date_get_month(date1) + 1;
 				n_key = n_row;
 				break;
-			case REPORT_SRC_YEAR:
+			case REPORT_GRPBY_YEAR:
 				n_row = g_date_get_year(date2) - g_date_get_year(date1) + 1;
 				n_key = n_row;
 			break;
@@ -732,7 +736,7 @@ static void datatable_data_get_xlabel(GDate *date, guint intvl, gchar *intvlname
 }
 
 
-static void datatable_init_items(DataTable *dt, gint src, guint32 jfrom)
+static void datatable_init_items(DataTable *dt, gint grpby, guint32 jfrom)
 {
 GDate *date;
 gchar buffer[64], *name;
@@ -740,25 +744,30 @@ guint32 jdate;
 guint idx, slen = 63;
 GDateYear prevyear = 0;
 
-	DB1( g_print("\n-- datatable_init_items--\n") );
+	DB1( g_print("\n-- datatable int rows --\n") );
 
-	if( src != REPORT_SRC_MONTH && src != REPORT_SRC_YEAR )
+	if( grpby == REPORT_GRPBY_CATEGORY 
+ 	 || grpby == REPORT_GRPBY_PAYEE
+	 || grpby == REPORT_GRPBY_ACCOUNT
+	 || grpby == REPORT_GRPBY_ACCGROUP
+	 || grpby == REPORT_GRPBY_TAG
+	 )
 	{
-		switch(src)
+		switch(grpby)
 		{
-			case REPORT_SRC_CATEGORY:
+			case REPORT_GRPBY_CATEGORY:
 				_datatable_init_items_cat(dt);
 				break;
-			case REPORT_SRC_PAYEE:
+			case REPORT_GRPBY_PAYEE:
 				_datatable_init_items_pay(dt);
 				break;
-			case REPORT_SRC_ACCOUNT:
+			case REPORT_GRPBY_ACCOUNT:
 				_datatable_init_items_acc(dt);
 				break;
-			case REPORT_SRC_ACCGROUP:
+			case REPORT_GRPBY_ACCGROUP:
 				_datatable_init_items_accgrp(dt);
 				break;
-			case REPORT_SRC_TAG:
+			case REPORT_GRPBY_TAG:
 				_datatable_init_items_tag(dt);
 				break;
 		}
@@ -767,26 +776,31 @@ GDateYear prevyear = 0;
 
 
 	date = g_date_new();
+	jdate = GLOBALS->today;
 	for(idx=0;idx<dt->nbrows;idx++)
 	{
 	DataRow *dr = dt->rows[idx];
 	guint intvl = REPORT_INTVL_NONE;
 		
 		name = NULL;
-		switch(src)
+		switch(grpby)
 		{
-			case REPORT_SRC_NONE:
+			case REPORT_GRPBY_NONE:
 				//technical label for sum
-				name = "total";
+				name = "none";
 				DB2( g_print(" +none k:%d, idx:%d '%s'\n", idx, idx, name) );
 				break;
-			case REPORT_SRC_MONTH:
+			case REPORT_GRPBY_TYPE:
+				name = idx == 0 ? "exp" : "inc";
+				DB2( g_print(" +type k:%d, idx:%d '%s'\n", idx, idx, name) );
+				break;		
+			case REPORT_GRPBY_MONTH:
 				intvl = REPORT_INTVL_MONTH;
 				jdate = report_interval_snprint_name(buffer, sizeof(buffer)-1, intvl, jfrom, idx);
 				name = buffer;
 				DB2( g_print(" +month k:%d, idx:%d '%s'\n", idx, idx, name) );
 				break;
-			case REPORT_SRC_YEAR:
+			case REPORT_GRPBY_YEAR:
 				intvl = REPORT_INTVL_YEAR;
 				jdate = report_interval_snprint_name(buffer, sizeof(buffer)-1, intvl, jfrom, idx);
 				name = buffer;
@@ -889,46 +903,74 @@ GDateYear prevyear = 0;
 
 }
 
-static void datatable_add(DataTable *dt, guint32 key, guint32 col, gdouble amount, gboolean addtotal)
+static gint datatable_data_get_txnsign(DataTable *dt, guint32 kcat, gdouble amount)
+{
+gint txnsign = 0;
+
+	//raw expense/income mode
+	if( (dt->flags & REPORT_COMP_FLG_CATSIGN) )
+	{
+		txnsign = category_root_type_get(kcat);
+		//todo: fallback maybe ?
+		//if( txnsign == 0 )
+	}
+	else
+	{
+		txnsign = (amount < 0.0) ? -1 : 1;
+	}
+	return txnsign;
+}
+
+
+static void datatable_add(DataTable *dt, guint32 key, guint32 col, gdouble amount, gint sign, gboolean addtotal)
 {
 DataRow *dr;
 
-	DB3( g_print("   add to k:%d c:%d %.2f, macxol=%d\n", key, col, amount, dt->nbcols) );
+	if( hb_amount_equal(amount, 0.0) == TRUE )
+		return;
 
-	//row = dt->keyindex[key];
 	dr = report_data_get_row(dt, key); 
+	if( dr == NULL )
+		return;
 
-	if( dr )
+	if( col < dt->nbcols )
 	{
-		if( col < dt->nbcols )
+		//total mode must filter opposite sign categories
+		if( dt->intvl == REPORT_INTVL_NONE )
+		{		
+			if( (dt->flags & REPORT_COMP_FLG_SPENDING) && sign == 1 )
+				return;
+//future
+//			if( (dt->flags & REPORT_COMP_FLG_REVENUE) && sign == -1 )
+//				return;
+		}
+
+		DB3( g_print(">>> add to k:%d c:%d %.2f sign=%d\n", key, col, amount, sign) );
+
+		if( sign == -1 )
 		{
-			if( hb_amount_equal(amount, 0.0) == FALSE )
+			dr->colexp[col] += amount;
+			dr->rowexp += amount;
+			if( addtotal == TRUE )
 			{
-				if( amount < 0.0 )
-				{
-					dr->colexp[col] += amount;
-					dr->rowexp += amount;
-					if( addtotal == TRUE )
-					{
-						dt->totrow->colexp[col] += amount;
-						dt->totrow->rowexp += amount;
-					}
-				}
-				else
-				{
-					dr->colinc[col] += amount;
-					dr->rowinc += amount;
-					if( addtotal == TRUE )
-					{
-						dt->totrow->colinc[col] += amount;
-						dt->totrow->rowinc += amount;
-					}
-				}
+				dt->totrow->colexp[col] += amount;
+				dt->totrow->rowexp += amount;
 			}
 		}
 		else
-			g_warning("datatable add invalid col %d of %d", col, dt->nbcols);
+		if( sign == 1 )
+		{
+			dr->colinc[col] += amount;
+			dr->rowinc += amount;
+			if( addtotal == TRUE )
+			{
+				dt->totrow->colinc[col] += amount;
+				dt->totrow->rowinc += amount;
+			}
+		}
 	}
+	else
+		g_warning("datatable add invalid col %d of %d", col, dt->nbcols);
 }
 
 
@@ -968,15 +1010,17 @@ static void datatable_data_cols_cumulate(DataTable *dt, gint intvl, Filter *flt)
 }
 
 
-static void datatable_data_add_balance(DataTable *dt, gint src, gint intvl, Filter *flt)
+static void datatable_data_add_balance(DataTable *dt, gint grpby, gint intvl, Filter *flt)
 {
 GList *lst_acc, *lnk_acc;
 GList *lnk_txn;
 
 	DB1( g_print(" -- try add balance\n") );
 
-
-	if( src != REPORT_SRC_ACCOUNT && src != REPORT_SRC_ACCGROUP && src != REPORT_SRC_NONE )
+	if( (grpby != REPORT_GRPBY_NONE)
+	 && (grpby != REPORT_GRPBY_ACCOUNT)
+	 && (grpby != REPORT_GRPBY_ACCGROUP)
+	)
 		return;
 
 	DB1( g_print(" -- add balance\n") );
@@ -987,8 +1031,8 @@ GList *lnk_txn;
 	while (lnk_acc != NULL)
 	{
 	Account *acc = lnk_acc->data;
-	guint32 pos = 0;
-	gdouble trn_amount;
+	guint32 pos = 0, txnsign;
+	gdouble amount;
 
 		//#1674045 ony rely on nosummary
 		if( (acc->flags & (AF_NOREPORT)) )
@@ -999,22 +1043,23 @@ GList *lnk_txn;
 			goto next_acc;
 
 		//add initial amount to col[0]
-		trn_amount = hb_amount_base(acc->initial, acc->kcur);
+		amount = hb_amount_base(acc->initial, acc->kcur);
 		//we can't use report_items_get_key here
 		//for none, we only allocate the row[0], so pos is 0
 		pos = 0;
-		switch(src)
+		switch(grpby)
 		{
-			case REPORT_SRC_ACCOUNT:
+			case REPORT_GRPBY_ACCOUNT:
 				pos = acc->key;
 				break;
-			case REPORT_SRC_ACCGROUP:
+			case REPORT_GRPBY_ACCGROUP:
 				pos = acc->kgrp;
 				break;
 		}		
 		
-		datatable_add(dt, pos, 0, trn_amount, TRUE);
-		DB2( g_print("  ** add initbal %8.2f to row:%d, col:%d\n", trn_amount, acc->key, 0) );
+		txnsign = (amount < 0.0) ? -1 : 1;
+		datatable_add(dt, pos, 0, amount, txnsign, TRUE);
+		DB2( g_print("  ** add initbal %8.2f to row:%d, col:%d\n", amount, acc->key, 0) );
 
 		//add txn amount prior mindate to col[0]
 		lnk_txn = g_queue_peek_head_link(acc->txn_queue);
@@ -1031,15 +1076,16 @@ GList *lnk_txn;
 			//enable filters : make no sense or not
 			//if( (filter_txn_match(flt, txn) == 1) )
 			{
-				pos = report_items_get_key(src, flt->mindate, txn);
+				pos = report_items_get_key(grpby, flt->mindate, txn);
 
-				trn_amount = report_txn_amount_get(flt, txn);
-				trn_amount = hb_amount_base(trn_amount, txn->kcur);
+				amount = report_txn_amount_get(flt, txn);
+				amount = hb_amount_base(amount, txn->kcur);
 
 				if( txn->date < flt->mindate )
 				{
-					DB2( g_print("  **add %8.2f row:%d, col:%d\n", trn_amount, pos, 0) );
-					datatable_add(dt, pos, 0, trn_amount, TRUE);
+					DB2( g_print("  **add %8.2f row:%d, col:%d\n", amount, pos, 0) );
+					txnsign = datatable_data_get_txnsign(dt, txn->kcat, amount);
+					datatable_add(dt, pos, 0, amount, txnsign, TRUE);
 				}
 			}
 		next_txn:
@@ -1054,25 +1100,29 @@ GList *lnk_txn;
 }
 
 
-static void datatable_data_add_txn(DataTable *dt, gint src, gint intvl, Transaction *txn, Filter *flt)
+static void datatable_data_add_txn(DataTable *dt, gint grpby, gint intvl, Transaction *txn, Filter *flt)
 {
 guint i;
 guint key = 0;
 guint col = 0;
-gdouble trn_amount;
+gdouble amount;
+gint txnsign;
 
-	//DB2( g_print("\n srctxn '%s' %.2f, cat=%d, pay=%d, acc=%d\n", txn->memo, txn->amount, txn->kcat, txn->kpay, txn->kacc) );
 	
-	trn_amount = report_txn_amount_get(flt, txn);
-	trn_amount = hb_amount_base(trn_amount, txn->kcur);
+	amount = report_txn_amount_get(flt, txn);
+	amount = hb_amount_base(amount, txn->kcur);
+	txnsign = datatable_data_get_txnsign(dt, txn->kcat, amount);
+
+	DB2( g_print("\n srctxn %.2f, sign=%d, split=%d, cat=%d, pay=%d, acc=%d\n", amount, txnsign, 
+		(txn->flags & OF_SPLIT), txn->kcat, txn->kpay, txn->kacc) );
 
 	col = report_interval_get_pos(intvl, flt->mindate, txn);
-	//DB2( g_print("  col=%d (max is %d)\n", col, dt->nbcols) );
+	DB2( g_print("  col=%d (max is %d)\n", col, dt->nbcols) );
 
-	switch( src )
+	switch( grpby )
 	{
-		case REPORT_SRC_CATEGORY:
-		//case REPORT_SRC_SUBCATEGORY:
+		case REPORT_GRPBY_CATEGORY:
+		//case REPORT_GRPBY_SUBCATEGORY:
 			//for split, affect the amount to the category
 			if( txn->flags & OF_SPLIT )
 			{
@@ -1081,6 +1131,7 @@ gdouble trn_amount;
 			gboolean status;
 			gint sinsert;
 
+				DB2( g_print("  %d splits\n", nbsplit) );
 				for(i=0;i<nbsplit;i++)
 				{
 					split = da_splits_get(txn->splits, i);
@@ -1091,17 +1142,19 @@ gdouble trn_amount;
 					{
 					Category *cat = da_cat_get(split->kcat);
 
-						//DB2( g_print(" split insert=%d, kcat=%d\n", sinsert, split->kcat) );
-						trn_amount = hb_amount_base(split->amount, txn->kcur);
-						//pos = category_report_id(split->kcat, (src == REPORT_SRC_CATEGORY) ? FALSE : TRUE);
-						//datatable_add(dt, pos, col, trn_amount, TRUE);
-
+						amount = hb_amount_base(split->amount, txn->kcur);
 						if( cat != NULL )
 						{
-							datatable_add(dt, cat->key, col, trn_amount, TRUE);
+							txnsign = datatable_data_get_txnsign(dt, split->kcat, amount);
+							DB2( g_print(" cat split insert=%d, kcat=%d %.2f %d\n", sinsert, split->kcat, amount, txnsign) );
+							datatable_add(dt, cat->key, col, amount, txnsign, TRUE);
 							if( cat->parent != 0 )
-								datatable_add(dt, cat->parent, col, trn_amount, FALSE);
+								datatable_add(dt, cat->parent, col, amount, txnsign, FALSE);
 						}	
+					}
+					else
+					{
+						DB2( g_print("  >skipped, cat get=%d\n", sinsert) );
 					}
 				}
 			}
@@ -1109,18 +1162,17 @@ gdouble trn_amount;
 			{
 			Category *cat = da_cat_get(txn->kcat);
 
-				//pos = category_report_id(txn->kcat, (src == REPORT_SRC_CATEGORY) ? FALSE : TRUE);
-				//datatable_add(dt, pos, col, trn_amount, TRUE);
 				if( cat != NULL )
 				{
-					datatable_add(dt, cat->key, col, trn_amount, TRUE);
+					DB2( g_print(" cat normal kcat=%d %2.f\n", txn->kcat, amount) );
+					datatable_add(dt, cat->key, col, amount, txnsign, TRUE);
 					if( cat->parent != 0 )
-						datatable_add(dt, cat->parent, col, trn_amount, FALSE);
+						datatable_add(dt, cat->parent, col, amount, txnsign, FALSE);
 				}
 			}
 			break;
 
-		case REPORT_SRC_TAG:
+		case REPORT_GRPBY_TAG:
 			if(txn->tags != NULL)
 			{
 			guint32 *tptr = txn->tags;
@@ -1129,28 +1181,69 @@ gdouble trn_amount;
 				{
 					//#2031693 not -1 here
 					key = *tptr;
-					datatable_add(dt, key, col, trn_amount, TRUE);
+					datatable_add(dt, key, col, amount, txnsign, TRUE);
 					tptr++;
 				}
 			}
 			//2031693 + add notags
 			else
-				datatable_add(dt, 0, col, trn_amount, TRUE);
+				datatable_add(dt, 0, col, amount, txnsign, TRUE);
 			break;
 
+		//5.8 define exp/inc by category type
+		case REPORT_GRPBY_TYPE:
+			if( txn->flags & OF_SPLIT )
+			{
+			guint nbsplit = da_splits_length(txn->splits);
+			Split *split;
+
+				DB2( g_print("  %d splits\n", nbsplit) );
+				for(i=0;i<nbsplit;i++)
+				{
+					split = da_splits_get(txn->splits, i);
+					//we don't care cat filter here
+					amount = hb_amount_base(split->amount, txn->kcur);
+					txnsign = datatable_data_get_txnsign(dt, split->kcat, amount);
+					DB2( g_print(" by type cat split add kcat=%d %.2f %d\n", split->kcat, amount, txnsign) );
+					if( (dt->flags & REPORT_COMP_FLG_SPENDING) && txnsign == -1 )
+					{
+						DB2( g_print(" add exp\n") );
+						datatable_add(dt, 0, col, amount, txnsign, FALSE);	//expense
+					}
+					if( (dt->flags & REPORT_COMP_FLG_REVENUE) && txnsign == 1 )
+					{
+						DB2( g_print(" add inc\n") );
+						datatable_add(dt, 1, col, amount, txnsign, FALSE);	//income
+					}
+				}
+			}
+			else
+			{
+				DB2( g_print(" by type: sign=%d\n", txnsign) );
+				if( (dt->flags & REPORT_COMP_FLG_SPENDING) && txnsign == -1 )
+				{
+					DB2( g_print(" add exp\n") );
+					datatable_add(dt, 0, col, amount, txnsign, FALSE);	//expense
+				}
+				if( (dt->flags & REPORT_COMP_FLG_REVENUE) && txnsign == 1 )
+				{
+					DB2( g_print(" add inc\n") );
+					datatable_add(dt, 1, col, amount, txnsign, FALSE);	//income
+				}
+			}
+			break;
+
+		//all others
 		default:
-			key = report_items_get_key(src, flt->mindate, txn);
-			datatable_add(dt, key, col, trn_amount, TRUE);
+			key = report_items_get_key(grpby, flt->mindate, txn);
+			datatable_add(dt, key, col, amount, txnsign, TRUE);
 			break;
-
 	}
-
-
 }
 
 
 //5.7 forecast attempt
-static void report_compute_forecast(DataTable *dt, gint src, gint intvl, Filter *flt)
+static void report_compute_forecast(DataTable *dt, gint grpby, gint intvl, Filter *flt)
 {
 GList *list;
 gint nbinsert;
@@ -1213,15 +1306,15 @@ GDate *post_date;
 				while(curdate <= maxpostdate)
 				{
 					txn->date = curdate; 
-					DB3( hb_print_date(curdate, "curdate=") );
+					DB3( hb_print_date(curdate, ">>> curdate=") );
 
-					datatable_data_add_txn(dt, src, intvl, txn, flt);
+					datatable_data_add_txn(dt, grpby, intvl, txn, flt);
 
 					//#2048236 also add child xfer txn to computing
 					if( child != NULL )
 					{
 						child->date = curdate;
-						datatable_data_add_txn(dt, src, intvl, child, flt);
+						datatable_data_add_txn(dt, grpby, intvl, child, flt);
 					}
 
 					//mark column as forecast
@@ -1252,14 +1345,32 @@ nextarc:
 
 /* = = = = = = = = = = = = = = = = = = = = */
 
-
-DataTable *report_compute(gint src, gint intvl, Filter *flt, GQueue *txn_queue, gboolean do_forecast, gboolean do_balance)
+DataTable *report_compute(gint grpby, gint intvl, Filter *flt, GQueue *txn_queue, gint flags)
 {
 DataTable *dt;
 GList *list;
 guint32 maxpostdate = flt->maxdate;
 
 	DB1( g_print("\n[report] == report_compute ==\n") );
+
+	DB2( 
+		{
+		gchar *txt = "??";
+			switch(grpby){
+				case REPORT_GRPBY_NONE: txt="none"; break;
+				case REPORT_GRPBY_CATEGORY: txt="cat"; break;
+				case REPORT_GRPBY_PAYEE: txt="pay"; break;
+				case REPORT_GRPBY_ACCOUNT: txt="acc"; break;
+				case REPORT_GRPBY_TAG: txt="tag"; break;
+				case REPORT_GRPBY_MONTH: txt="month"; break;
+				case REPORT_GRPBY_YEAR: txt="year"; break;
+				case REPORT_GRPBY_ACCGROUP: txt="accgrp"; break;
+				case REPORT_GRPBY_TYPE: txt="type"; break;
+			}
+			g_print(" grpby: %d %s\n", grpby, txt);
+		}
+	);
+
 
 	DB2( hb_print_date(maxpostdate, "maxdate") );
 
@@ -1282,14 +1393,18 @@ guint32 maxpostdate = flt->maxdate;
 		}
 	}*/
 
-	dt = da_datatable_malloc(src, intvl, flt);
+	dt = da_datatable_malloc(grpby, intvl, flt);
 
 	if( dt == NULL )
 		return dt;
 
+	dt->flags       = flags;
+	dt->grpby       = grpby;
+	dt->intvl		= intvl;
 	dt->maxpostdate = maxpostdate;
 
-	datatable_init_items(dt, src, flt->mindate);
+
+	datatable_init_items(dt, grpby, flt->mindate);
 	datatable_init_columns(dt, intvl, flt->mindate);
 
 	//balance must keep xfer
@@ -1300,6 +1415,12 @@ guint32 maxpostdate = flt->maxdate;
 	}*/
 
 	//process txn
+	DB2( g_print("\n-- ventilate txn amount to row/col --\n") );
+
+	DB2( g_print(" option: signbycat=%d\n", flags & REPORT_COMP_FLG_CATSIGN) );
+	DB2( g_print(" option: spending =%d\n", flags & REPORT_COMP_FLG_SPENDING) );
+	DB2( g_print(" option: revenue  =%d\n", flags & REPORT_COMP_FLG_REVENUE) );
+
 	list = g_queue_peek_head_link(txn_queue);
 	while (list != NULL)
 	{
@@ -1307,23 +1428,45 @@ guint32 maxpostdate = flt->maxdate;
 		
 		if( (filter_txn_match(flt, txn) == 1) )
 		{
-			datatable_data_add_txn(dt, src, intvl, txn, flt);
+			datatable_data_add_txn(dt, grpby, intvl, txn, flt);
 		}
 		list = g_list_next(list);
 	}
 
 	//TODO: add prefs
 	//if( PREFS->xxx )
-	if( do_forecast == TRUE )
+	if( flags & REPORT_COMP_FLG_FORECAST )
 	{
-		//DB2( g_print("\n-- compute forecast --\n") );
-		report_compute_forecast(dt, src, intvl, flt);
+		DB2( g_print("\n-- compute forecast --\n") );
+		report_compute_forecast(dt, grpby, intvl, flt);
+	}
+
+	//truncate in sign based category
+	if( flags & REPORT_COMP_FLG_CATSIGN )
+	{
+		DB2( g_print("\n-- typebycat post compute --\n") );
+		if( grpby == REPORT_GRPBY_TYPE )
+		{
+		guint col;
+		DataRow *dr1 = dt->rows[0]; //exp
+		DataRow *dr2 = dt->rows[1]; //inc
+
+			for(col=0;col<dr1->nbcols;col++)
+			{
+				if( flags & REPORT_COMP_FLG_SPENDING && dr1->colexp[col] > 0.0 )
+					dr1->colexp[col] = 0.0;
+				if( flags & REPORT_COMP_FLG_REVENUE && dr2->colinc[col] < 0.0 )
+					dr2->colinc[col] = 0.0;
+			}
+			DB2( g_print(" processed %d\n", col) );
+		}
 	}
 
 	//process balance mode
-	if( do_balance == TRUE )
+	if( flags & REPORT_COMP_FLG_BALANCE )
 	{
-		datatable_data_add_balance(dt, src, intvl, flt);
+		DB2( g_print("\n-- compute balance --\n") );
+		datatable_data_add_balance(dt, grpby, intvl, flt);
 		datatable_data_cols_cumulate(dt, intvl, flt);
 	}
 
@@ -1359,7 +1502,7 @@ guint32 idx;
 		idx = dt->keyindex[key];
 		if( idx < dt->nbrows )
 		{
-			DB3( g_print(" get row=%d for key=%d\n", idx, key) ); 
+			DB3( g_print(">>> get row=%d for key=%d\n", idx, key) ); 
 			retval = dt->rows[idx];
 		}
 		else
@@ -1386,29 +1529,29 @@ gdouble da_datarow_get_cell_sum(DataRow *dr, guint32 index)
 
 
 //rep-stat
-guint report_items_get_key(gint src, guint jfrom, Transaction *txn)
+guint report_items_get_key(gint grpby, guint jfrom, Transaction *txn)
 {
 Account *acc;
 guint key = 0;
 
-	switch(src)
+	switch(grpby)
 	{
-		case REPORT_SRC_NONE:
+		case REPORT_GRPBY_NONE:
 			key = 0;
 			break;
-		case REPORT_SRC_CATEGORY:
+		case REPORT_GRPBY_CATEGORY:
 			key = category_report_id(txn->kcat, FALSE);
 			break;
-		//case REPORT_SRC_SUBCATEGORY:
+		//case REPORT_GRPBY_SUBCATEGORY:
 		//	pos = txn->kcat;
 		//	break;
-		case REPORT_SRC_PAYEE:
+		case REPORT_GRPBY_PAYEE:
 			key = txn->kpay;
 			break;
-		case REPORT_SRC_ACCOUNT:
+		case REPORT_GRPBY_ACCOUNT:
 			key = txn->kacc;
 			break;
-		case REPORT_SRC_ACCGROUP:
+		case REPORT_GRPBY_ACCGROUP:
 			acc = da_acc_get(txn->kacc);
 			if( acc != NULL )
 				key = acc->kgrp;
@@ -1416,10 +1559,10 @@ guint key = 0;
 
 		//TODO! miss TAG
 
-		case REPORT_SRC_MONTH:
+		case REPORT_GRPBY_MONTH:
 			key = DateInMonth(jfrom, txn->date);
 			break;
-		case REPORT_SRC_YEAR:
+		case REPORT_GRPBY_YEAR:
 			key = DateInYear(jfrom, txn->date);
 			break;
 	}
@@ -1565,7 +1708,6 @@ guint32 jdate = _datatable_interval_get_jdate(intvl, jfrom, idx);
 
 	return jdate;
 }
-
 
 
 //TODO: maybe migrate this to filter as well

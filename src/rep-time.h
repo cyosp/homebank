@@ -20,12 +20,16 @@
 #ifndef __HOMEBANK_REPTIME_H__
 #define __HOMEBANK_REPTIME_H__
 
+
 enum
 {
 	LST_HUBREPTIME_POS,
 	LST_HUBREPTIME_KEY,
-	LST_HUBREPTIME_TITLE,
-	LST_HUBREPTIME_AMOUNT,
+	LST_HUBREPTIME_LABEL,
+	LST_HUBREPTIME_EXPENSE,
+	LST_HUBREPTIME_INCOME,
+	LST_HUBREPTIME_TOTAL,
+	LST_HUBREPTIME_FLAGS,
 	NUM_LST_HUBREPTIME
 };
 
@@ -63,11 +67,18 @@ struct reptime_data
 	GQueue		*txn_queue;
 	Filter		*filter;
 
+	gdouble		average;
+
 	gboolean	detail;
-	gint		charttype;
 	guint32		accnum;
 
+	gint		charttype;
+
+	gdouble		*tmp_income;
+	gdouble		*tmp_expense;
+
 	GtkWidget	*window;
+	GActionGroup *actions;
 	gboolean	mapped_done;
 
 	GtkWidget	*TB_bar;
@@ -77,23 +88,24 @@ struct reptime_data
 	GtkWidget	*BT_detail;
 	GtkWidget	*BT_filter;
 	GtkWidget	*BT_refresh;
+	GtkWidget	*BT_reset;
 	GtkWidget	*BT_print;
 	GtkWidget	*BT_export;
-	GtkWidget	*MI_detailtoclip;
-	GtkWidget	*MI_detailtocsv;
 	
 	GtkWidget	*TX_info;
+	GtkWidget	*TX_fltactive, *TT_fltactive;
 	GtkWidget	*TX_daterange;
 	GtkWidget	*CY_mode;
 	GtkWidget	*CY_intvl;
 	GtkWidget	*RG_zoomx, *LB_zoomx;
 	GtkWidget	*CM_minor;
 	GtkWidget	*CM_cumul;
+	GtkWidget	*CM_balance;
 
 	GtkWidget	*LV_report;
 
 	GtkWidget	*GR_itemtype;
-	GtkWidget	*LB_src, *CY_src;
+	GtkWidget	*CY_src;
 
 	GtkWidget	*BT_all, *BT_non, *BT_inv;
 	
@@ -117,11 +129,7 @@ struct reptime_data
 
 	gulong		handler_id[MAX_REPTIME_HID];
 
-	gdouble		average;
-	
 };
-
-
 
 
 GtkWidget *reptime_window_new(guint32 accnum);

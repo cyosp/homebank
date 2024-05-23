@@ -254,6 +254,32 @@ Tag *da_tag_get(guint32 key)
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
+gboolean
+tags_equal(guint32 *stags, guint32 *dtags)
+{
+guint count = 0;
+
+	DB( g_print("\n[tags] compare\n") );
+
+	if( stags == NULL && dtags == NULL )
+		return TRUE;
+
+	if( stags == NULL || dtags == NULL )
+		return FALSE;
+
+	while(*stags != 0 && *dtags != 0 && count < 32)
+	{
+		if(*stags++ != *dtags++)
+			return FALSE;
+	}
+	// both should be 0
+	if(*stags != *dtags)	
+		return FALSE;
+
+	return TRUE;
+}
+
+
 guint
 tags_count(guint32 *tags)
 {

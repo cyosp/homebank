@@ -36,6 +36,7 @@ struct _assign
 	gushort		paymode;	//dst_payment mode
 	guint32		pos;		//position
 	gdouble		amount;		//5.6 #1710085 assignment based on amount
+	guint32		*tags;		//5.8 #1674016
 };
 
 
@@ -43,7 +44,7 @@ struct _assign
 #define ASGF_DOPAY	(1<<1)
 #define ASGF_DOCAT	(1<<2)
 #define ASGF_DOMOD	(1<<3)
-//#define ASGF_DOTAG (later)
+#define ASGF_DOTAG	(1<<4) //5.8
 
 #define ASGF_PREFILLED	(1<<5)
 
@@ -52,7 +53,7 @@ struct _assign
 #define ASGF_OVWPAY	(1<<9)
 #define ASGF_OVWCAT	(1<<10)
 #define ASGF_OVWMOD	(1<<11)
-//#define ASGF_OVWTAG (later)
+#define ASGF_OVWTAG (1<<12) //5.8
 
 
 void

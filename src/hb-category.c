@@ -1197,6 +1197,22 @@ category_type_get(Category *item)
 }
 
 
+gint
+category_root_type_get(guint32 key)
+{
+Category *item;
+
+	if(key == 0)
+		return 0;
+	item = da_cat_get(key);
+	if(item == NULL)
+		return 0;
+	if(item->parent > 0)
+		item = da_cat_get(item->parent);
+	return category_type_get(item);
+}
+
+
 gchar
 category_get_type_char(Category *item)
 {

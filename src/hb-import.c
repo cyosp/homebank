@@ -533,8 +533,8 @@ gint i;
 		if(gentxn->account != NULL)
 			g_free(gentxn->account);
 
-		if(gentxn->rawinfo != NULL)
-			g_free(gentxn->rawinfo);
+		if(gentxn->rawnumber != NULL)
+			g_free(gentxn->rawnumber);
 		if(gentxn->rawpayee != NULL)
 			g_free(gentxn->rawpayee);
 		if(gentxn->rawmemo != NULL)
@@ -545,8 +545,8 @@ gint i;
 			g_free(gentxn->fitid);
 		if(gentxn->date != NULL)
 			g_free(gentxn->date);
-		if(gentxn->info != NULL)
-			g_free(gentxn->info);
+		if(gentxn->number != NULL)
+			g_free(gentxn->number);
 		if(gentxn->payee != NULL)
 			g_free(gentxn->payee);
 		if(gentxn->memo != NULL)
@@ -581,6 +581,9 @@ da_gen_txn_compare_func(GenTxn *a, GenTxn *b)
 {
 gint retval = (gint)(a->julian - b->julian); 
 
+	//5.8 #2063416 same date txn
+	if(!retval)
+		retval = a->row - b->row;
 	if(!retval)
 		retval = (ABS(a->amount) - ABS(b->amount)) > 0 ? 1 : -1;
 	return (retval);
@@ -1065,6 +1068,7 @@ gboolean
 hb_import_option_apply(ImportContext *ictx, GenAcc *genacc)
 {
 GList *list;
+gint i;
 
 	DB( g_print("\n[import] option apply\n") );
 
@@ -1072,6 +1076,7 @@ GList *list;
 
 	genacc->n_txnbaddate = 0;
 
+	i=0;
 	list = g_list_first(ictx->gen_lst_txn);
 	while (list != NULL)
 	{
@@ -1094,28 +1099,29 @@ GList *list;
 
 				g_free(gentxn->payee);
 				g_free(gentxn->memo);
-				g_free(gentxn->info);
+				g_free(gentxn->number);
 				gentxn->payee = NULL;
 				gentxn->memo = NULL;
-				gentxn->info = NULL;
+				gentxn->number = NULL;
 
 				// OFX:check_number
-				gentxn->info = g_strdup(gentxn->rawinfo);
+				gentxn->number = g_strdup(gentxn->rawnumber);
 
 				//#1791482 map name to info (concat only)
 				switch(ictx->opt_ofxname)
 				{
 					//ofxname is stored into rawpayee
-					case 1:
+					//case 0: PRF_OFXNAME_IGNORE
+					case PRF_OFXNAME_MEMO:
 						gentxn->memo = g_strdup(gentxn->rawpayee);
 						break;
-					case 2:
+					case PRF_OFXNAME_PAYEE:
 						gentxn->payee = g_strdup(gentxn->rawpayee);
 						break;
-					case 3:
+					case PRF_OFXNAME_NUMBER:
 						//#1909323 no need to free here
-						//g_free(gentxn->info);
-						gentxn->info = _string_concat(gentxn->info, gentxn->rawpayee);
+						//g_free(gentxn->number);
+						gentxn->number = _string_concat(gentxn->number, gentxn->rawpayee);
 						break;
 				}
 
@@ -1123,16 +1129,16 @@ GList *list;
 				{
 					switch(ictx->opt_ofxmemo)
 					{
-						//case 0: ignore
-						case 1:	//add to info
-							gentxn->info = _string_concat(gentxn->info, gentxn->rawmemo);
+						//case 0: PRF_OFXMEMO_IGNORE
+						case PRF_OFXMEMO_NUMBER:
+							gentxn->number = _string_concat(gentxn->number, gentxn->rawmemo);
 							break;
 
-						case 2: //add to memo
+						case PRF_OFXMEMO_MEMO:
 							gentxn->memo = _string_concat(gentxn->memo, gentxn->rawmemo);					
 							break;
 
-						case 3: //add to payee
+						case PRF_OFXMEMO_PAYEE:
 							gentxn->payee = _string_concat(gentxn->payee, gentxn->rawmemo);					
 							break;
 					}
@@ -1140,7 +1146,7 @@ GList *list;
 
 				DB( g_print(" - payee is '%s'\n", gentxn->payee) );
 				DB( g_print(" - memo is '%s'\n", gentxn->memo) );
-				DB( g_print(" - info is '%s'\n", gentxn->info) );
+				DB( g_print(" - info is '%s'\n", gentxn->number) );
 				DB( g_print("\n") );
 
 			}
@@ -1176,14 +1182,16 @@ GList *list;
 			{
 				DB( g_print(" - csv option apply\n") );
 
-				//#1791656 missing: info, payee and tagsg_freg_free(gentxn->payee);
+				DB( g_print(" [%d] row=%d\n", i, gentxn->row) );
+
+				//#1791656 missing: info, payee and tags
 				g_free(gentxn->payee);
 				g_free(gentxn->memo);
-				g_free(gentxn->info);
+				g_free(gentxn->number);
 
 				gentxn->payee = g_strdup(gentxn->rawpayee);
 				gentxn->memo = g_strdup(gentxn->rawmemo);
-				gentxn->info = g_strdup(gentxn->rawinfo);
+				gentxn->number = g_strdup(gentxn->rawnumber);
 			}
 			
 			//at last do ucfirst
@@ -1199,6 +1207,7 @@ GList *list;
 
 
 		}
+		i++;
 		list = g_list_next(list);
 	}
 	
@@ -1235,7 +1244,7 @@ gint nsplit;
 		newope->kacc         = genacc->kacc;
 		newope->date		 = gentxn->julian;
 		newope->paymode		 = gentxn->paymode;
-		newope->info		 = g_strdup(gentxn->info);
+		newope->number		 = g_strdup(gentxn->number);
 		newope->memo		 = g_strdup(gentxn->memo);
 		newope->amount		 = gentxn->amount;
 
@@ -1475,7 +1484,7 @@ guint nbofxtxn = 0;
 					txn = hb_import_convert_txn(genacc, gentxn);
 					if( txn )
 					{
-						dtxn = transaction_add(NULL, txn);
+						dtxn = transaction_add(NULL, FALSE, txn);
 						//perf must use preprend, see glib doc
 						DB( g_print(" prepend %p to txnlist\n", dtxn) );
 						//#2000480 avoid insert null txn

@@ -129,7 +129,7 @@ GtkTreeIter iter;
 			if( gtk_tree_model_get_iter_first(model, &iter) == TRUE )
 			{
 			gchar *item;
-				
+
 				gtk_tree_model_get(model, &iter, 0, &item, -1);
 				hbtk_entry_set_text(GTK_ENTRY(entry), item != NULL ? item : "");
 				g_free(item);	
@@ -162,18 +162,22 @@ GtkWidget *entry;
 }
 
 
-static gboolean ui_acc_manage_cb_on_key_press(GtkWidget *source, GdkEventKey *event, gpointer user_data)
+static gboolean ui_acc_manage_cb_on_key_press(GtkWidget *source, GdkEvent *event, gpointer user_data)
 {
 struct ui_acc_manage_data *data = user_data;
+GdkModifierType state;
+guint keyval;
+
+	gdk_event_get_state (event, &state);
+	gdk_event_get_keyval(event, &keyval);
 
 	// On Control-f enable search entry
-	if (event->state & GDK_CONTROL_MASK
-		&& event->keyval == GDK_KEY_f)
+	if (state & GDK_CONTROL_MASK && keyval == GDK_KEY_f)
 	{
 		gtk_widget_grab_focus(data->ST_search);
 	}
 	else
-	if (event->keyval == GDK_KEY_Escape && gtk_widget_has_focus(data->ST_search))
+	if(keyval == GDK_KEY_Escape && gtk_widget_has_focus(data->ST_search))
 	{
 		hbtk_entry_set_text(GTK_ENTRY(data->ST_search), NULL);
 		gtk_widget_grab_focus(data->LV_acc);
@@ -977,9 +981,15 @@ GtkTreeViewColumn	*column;
 	g_object_set(renderer, 
 		"ellipsize", PANGO_ELLIPSIZE_END,
 	    "ellipsize-set", TRUE,
-		//taken from nemo, not exactly a resize to content, but good compromise
-	    "width-chars", 40,
 	    NULL);
+
+	if( withtoggle == FALSE )
+	{
+		g_object_set(renderer, 
+			//taken from nemo, not exactly a resize to content, but good compromise
+			"width-chars", 40,
+			NULL);
+	}
 
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_acc_listview_name_cell_data_function, GINT_TO_POINTER(LST_DEFACC_DATAS), NULL);
@@ -1046,7 +1056,7 @@ Account *item;
 	{	
 		data->change++;
 
-		item->type = hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_type));
+		item->type = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_type));
 
 		account_set_currency(item, ui_cur_combobox_get_key(GTK_COMBO_BOX(data->CY_curr)) );
 
@@ -1115,7 +1125,7 @@ Account *item;
 		gtk_spin_button_update(GTK_SPIN_BUTTON(data->ST_cheque2));
 		item->cheque2 = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(data->ST_cheque2));
 
-		item->karc= hbtk_combo_box_get_active_id(GTK_COMBO_BOX_TEXT(data->CY_template));
+		item->karc= hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_template));
 		//active_id = gtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_template));
 		//item->karc = atoi(active_id);
 	}
@@ -1171,7 +1181,7 @@ Account *item;
 
 		DB( g_print(" -> set acc id=%d\n", item->key) );
 
-		hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_type), item->type );
+		hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_type), item->type );
 
 		ui_cur_combobox_set_active(GTK_COMBO_BOX(data->CY_curr), item->kcur);
 		
@@ -1215,7 +1225,7 @@ Account *item;
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_cheque1), item->cheque1);
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_cheque2), item->cheque2);
 
-		hbtk_combo_box_set_active_id(GTK_COMBO_BOX_TEXT(data->CY_template), item->karc);
+		hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_template), item->karc);
 		//g_snprintf(idbuffer, 11, "%d", item->karc);
 		//gtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_template), idbuffer);
 
@@ -1239,7 +1249,7 @@ static void ui_acc_manage_update(GtkWidget *widget, gpointer user_data)
 struct ui_acc_manage_data *data;
 GtkTreeModel		 *model;
 GtkTreeIter			 iter;
-gboolean selected, sensitive, canup, candw;
+gboolean valid, selected, sensitive, canup, candw;
 guint32 key;
 gint sort_column_id;
 GtkSortType sort_order;
@@ -1268,8 +1278,10 @@ GtkSortType sort_order;
 	canup = candw = selected;
 
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_acc));
-	gtk_tree_sortable_get_sort_column_id(GTK_TREE_SORTABLE(model), &sort_column_id, &sort_order);
-	DB( g_print(" sort is colid=%d order=%d (ok is %d %d)\n", sort_column_id, sort_order, LST_DEFACC_SORT_POS, GTK_SORT_ASCENDING) );
+	sort_column_id = GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID;
+	sort_order = GTK_SORT_DESCENDING;
+	valid = gtk_tree_sortable_get_sort_column_id(GTK_TREE_SORTABLE(model), &sort_column_id, &sort_order);
+	DB( g_print(" sort is %d colid=%d order=%d (ok is %d %d)\n", valid, sort_column_id, sort_order, LST_DEFACC_SORT_POS, GTK_SORT_ASCENDING) );
 
 	if( !((sort_column_id == LST_DEFACC_SORT_POS) && (sort_order == GTK_SORT_ASCENDING)) )
 	{
@@ -1718,7 +1730,7 @@ GString *tpltitle;
 	//gtk_combo_box_set_wrap_width(GTK_COMBO_BOX(data->CY_template), 0);
 
 	//populate template
-	hbtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(data->CY_template), 0, _("(none)"));
+	hbtk_combo_box_text_append(GTK_COMBO_BOX(data->CY_template), 0, _("(none)"));
 
 	tpltitle = g_string_sized_new(255);
 
@@ -1729,7 +1741,7 @@ GString *tpltitle;
 		if( !(item->flags & OF_AUTO) )
 		{
 			da_archive_get_display_label(tpltitle, item);
-			hbtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(data->CY_template), item->key, tpltitle->str);
+			hbtk_combo_box_text_append(GTK_COMBO_BOX(data->CY_template), item->key, tpltitle->str);
 		}
 		tmplist = g_list_next(tmplist);
 	}
@@ -1915,7 +1927,6 @@ gint w, h, dw, dh, row;
 	row = 0;
 	label = make_label_widget(_("_Type:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-	//widget = make_cycle(label, CYA_ACC_TYPE);
 	widget = hbtk_combo_box_new_with_data(label, CYA_ACC_TYPE);
 	data->CY_type = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);

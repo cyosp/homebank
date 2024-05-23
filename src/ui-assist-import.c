@@ -43,11 +43,9 @@ extern struct HomeBank *GLOBALS;
 extern struct Preferences *PREFS;
 
 
-
-extern gchar *CYA_IMPORT_DATEORDER[];
-
-extern gchar *CYA_IMPORT_OFXNAME[];
-extern gchar *CYA_IMPORT_OFXMEMO[];
+extern HbKvData CYA_IMPORT_DATEORDER[];
+extern HbKvData CYA_IMPORT_OFXNAME[];
+extern HbKvData CYA_IMPORT_OFXMEMO[];
 
 
 static void ui_import_page_filechooser_eval(GtkWidget *widget, gpointer user_data);
@@ -229,7 +227,7 @@ GenTxn *item;
 			g_object_set(renderer, "icon-name", get_paymode_icon_name(item->paymode), NULL);
 			break;
 		case 2:
-		    g_object_set(renderer, "text", item->info, NULL);
+		    g_object_set(renderer, "text", item->number, NULL);
 			break;
 	}
 }
@@ -386,7 +384,7 @@ GtkTreeViewColumn  *column;
 
 	// info
 	column = gtk_tree_view_column_new();
-	gtk_tree_view_column_set_title(column, _("Info"));
+	gtk_tree_view_column_set_title(column, _("Pay./Number"));
 	renderer = gtk_cell_renderer_pixbuf_new ();
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, list_txn_cell_data_function_info, GINT_TO_POINTER(1), NULL);
@@ -1126,14 +1124,14 @@ ImportContext *ictx;
 	//txndata = &data->txndata[accidx];
 	txndata = ui_import_page_transaction_data_get(data->txndata, accidx);
 
-	ictx->opt_dateorder = gtk_combo_box_get_active (GTK_COMBO_BOX(txndata->CY_txn_dateorder));
+	ictx->opt_dateorder = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(txndata->CY_txn_dateorder));
 	ictx->opt_daygap    = gtk_spin_button_get_value(GTK_SPIN_BUTTON(txndata->NB_txn_daygap));
 	
 	ictx->opt_ucfirst   = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(txndata->CM_txn_ucfirst));
 	ictx->opt_togamount = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(txndata->CM_txn_togamount));
 	
-	ictx->opt_ofxname   = gtk_combo_box_get_active (GTK_COMBO_BOX(txndata->CY_txn_ofxname));
-	ictx->opt_ofxmemo   = gtk_combo_box_get_active (GTK_COMBO_BOX(txndata->CY_txn_ofxmemo));
+	ictx->opt_ofxname   = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(txndata->CY_txn_ofxname));
+	ictx->opt_ofxmemo   = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(txndata->CY_txn_ofxmemo));
 
 	ictx->opt_qifmemo   = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(txndata->CM_txn_qifmemo));
 	ictx->opt_qifswap   = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(txndata->CM_txn_qifswap));
@@ -1746,7 +1744,7 @@ gint row;
 
 		label = make_label(_("Date order:"), 0, 0.5);
 		gtk_box_pack_start (GTK_BOX(group), label, FALSE, FALSE, 0);
-		widget = make_cycle(label, CYA_IMPORT_DATEORDER);
+		widget = hbtk_combo_box_new_with_data(label, CYA_IMPORT_DATEORDER);
 		txndata->CY_txn_dateorder = widget;
 		gtk_box_pack_start (GTK_BOX(group), widget, FALSE, FALSE, 0);
 
@@ -1776,13 +1774,13 @@ gint row;
 
 		label = make_label(_("OFX _Name:"), 0, 0.5);
 		gtk_box_pack_start (GTK_BOX(group), label, FALSE, FALSE, 0);
-		widget = make_cycle(label, CYA_IMPORT_OFXNAME);
+		widget = hbtk_combo_box_new_with_data(label, CYA_IMPORT_OFXNAME);
 		txndata->CY_txn_ofxname = widget;
 		gtk_box_pack_start (GTK_BOX(group), widget, FALSE, FALSE, 0);
 
 		label = make_label(_("OFX _Memo:"), 0, 0.5);
 		gtk_box_pack_start (GTK_BOX(group), label, FALSE, FALSE, 0);
-		widget = make_cycle(label, CYA_IMPORT_OFXMEMO);
+		widget = hbtk_combo_box_new_with_data(label, CYA_IMPORT_OFXMEMO);
 		txndata->CY_txn_ofxmemo = widget;
 		gtk_box_pack_start (GTK_BOX(group), widget, FALSE, FALSE, 0);
 
@@ -1912,12 +1910,12 @@ gint row;
 
 
 	// init ofx/qfx option to move
-	gtk_combo_box_set_active(GTK_COMBO_BOX(txndata->CY_txn_dateorder), PREFS->dtex_datefmt);
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX(txndata->CY_txn_dateorder), PREFS->dtex_datefmt);
 	
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(txndata->CM_txn_ucfirst), PREFS->dtex_ucfirst);
 
-	gtk_combo_box_set_active(GTK_COMBO_BOX(txndata->CY_txn_ofxname), PREFS->dtex_ofxname);
-	gtk_combo_box_set_active(GTK_COMBO_BOX(txndata->CY_txn_ofxmemo), PREFS->dtex_ofxmemo);
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX(txndata->CY_txn_ofxname), PREFS->dtex_ofxname);
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX(txndata->CY_txn_ofxmemo), PREFS->dtex_ofxmemo);
 
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(txndata->CM_txn_qifmemo), PREFS->dtex_qifmemo);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(txndata->CM_txn_qifswap), PREFS->dtex_qifswap);

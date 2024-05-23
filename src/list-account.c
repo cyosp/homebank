@@ -41,13 +41,14 @@ extern struct Preferences *PREFS;
 
 
 
-static void lst_accview_to_string_row(GString *node, gboolean clipboard, GtkTreeModel *model, GtkTreeIter *iter, gchar *sub)
+static void lst_accview_to_string_row(GString *node, ToStringMode mode, GtkTreeModel *model, GtkTreeIter *iter, gchar *sub)
 {
 const gchar *format;
 gpointer p;
 gint type;
 gchar *text = "";
 gdouble clear, recon, today, future;
+guint32 kcur = GLOBALS->kcur;
 
 	clear = recon = today = future = 0.0;
 
@@ -67,6 +68,7 @@ gdouble clear, recon, today, future;
 		if( type == DSPACC_TYPE_NORMAL )
 		{
 		Account *acc = p;
+			kcur = acc->kcur;
 			text = acc->name;
 			recon  = acc->bal_recon;
 			clear  = acc->bal_clear;
@@ -88,13 +90,34 @@ gdouble clear, recon, today, future;
 		if( type == DSPACC_TYPE_TOTAL )
 			text = _("Grand total");
 
-		format = (clipboard == TRUE) ? "%s%s\t%.2f\t%.2f\t%.2f\t%.2f\n" : "%s%s;%.2f;%.2f;%.2f;%.2f\n";
-		g_string_append_printf(node, format, sub, text, recon, clear, today, future);
+		if( mode != HB_STRING_PRINT )
+		{
+			format = (mode == HB_STRING_CLIPBOARD) ? "%s%s\t%.2f\t%.2f\t%.2f\t%.2f\n" : "%s%s;%.2f;%.2f;%.2f;%.2f\n";
+			g_string_append_printf(node, format, sub, text, recon, clear, today, future);
+		}
+		else
+		{
+		gchar buf[G_ASCII_DTOSTR_BUF_SIZE];
+
+			g_string_append_printf(node, "%s%s\t", sub, text);
+			hb_strfmon(buf, G_ASCII_DTOSTR_BUF_SIZE-1, recon, kcur, FALSE);
+			g_string_append(node, buf);
+			g_string_append_c(node, '\t');
+			hb_strfmon(buf, G_ASCII_DTOSTR_BUF_SIZE-1, clear, kcur, FALSE);
+			g_string_append(node, buf);
+			g_string_append_c(node, '\t');
+			hb_strfmon(buf, G_ASCII_DTOSTR_BUF_SIZE-1, today, kcur, FALSE);
+			g_string_append(node, buf);
+			g_string_append_c(node, '\t');
+			hb_strfmon(buf, G_ASCII_DTOSTR_BUF_SIZE-1, future, kcur, FALSE);
+			g_string_append(node, buf);
+			g_string_append(node, "\n");
+		}
 	}
 }
 
 
-GString *lst_accview_to_string(GtkTreeView *treeview, gboolean clipboard)
+GString *lst_accview_to_string(GtkTreeView *treeview, ToStringMode mode)
 {
 GString *node;
 GtkTreeModel *model;
@@ -107,7 +130,7 @@ gchar sep;
 
 	node = g_string_new(NULL);
 
-	sep = (clipboard == TRUE) ? '\t' : ';';
+	sep = (mode == HB_STRING_EXPORT) ? ';' : '\t';
 
 	// header (nbcols-2 for icon column)
 	nbcols = gtk_tree_view_get_n_columns (treeview) - 1;
@@ -134,13 +157,13 @@ gchar sep;
 	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
 	while (valid)
 	{
-		lst_accview_to_string_row(node, clipboard, model, &iter, "");
+		lst_accview_to_string_row(node, mode, model, &iter, "");
 		if( gtk_tree_model_iter_has_child(model, &iter) )
 		{
 			valid = gtk_tree_model_iter_children(model, &child, &iter);
 			while (valid)
 			{
-				lst_accview_to_string_row(node, clipboard, model, &child, "- ");
+				lst_accview_to_string_row(node, mode, model, &child, "- ");
 				valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &child);
 			}		
 		}
@@ -509,21 +532,26 @@ GtkTreeViewColumn *column = user_data;
 
 
 static gint
-lst_accview_cb_button_pressed_event (GtkWidget *widget, GdkEventButton *event, GtkWidget *menu)
+lst_accview_cb_button_pressed_event (GtkWidget *widget, GdkEvent *event, GtkWidget *menu)
 {
+GdkEventType type;
+guint button = 0;
+
+	type = gdk_event_get_event_type(event);
+	gdk_event_get_button(event, &button);
 
 	DB( g_print ("\n[lst_accview] popmenu\n") );
 	
-	if (event->type == GDK_BUTTON_PRESS && event->button == 3)
+	if (type == GDK_BUTTON_PRESS && button == 3)
 	{
 
 		// check we ARE in the header but in bin window
-		if (event->window != gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget)))
+		if (gdk_event_get_window(event) != gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget)))
 		{
 			#if( (GTK_MAJOR_VERSION == 3) && (GTK_MINOR_VERSION >= 22) )
 				gtk_menu_popup_at_pointer(GTK_MENU(menu), (GdkEvent *)event);
 			#else
-				gtk_menu_popup (GTK_MENU(menu), NULL, NULL, NULL, NULL, event->button, event->time);
+				gtk_menu_popup (GTK_MENU(menu), NULL, NULL, NULL, NULL, button, gdk_event_get_time(event));
 			#endif
 				// On indique à l'appelant que l'on a géré cet événement.
 
@@ -610,7 +638,7 @@ GtkTreeView *tree_view = GTK_TREE_VIEW (widget);
 GString *node;
 gint dt;
 Account *acc;
-gboolean hastext = FALSE;
+gchar buffer[256];
 gchar *escapedname;
 
 	if (!gtk_tree_view_get_tooltip_context (GTK_TREE_VIEW (widget),
@@ -639,22 +667,23 @@ gchar *escapedname;
 	g_string_append(node, "</b>\n");
 	g_free(escapedname);
 
+	//#2064754 always display a tooltip to keep consistency		
+	g_string_append(node, "\n");
+	g_string_append(node, _("last reconciled"));
+	g_string_append(node, ": ");
+
 	if( acc->rdate > 0 )
 	{
-	gchar buffer[256];
 	GDate *date;
 
 		//format date
 		date = g_date_new_julian (acc->rdate);
 		g_date_strftime (buffer, 256-1, PREFS->date_format, date);
 		g_date_free(date);
-		
-		g_string_append(node, "\n");
-		g_string_append(node, _("last reconciled"));
-		g_string_append(node, ": ");
 		g_string_append(node, buffer);
-		hastext = TRUE;
 	}
+	else
+		g_string_append(node, _("none"));
 
 	if( (acc->minimum < 0) && (acc->bal_today >= acc->minimum) )
 	{
@@ -669,7 +698,6 @@ gchar *escapedname;
 		hb_strfmon(formatd_buf, G_ASCII_DTOSTR_BUF_SIZE-1, acc->minimum, acc->kcur, FALSE);
 		g_string_append(node, formatd_buf);
 		g_string_append(node, ")");
-		hastext = TRUE;
 	}
 
 	if( (acc->maximum > 0) && (acc->maximum >= acc->bal_today) )
@@ -685,14 +713,6 @@ gchar *escapedname;
 		hb_strfmon(formatd_buf, G_ASCII_DTOSTR_BUF_SIZE-1, acc->maximum, acc->kcur, FALSE);
 		g_string_append(node, formatd_buf);
 		g_string_append(node, ")");
-		hastext = TRUE;
-	}
-
-	if( hastext == FALSE )
-	{
-		gtk_tree_path_free (path);
-		g_string_free(node, TRUE);
-		return FALSE;
 	}
 
 	gtk_tooltip_set_markup (tooltip, node->str);

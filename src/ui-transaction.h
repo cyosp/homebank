@@ -41,6 +41,7 @@ struct deftransaction_data
 	GtkWidget	*RA_type;
 	GtkWidget	*LB_date, *GR_date;
 	GtkWidget	*PO_date;	//5.7 removed *LB_wday;
+	GtkWidget	*LB_dateto, *PO_dateto;
 	GtkWidget	*PO_pay;
 	GtkWidget	*ST_memo;
 	GtkWidget	*ST_amount, *BT_split, *LB_curr;
@@ -48,7 +49,7 @@ struct deftransaction_data
 	GtkWidget	*CM_cheque;
 
 	GtkWidget	*LB_mode, *NU_mode;
-	GtkWidget	*LB_info, *ST_info;
+	GtkWidget	*ST_number;
 	GtkWidget	*PO_cat;
 	GtkWidget	*LB_accfrom, *PO_acc;
 	GtkWidget	*LB_accto, *PO_accto;

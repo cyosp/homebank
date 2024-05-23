@@ -23,6 +23,7 @@
 #include "hb-misc.h"
 #include "dsp-mainwindow.h"
 #include "hb-category.h"
+#include "hbtk-switcher.h"
 #include "ui-budget-tabview.h"
 
 /****************************************************************************/
@@ -206,7 +207,7 @@ static void ui_bud_tabview_category_merge_full_filled (GtkWidget *source, gpoint
 static void ui_bud_tabview_category_merge (GtkButton *button, gpointer user_data);
 #endif
 static void ui_bud_tabview_category_reset (GtkButton *button, gpointer user_data);
-static gboolean ui_bud_tabview_on_key_press(GtkWidget *widget, GdkEventKey *event, gpointer user_data);
+static gboolean ui_bud_tabview_on_key_press(GtkWidget *widget, GdkEvent *event, gpointer user_data);
 static void ui_bud_tabview_dialog_close(ui_bud_tabview_data_t *data, gint response);
 
 /**
@@ -743,7 +744,7 @@ Category *bdg_category;
 
 	is_visible = TRUE;
 	data = user_data;
-	view_mode = hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_mode));
+	view_mode = hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_mode));
 
 	gtk_tree_model_get(model, iter,
 		UI_BUD_TABVIEW_IS_ROOT, &is_root,
@@ -1169,7 +1170,7 @@ ui_bud_tabview_view_mode_t view_mode = UI_BUD_TABVIEW_VIEW_SUMMARY;
 	UI_BUD_TABVIEW_HAS_BUDGET, &has_budget,
 	-1);
 
-	view_mode = hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_mode));
+	view_mode = hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_mode));
 
 	//5.3 added
 	if( is_monitoring_forced )
@@ -1199,7 +1200,7 @@ ui_bud_tabview_view_mode_t view_mode = UI_BUD_TABVIEW_VIEW_SUMMARY;
 		UI_BUD_TABVIEW_HAS_BUDGET, &has_budget,
 		-1);
 
-	view_mode = hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_mode));
+	view_mode = hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_mode));
 
 	if (view_mode != UI_BUD_TABVIEW_VIEW_SUMMARY && has_budget)
 	{
@@ -1763,7 +1764,10 @@ guint32 category_key;
 		return;
 	}
 
-	amount = g_strtod(new_text, NULL);
+	amount = ABS(g_strtod(new_text, NULL));
+	//#2052304 ensure sign
+	if( !(category->flags & GF_INCOME) )
+		amount *= -1;
 
 	DB(g_print("\tcolumn: %d (month: %d), category key: %d, amount %.2f\n", column_id, column_id - UI_BUD_TABVIEW_JANUARY + 1, category_key, amount));
 
@@ -1884,15 +1888,9 @@ static void ui_bud_tabview_view_update_mode (GtkToggleButton *button, gpointer u
 ui_bud_tabview_data_t *data = user_data;
 ui_bud_tabview_view_mode_t view_mode = UI_BUD_TABVIEW_VIEW_SUMMARY;
 
-	// Only run once the view update, so only run on the activated button signal
-	if(!gtk_toggle_button_get_active(button))
-	{
-		return;
-	}
-
 	// Mode is directly set by radio button, because the UI_BUD_TABVIEW_VIEW_MODE and enum
 	// for view mode are constructed to correspond (manually)
-	view_mode = hbtk_radio_button_get_active(GTK_CONTAINER(data->RA_mode));
+	view_mode = hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_mode));
 
 	DB(g_print("\n[ui_bud_tabview] view mode toggled to: %d\n", view_mode));
 
@@ -2651,15 +2649,20 @@ Category* category;
 
 
 
-static gboolean ui_bud_tabview_on_key_press(GtkWidget *source, GdkEventKey *event, gpointer user_data)
+static gboolean ui_bud_tabview_on_key_press(GtkWidget *source, GdkEvent *event, gpointer user_data)
 {
 ui_bud_tabview_data_t *data = user_data;
+GdkModifierType state;
+guint keyval;
+
+	gdk_event_get_state (event, &state);
+	gdk_event_get_keyval(event, &keyval);
 
 	// On Control-f enable search entry
-	if (event->state & GDK_CONTROL_MASK
-		&& event->keyval == GDK_KEY_f)
+	if (state & GDK_CONTROL_MASK && keyval == GDK_KEY_f)
 	{
 		gtk_widget_grab_focus(data->EN_search);
+		return TRUE;
 	}
 
 	return GDK_EVENT_PROPAGATE;
@@ -2763,7 +2766,7 @@ GtkWidget *vbox, *hbox, *bbox;
 GtkWidget *search_entry;
 GtkWidget *scrollwin, *treeview;
 GtkWidget *tbar;
-//GtkWidget *menu, *menuitem, *image;
+
 GtkTreeModel *model, *filter;
 gint response;
 gint w, h, dw, dh;
@@ -2823,7 +2826,8 @@ gint gridrow;
 	gtk_grid_attach (GTK_GRID (grid), hbox, 0, gridrow, 1, 1);
 
 	// edition mode radio buttons
-	radiomode = hbtk_radio_button_new(GTK_ORIENTATION_HORIZONTAL, UI_BUD_TABVIEW_VIEW_MODE, TRUE);
+	radiomode = hbtk_switcher_new (GTK_ORIENTATION_HORIZONTAL);
+	hbtk_switcher_setup(HBTK_SWITCHER(radiomode), UI_BUD_TABVIEW_VIEW_MODE, TRUE);
 	data->RA_mode = radiomode;
 	gtk_box_set_center_widget(GTK_BOX (hbox), radiomode);
 
@@ -2906,17 +2910,7 @@ gint gridrow;
 	gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
 
 	/* signal connect */
-
-	// connect every radio button to the toggled signal to correctly update the view
-	for (int i=0; UI_BUD_TABVIEW_VIEW_MODE[i] != NULL; i++)
-	{
-		widget = hbtk_radio_button_get_nth (GTK_CONTAINER(radiomode), i);
-
-		if (widget)
-		{
-			g_signal_connect (widget, "toggled", G_CALLBACK (ui_bud_tabview_view_update_mode), (gpointer)data);
-		}
-	}
+	g_signal_connect (data->RA_mode, "changed", G_CALLBACK(ui_bud_tabview_view_update_mode), (gpointer)data);
 
 	// Connect to key press to handle some events like Control-f
 	gtk_tree_view_set_search_entry(GTK_TREE_VIEW(treeview), GTK_ENTRY(search_entry));

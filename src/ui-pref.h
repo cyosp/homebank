@@ -54,10 +54,7 @@ struct defpref_data
 	GtkWidget	*CM_gtk_override;
 	GtkWidget	*LB_gtk_fontsize, *NB_gtk_fontsize;
 	GtkWidget	*CM_gtk_darktheme;
-
-
-
-
+	GtkWidget	*CY_icontheme;
 
 	GtkWidget	*LB_colors, *CY_colors;
 
@@ -81,6 +78,7 @@ struct defpref_data
 
 	GtkWidget	*CM_herit_date;
 	GtkWidget	*CM_show_confirm;
+	GtkWidget	*CM_show_template;
 	GtkWidget	*CM_hide_reconciled;
 	GtkWidget	*CM_show_remind;
 	GtkWidget	*CM_show_void;
@@ -88,6 +86,8 @@ struct defpref_data
 	GtkWidget	*CM_lock_reconciled;
 	GtkWidget	*CM_memoacp;
 	GtkWidget	*ST_memoacp_days;
+	
+	GtkWidget	*CM_xfer_showdialog;
 	GtkWidget	*ST_xfer_daygap;
 	GtkWidget	*CM_xfer_syncstat;
 
@@ -100,7 +100,10 @@ struct defpref_data
 	GtkWidget	*CY_daterange_txn;
 	GtkWidget   *ST_datefuture_nbdays;
 	GtkWidget	*CY_daterange_rep;
-	
+
+	//5.8 paymode
+	GtkWidget	*LV_paymode;
+
 	/* currencies */
 	GtkWidget	*LB_default;
 	GtkWidget	*BT_default; 
