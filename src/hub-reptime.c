@@ -50,7 +50,7 @@ static gint list_reptime_compare_func (GtkTreeModel *model, GtkTreeIter *a, GtkT
 //gint sortcol = GPOINTER_TO_INT(userdata);
 gint retval = 0;
 DataRow *dr1, *dr2;
-	
+
 	gtk_tree_model_get(model, a,
 		LST_REPTIME_ROW, &dr1,
 		-1);
@@ -74,7 +74,7 @@ DataRow *dr1, *dr2;
 			retval = dr2->pos - dr1->pos;
 		}
 	}
-	
+
 	//DB( g_print(" sort %d=%d or %.2f=%.2f :: %d\n", pos1,pos2, val1, val2, ret) );
 
 	return retval;
@@ -117,19 +117,19 @@ gboolean showmono = TRUE;
 
 	switch( PREFS->hub_tim_view )
 	{
-		case HUB_TIM_VIEW_SPENDING: 
+		case HUB_TIM_VIEW_SPENDING:
 			title = _("Spending");
-			if(data->hubtim_rawamount)
+			if(PREFS->hub_tim_raw)
 				title = _("Expense");
 			break;
-		case HUB_TIM_VIEW_REVENUE: 
+		case HUB_TIM_VIEW_REVENUE:
 			title = _("Revenue");
-			if(data->hubtim_rawamount)
+			if(PREFS->hub_tim_raw)
 				title = _("Income");
 			break;
-		case HUB_TIM_VIEW_SPEREV: 
+		case HUB_TIM_VIEW_SPEREV:
 			title = _("Spending & Revenue");
-			if(data->hubtim_rawamount)
+			if(PREFS->hub_tim_raw)
 				title = _("Expense & Income");
 			break;
 		case HUB_TIM_VIEW_ACCBALANCE:
@@ -204,7 +204,7 @@ guint i, n_inserted, flags;
 	PREFS->hub_tim_range = range;
 
 	DB( g_print(" - range=%d\n", range) );
-	
+
 	filter_preset_daterange_set(data->hubtim_filter, range, 0);
 	filter_preset_type_set(data->hubtim_filter, FLT_TYPE_INTXFER, FLT_EXCLUDE);
 
@@ -227,14 +227,14 @@ guint i, n_inserted, flags;
 		flags |= REPORT_COMP_FLG_FORECAST;
 
 
-	if( tmpview == HUB_TIM_VIEW_SPENDING || 
+	if( tmpview == HUB_TIM_VIEW_SPENDING ||
 	    tmpview == HUB_TIM_VIEW_REVENUE ||
 	    tmpview == HUB_TIM_VIEW_SPEREV
 	  )
 	{
 		DB( g_print(" mode: spending/revenue\n") );
-		DB( g_print(" - rawamount=%d\n", data->hubtim_rawamount) );
-		if( data->hubtim_rawamount == FALSE )
+		DB( g_print(" - rawamount=%d\n", PREFS->hub_tim_raw) );
+		if( PREFS->hub_tim_raw == FALSE )
 			flags |= REPORT_COMP_FLG_CATSIGN;
 
 		flags |= REPORT_COMP_FLG_SPENDING;
@@ -313,7 +313,7 @@ guint i, n_inserted, flags;
 		{
 		DataRow *dr = dt->totrow;
 
-			//TODO: crappy here		
+			//TODO: crappy here
 			dr->pos = LST_REPORT_POS_TOTAL;
 
 			gtk_tree_store_insert_with_values(GTK_TREE_STORE(model), &iter, NULL, -1,
@@ -335,7 +335,7 @@ guint i, n_inserted, flags;
 
 			//data->hubtim_total = total;
 			ui_hub_reptime_update(widget, data);
-			
+
 			daterange = filter_daterange_text_get(data->hubtim_filter);
 			gtk_widget_set_tooltip_markup(GTK_WIDGET(data->CY_hubtim_range), daterange);
 			g_free(daterange);
@@ -384,7 +384,7 @@ GVariant *old_state, *new_state;
 
 	ui_hub_reptime_populate(GLOBALS->mainwindow, NULL);
 }
-	
+
 
 static void
 ui_hub_reptime_activate_toggle (GSimpleAction *action, GVariant *parameter, gpointer user_data)
@@ -402,15 +402,15 @@ GVariant *old_state, *new_state;
 
 	g_simple_action_set_state (action, new_state);
 	g_variant_unref (old_state);
-	
-	data->hubtim_rawamount = g_variant_get_boolean (new_state);
+
+	PREFS->hub_tim_raw = g_variant_get_boolean (new_state);
 	ui_hub_reptime_populate(GLOBALS->mainwindow, NULL);
-	
+
 }
 
 
 static const GActionEntry actions[] = {
-//	name, function(), type, state, 
+//	name, function(), type, state,
 	{ "view", ui_hub_reptime_activate_radio ,  "s", "'cat'", NULL, {0,0,0} },
 	{ "raw"	, ui_hub_reptime_activate_toggle, NULL, "false" , NULL, {0,0,0} },
 
@@ -446,10 +446,20 @@ GVariant *new_state;
 			case HUB_TIM_VIEW_GRPBALANCE: value = "grpbal"; break;
 			case HUB_TIM_VIEW_ALLBALANCE: value = "allbal"; break;
 		}
-		
+
 		new_state = g_variant_new_string (value);
 		g_simple_action_set_state (G_SIMPLE_ACTION (action), new_state);
 	}
+
+	//#2066161 raw amount persist
+	action = g_action_map_lookup_action (G_ACTION_MAP (data->hubtim_action_group), "raw");
+	if( action )
+	{
+	GVariant *new_bool = g_variant_new_boolean(PREFS->hub_tim_raw);
+
+		g_simple_action_set_state (G_SIMPLE_ACTION (action), new_bool);
+	}
+
 }
 
 
@@ -461,7 +471,7 @@ void ui_hub_reptime_dispose(struct hbfile_data *data)
 	gtk_chart_set_datas_none(GTK_CHART(data->RE_hubtim_chart));
 	da_flt_free(data->hubtim_filter);
 	data->hubtim_filter = NULL;
-	
+
 	DB( g_print(" free dt %p\n", data->hubtim_dt) );
 	if(data->hubtim_dt)
 	{
@@ -558,7 +568,7 @@ GMenu *menu, *section;
 	//hbtk_radio_button_connect (GTK_CONTAINER(data->RA_type), "toggled", G_CALLBACK (ui_hub_reptime_populate), NULL);
 
 	g_signal_connect (data->CY_hubtim_range, "changed", G_CALLBACK (ui_hub_reptime_populate), NULL);
-	
+
 	return hub;
 }
 

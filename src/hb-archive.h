@@ -46,9 +46,10 @@ struct _archive
 	//guint32		kxfer;		//strong link xfer key
 	guint32		kxferacc;
 	gdouble		xferamount;	//xfer target alount
-	
+
 	GPtrArray	*splits;
 
+	/* automation data */
 	guint32		nextdate;
 	gushort		daygap;
 	gushort		every;
@@ -127,10 +128,10 @@ GList *da_archive_glist_sorted(gint column);
 gboolean template_is_account_used(Archive *arc);
 
 void scheduled_nextdate_weekend_adjust(Archive *arc);
-guint32 scheduled_date_get_next_post(GDate *tmpdate, Archive *arc, guint32 nextdate);
+guint32 scheduled_date_get_next_post(GDate *date, Archive *arc, guint32 nextdate);
 gboolean scheduled_is_postable(Archive *arc);
 guint32 scheduled_get_postdate(Archive *arc, guint32 postdate);
-guint32 scheduled_get_latepost_count(Archive *arc, guint32 jrefdate);
+guint32 scheduled_get_latepost_count(GDate *date, Archive *arc, guint32 jrefdate);
 guint32 scheduled_date_advance(Archive *arc);
 
 void scheduled_date_get_show_minmax(gint select, guint32 *mindate, guint32 *maxdate);

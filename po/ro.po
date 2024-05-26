@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: homebank\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2024-05-11 12:04+0200\n"
-"PO-Revision-Date: 2024-03-04 19:29+0000\n"
-"Last-Translator: johnny <Unknown>\n"
+"PO-Revision-Date: 2024-05-12 15:16+0000\n"
+"Last-Translator: Teodor Neagu <Unknown>\n"
 "Language-Team: Romanian <ro@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2024-05-11 13:40+0000\n"
+"X-Launchpad-Export-Date: 2024-05-26 05:44+0000\n"
 "X-Generator: Launchpad (build 0e1f616671af724398db43b36ddfb3ed1f2682ec)\n"
 
 #: ../src/dsp-mainwindow.c:1949
@@ -101,7 +101,7 @@ msgstr ""
 
 #: ../src/dsp-account.c:905
 msgid "'Earn by hour' is not set into the current Wallet."
-msgstr ""
+msgstr "'Castigul orar' nu este setat în portofelul actual"
 
 #: ../src/dsp-account.c:1816
 #, c-format
@@ -261,27 +261,27 @@ msgstr "Niciunul"
 #. { GRPFLAG_NONE,			"hb-gf-none",		N_("(none)") },
 #: ../src/dsp-account.c:2924 ../src/ui-widgets.c:1398
 msgid "Red"
-msgstr ""
+msgstr "Roșu"
 
 #: ../src/dsp-account.c:2925 ../src/ui-widgets.c:1399
 msgid "Orange"
-msgstr ""
+msgstr "Portocaliu"
 
 #: ../src/dsp-account.c:2926 ../src/ui-widgets.c:1400
 msgid "Yellow"
-msgstr ""
+msgstr "Galben"
 
 #: ../src/dsp-account.c:2927 ../src/ui-widgets.c:1401
 msgid "Green"
-msgstr ""
+msgstr "Verde"
 
 #: ../src/dsp-account.c:2928 ../src/ui-widgets.c:1402
 msgid "Blue"
-msgstr ""
+msgstr "Albastru"
 
 #: ../src/dsp-account.c:2929 ../src/ui-widgets.c:1403
 msgid "Purple"
-msgstr ""
+msgstr "Violet"
 
 #: ../src/dsp-account.c:2930
 msgid "_Flag"
@@ -349,7 +349,7 @@ msgstr "Navigați la site-ul web"
 
 #: ../src/dsp-account.c:2983
 msgid "Close"
-msgstr ""
+msgstr "Închide"
 
 #. ...
 #: ../src/dsp-account.c:2985
@@ -374,7 +374,7 @@ msgstr ""
 
 #: ../src/dsp-account.c:3000
 msgid "Find"
-msgstr ""
+msgstr "Caută"
 
 #. ...
 #: ../src/dsp-account.c:3002 ../src/dsp-mainwindow.c:1943
@@ -459,7 +459,7 @@ msgstr "Șterge tranzacția(iile) selectată(e)"
 
 #: ../src/dsp-account.c:3090
 msgid "Reconciled changes is"
-msgstr ""
+msgstr "Schimbările reconicilate sunt"
 
 #: ../src/dsp-account.c:3174
 msgid "(closed)"
@@ -491,7 +491,7 @@ msgstr "Modificare filtru"
 #: ../src/dsp-account.c:3299 ../src/rep-balance.c:1165 ../src/rep-stats.c:2173
 #: ../src/rep-time.c:1484
 msgid "Clear filter"
-msgstr ""
+msgstr "Șterge filtrul"
 
 #: ../src/dsp-account.c:3305 ../src/rep-balance.c:868 ../src/rep-budget.c:1935
 #: ../src/rep-stats.c:1734 ../src/rep-time.c:1157 ../src/rep-vehicle.c:792
@@ -1145,7 +1145,7 @@ msgstr ""
 
 #: ../src/hb-filter.c:1144
 msgid "reconciled"
-msgstr ""
+msgstr "reconciliat"
 
 #. header
 #: ../src/hb-filter.c:1176 ../src/ui-dialogs.c:343 ../src/ui-filter.c:1049
@@ -1255,7 +1255,7 @@ msgstr "%d-h%d"
 
 #: ../src/homebank.c:73
 msgid "Show the application’s version"
-msgstr ""
+msgstr "Arată versiunea aplicației"
 
 #: ../src/homebank.c:79
 msgid "[FILE]"
@@ -1413,7 +1413,7 @@ msgstr "Diagramă total"
 
 #: ../src/hub-reptotal.c:634
 msgid "Top by"
-msgstr ""
+msgstr "Top după"
 
 #. g_object_unref (section);
 #. 5.8
@@ -1421,7 +1421,7 @@ msgstr ""
 #. g_menu_append_section (menu, NULL, G_MENU_MODEL(section));
 #: ../src/hub-reptotal.c:643 ../src/hub-reptime.c:535
 msgid "Raw amount"
-msgstr ""
+msgstr "Sumă brută"
 
 #: ../src/hub-reptotal.c:650 ../src/hub-reptime.c:542
 msgid "Account group"
@@ -1429,7 +1429,7 @@ msgstr "Grup de conturi"
 
 #: ../src/hub-reptime.c:121 ../src/hub-reptime.c:526
 msgid "Spending"
-msgstr ""
+msgstr "Cheltuieli"
 
 #. column: Expense
 #: ../src/hub-reptime.c:123 ../src/list-operation.c:1919
@@ -1446,7 +1446,7 @@ msgstr "Cheltuiala"
 #. 5.7.5
 #: ../src/hub-reptime.c:126 ../src/hub-reptime.c:528
 msgid "Revenue"
-msgstr ""
+msgstr "Venit"
 
 #. column: Income
 #: ../src/hub-reptime.c:128 ../src/list-operation.c:1922
@@ -1462,11 +1462,11 @@ msgstr "Venituri"
 
 #: ../src/hub-reptime.c:131 ../src/hub-reptime.c:529
 msgid "Spending & Revenue"
-msgstr ""
+msgstr "Cheltuieli și venituri"
 
 #: ../src/hub-reptime.c:133
 msgid "Expense & Income"
-msgstr ""
+msgstr "Cheltuieli și venituri"
 
 #: ../src/hub-reptime.c:144
 msgid "Global Balance"
@@ -1547,7 +1547,7 @@ msgstr "Dată"
 #. g_string_append (node, "info" );
 #: ../src/list-operation.c:993 ../src/ui-widgets-data.c:338
 msgid "Number"
-msgstr ""
+msgstr "Număr"
 
 #. g_string_append (node, "memo" );
 #. column: Memo
@@ -1682,7 +1682,7 @@ msgstr "Filtru"
 #. active
 #: ../src/rep-balance.c:1151 ../src/rep-stats.c:2156 ../src/rep-time.c:1470
 msgid "Active:"
-msgstr ""
+msgstr "Activ:"
 
 #: ../src/rep-balance.c:1175 ../src/rep-budget.c:2248 ../src/rep-stats.c:2190
 #: ../src/rep-time.c:1494 ../src/rep-vehicle.c:1013 ../src/ui-filter.c:1089
@@ -1756,7 +1756,7 @@ msgstr " sub"
 
 #: ../src/rep-budget.c:1494
 msgid "(unbudgeted)"
-msgstr ""
+msgstr "(nebugetat)"
 
 #: ../src/rep-budget.c:1920 ../src/rep-stats.c:1690
 msgid "Stack"
@@ -1929,17 +1929,17 @@ msgstr "_Cumulat"
 
 #: ../src/rep-time.c:1512
 msgid "Item"
-msgstr ""
+msgstr "Articol"
 
 #: ../src/rep-time.c:1516
 msgid "_By:"
-msgstr ""
+msgstr "_după:"
 
 #: ../src/rep-time.c:1697
 msgid "Time slice"
 msgstr "Segement de timp"
 
-#. 
+#.
 #. LST_CAR_DATE,
 #. LST_CAR_MEMO,
 #. LST_CAR_METER,
@@ -1948,10 +1948,10 @@ msgstr "Segement de timp"
 #. LST_CAR_AMOUNT,
 #. LST_CAR_DIST,
 #. LST_CAR_100KM
-#. 
-#. 
+#.
+#.
 #. column: Memo
-#. 
+#.
 #. column = gtk_tree_view_column_new();
 #. gtk_tree_view_column_set_title(column, _("Memo"));
 #. gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
@@ -1959,7 +1959,7 @@ msgstr "Segement de timp"
 #. gtk_tree_view_column_pack_start(column, renderer, TRUE);
 #. gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_MEMO);
 #. //gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
-#. 
+#.
 #. column: Meter
 #: ../src/rep-vehicle.c:175 ../src/rep-vehicle.c:1377
 msgid "Meter"
@@ -2834,12 +2834,12 @@ msgstr "Administrează bugetul"
 #: ../src/ui-budget.c:1207 ../src/ui-category.c:2458 ../src/ui-payee.c:1856
 #: ../src/ui-tag.c:1327
 msgid "_Import CSV..."
-msgstr ""
+msgstr "_Importați CSV..."
 
 #: ../src/ui-budget.c:1208 ../src/ui-category.c:2459 ../src/ui-payee.c:1857
 #: ../src/ui-tag.c:1328
 msgid "E_xport CSV..."
-msgstr ""
+msgstr "Exportați CSV..."
 
 #: ../src/ui-budget.c:1280
 msgid "Balance:"
@@ -3395,7 +3395,7 @@ msgstr ""
 
 #: ../src/ui-filter.c:1157
 msgid "Input From -30 To -15 to filter on expense"
-msgstr ""
+msgstr "Introduceți de la -30 la -15 pentru a filtra cheltuielile"
 
 #: ../src/ui-filter.c:1174
 msgid "_Memo:"
@@ -3404,7 +3404,7 @@ msgstr "_Notiță:"
 #: ../src/ui-filter.c:1181 ../src/ui-transaction.c:1692
 #: ../src/ui-txn-multi.c:559
 msgid "_Number:"
-msgstr ""
+msgstr "_Număr:"
 
 #: ../src/ui-filter.c:1189
 msgid "Case _sensitive"
@@ -3412,11 +3412,11 @@ msgstr "Maju_scule/minuscule"
 
 #: ../src/ui-filter.c:1288
 msgid "Expense Transfer"
-msgstr ""
+msgstr "Transfer de Cheltuieli"
 
 #: ../src/ui-filter.c:1293
 msgid "Income Transfer"
-msgstr ""
+msgstr "Transfer de Venituri"
 
 #: ../src/ui-filter.c:1365 ../src/ui-pref.c:2435 ../src/ui-pref.c:2462
 msgid "_Reset"
@@ -3424,7 +3424,7 @@ msgstr "_Resetează"
 
 #: ../src/ui-filter.c:1371
 msgid "_Save & Use"
-msgstr ""
+msgstr "_Salvați și utilizați"
 
 #: ../src/ui-filter.c:1373
 msgid "_Use"
@@ -3432,7 +3432,7 @@ msgstr ""
 
 #: ../src/ui-filter.c:1376
 msgid "default"
-msgstr ""
+msgstr "implicit"
 
 #: ../src/ui-filter.c:1454
 msgid "Amount/Text"
@@ -3456,11 +3456,11 @@ msgstr "Modificat"
 
 #: ../src/ui-flt-widget.c:127
 msgid "(default)"
-msgstr ""
+msgstr "(implicit)"
 
 #: ../src/ui-flt-widget.c:228
 msgid "Filter rename"
-msgstr ""
+msgstr "Redenumire filtru"
 
 #: ../src/ui-flt-widget.c:262
 #, c-format
@@ -3469,15 +3469,15 @@ msgstr ""
 
 #: ../src/ui-flt-widget.c:263
 msgid "Filter name"
-msgstr ""
+msgstr "Numele filtrului"
 
 #: ../src/ui-flt-widget.c:453
 msgid "_Save as..."
-msgstr ""
+msgstr "_Salvează ca..."
 
 #: ../src/ui-flt-widget.c:454
 msgid "_Rename..."
-msgstr ""
+msgstr "_Redenumește..."
 
 #: ../src/ui-hbfile.c:45
 msgid "Due Date"
@@ -3513,7 +3513,7 @@ msgstr "lună"
 
 #: ../src/ui-hbfile.c:356
 msgid "_Earn by hour:"
-msgstr ""
+msgstr "_Câștigați pe oră:"
 
 #: ../src/ui-payee.c:1043
 msgid "Delete unused payee"
@@ -3652,7 +3652,7 @@ msgstr ""
 
 #: ../src/ui-pref.c:1217
 msgid "Use drag & drop to reorder"
-msgstr ""
+msgstr "Folosiți drag & drop pentru a reordona"
 
 #: ../src/ui-pref.c:1251
 msgid "Currency API"
@@ -3732,7 +3732,7 @@ msgstr "Opțiuni Buget"
 
 #: ../src/ui-pref.c:1553
 msgid "Enable _forecast"
-msgstr ""
+msgstr "Activați _prognoza"
 
 #: ../src/ui-pref.c:1558
 msgid "Month number:"
@@ -3876,7 +3876,7 @@ msgstr "Afișați textul de confirmare pentru 5s"
 
 #: ../src/ui-pref.c:1923
 msgid "Show template list when edit"
-msgstr ""
+msgstr "Afișați lista de șabloane când editați"
 
 #: ../src/ui-pref.c:1934
 msgid "Transfer behavior"
@@ -4006,7 +4006,7 @@ msgstr "Fereastra principală a rapoartelor"
 #. widget = make_daterange(label, DATE_RANGE_CUSTOM_HIDDEN);
 #. data->CY_daterange_wal = widget;
 #. gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-#. 
+#.
 #. row++;
 #: ../src/ui-pref.c:2338
 msgid "Max _items:"

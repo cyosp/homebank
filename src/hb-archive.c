@@ -32,8 +32,20 @@
 #define DB(x);
 #endif
 
+#define DB2(x);
+//#define DB2(x) (x);
+
+
 /* our global datas */
 extern struct HomeBank *GLOBALS;
+
+
+extern HbKvData CYA_ARC_UNIT[];
+extern HbKvData CYA_ARC_WEEKEND[];
+
+#if MYDEBUG
+gchar *WDAY[] = { "bad", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+#endif
 
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
@@ -146,10 +158,10 @@ guint32 max_key = 0;
 	{
 	Archive *item = tmplist->data;
 
-		max_key = MAX(item->key, max_key);		
+		max_key = MAX(item->key, max_key);
 		tmplist = g_list_next(tmplist);
 	}
-	
+
 	return max_key;
 }
 
@@ -255,7 +267,7 @@ guint nbsplit;
 		GLOBALS->changes_count++;
 	}
 
-	//#1340142 check split category 	
+	//#1340142 check split category
 	if( item->splits != NULL )
 	{
 		nbsplit = da_splits_consistency(item->splits);
@@ -267,7 +279,7 @@ guint nbsplit;
 			GLOBALS->changes_count++;
 		}
 	}
-	
+
 	// check payee exists
 	pay = da_pay_get(item->kpay);
 	if(pay == NULL)
@@ -285,7 +297,7 @@ guint nbsplit;
 		item->paymode = PAYMODE_XFER;
 		item->kxferacc = 0;
 	}
-	
+
 	// reset dst acc for non xfer transaction
 	if( !((item->flags & OF_INTXFER) || (item->paymode == OLDPAYMODE_INTXFER)) )
 		item->kxferacc = 0;
@@ -387,7 +399,7 @@ Archive *da_archive_init_from_transaction(Archive *arc, Transaction *txn, gboole
 	if( fromledger == FALSE )
 	{
 		if(txn->memo != NULL)
-			arc->memo = g_strdup(txn->memo);	
+			arc->memo = g_strdup(txn->memo);
 	}
 	else
 	{
@@ -398,7 +410,7 @@ Archive *da_archive_init_from_transaction(Archive *arc, Transaction *txn, gboole
 			//arc->memo = g_strdup_printf("%s %s", _("**PREFILLED**"), txn->memo );
 		//else
 		//	arc->memo = g_strdup(_("**PREFILLED**"));
-	}	
+	}
 
 	if(txn->number != NULL)
 		arc->number = g_strdup(txn->number);
@@ -408,7 +420,7 @@ Archive *da_archive_init_from_transaction(Archive *arc, Transaction *txn, gboole
 
 	if( da_splits_length (arc->splits) > 0 )
 		arc->flags |= OF_SPLIT; //Flag that Splits are active
-	
+
 	return arc;
 }
 
@@ -433,116 +445,143 @@ gboolean retval = FALSE;
 		list = g_list_next(list);
 	}
 	g_list_free(lacc);
-	
+
 	return retval;
 }
 
 
-static void _sched_nextdate_weekend_adjust(GDate *tmpdate)
-{
-GDateWeekday wday;
+/* = = = = = = = = = = = = = = = = = = = = */
 
-	wday = g_date_get_weekday(tmpdate);
+
+static void _sched_nextdate_weekend_adjust(GDate *date)
+{
+GDateWeekday wday = g_date_get_weekday(date);
+
 	if( wday == G_DATE_SATURDAY )
-		g_date_add_days (tmpdate, 2);
+		g_date_add_days (date, 2);
 	else
 	if( wday == G_DATE_SUNDAY )
-		g_date_add_days (tmpdate, 1);
+		g_date_add_days (date, 1);
 }
 
 
-static guint32 _sched_date_get_next_post(GDate *tmpdate, Archive *arc, guint32 nextdate)
+static guint32 _sched_date_get_next_post(GDate *date, Archive *arc, guint32 nextdate)
 {
 guint32 nextpostdate = nextdate;
 
-	DB( g_print("\n[scheduled] date_get_next_post\n") );
+	DB2( g_print("\n[scheduled] date_get_next_post\n") );
 
-	g_date_set_julian(tmpdate, nextpostdate);
+	g_date_set_julian(date, nextpostdate);
 
-	DB( g_print("in : %2d-%2d-%4d\n", g_date_get_day(tmpdate), g_date_get_month (tmpdate), g_date_get_year(tmpdate) ) );
+	DB2( hb_print_date(g_date_get_julian(date), "in:") );
 
 	switch(arc->unit)
 	{
 		case AUTO_UNIT_DAY:
-			g_date_add_days(tmpdate, arc->every);
+			g_date_add_days(date, arc->every);
 			break;
 		case AUTO_UNIT_WEEK:
-			g_date_add_days(tmpdate, 7 * arc->every);
+			g_date_add_days(date, 7 * arc->every);
 			break;
 		case AUTO_UNIT_MONTH:
-			g_date_add_months(tmpdate, arc->every);
+			g_date_add_months(date, arc->every);
 			break;
 		case AUTO_UNIT_YEAR:
-			g_date_add_years(tmpdate, arc->every);
+			g_date_add_years(date, arc->every);
 			break;
 	}
 
-	DB( g_print("out: %2d-%2d-%4d\n", g_date_get_day(tmpdate), g_date_get_month (tmpdate), g_date_get_year(tmpdate) ) );
+	DB2( hb_print_date(g_date_get_julian(date), "out:") );
 
-	//#1906953 add ignore weekend
+	//#1906953 add skip weekend
 	if( arc->weekend == ARC_WEEKEND_SKIP )
 	{
-		_sched_nextdate_weekend_adjust(tmpdate);
+		_sched_nextdate_weekend_adjust(date);
+		DB2( hb_print_date(g_date_get_julian(date), "out:") );
 	}
 
-	/* get the final post date and free */
-	nextpostdate = g_date_get_julian(tmpdate);
-	
+	/* get the final post date */
+	nextpostdate = g_date_get_julian(date);
+
 	return nextpostdate;
 }
 
 
-guint32 scheduled_date_get_next_post(GDate *tmpdate, Archive *arc, guint32 nextdate)
-{
-	return _sched_date_get_next_post(tmpdate, arc, nextdate);
-}
-
-
-//#1906953 add ignore weekend
+//#1906953 add skip weekend
+//ui-archive
 void scheduled_nextdate_weekend_adjust(Archive *arc)
 {
 	if( arc->weekend == ARC_WEEKEND_SKIP )
 	{
-	GDate *tmpdate = g_date_new_julian(arc->nextdate);
-
-		_sched_nextdate_weekend_adjust(tmpdate);
-		arc->nextdate = g_date_get_julian(tmpdate);
-		g_date_free(tmpdate);
+	GDate date;
+		g_date_set_julian(&date, arc->nextdate);
+		_sched_nextdate_weekend_adjust(&date);
+		arc->nextdate = g_date_get_julian(&date);
 	}
 }
 
 
-gboolean scheduled_is_postable(Archive *arc)
+//hb-report
+guint32 scheduled_date_get_next_post(GDate *date, Archive *arc, guint32 nextdate)
 {
-gdouble value;
-
-	value = hb_amount_round(arc->amount, 2);
-	if( (arc->flags & OF_AUTO) && (arc->kacc > 0) && (value != 0.0) )
-		return TRUE;
-
-	return FALSE;
+	return _sched_date_get_next_post(date, arc, nextdate);
 }
 
 
+// hub_scheduled / hb-report
+gboolean scheduled_is_postable(Archive *arc)
+{
+	if( !(arc->flags & OF_AUTO) )
+		return FALSE;
+	if( arc->kacc == 0 )
+		return FALSE;
+	if( hb_amount_equal(arc->amount, 0.0) )
+		return FALSE;
+
+	return TRUE;
+}
+
+
+// hub_scheduled
+guint32 scheduled_get_latepost_count(GDate *date, Archive *arc, guint32 jrefdate)
+{
+guint32 jcurdate = arc->nextdate;
+guint32 nblate = 0;
+
+	while (jcurdate <= jrefdate)
+	{
+		jcurdate = _sched_date_get_next_post(date, arc, jcurdate);
+		nblate++;
+		// break if over limit or at 11 max (to display +10)
+		if( nblate >= 11 || ( (arc->flags & OF_LIMIT) && (nblate >= arc->limit) ) )
+			break;
+	}
+	return nblate;
+}
+
+
+//used here + hub-scheduled
 guint32 scheduled_get_postdate(Archive *arc, guint32 postdate)
 {
-GDate *tmpdate;
+GDate date;
 GDateWeekday wday;
 guint32 finalpostdate;
 gint shift;
 
-	DB( g_print("\n[scheduled] get_postdate\n") );
+	DB2( g_print("\n[scheduled] get_postdate\n") );
 
 	finalpostdate = postdate;
-	
-	tmpdate = g_date_new_julian(finalpostdate);
+
+	DB2( hb_print_date(finalpostdate, "in:") );
+
+	g_date_set_julian(&date, finalpostdate);
 
 	/* manage weekend exception */
 	if( arc->weekend > 0 )
 	{
-		wday = g_date_get_weekday(tmpdate);
+		wday = g_date_get_weekday(&date);
 
-		DB( g_print(" %s wday=%d\n", arc->memo, wday) );
+		DB2( g_print(" %s wday=%d '%s'\n", arc->memo, wday, WDAY[wday]) );
 
 		if( wday >= G_DATE_SATURDAY )
 		{
@@ -550,125 +589,63 @@ gint shift;
 			{
 				case ARC_WEEKEND_BEFORE: /* shift before : sun 7-5=+2 , sat 6-5=+1 */
 					shift = wday - G_DATE_FRIDAY;
-					DB( g_print("sub=%d\n", shift) );
-					g_date_subtract_days (tmpdate, shift);
+					DB2( g_print("sub=%d\n", shift) );
+					g_date_subtract_days (&date, shift);
 					break;
 
 				case ARC_WEEKEND_AFTER: /* shift after : sun 8-7=1 , sat 8-6=2 */
 					shift = 8 - wday;
-					DB( g_print("add=%d\n", shift) );
-					g_date_add_days (tmpdate, shift);
+					DB2( g_print("add=%d\n", shift) );
+					g_date_add_days (&date, shift);
 					break;
 			}
 		}
 	}
-	
+
 	/* get the final post date and free */
-	finalpostdate = g_date_get_julian(tmpdate);
-	g_date_free(tmpdate);
-	
+	finalpostdate = g_date_get_julian(&date);
+
+	DB2( hb_print_date(finalpostdate, "out:") );
+
 	return finalpostdate;
 }
 
 
-guint32 scheduled_get_latepost_count(Archive *arc, guint32 jrefdate)
-{
-GDate *post_date;
-guint32 curdate;
-guint32 nblate = 0;
-
-	//DB( g_print("\n[scheduled] get_latepost_count\n") );
-
-	/*
-	curdate = jrefdate - arc->nextdate;
-	switch(arc->unit)
-	{
-		case AUTO_UNIT_DAY:
-			nbpost = (curdate / arc->every);
-			g_print("debug d: %d => %f\n", curdate, nbpost);
-			break;
-
-		case AUTO_UNIT_WEEK:
-			nbpost = (curdate / ( 7 * arc->every));
-			g_print("debug w: %d => %f\n", curdate, nbpost);
-			break;
-
-		case AUTO_UNIT_MONTH:
-			//approximate is sufficient
-			nbpost = (curdate / (( 365.2425 / 12) * arc->every));
-			g_print("debug m: %d => %f\n", curdate, nbpost);
-			break;
-
-		case AUTO_UNIT_YEAR:
-			//approximate is sufficient
-			nbpost = (curdate / ( 365.2425 * arc->every));
-			g_print("debug y: %d => %f\n", curdate, nbpost);
-			break;
-	}
-
-	nblate = floor(nbpost);
-
-	if(arc->flags & OF_LIMIT)
-		nblate = MIN(nblate, arc->limit);
-	
-	nblate = MIN(nblate, 11);
-	*/
-	
-
-	// pre 5.1 way
-	post_date = g_date_new();
-	curdate = arc->nextdate;
-	while(curdate <= jrefdate)
-	{
-		curdate = _sched_date_get_next_post(post_date, arc, curdate);
-		nblate++;
-		// break if over limit or at 11 max (to display +10)
-		if( nblate >= 11 || ( (arc->flags & OF_LIMIT) && (nblate >= arc->limit) ) )
-			break;
-	}
-
-	//DB( g_print(" nblate=%d\n", nblate) );
-
-	g_date_free(post_date);
-
-	return nblate;
-}
-
-
 /* return 0 is max number of post is reached */
+//used here + hub_scheduled
+//this modify the arc
 guint32 scheduled_date_advance(Archive *arc)
 {
-GDate *post_date;
+GDate date;
 gushort lastday;
 
-	DB( g_print("\n[scheduled] date_advance\n") );
+	DB2( g_print("\n[scheduled] date_advance\n") );
 
-	post_date = g_date_new();
-	g_date_set_julian(post_date, arc->nextdate);
+	g_date_set_julian(&date, arc->nextdate);
 	// saved the current day number
-	lastday = g_date_get_day(post_date);
+	lastday = g_date_get_day(&date);
 
-	arc->nextdate = _sched_date_get_next_post(post_date, arc, arc->nextdate);
+	arc->nextdate = _sched_date_get_next_post(&date, arc, arc->nextdate);
 
-	DB( g_print(" raw next post date: %02d-%02d-%4d\n", g_date_get_day(post_date), g_date_get_month (post_date), g_date_get_year(post_date) ) );
+	DB2( g_print(" raw next post date: %02d-%02d-%4d\n", g_date_get_day(&date), g_date_get_month (&date), g_date_get_year(&date) ) );
 
 	//for day > 28 we might have a gap to compensate later
 	if( (arc->unit==AUTO_UNIT_MONTH) || (arc->unit==AUTO_UNIT_YEAR) )
 	{
 		if( lastday >= 28 )
 		{
-			DB( g_print(" lastday:%d, daygap:%d\n", lastday, arc->daygap) );
+			DB2( g_print(" lastday:%d, daygap:%d\n", lastday, arc->daygap) );
 			if( arc->daygap > 0 )
 			{
-				g_date_add_days (post_date, arc->daygap);
-				arc->nextdate = g_date_get_julian (post_date);
+				g_date_add_days (&date, arc->daygap);
+				arc->nextdate = g_date_get_julian (&date);
 				lastday += arc->daygap;
-				DB( g_print(" adjusted post date: %2d-%2d-%4d\n", g_date_get_day(post_date), g_date_get_month (post_date), g_date_get_year(post_date) ) );
+				DB2( g_print(" adjusted post date: %2d-%2d-%4d\n", g_date_get_day(&date), g_date_get_month (&date), g_date_get_year(&date) ) );
 			}
 
-			arc->daygap = CLAMP(lastday - g_date_get_day(post_date), 0, 3);
-		
-			DB( g_print(" daygap is %d\n", arc->daygap) );
+			arc->daygap = CLAMP(lastday - g_date_get_day(&date), 0, 3);
+
+			DB2( g_print(" daygap is %d\n", arc->daygap) );
 		}
 		else
 			arc->daygap = 0;
@@ -686,32 +663,32 @@ gushort lastday;
 		}
 	}
 
-	g_date_free(post_date);
-
 	return arc->nextdate;
 }
 
 
+//hb-scheduled
 void scheduled_date_get_show_minmax(gint select, guint32 *mindate, guint32 *maxdate)
 {
-GDate *tmpdate  = g_date_new_julian(GLOBALS->today);
+GDate *date;
 guint16 month, year;
 
 	if( (mindate == NULL) || (maxdate == NULL) )
 		return;
 
+	date  = g_date_new_julian(GLOBALS->today);
 	switch( select )
 	{
 		case FLT_SCHEDULED_THISMONTH:
 		case FLT_SCHEDULED_NEXTMONTH:
-			g_date_set_day(tmpdate, 1);
+			g_date_set_day(date, 1);
 			if( select == FLT_SCHEDULED_NEXTMONTH)
-				g_date_add_months(tmpdate, 1);
-			*mindate = g_date_get_julian(tmpdate);
-			month = g_date_get_month(tmpdate);
-			year  = g_date_get_year(tmpdate);		
-			g_date_add_days(tmpdate, g_date_get_days_in_month(month, year));
-			*maxdate = g_date_get_julian(tmpdate) - 1;
+				g_date_add_months(date, 1);
+			*mindate = g_date_get_julian(date);
+			month = g_date_get_month(date);
+			year  = g_date_get_year(date);
+			g_date_add_days(date, g_date_get_days_in_month(month, year));
+			*maxdate = g_date_get_julian(date) - 1;
 			break;
 		case FLT_SCHEDULED_NEXT30DAYS:
 			*mindate = GLOBALS->today;
@@ -728,22 +705,22 @@ guint16 month, year;
 		default:
 			*mindate = HB_MINDATE;
 			*maxdate = HB_MAXDATE;
-			break;	
+			break;
 	}
 
-	g_date_free(tmpdate);
+	g_date_free(date);
 }
 
 
 /*
  *  return the maximum date a scheduled txn can be posted to
  */
+//hb-scheduled / ui-hbfile
 guint32 scheduled_date_get_post_max(guint32 start, gint auto_smode, gint auto_nbdays, gint auto_weekday, gint nbmonth)
 {
-guint nbdays = 0;
-GDate *today, *maxdate;
-gdouble nxtmonth;
-guint8 daysinmonth;
+guint32 nbdays;
+
+	DB2( g_print("\n[scheduled] get max post date\n") );
 
 	switch( auto_smode)
 	{
@@ -751,23 +728,44 @@ guint8 daysinmonth;
 		//if(auto_smode == 0)
 		case ARC_POSTMODE_PAYOUT:
 		{
-			today = g_date_new_julian(start);
-			daysinmonth = g_date_get_days_in_month(g_date_get_month(today), g_date_get_year(today));
-			maxdate = g_date_new_julian(start + (daysinmonth - auto_weekday));
-			
-			//TODO: 5.7 probably this is false
-			nxtmonth = ceil((gdouble)g_date_get_month(maxdate)/(gdouble)nbmonth)*(gdouble)nbmonth;
-			//DB( g_print("nxtmonth: %f =  ceil( %d / %d) / %d\n", nxtmonth, g_date_get_month(today), month, month) );
-			g_date_set_day(maxdate, auto_weekday);
-			g_date_set_month(maxdate, nxtmonth);
+		GDate *tdate, *date;
+		gshort tday;
 
-			//if( today > g_date_get_julian(maxdate) )
-			//	g_date_add_months(maxdate, month);
+			DB2( g_print(" payout %d of %d months\n", auto_weekday, nbmonth) );
 
-			nbdays = g_date_days_between(today, maxdate);
-		
-			g_date_free(maxdate);
-			g_date_free(today);
+			tdate = g_date_new_julian(start);
+			tday = g_date_get_day(tdate);
+
+			//set <payoutday>/xx/xxxx
+			date = g_date_new_julian(start);
+			g_date_set_day(date, auto_weekday);
+
+			//if today is payout day (or future)
+			if( tday >= auto_weekday )
+			{
+				DB2( g_print(" day: %d >= %d\n", tday, auto_weekday) );
+				//we add nbmonth
+				g_date_add_months(date, 1);
+				if( nbmonth > 1 )
+				{
+					//here we consider start is january
+					//TODO: ? use also fisc_year_day + fisc_year_month
+					for(gshort i=1;i<nbmonth;i++)
+					{
+						if( (g_date_get_month(date) % nbmonth) == 1 )
+							break;
+						DB2( g_print(" >add 1 month\n") );
+						g_date_add_months(date, 1);
+					}
+				}
+			}
+
+			//#2065740 as we now post maxpostdate included: -1
+			g_date_subtract_days(date, 1);
+
+			nbdays = g_date_days_between(tdate, date);
+			g_date_free(date);
+			g_date_free(tdate);
 		}
 		break;
 
@@ -782,74 +780,92 @@ guint8 daysinmonth;
 			nbdays = 0;
 			break;
 	}
+	DB2( g_print(" nbdays=%d\n", nbdays) );
+
+	DB2( hb_print_date(start + nbdays, "out:") );
 
 	return start + nbdays;
 }
 
 
+//mainwindows / hub-scheduled
 gint scheduled_post_all_pending(void)
 {
 GList *list;
-gint count;
+gint count = 0;
 guint32 maxpostdate;
-Transaction *txn;
 
-	DB( g_print("\n[scheduled] post_all_pending\n") );
-
-	count = 0;
+	DB( g_print("\n[scheduled] -- post_all_pending --\n") );
 
 	maxpostdate = scheduled_date_get_post_max(GLOBALS->today, GLOBALS->auto_smode, GLOBALS->auto_nbdays, GLOBALS->auto_weekday, GLOBALS->auto_nbmonths);
-	
+	DB( hb_print_date(maxpostdate, " >maxpostdate") );
+
 	list = g_list_first(GLOBALS->arc_list);
 	while (list != NULL)
 	{
 	Archive *arc = list->data;
 
-		DB( g_print("--------\n eval post of '%s' %.2f\n", arc->memo, arc->amount) );
+		if( !(arc->flags & OF_AUTO) )
+			goto nextarchive;
 
-		if(scheduled_is_postable(arc) == TRUE)
+		DB( g_print("----\neval %d w.e=%s limit=%d '%s'\n",
+			arc->nextdate,
+			hbtk_get_label(CYA_ARC_WEEKEND, arc->weekend),
+			arc->flags & OF_LIMIT ? arc->limit : -1,
+			arc->memo) );
+
+		if( !scheduled_is_postable(arc) )
 		{
-			DB( g_print(" - every %d limit %d (to %d)\n", arc->every, arc->flags & OF_LIMIT, arc->limit) );
-			DB( hb_print_date(arc->nextdate, "next post") );
+			DB( g_print(" >skip: not postable - auto=%d kacc=%d amt=%.2f \n", arc->flags & OF_AUTO, arc->kacc, arc->amount) );
+			goto nextarchive;
+		}
+
+		//TODO: maybe add a security here
+		for(;;)
+		{
+		Transaction *txn;
+		//#2065955 to get weekend before/after posted
+		guint32 jpostdate = scheduled_get_postdate(arc, arc->nextdate);
+
+			#if MYDEBUG
+			if( arc->nextdate != jpostdate )
+				DB( g_print(" >shift: %d >> %d\n", arc->nextdate, jpostdate) );
+			#endif
 
 			//#2064839 <=
-			if(arc->nextdate <= maxpostdate)
+			if( jpostdate <= maxpostdate )
 			{
-			guint32 mydate = arc->nextdate;
+				DB( g_print(" >post: date=%d (%+d)\n", jpostdate, jpostdate - arc->nextdate) );
 
-				//#2064839 <=
-				while(mydate <= maxpostdate)
+				//5.5.3 fixed leak as this was outside the loop
+				txn = da_transaction_malloc();
+				da_transaction_init_from_template(txn, arc);
+				txn->date = jpostdate;
+				/* todo: ? fill in cheque number */
+				transaction_add(NULL, FALSE, txn);
+				da_transaction_free (txn);
+				count++;
+
+				//can switch OF_AUTO off, if limit reached
+				scheduled_date_advance(arc);
+				if( !(arc->flags & OF_AUTO) )
 				{
-					DB( hb_print_date(mydate, arc->memo) );
-					//5.5.3 fixed leak as this was outside the loop
-					txn = da_transaction_malloc();
-
-					da_transaction_init_from_template(txn, arc);
-					txn->date = scheduled_get_postdate(arc, mydate);
-					/* todo: ? fill in cheque number */
-
-					DB( g_print(" -- post --\n") );
-					transaction_add(NULL, FALSE, txn);
-
-					da_transaction_free (txn);
-
-					GLOBALS->changes_count++;
-					count++;
-
-					mydate = scheduled_date_advance(arc);
-
-					//DB( hb_print_date(mydate, "next on") );
-
-					if(mydate == 0)
-						goto nextarchive;
+					DB( g_print(" >stop: limit reached\n") );
+					goto nextarchive;
 				}
-
+			}
+			else
+			{
+				DB( g_print(" >skip: no pending\n") );
+				goto nextarchive;
 			}
 		}
+
 nextarchive:
 		list = g_list_next(list);
 	}
-	
+
+	GLOBALS->changes_count += count;
 	return count;
 }
 

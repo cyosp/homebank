@@ -101,7 +101,7 @@ Transaction *txn;
 
 	DB( g_print("\n[hub-scheduled] do post\n") );
 
-	
+
 	window =  create_deftransaction_window(GTK_WINDOW(data->window), TXN_DLG_ACTION_ADD, TXN_DLG_TYPE_SCH, 0);
 
 	/* fill in the transaction */
@@ -139,9 +139,9 @@ static void ui_hub_scheduled_editpost_cb(GtkWidget *widget, gpointer user_data)
 struct hbfile_data *data = user_data;
 GtkTreeModel *model;
 GList *selection, *list;
-	
+
 	DB( g_print("\n[hub-scheduled] editpost\n") );
-	
+
 	selection = gtk_tree_selection_get_selected_rows(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_upc)), &model);
 
 	list = g_list_first(selection);
@@ -174,7 +174,7 @@ static void ui_hub_scheduled_post_cb(GtkWidget *widget, gpointer user_data)
 struct hbfile_data *data = user_data;
 GtkTreeModel *model;
 GList *selection, *list;
-	
+
 	DB( g_print("\n[hub-scheduled] post\n") );
 
 	selection = gtk_tree_selection_get_selected_rows(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_upc)), &model);
@@ -187,7 +187,7 @@ GList *selection, *list;
 
 		gtk_tree_model_get_iter(model, &iter, list->data);
 		gtk_tree_model_get(model, &iter, LST_DSPUPC_DATAS, &arc, -1);
-	
+
 		if( (arc != NULL) )
 		{
 			if( scheduled_is_postable(arc) )
@@ -217,7 +217,7 @@ GList *selection, *list;
 	g_list_free(selection);
 
 	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE|UF_REFRESHALL));
-	
+
 }
 
 
@@ -226,7 +226,7 @@ static void ui_hub_scheduled_skip_cb(GtkWidget *widget, gpointer user_data)
 struct hbfile_data *data = user_data;
 GtkTreeModel *model;
 GList *selection, *list;
-	
+
 	DB( g_print("\n[hub-scheduled] skip\n") );
 
 	selection = gtk_tree_selection_get_selected_rows(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_upc)), &model);
@@ -249,7 +249,7 @@ GList *selection, *list;
 			DB( g_print(" >skipping\n") );
 			//ui_hub_scheduled_populate(GLOBALS->mainwindow, NULL);
 		}
-		
+
 		list = g_list_next(list);
 	}
 
@@ -283,7 +283,7 @@ gint count;
 	if(count >= 1)
 	{
 		//DB( g_print("archive is %s\n", arc->memo) );
-		
+
 		gtk_widget_set_sensitive(GTK_WIDGET(data->BT_sched_skip), TRUE);
 		gtk_widget_set_sensitive(GTK_WIDGET(data->BT_sched_post), TRUE);
 		gtk_widget_set_sensitive(GTK_WIDGET(data->BT_sched_editpost), TRUE);
@@ -319,7 +319,7 @@ gint count;
 		Account *acc = NULL;
 
 			gtk_tree_model_get_iter(model, &iter, tmplist->data);
-			gtk_tree_model_get(model, &iter, 
+			gtk_tree_model_get(model, &iter,
 				LST_DSPUPC_DATAS, &arc,
 				-1);
 
@@ -344,7 +344,7 @@ gint count;
 					amount = arc->xferamount;
 					DB( g_print("  xfer amount is != curr %.17g\n", amount ) );
 				}
-				
+
 				/* opposite here */
 				acc = da_acc_get(arc->kxferacc);
 				if( acc != NULL )
@@ -357,7 +357,7 @@ gint count;
 			}
 
 			DB( g_print(" %.17g - %.17g = %.17g temp\n", suminc, sumexp, suminc + sumexp) );
-		
+
 			tmplist = g_list_next(tmplist);
 		}
 		g_list_free(list);
@@ -413,7 +413,7 @@ gint usermode = GPOINTER_TO_INT(user_data);
 		{
 			ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_REFRESHALL));
 		}
-		
+
 		if(count == 0)
 			txt = _("No transaction to add");
 		else
@@ -471,14 +471,13 @@ GDate *date;
 	g_date_strftime (buffer, 256-1, PREFS->date_format, date);
 
 	//post when program start: ON/OFF
-	tooltip = g_strdup_printf("%s: %s\n%s: %s", 
+	tooltip = g_strdup_printf("%s: %s\n%s: %s",
 		_("Post when program start"), PREFS->appendscheduled ? _("On") : _("Off"),
 		_("maximum post date"),	buffer);
 	//gtk_label_set_text(GTK_LABEL(data->LB_maxpostdate), buffer);
 	gtk_widget_set_tooltip_text(data->IM_info, tooltip);
 
 	g_free(tooltip);
-	g_date_free(date);
 
 
 	fltmindate = HB_MINDATE;
@@ -506,7 +505,7 @@ GDate *date;
 		{
 			count++;
 			nbdays = arc->nextdate - maxpostdate;
-			nblate = scheduled_get_latepost_count(arc, GLOBALS->today);
+			nblate = scheduled_get_latepost_count(date, arc, GLOBALS->today);
 
 			DB( g_print(" eval %d in [%d-%d] ? days %d late %d, memo='%s'\n", arc->nextdate, fltmindate, fltmaxdate, nbdays, nblate, arc->memo) );
 
@@ -517,7 +516,7 @@ GDate *date;
 				{
 					DB( g_print("  skip '%s' : next %d >= maxshow %d\n", arc->memo, arc->nextdate, PREFS->pnl_upc_range) );
 					//TODO: count hidden
-					
+
 					goto next;
 				}
 			}
@@ -550,7 +549,7 @@ GDate *date;
 					amount = arc->xferamount;
 					DB( g_print("  xfer amount is != curr %.17g\n", amount ) );
 				}
-				
+
 				/* opposite here */
 				if( arc->flags & OF_INCOME )
 					exp = amount;
@@ -586,6 +585,8 @@ next:
 		list = g_list_next(list);
 	}
 
+	g_date_free(date);
+
 	// insert total
 	if(count > 0 )
 	{
@@ -615,7 +616,7 @@ GtkWidget *hub, *vbox, *bbox, *scrollwin, *treeview, *tbar;
 GtkWidget *label, *widget;
 
 	DB( g_print("\n[hub-scheduled] create\n") );
-	
+
 	hub = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	hb_widget_set_margin(GTK_WIDGET(hub), SPACING_SMALL);
 
@@ -624,7 +625,7 @@ GtkWidget *label, *widget;
 
 	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
-	
+
 	treeview = (GtkWidget *)lst_sch_widget_new(LIST_SCH_TYPE_DISPLAY);
 	data->LV_upc = treeview;
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
@@ -672,13 +673,13 @@ GtkWidget *label, *widget;
 
 	g_signal_connect (gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_upc)), "changed", G_CALLBACK (ui_hub_scheduled_selection_cb), NULL);
 	g_signal_connect (GTK_TREE_VIEW(data->LV_upc), "row-activated", G_CALLBACK (ui_hub_scheduled_onRowActivated), NULL);
-	
+
 	g_signal_connect (G_OBJECT (data->BT_sched_skip), "clicked", G_CALLBACK (ui_hub_scheduled_skip_cb), data);
 	g_signal_connect (G_OBJECT (data->BT_sched_editpost), "clicked", G_CALLBACK (ui_hub_scheduled_editpost_cb), data);
 	g_signal_connect (G_OBJECT (data->BT_sched_post), "clicked", G_CALLBACK (ui_hub_scheduled_post_cb), data);
 
 	g_signal_connect (data->CY_sched_range, "changed", G_CALLBACK (ui_hub_scheduled_populate), NULL);
-	
+
 	return hub;
 }
 

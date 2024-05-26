@@ -56,7 +56,7 @@ gchar *string;
 	g_object_set(renderer, "text", string, NULL);
 	g_free(string);
 }
-#endif	
+#endif
 
 
 
@@ -76,7 +76,7 @@ gint nblate;
 }
 
 
-static void 
+static void
 lst_sch_cell_data_func_latetext (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
 Archive *arc;
@@ -116,7 +116,7 @@ gint nblate;
 }
 
 
-static void 
+static void
 lst_sch_cell_data_func_still (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
 Archive *arc;
@@ -150,16 +150,21 @@ gchar buffer[256];
 
 	if( arc != NULL )
 	{
-	GDate *date = g_date_new_julian (arc->nextdate);
-		g_date_strftime (buffer, 256-1, PREFS->date_format, date);
-		g_date_free(date);
-		text = buffer;
+		//TODO: g_date_valid(arc->nextdate) ?
+		if( arc->nextdate > 0 )
+		{
+		GDate *date = g_date_new_julian (arc->nextdate);
+
+			g_date_strftime (buffer, 256-1, PREFS->date_format, date);
+			g_date_free(date);
+			text = buffer;
+		}
 	}
 	g_object_set(renderer, "text", text, NULL);
 }
 
 
-static void 
+static void
 lst_sch_cell_data_func_payee (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
 Archive *arc;
@@ -179,12 +184,12 @@ gchar *text = NULL;
 			//5.6 use acc strings for 5.3 add > < for internal xfer
 			if( acc )
 				text = ( arc->flags & OF_INCOME ) ? acc->xferincname : acc->xferexpname;
-			
+
 		}
 		else
 		{
 		Payee *pay = da_pay_get(arc->kpay);
-			
+
 			text = (pay != NULL) ? pay->name : NULL;
 		}
 	}
@@ -203,7 +208,7 @@ gchar *text = NULL;
 	gtk_tree_model_get(model, iter,
 		LST_DSPUPC_DATAS, &arc,
 		-1);
-		
+
 	if( arc != NULL )
 	{
 		if(arc->flags & OF_SPLIT)
@@ -221,7 +226,7 @@ gchar *text = NULL;
 }
 
 
-static void 
+static void
 lst_sch_cell_data_func_memo (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
 Archive *arc;
@@ -244,7 +249,7 @@ gint weight;
 }
 
 
-static void 
+static void
 ui_arc_listview_cell_data_function_memo (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
 Archive *arc;
@@ -259,7 +264,7 @@ gchar *text = NULL;
 }
 
 
-static void 
+static void
 lst_sch_cell_data_func_amount (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
 Archive *arc;
@@ -269,14 +274,14 @@ gint column = GPOINTER_TO_INT(user_data);
 gchar *color;
 gint weight;
 
-	gtk_tree_model_get(model, iter, 
+	gtk_tree_model_get(model, iter,
 		LST_DSPUPC_DATAS, &arc,
 		LST_DSPUPC_EXPENSE, &expense,
 		LST_DSPUPC_INCOME , &income,
 		-1);
 
 	amount = (column == -1) ? expense : income;
-		
+
 	if( amount != 0.0 )
 	{
 	Account *acc = NULL;
@@ -316,7 +321,7 @@ gint weight;
 	{
 		g_object_set(renderer, "text", NULL, NULL);
 	}
-	
+
 }
 
 
@@ -330,7 +335,7 @@ Account *acc;
 gchar *color;
 gint weight;
 
-	gtk_tree_model_get(model, iter, 
+	gtk_tree_model_get(model, iter,
 		LST_DSPUPC_DATAS, &arc,
 		-1);
 
@@ -359,18 +364,18 @@ gint weight;
 	{
 		g_object_set(renderer, "text", NULL, NULL);
 	}
-	
+
 }
 
 
-static void 
+static void
 ui_arc_listview_cell_data_func_info (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
 Archive *arc;
 gchar *iconname = NULL;
 gchar *text = NULL;
 
-	gtk_tree_model_get(model, iter, 
+	gtk_tree_model_get(model, iter,
 		LST_DSPUPC_DATAS, &arc,
 	    -1);
 
@@ -401,14 +406,14 @@ gchar *text = NULL;
 }
 
 
-static void 
+static void
 ui_arc_listview_cell_data_func_clr (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
 Archive *arc;
 gchar *iconname = NULL;
 //const gchar *c = "";
 
-	gtk_tree_model_get(model, iter, 
+	gtk_tree_model_get(model, iter,
 		LST_DSPUPC_DATAS, &arc,
 		 -1);
 
@@ -426,7 +431,7 @@ gchar *iconname = NULL;
 					case TXN_STATUS_CLEARED:	iconname = ICONNAME_HB_OPE_CLEARED; break;
 					case TXN_STATUS_RECONCILED: iconname = ICONNAME_HB_OPE_RECONCILED; break;
 					case TXN_STATUS_REMIND:     iconname = ICONNAME_HB_OPE_REMIND; break;
-					case TXN_STATUS_VOID:       iconname = ICONNAME_HB_OPE_VOID; break;		
+					case TXN_STATUS_VOID:       iconname = ICONNAME_HB_OPE_VOID; break;
 				}
 				break;
 			}
@@ -441,7 +446,7 @@ gchar *iconname = NULL;
 }
 
 
-static void 
+static void
 lst_sch_cell_data_func_account (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
 Archive *arc;
@@ -491,7 +496,7 @@ domemo:		retval = (item1->flags & GF_INCOME) - (item2->flags & GF_INCOME);
 				retval = hb_string_utf8_compare(item1->memo, item2->memo);
 			}
 			break;
-			
+
 		case COL_SCH_UID_PAYNUMBER:
 			if(!(retval = item1->paymode - item2->paymode))
 			{
@@ -546,7 +551,7 @@ domemo:		retval = (item1->flags & GF_INCOME) - (item2->flags & GF_INCOME);
 				}
 			}
 			break;
-			
+
 		default:
 			g_return_val_if_reached(0);
 	}
@@ -554,7 +559,7 @@ domemo:		retval = (item1->flags & GF_INCOME) - (item2->flags & GF_INCOME);
 }
 
 
-static void 
+static void
 ui_arc_listview_cell_data_func_icons (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
 Archive *item;
@@ -573,7 +578,7 @@ gchar *iconname = NULL;
 }
 
 
-static void 
+static void
 ui_arc_listview_cell_data_function_auto (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
 Archive *item;
@@ -626,7 +631,7 @@ gboolean retval = FALSE;
 }
 
 
-static gboolean 
+static gboolean
 lst_sch_cb_selection_func(GtkTreeSelection *selection, GtkTreeModel *model, GtkTreePath *path, gboolean path_currently_selected, gpointer data)
 {
 GtkTreeIter iter;
@@ -674,7 +679,7 @@ guint button = 0;
 	gdk_event_get_button(event, &button);
 
 	DB( g_print ("\n[lst_sch] popmenu pop\n") );
-	
+
 	if (type == GDK_BUTTON_PRESS && button == 3)
 	{
 
@@ -738,7 +743,7 @@ guint i;
 			}
 		}
 	}
-	
+
 	g_signal_connect (menu, "destroy", G_CALLBACK (lst_sch_popmenu_destroy), NULL);
 	gtk_widget_show_all(menu);
 
@@ -850,20 +855,20 @@ gint i, *colpos_ptr = PREFS->lst_sch_columns;
 	for(i=0;i<NUM_COL_SCH_UID;i++)
 	{
 	GtkTreeViewColumn *column;
-	
+
 		if( colpos_ptr[i] <= 0 )
 			break;
-	
+
 		column = ui_arc_listview_widget_get_column_by_uid(treeview, colpos_ptr[i]);
 		if( column != NULL )
 		{
-			DB( g_print (" >move %d '%s' after %d '%s'\n", 
+			DB( g_print (" >move %d '%s' after %d '%s'\n",
 				colpos_ptr[i],
 				gtk_tree_view_column_get_title(column),
 				GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(base_column), "uid")),
 				gtk_tree_view_column_get_title(base_column)
 				) );
-		
+
 			gtk_tree_view_move_column_after(treeview, column, base_column);
 			base_column = column;
 		}
@@ -878,7 +883,7 @@ guint i;
 gint *colpos_ptr = PREFS->lst_sch_columns;
 
 	DB( g_print ("\n[lst_arc] columns get order\n") );
-	
+
 	for(i=0;i<gtk_tree_view_get_n_columns(treeview)-1;i++)	//-1 to avoid empty column
 	{
 	GtkTreeViewColumn *column = gtk_tree_view_get_column(treeview, i);
@@ -921,7 +926,7 @@ GtkCellRenderer    *renderer;
 	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_arc_listview_cell_data_func_info, GINT_TO_POINTER(1), NULL);
 
 	renderer = gtk_cell_renderer_text_new ();
-	g_object_set(renderer, 
+	g_object_set(renderer,
 		"ellipsize", PANGO_ELLIPSIZE_END,
 	    "ellipsize-set", TRUE,
 		//taken from nemo, not exactly a resize to content, but good compromise
@@ -935,7 +940,7 @@ GtkCellRenderer    *renderer;
 	gtk_tree_view_column_set_resizable(column, TRUE);
 
 	g_object_set_data(G_OBJECT(column), "uid", GUINT_TO_POINTER(COL_SCH_UID_PAYNUMBER));
-	if( sortcolumnid > 0 )	
+	if( sortcolumnid > 0 )
 		gtk_tree_view_column_set_sort_column_id (column, COL_SCH_UID_PAYNUMBER);
 
 	gtk_tree_view_column_set_min_width (column, HB_MINWIDTH_COLUMN);
@@ -952,13 +957,13 @@ GtkTreeViewColumn  *column;
 GtkCellRenderer    *renderer;
 
 	renderer = gtk_cell_renderer_text_new ();
-	g_object_set(renderer, 
+	g_object_set(renderer,
 		"ellipsize", PANGO_ELLIPSIZE_END,
 	    "ellipsize-set", TRUE,
 		//taken from nemo, not exactly a resize to content, but good compromise
 	    "width-chars", 40,
 	    NULL);
-	
+
 	column = gtk_tree_view_column_new_with_attributes(title, renderer, NULL);
 
 	if( uid > 0 )
@@ -977,7 +982,7 @@ GtkCellRenderer    *renderer;
 }
 
 
-static void 
+static void
 lst_sch_widget_destroy(GtkTreeView *treeview, gpointer user_data)
 {
 struct lst_sch_data *data;
@@ -1098,7 +1103,7 @@ GtkTreeViewColumn *column;
 	/* column: Category */
 	column = lst_sch_listview_column_text_create(_("Category"), COL_SCH_UID_CATEGORY, lst_sch_cell_data_func_category, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
-	
+
 	/* column: Memo */
 	column = lst_sch_listview_column_text_create(_("Memo"), COL_SCH_UID_MEMO, lst_sch_cell_data_func_memo, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
@@ -1159,7 +1164,7 @@ GtkTreeViewColumn *column;
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), LST_DSPUPC_NEXT, GTK_SORT_ASCENDING);
 
 	lst_sch_widget_columns_prefs_set(data);
-	
+
 	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(treeview), FALSE);
 
 	GtkWidget *popmenu = lst_sch_popmenu_new(GTK_TREE_VIEW(treeview));
@@ -1219,7 +1224,7 @@ GtkTreeViewColumn  *column;
 	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_arc_listview_cell_data_function_auto, GINT_TO_POINTER(1), NULL);
 
 	renderer = gtk_cell_renderer_text_new ();
-	g_object_set(renderer, 
+	g_object_set(renderer,
 		"ellipsize", PANGO_ELLIPSIZE_END,
 	    "ellipsize-set", TRUE,
 		//taken from nemo, not exactly a resize to content, but good compromise
@@ -1228,7 +1233,7 @@ GtkTreeViewColumn  *column;
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_arc_listview_cell_data_function_auto, GINT_TO_POINTER(2), NULL);
 	gtk_tree_view_column_set_spacing(column, SPACING_TINY);
-	
+
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
 	/* column: Date Next on */
@@ -1298,7 +1303,7 @@ GtkTreeViewColumn  *column;
 	gtk_tree_view_column_set_alignment (column, 1.0);
 	gtk_tree_view_column_set_reorderable(column, TRUE);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
-	
+
 	/* column : Account */
 	column = lst_sch_listview_column_text_create(_("Account"), COL_SCH_UID_ACCOUNT, lst_sch_cell_data_func_account, NULL);
 	gtk_tree_view_column_set_sort_column_id (column, COL_SCH_UID_ACCOUNT);
