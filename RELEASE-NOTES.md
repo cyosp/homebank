@@ -1,6 +1,9 @@
 Release notes
 -------------
 
+##### 5.8.0.2 ⑂ CYOSP (2024-05-26)
+ * For same bank, link destination account transfer date to source account date in "Edit transaction" dialog
+
 ##### 5.8.0.1 ⑂ CYOSP (2024-05-23)
  * Version based on 5.8 release
 
