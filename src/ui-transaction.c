@@ -66,7 +66,7 @@ gchar *curlabel = "";
 	if( acc != NULL )
 	{
 	Currency *cur =	da_cur_get(acc->kcur);
-		
+
 		curdigits = (cur != NULL) ? cur->frac_digits : 2;
 		curlabel  = strlen(cur->iso_code) == 3 ? cur->iso_code : cur->symbol;
 	}
@@ -143,7 +143,7 @@ gchar *lbto;
 	visible = (data->type == TXN_DLG_TYPE_TPL) ? FALSE : TRUE;
 	hb_widget_visible(data->LB_date, visible);
 	hb_widget_visible(data->GR_date, visible);
-	
+
 	//xfer: hide split+paymode / show accto
 	visible = (type == TXN_TYPE_INTXFER) ? FALSE : TRUE;
 	DB( g_print(" is xfer %d: hide split/pay, show accto\n", !visible) );
@@ -168,7 +168,7 @@ gchar *lbto;
 	//disable amount+category if split is set
 	sensitive = (data->ope->flags & (OF_SPLIT)) ? FALSE : TRUE;
 	DB( g_print(" is plit %d: disable amt/cat\n", !sensitive) );
-	gtk_widget_set_sensitive(data->RA_type, sensitive);	
+	gtk_widget_set_sensitive(data->RA_type, sensitive);
 	gtk_widget_set_sensitive(data->ST_amount, sensitive);
 	gtk_widget_set_sensitive(data->PO_cat, sensitive);
 
@@ -180,7 +180,7 @@ gchar *lbto;
 	dstacc = ui_acc_entry_popover_get(GTK_BOX(data->PO_accto));
 
 	//#1676162 update the nb digits of amount
-	//set digits and currency label	
+	//set digits and currency label
 	deftransaction_set_amount_currency(srcacc, data->ST_amount, data->LB_curr);
 
 	lbto   = _("_To:");
@@ -228,7 +228,7 @@ gchar *lbto;
 	else
 	{
 		DB( g_print(" eval src/dst acc\n") );
-	
+
 		sensitive = ( (srcacc != NULL) && (srcacc->key != 0) ) ? TRUE : FALSE;
 		if( (type == TXN_TYPE_INTXFER) )
 		{
@@ -238,7 +238,7 @@ gchar *lbto;
 			if( (srcacc != NULL) && (dstacc != NULL) )
 			{
 				if( (dstacc->key != 0)
-				 && (dstacc->key != srcacc->key)   
+				 && (dstacc->key != srcacc->key)
 				 //#1673260 xfer
 				 //&& (dstacc->kcur == srcacc->kcur)
 				) { sensitive = TRUE; }
@@ -285,7 +285,7 @@ Category *cat;
 	if(warning)
 	{
 		gtk_widget_show_all(data->IB_warnsign);
-		//#GTK+710888: hack waiting a GTK fix 
+		//#GTK+710888: hack waiting a GTK fix
 		gtk_widget_queue_resize (data->IB_warnsign);
 	}
 	else
@@ -409,7 +409,7 @@ static gboolean deftransaction_cb_dstamount_focusout(GtkWidget *widget, GdkEvent
 struct deftransaction_data *data;
 gint type;
 gdouble amount;
-	
+
 	DB( g_print("\n[ui-transaction] dst amount focus-out-event %d\n", gtk_widget_is_focus(widget)) );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
@@ -430,6 +430,25 @@ gdouble amount;
 	return FALSE;
 }
 
+static gboolean deftransaction_cb_date_changed(GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
+{
+    DB(g_print("\n[ui-transaction] date change\n") );
+
+	struct deftransaction_data *data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+	Account * sourceAccount = ui_acc_entry_popover_get(GTK_BOX(data->PO_acc));
+	Account * targetAccount = ui_acc_entry_popover_get(GTK_BOX(data->PO_accto));
+	if(sourceAccount != NULL && targetAccount != NULL) {
+	   gchar * sourceAccountName = sourceAccount->bankname;
+	   DB(g_print("Source account name: %s\n", sourceAccountName));
+	   gchar * targetAccountName = targetAccount->bankname;
+	   DB(g_print("Target account name: %s\n", targetAccountName));
+	      if(sourceAccountName != NULL && targetAccountName != NULL && strcmp(sourceAccountName, targetAccountName) == 0) {
+		    gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_dateto), gtk_date_entry_get_date(GTK_DATE_ENTRY(data->PO_date)));
+	        DB(g_print("Link target account date to source account date\n"));
+	      }
+	 }
+}
+
 
 static gboolean deftransaction_cb_amount_focusout(GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
 {
@@ -448,7 +467,7 @@ gboolean change;
 	change = FALSE;
 	if( hb_amount_type_match(amount, type) == FALSE )
 		change = TRUE;
-	
+
 	// for internal transfer add, amount must be expense by default
 	if( type == TXN_TYPE_INTXFER && data->action == TXN_DLG_ACTION_ADD && amount > 0)
 		change = TRUE;
@@ -462,7 +481,7 @@ gboolean change;
 	}
 
 	deftransaction_set_amount_xfer(data);
-	
+
 	//#1872329 fill-in cheque if condition match
 	deftransaction_set_cheque(widget, NULL);
 
@@ -496,9 +515,9 @@ gint type;
 	ui_cat_entry_popover_sort_type(GTK_BOX(data->PO_cat), type);
 
 	deftransaction_cb_amount_focusout(widget, NULL, user_data);
-	
+
 	deftransaction_update(widget, user_data);
-	
+
 }
 
 
@@ -517,7 +536,7 @@ gchar *tagstr;
 
 	DB( g_print(" - ope=%p data=%p\n", data->ope, data) );
 
-	
+
 	//TRANSFER has priority on INCOME
 	//type = TXN_TYPE_NONE;
 	if(entry->flags & OF_INTXFER)
@@ -528,7 +547,7 @@ gchar *tagstr;
 		if(entry->flags & OF_INCOME)
 			type = TXN_TYPE_INCOME;
 	}
-	
+
 	g_signal_handlers_block_by_func(G_OBJECT(data->RA_type), G_CALLBACK(deftransaction_cb_type_toggled), NULL);
 	hbtk_switcher_set_active(HBTK_SWITCHER(data->RA_type), type);
 	g_signal_handlers_unblock_by_func(G_OBJECT(data->RA_type), G_CALLBACK(deftransaction_cb_type_toggled), NULL);
@@ -554,7 +573,7 @@ gchar *tagstr;
 	hbtk_entry_set_text(GTK_ENTRY(data->ST_number), entry->number);
 	//ui_cat_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_cat), entry->kcat);
 	ui_cat_entry_popover_set_active(GTK_BOX(data->PO_cat), entry->kcat);
-	
+
 	//#1910857 don't trigger autofill when set payee
 	g_signal_handlers_block_by_func(G_OBJECT(ui_pay_entry_popover_get_entry(GTK_BOX(data->PO_pay))), G_CALLBACK(deftransaction_cb_payee_changed), NULL);
 	//ui_pay_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_pay), entry->kpay);
@@ -577,20 +596,20 @@ gchar *tagstr;
 	{
 		//ui_acc_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_acc), entry->kacc);
 		ui_acc_entry_popover_set_active(GTK_BOX(data->PO_acc), entry->kacc);
-	}	
+	}
 	else  //1829007 set first item if only 1 account
 	{
-		//#1859077 >=5.3 no default account, as we should pass acckey here 
+		//#1859077 >=5.3 no default account, as we should pass acckey here
 		ui_acc_entry_popover_set_single(GTK_BOX(data->PO_acc));
 	}
 	//g_signal_handlers_unblock_by_func (G_OBJECT (data->PO_acc), G_CALLBACK (deftransaction_cb_accfrom_changed), NULL);
 	g_signal_handlers_unblock_by_func (G_OBJECT (ui_acc_entry_popover_get_entry(GTK_BOX(data->PO_acc))), G_CALLBACK (deftransaction_cb_accfrom_changed), NULL);
-	
+
 	//ui_acc_comboboxentry_populate_except(GTK_COMBO_BOX(data->PO_accto), GLOBALS->h_acc, entry->kacc, ACC_LST_INSERT_NORMAL);
 	ui_acc_entry_popover_populate_except(GTK_BOX(data->PO_accto), GLOBALS->h_acc, entry->kacc, ACC_LST_INSERT_NORMAL);
 	//ui_acc_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_accto), entry->kxferacc);
 	ui_acc_entry_popover_set_active(GTK_BOX(data->PO_accto), entry->kxferacc);
-	
+
 	paymode_combo_box_set_active(GTK_COMBO_BOX(data->NU_mode), entry->paymode);
 
 }
@@ -640,7 +659,7 @@ guint32 kcur, date;
 		data->ope->flags |= (OF_SPLIT);
 
 	DB( g_print(" - call update\n") );
-	deftransaction_update(data->dialog, NULL);	
+	deftransaction_update(data->dialog, NULL);
 }
 
 
@@ -660,7 +679,7 @@ gboolean visible;
 	visible = (paymode == PAYMODE_CHECK) ? TRUE : FALSE;
 	visible = (type == TXN_TYPE_INTXFER) ? FALSE : visible;
 	hb_widget_visible(data->CM_cheque, visible);
-	
+
 	/* todo: prefill the cheque number ? */
 	deftransaction_set_cheque(widget, user_data);
 }
@@ -688,7 +707,7 @@ gint type;
 
 	data->ope->amount = amount;
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_amount), amount);
-	
+
 	deftransaction_update(widget, NULL);
 }
 
@@ -709,7 +728,7 @@ gint type, active;
 
 	//if( entry == NULL )
 	//	return;
-	
+
 	type = hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_type));
 	entry->flags &= ~(OF_INCOME|OF_INTXFER);
 	if( type == TXN_TYPE_INCOME)
@@ -724,7 +743,7 @@ gint type, active;
 	//#1988594 ensure amount are updated
 	gtk_spin_button_update(GTK_SPIN_BUTTON(data->ST_amount));
 	gtk_spin_button_update(GTK_SPIN_BUTTON(data->ST_xferamt));
-	
+
 	entry->amount = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_amount));
 	DB( g_print(" amount: %f '%s'\n", entry->amount, gtk_entry_get_text(GTK_ENTRY(data->ST_amount))) );
 
@@ -749,7 +768,7 @@ gint type, active;
 	if (txt && *txt)
 	{
 		entry->memo = g_strdup(txt);
-		
+
 		//#1716182 add into memo autocomplete
 		if( da_transaction_insert_memo(entry->memo, entry->date) )
 		{
@@ -760,7 +779,7 @@ gint type, active;
 			completion = gtk_entry_get_completion (GTK_ENTRY(data->ST_memo));
 			model = gtk_entry_completion_get_model (completion);
 			gtk_list_store_insert_with_values(GTK_LIST_STORE(model), &iter, -1,
-				0, txt, 
+				0, txt,
 				-1);
 		}
 	}
@@ -782,7 +801,7 @@ gint type, active;
 
 	entry->paymode  = paymode_combo_box_get_active(GTK_COMBO_BOX(data->NU_mode));
 	//entry->kcat     = ui_cat_comboboxentry_get_key_add_new(GTK_COMBO_BOX(data->PO_cat));
-	entry->kcat     = ui_cat_entry_popover_get_key_add_new(GTK_BOX(data->PO_cat)); 
+	entry->kcat     = ui_cat_entry_popover_get_key_add_new(GTK_BOX(data->PO_cat));
 	//entry->kpay     = ui_pay_comboboxentry_get_key_add_new(GTK_COMBO_BOX(data->PO_pay));
 	entry->kpay     = ui_pay_entry_popover_get_key_add_new(GTK_BOX(data->PO_pay));
 	DB( g_print(" paymode: %d\n", entry->paymode) );
@@ -828,7 +847,7 @@ gint type, active;
 	//1859117: keep the split flag
 	if( da_splits_length (entry->splits) > 0 )
 		entry->flags |= OF_SPLIT; //Flag that Splits are active
-	
+
 	if(	data->action == TXN_DLG_ACTION_ADD || data->action == TXN_DLG_ACTION_INHERIT)
 		entry->flags |= OF_ADDED;
 
@@ -836,7 +855,7 @@ gint type, active;
 		entry->flags |= OF_CHANGED;
 
 	active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_cheque));
-	if(active == 1) 
+	if(active == 1)
 		entry->flags |= OF_CHEQ2;
 
 	//#1673260
@@ -883,7 +902,7 @@ void deftransaction_external_confirm(GtkWidget *dialog, Transaction *ope)
 struct deftransaction_data *data;
 gchar buf[G_ASCII_DTOSTR_BUF_SIZE];
 gchar *txt;
-	
+
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(dialog, GTK_TYPE_WINDOW)), "inst_data");
 
 	DB( g_print("\n[ui-transaction] display confirm text\n") );
@@ -931,17 +950,17 @@ Account *acc;
 			//disable income
 			hbtk_switcher_set_nth_sensitive(HBTK_SWITCHER(data->RA_type), 1, FALSE);
 		}
-		
+
 		if( old_txn->amount > 0 )
 		{
 			data->isxferdst = TRUE;
 			//disable expense
 			hbtk_switcher_set_nth_sensitive(HBTK_SWITCHER(data->RA_type), 0, FALSE);
 		}
-		
+
 		//#1867979 todate
 		gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_dateto), (guint)child->date);
-		
+
 	}
 
 	DB( g_print(" xfer is target: %d\n", data->isxferdst) );
@@ -949,7 +968,7 @@ Account *acc;
 	deftransaction_set_transaction(dialog, new_txn);
 
 	DB( g_print(" ** dialog run **\n") );
-	
+
 	result = gtk_dialog_run (GTK_DIALOG (dialog));
 
 	DB( g_print(" ** dialog ended :: result=%d**\n", result) );
@@ -984,7 +1003,7 @@ Account *acc;
 		if(old_txn->date != new_txn->date)
 		{
 			da_transaction_queue_sort(acc->txn_queue);
-			accchanged = TRUE;		
+			accchanged = TRUE;
 		}
 
 		//if( new_txn->paymode == PAYMODE_INTXFER )
@@ -1014,7 +1033,7 @@ Account *acc;
 			if(old_txn->flags & OF_INTXFER)
 			{
 			gint break_result;
-		
+
 				DB( g_print(" - should break internal xfer\n") );
 
 				break_result = ui_dialog_msg_confirm_alert(
@@ -1025,7 +1044,7 @@ Account *acc;
 						_("_Break"),
 						TRUE
 					);
-	
+
 				if(break_result == GTK_RESPONSE_OK)
 				{
 					//we must use old_txn to ensure get the child
@@ -1050,7 +1069,7 @@ Account *acc;
 			transaction_acc_move(new_txn, old_txn->kacc, new_txn->kacc);
 			accchanged = TRUE;
 		}
-		
+
 		//#1581863 store reconciled date
 		if( (old_txn->status != new_txn->status) && (new_txn->status == TXN_STATUS_RECONCILED) )
 		{
@@ -1091,7 +1110,7 @@ struct deftransaction_data *data;
 
 	//if( ope == NULL )
 	//	return;
-	
+
 	data->ope = ope;
 
 	DB( g_print(" - ope=%p data=%p\n", data->ope, data) );
@@ -1115,9 +1134,9 @@ static void deftransaction_setup(struct deftransaction_data *data)
 	DB( g_print("\n[ui-transaction] setup\n") );
 
 	//DB( g_print(" init data\n") );
-	
 
-	DB( g_print(" populate\n") );	
+
+	DB( g_print(" populate\n") );
 
 	if( data->showtemplate )
 	{
@@ -1191,7 +1210,7 @@ Archive *entry1, *entry2;
     gtk_tree_model_get(model, b, LST_DSPTPL_DATAS, &entry2, -1);
 
 	retval = hb_string_utf8_compare(entry1->memo, entry2->memo);
-	
+
     return retval;
 }
 
@@ -1208,7 +1227,7 @@ GString *tpltitle;
 	gtk_list_store_clear(GTK_LIST_STORE(model));
 
 	tpltitle = g_string_sized_new(255);
-	
+
 	list = g_list_first(srclist);
 	while (list != NULL)
 	{
@@ -1216,7 +1235,7 @@ GString *tpltitle;
 
 		//#1968249 build a non empty label, when memo/payee/category are empty
 		da_archive_get_display_label(tpltitle, item);
-		
+
 		gtk_list_store_insert_with_values(GTK_LIST_STORE(model), &iter, -1,
 			LST_DSPTPL_DATAS, item,
 			LST_DSPTPL_NAME, tpltitle->str,
@@ -1309,7 +1328,7 @@ GtkWidget *box, *widget, *scrollwin, *treeview;
 	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_box_pack_start (GTK_BOX(box), scrollwin, TRUE, TRUE, 0);
 
-	store = gtk_list_store_new(NUM_LST_DSPTPL, 
+	store = gtk_list_store_new(NUM_LST_DSPTPL,
 		G_TYPE_POINTER,
 		G_TYPE_STRING);
 
@@ -1354,7 +1373,7 @@ GtkWidget *box, *widget, *scrollwin, *treeview;
 
 	//#1796564 hide show all template if no account
 	gtk_widget_set_visible (data->CM_showallacc, data->kacc == 0 ? FALSE : TRUE);
-	
+
 	//signals
 	g_signal_connect (data->CM_showsched, "toggled", G_CALLBACK (ui_popover_tpl_refilter), data);
 	g_signal_connect (data->CM_showallacc, "toggled", G_CALLBACK (ui_popover_tpl_refilter), data);
@@ -1399,7 +1418,7 @@ GtkWidget *box, *menubutton, *image;
 }
 
 
-static gboolean 
+static gboolean
 deftransaction_getgeometry(GtkWidget *widget, GdkEventConfigure *event, gpointer user_data)
 {
 struct WinGeometry *wg;
@@ -1442,7 +1461,7 @@ struct deftransaction_data *data;
 	//#1859088 remove any pending event source (g_timeout_add)
 	if(data->evtsrcid > 0)
 		g_source_remove(data->evtsrcid);
-	
+
 	deftransaction_getgeometry(data->dialog, NULL, data);
 
 	//#1681532 don't free here
@@ -1505,7 +1524,7 @@ gint row;
 			break;
 		case TXN_DLG_ACTION_ADD:
 			title = _("Add transaction");
-			if(type == TXN_DLG_TYPE_TPL) { title = _("Add template"); } 
+			if(type == TXN_DLG_TYPE_TPL) { title = _("Add template"); }
 			else if(type == TXN_DLG_TYPE_SCH) { title = _("Post scheduled"); }
 			break;
 		case TXN_DLG_ACTION_INHERIT:
@@ -1543,7 +1562,7 @@ gint row;
 	gtk_widget_set_halign (widget, GTK_ALIGN_CENTER);
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 0, row, 5, 1);
 	gtk_widget_set_margin_bottom(widget, SPACING_MEDIUM);
-	
+
 	data->showtemplate = FALSE;
 	if( (data->type == TXN_DLG_TYPE_TXN) && (da_archive_length() > 0) )
 	{
@@ -1633,13 +1652,13 @@ gint row;
 		data->LB_xfercurr = label;
 		//gtk_widget_set_margin_start(label, SPACING_SMALL);
 		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
-	
+
 		widget = gtk_image_new_from_icon_name(ICONNAME_WARNING, GTK_ICON_SIZE_SMALL_TOOLBAR);
 		data->IM_xfernorate = widget;
 		gtk_widget_set_tooltip_text (widget, _("No rate available to auto fill"));
 		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
 
-	
+
 	/*row++;
 	label = make_label_widget(_("A_ccount:"));
 	data->LB_accfrom = label;
@@ -1658,7 +1677,7 @@ gint row;
 
 	gtk_widget_set_margin_top(label, SPACING_MEDIUM);
 	gtk_widget_set_margin_top(widget, SPACING_MEDIUM);
-	
+
 	/*row++;
 	label = make_label_widget(_("T_o:"));
 	data->LB_accto = label;
@@ -1687,7 +1706,7 @@ gint row;
 	data->CM_cheque = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 3, row, 2, 1);
 
-	
+
 	row++;
 	label = make_label_widget(_("_Number:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
@@ -1711,7 +1730,7 @@ gint row;
 		//gtk_widget_set_tooltip_text(widget, _("Autocompletion and direct seizure\nis available"));
 		gtk_widget_set_tooltip_text(widget, _("- type some letter for autocompletion\n- type new text to create entry"));
 		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
-	
+
 	gtk_widget_set_margin_top(label, SPACING_MEDIUM);
 	gtk_widget_set_margin_top(hbox, SPACING_MEDIUM);
 	*/
@@ -1732,11 +1751,11 @@ gint row;
 		widget = gtk_image_new_from_icon_name (ICONNAME_INFO, GTK_ICON_SIZE_BUTTON);
 		gtk_widget_set_tooltip_text(widget, _("- type some letter for autocompletion\n- type new text to create entry"));
 		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
-	
+
 	gtk_widget_set_margin_top(label, SPACING_MEDIUM);
 	gtk_widget_set_margin_top(hbox, SPACING_MEDIUM);
 
-	
+
 	row++;
 	label = make_label_widget(_("Cate_gory:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
@@ -1764,7 +1783,7 @@ gint row;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
 	*/
 
-	//#1847622 transaction editor: "Status drop" down menu 
+	//#1847622 transaction editor: "Status drop" down menu
 	row++;
 	label = make_label_widget(_("_Status:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
@@ -1825,20 +1844,19 @@ gint row;
 
 	// connect dialog signals
 	g_signal_connect (dialog, "destroy", G_CALLBACK (deftransaction_cb_destroy), NULL);
-	
+
 	//debug signal not to release
 	//g_signal_connect (dialog, "configure-event", G_CALLBACK (deftransaction_getgeometry), (gpointer)data);
 
 	g_signal_connect (data->RA_type  , "changed", G_CALLBACK (deftransaction_cb_type_toggled), NULL);
 
-	//5.7 removed
-	//g_signal_connect (data->PO_date, "changed", G_CALLBACK (deftransaction_cb_date_changed), NULL);
-	
+	g_signal_connect (data->PO_date, "changed", G_CALLBACK (deftransaction_cb_date_changed), NULL);
+
 	//g_signal_connect (data->PO_acc  , "changed", G_CALLBACK (deftransaction_cb_accfrom_changed), NULL);
 	g_signal_connect (ui_acc_entry_popover_get_entry(GTK_BOX(data->PO_acc)), "changed", G_CALLBACK (deftransaction_cb_accfrom_changed), NULL);
 	//g_signal_connect (data->PO_accto, "changed", G_CALLBACK (deftransaction_update), NULL);
 	g_signal_connect (ui_acc_entry_popover_get_entry(GTK_BOX(data->PO_accto)), "changed", G_CALLBACK (deftransaction_update), NULL);
-	
+
 	g_signal_connect (data->ST_amount, "value-changed", G_CALLBACK (deftransaction_cb_amount_focusout), NULL);
 	g_signal_connect (data->ST_amount, "focus-out-event", G_CALLBACK (deftransaction_cb_amount_focusout), NULL);
 
