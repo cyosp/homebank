@@ -982,6 +982,7 @@ Account *acc;
 		account_balances_sub(old_txn);
 		account_balances_add(new_txn);
 
+		accchanged = TRUE;
 		/* ok different case here
 
 			* new is intxfer
@@ -1015,8 +1016,8 @@ Account *acc;
 			gint tmpxferresult;
 				// this call can popup a user dialog to choose
 				tmpxferresult = transaction_xfer_search_or_add_child(GTK_WINDOW(dialog), FALSE, new_txn, new_txn->kxferacc);
-				if( tmpxferresult != GTK_RESPONSE_CANCEL )
-					accchanged = TRUE;
+				if( tmpxferresult == GTK_RESPONSE_CANCEL )
+					accchanged = FALSE;
 			}
 			else	// just sync the existing xfer
 			{

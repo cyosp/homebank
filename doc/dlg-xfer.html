@@ -11,11 +11,16 @@
     HomeBank User manual
   </div>
   <div class="title">
-    <h1>Transfer selection dialog</h1>
-    <p>The transfer selection dialog is used to <b>choose an action for target creation</b> for <a href="00-lexicon.html#txntransfer">internal transfer</a> transactions.</p>
-    <h2>Dialog call</h2>
-    <p>Every time you are about to add a new transfer, or change a normal transaction to a transfer, or check the internal transfer consistency from the ledger window, HomeBank will check if there is some existing 
-    transaction into the target account that match the source transfer and if there is at least one, this dialog will popup and let you choose what to do.</p>
+    <h1>Action for internal transfer creation dialog</h1>
+    <p>In various situations, but mainly when you add an <a href="00-lexicon.html#txntransfer">internal transfer</a> manually, HomeBank searches for transactions that match the criteria (see below) for the target part of the transaction and this dialog will always popup to select the action you want to, including create the target transaction.</p>
+    <p>In version prior to 5.8, this dialog was only showed when at least one operation was found, otherwise the target part of the transfer was created automatically without any confirmation.<br>
+    You can change or return to this previous behavior by disabling the option in <a href="dlg-pref.html#tab4">Transfer behavior</a> section of the preferences.</p>
+    <h2>Dialog popup</h2>
+    <ul>
+      <li>when you add a new transfer</li>
+      <li>change a transaction to a transfer</li>
+      <li>check the internal transfer consistency from the ledger window</li>
+    </ul>
   </div>
 
   <div class="row">
@@ -23,39 +28,36 @@
     <img class="gtkshot right" src="images/dlg-xferselection.png">
   </div>
   <div class="rounded content">
-    <h2>Using transfer selection dialog</h2>
+    <h2>Using this dialog</h2>
 
     <h3><img src="images/1.png" width="15" height="15"> Source transfer</h3>
     <p>Display the transaction detail that triggered this pop-up</p>
 
     <h3><img src="images/2.png" width="15" height="15"> Target association suggested</h3>
-    <p>List the transaction that may match the source transfer you just added/changed to a transfer. A matching rate is also computed.</p>
-    <p>The matching criteria are:
+    <p>List the transaction that may be the associated transaction for the internal transfer. A kind of matching rate is also computed.</p>
+    <p>The matching criteria of transaction are:</p>
     <ul>
-      <li>currency is the same</li>
-      <li>date +/- xx days (set into preference since v5.3, previous was exact date match)</li>
-      <li>amount is the same</li>
-      <li>transaction not already a transfer</li>
-    </ul>  
-    </p>
-
+      <li>transaction not already an internal transfer</li>
+      <li>date is +/-nb days set in <a href="dlg-pref.html#tab4">Transfer behavior</a> section of the preferences.</li>
+      <li>same currency: amount is exact opposite the source amount</li>
+      <li>diff. currency: amount is +/-10% opposite the source amount</li>
+   </ul>
 
     <h3><img src="images/3.png" width="15" height="15"> Action button area</h3>
     <table class="widgetinfo">
       <tr>
         <th>Use Selection</th>
-        <td>After clicking on the correct target into the list (otherwise this button is disabled), this action will link the transfer and the selection as its transfer target.</td>
+        <td>After clicking on one of the target into the list (otherwise this button is disabled), this action will link the internal transfer and the selection as its internal transfer target.</td>
       </tr>
       <tr>
         <th>Create New</th>
-        <td>will create a new target transfer into the destination account.</td>
+        <td>will create a new target internal transfer into the destination account.</td>
       </tr>
       <tr>
         <th>Cancel<br>
         (or dialog close)</th>
         <td>
-        <img src="images/d-warn.png">&nbsp;<span class="warning">This will abort the target creation<br>
-        and insert a normal transaction instead.</span> </td>
+        This will abort the target creation</td>
       </tr>
     </table>
 

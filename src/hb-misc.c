@@ -48,7 +48,7 @@ gdouble out;
 
 	//initial formula
 		//out = floor((d * fac[digits]) + 0.5) / fac[digits];
-	//#1977796 fix rounding -0.5 : +0.5... 
+	//#1977796 fix rounding -0.5 : +0.5...
 		//out = round(d * fac[digits]) / fac[digits];
 	//#2018206 fix rounding -0.00...
 		//out = ((long) (d < 0 ? (d * fac[digits]) - 0.5 : (d * fac[digits]) + 0.5)) / fac[digits];
@@ -102,7 +102,7 @@ Currency *cur;
 	if( skcur == dkcur )
 		return value;
 
-	/* we can't convert if no base currency as src or dst */ 
+	/* we can't convert if no base currency as src or dst */
 	if( skcur != GLOBALS->kcur && dkcur != GLOBALS->kcur )
 		return 0.0;
 
@@ -172,7 +172,7 @@ gdouble tmpval = val1 - val2;
 gboolean hb_amount_equal(gdouble val1, gdouble val2)
 {
 gdouble tmpval1, tmpval2;
-	
+
 	tmpval1 = hb_amount_round(val1, 2);
 	tmpval2 = hb_amount_round(val2, 2);
 
@@ -200,7 +200,7 @@ gchar *hb_str_rate(gchar *outstr, gint outlen, gdouble rate)
 {
 gint count, i;
 gchar *p;
-	
+
 	count = g_snprintf(outstr, outlen, "%.6f", rate);
 	//remove trailing 0 and decimal point
 	p = &outstr[count-1];
@@ -270,7 +270,7 @@ gchar *s, *d, *tmp;
 		*d++ = ' ';
 		tmp = d;
 	}
-	
+
 	d = _strfnumcopycount(buf1, d, cur->decimal_char, &len, &nbi, &nbd);
 
 	if( cur->grouping_char != NULL && strlen(cur->grouping_char) > 0 )
@@ -308,7 +308,7 @@ gchar *s, *d, *tmp;
 	}
 
 	*d = 0;
-	
+
 	return d;
 }
 
@@ -407,7 +407,7 @@ gshort h, m;
 	if( !hb_amount_equal(GLOBALS->lifen_earnbyh, 0.0) && value < 0.0)
 	{
 		monval = hb_amount_base(value, kcur);
-		fracval = modf(ABS(monval) / GLOBALS->lifen_earnbyh, &intval); 
+		fracval = modf(ABS(monval) / GLOBALS->lifen_earnbyh, &intval);
 		h = (gint)intval;
 		m = (gint)(fracval*60);
 		if( (gint)(m / 60) > 30 ) m++;
@@ -474,7 +474,7 @@ gchar *color = NULL;
 		color = get_normal_color_amount(value);
 
 		//g_print("color: %s\n", color);
-		
+
 		if(color)
 		{
 			markuptxt = g_strdup_printf("<span color='%s'>%s</span>", color, strbuffer);
@@ -495,7 +495,7 @@ gchar *color = NULL;
 
 gint hb_string_ascii_compare(gchar *s1, gchar *s2)
 {
-	return g_ascii_strncasecmp(s1 == NULL ? "" : s1, s2 == NULL ? "" : s2, -1);	
+	return g_ascii_strncasecmp(s1 == NULL ? "" : s1, s2 == NULL ? "" : s2, -1);
 }
 
 
@@ -587,7 +587,7 @@ void hb_string_strip_utf8_bom(gchar *str)
 	if( g_str_has_prefix(str, "\xEF\xBB\xBF") )
 	{
 	gint len;
-		
+
 		DB( g_print("BOM is present into '%s'\n", str) );
 		len = strlen(str);
 		if(len>3)
@@ -623,7 +623,7 @@ hb_string_has_leading_trailing(gchar *str)
 gsize str_len;
 
 	g_return_val_if_fail (str != NULL, FALSE);
-	
+
 	str_len = strlen (str);
 	if(*str == ' ' || str[str_len-1] == ' ')
 		return TRUE;
@@ -814,7 +814,7 @@ gint nbc, nbd, i;
 gchar gdc='.';
 
 	DB( g_print(" digit=%d maxidx=%d\n", digit, len-digit-1) );
-	
+
 	nbc = nbd = 0;
 	for(i=len-1;i>=0;i--)
 	{
@@ -830,7 +830,7 @@ gchar gdc='.';
 	}
 	if( gdc=='.' && nbd > 1) gdc='?';
 	else if( gdc==',' && nbc > 1) gdc='?';
-	
+
 	return gdc;
 }
 
@@ -877,7 +877,7 @@ const gchar *p;
 
 	g_free(san_str);
 
-	return new_str;	
+	return new_str;
 }
 
 
@@ -980,13 +980,13 @@ gchar *datewithsep;
 	DB( g_print("\n[utils] hb_date_get_julian\n") );
 
 	//1st try with separator
-	DB( g_print(" 1st pass str='%s'\n", string) );	
+	DB( g_print(" 1st pass str='%s'\n", string) );
 	parsed = hb_date_parser_get_nums(string, &n1, &n2, &n3);
 	if( parsed == FALSE )
 	{
 		//#1904569 give a try with no separator
 		datewithsep = hb_date_add_separator(string, dateorder);
-		DB( g_print(" 2nd pass str='%s'\n", datewithsep) );	
+		DB( g_print(" 2nd pass str='%s'\n", datewithsep) );
 		parsed = hb_date_parser_get_nums(datewithsep, &n1, &n2, &n3);
 		g_free(datewithsep);
 	}
@@ -1113,7 +1113,7 @@ GPtrArray *array;
 
 	rawfilename = hb_filename_new_without_extension(basename);
 	pattern = g_strdup_printf("%s-????????.bak", rawfilename);
-	
+
 	pspec = g_pattern_spec_new(pattern);
 
 
@@ -1128,7 +1128,7 @@ GPtrArray *array;
 		while ((tmpname = g_dir_read_name (dir)) != NULL)
 		{
 		gboolean match;
-	
+
 			match = g_pattern_match_string(pspec, tmpname);
 			if( match )
 			{
@@ -1144,7 +1144,7 @@ GPtrArray *array;
 
 	g_free(basename);
 	g_free(dirname);
-	
+
 	g_ptr_array_sort(array, (GCompareFunc)hb_filename_backup_list_sort_func);
 
 	return array;
@@ -1167,7 +1167,7 @@ gchar *rawfilename, *pattern;
 
 	g_free(rawfilename);
 	g_free(basename);
-	
+
 	return pattern;
 }
 
@@ -1184,7 +1184,7 @@ GDate date;
 	g_date_clear(&date, 1);
 	g_date_set_julian (&date, GLOBALS->today);
 
-	newfilename = g_strdup_printf("%s-%04d%02d%02d.bak", 
+	newfilename = g_strdup_printf("%s-%04d%02d%02d.bak",
 				rawfilename,
 				g_date_get_year(&date),
 				g_date_get_month(&date),
@@ -1276,7 +1276,7 @@ GDate date;
 	g_date_set_julian (&date, julian);
 	switch(PREFS->dtex_datefmt)
 	{
-		//#2040010 change / to -		
+		//#2040010 change / to -
 		case PRF_DATEFMT_MDY:
 		{
 			g_sprintf(outstr, "%02d-%02d-%04d",
@@ -1314,11 +1314,10 @@ gchar buffer1[128];
 GDate *date;
 
 	date = g_date_new_julian(jdate);
-	g_date_strftime (buffer1, 128-1, "%x", date);
+	g_date_strftime (buffer1, 128-1, "%a %x", date);
 	g_date_free(date);
-	g_print(" - %s %s\n", label != NULL ? label:"date is", buffer1);
+	g_print("%s %d - '%s'\n", label != NULL ? label:"date is", jdate, buffer1);
 }
-
 
 
 /*

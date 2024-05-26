@@ -81,13 +81,13 @@
 
 #define HOMEBANK_MAJOR	5
 #define HOMEBANK_MINOR	8
-#define HOMEBANK_MICRO	0
+#define HOMEBANK_MICRO	1
 
-#define HB_VERSION		"5.8"
+#define HB_VERSION		"5.8.1"
 #define HB_VERSION_NUM	(HOMEBANK_MAJOR*10000) + (HOMEBANK_MINOR*100) + HOMEBANK_MICRO
 
 #define FILE_VERSION		1.5
-#define PREF_VERSION		580
+#define PREF_VERSION		581
 
 #if HB_UNSTABLE == FALSE
 	#define	PROGNAME		"HomeBank"
@@ -230,14 +230,14 @@ struct HomeBank
 	gint			define_off;		//>0 when a stat, account window is opened
 	gboolean		minor;
 
-	GtkApplication  *application;	
+	GtkApplication  *application;
 	GtkWidget		*mainwindow;	//should be global to access attached window data
 
 	GtkCssProvider	*provider;
 	GtkIconTheme	*icontheme;
 	//GdkPixbuf		*lst_pixbuf[NUM_LST_PIXBUF];
 	//gint			lst_pixbuf_maxwidth;
-	
+
 	GDBusProxy		*settings_portal;
 
 };

@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: homebank\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2024-05-11 12:04+0200\n"
-"PO-Revision-Date: 2022-12-22 09:55+0000\n"
-"Last-Translator: Ramon Cañellas Graupera <Unknown>\n"
+"PO-Revision-Date: 2024-05-13 14:48+0000\n"
+"Last-Translator: Eloi Torrents <Unknown>\n"
 "Language-Team: Catalan <ca@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2024-05-11 13:40+0000\n"
+"X-Launchpad-Export-Date: 2024-05-26 05:44+0000\n"
 "X-Generator: Launchpad (build 0e1f616671af724398db43b36ddfb3ed1f2682ec)\n"
 
 #: ../data/homebank.desktop.in.in.h:1 ../src/dsp-mainwindow.c:720
@@ -88,11 +88,11 @@ msgstr ""
 #: ../src/dsp-account.c:1816
 #, c-format
 msgid "Are you sure you want to delete the %d selected transaction?"
-msgstr ""
+msgstr "Està segur que vol eliminar les %d transaccions seleccionades?"
 
 #: ../src/dsp-account.c:1821
 msgid "If you delete a transaction, it will be permanently lost."
-msgstr ""
+msgstr "Si suprimiu una operació, es perdrà permanentment."
 
 #: ../src/dsp-account.c:1822 ../src/ui-account.c:1468 ../src/ui-archive.c:417
 #: ../src/ui-assign.c:1574 ../src/ui-budget-tabview.c:2320
@@ -133,6 +133,8 @@ msgstr "_Commuta"
 msgid ""
 "Are you sure you want to create template from the %d selected transaction?"
 msgstr ""
+"Està segur que vol crear una plantilla per a les %d transaccions "
+"seleccionades?"
 
 #: ../src/dsp-account.c:2131 ../src/dsp-account.c:2204
 msgid "_Create"
@@ -152,6 +154,8 @@ msgstr ""
 msgid ""
 "Are you sure you want to create assignment from the %d selected transaction?"
 msgstr ""
+"Està segur que vol crear assignacions per a les %d transaccions "
+"seleccionades?"
 
 #: ../src/dsp-account.c:2247
 msgid "Create Assignment"
@@ -196,6 +200,7 @@ msgstr "L'import de totes les transaccions es dividirà per %.6f."
 msgid ""
 "Are you sure you want to convert this account to Euro as Major currency?"
 msgstr ""
+"Estàs segur que vols convertir aquest compte a Euro com a divisa principal?"
 
 #: ../src/dsp-account.c:2618
 msgid "_Convert"
@@ -240,27 +245,27 @@ msgstr "Cap"
 #. { GRPFLAG_NONE,			"hb-gf-none",		N_("(none)") },
 #: ../src/dsp-account.c:2924 ../src/ui-widgets.c:1398
 msgid "Red"
-msgstr ""
+msgstr "Vermell"
 
 #: ../src/dsp-account.c:2925 ../src/ui-widgets.c:1399
 msgid "Orange"
-msgstr ""
+msgstr "Taronja"
 
 #: ../src/dsp-account.c:2926 ../src/ui-widgets.c:1400
 msgid "Yellow"
-msgstr ""
+msgstr "Groc"
 
 #: ../src/dsp-account.c:2927 ../src/ui-widgets.c:1401
 msgid "Green"
-msgstr ""
+msgstr "Verd"
 
 #: ../src/dsp-account.c:2928 ../src/ui-widgets.c:1402
 msgid "Blue"
-msgstr ""
+msgstr "Blau"
 
 #: ../src/dsp-account.c:2929 ../src/ui-widgets.c:1403
 msgid "Purple"
-msgstr ""
+msgstr "Violeta"
 
 #: ../src/dsp-account.c:2930
 msgid "_Flag"
@@ -328,7 +333,7 @@ msgstr ""
 
 #: ../src/dsp-account.c:2983
 msgid "Close"
-msgstr ""
+msgstr "Tancar"
 
 #. ...
 #: ../src/dsp-account.c:2985
@@ -438,7 +443,7 @@ msgstr "Suprimeix les transaccions seleccionades"
 
 #: ../src/dsp-account.c:3090
 msgid "Reconciled changes is"
-msgstr ""
+msgstr "Moure transacció a dalt"
 
 #: ../src/dsp-account.c:3174
 msgid "(closed)"
@@ -458,7 +463,7 @@ msgstr "_Actualitza"
 #: ../src/dsp-account.c:3257
 #, c-format
 msgid "Toggle show %d days ahead"
-msgstr ""
+msgstr "Mostrar %d dies d'antelació"
 
 #. window title
 #: ../src/dsp-account.c:3292 ../src/rep-stats.c:2170 ../src/ui-filter.c:1376
@@ -470,7 +475,7 @@ msgstr "Edita el filtre"
 #: ../src/dsp-account.c:3299 ../src/rep-balance.c:1165 ../src/rep-stats.c:2173
 #: ../src/rep-time.c:1484
 msgid "Clear filter"
-msgstr ""
+msgstr "Buida el filtre"
 
 #: ../src/dsp-account.c:3305 ../src/rep-balance.c:868 ../src/rep-budget.c:1935
 #: ../src/rep-stats.c:1734 ../src/rep-time.c:1157 ../src/rep-vehicle.c:792
@@ -578,7 +583,7 @@ msgstr "Configura _preferències"
 
 #: ../src/dsp-mainwindow.c:766
 msgid "Show this window next time"
-msgstr ""
+msgstr "Mostra aquesta finestra la propera vegada"
 
 #: ../src/dsp-mainwindow.c:1046
 #, c-format
@@ -587,10 +592,13 @@ msgid ""
 "\n"
 "Are you sure you want to do this?"
 msgstr ""
+"Esteu a punt d'obrir la còpia de seguretat «%s».\n"
+"\n"
+"Estàs segur que vols fer-ho?"
 
 #: ../src/dsp-mainwindow.c:1050
 msgid "Open the backup file?"
-msgstr ""
+msgstr "Voleu obrir la còpia de seguretat?"
 
 #: ../src/dsp-mainwindow.c:1052
 msgid "_Open backup"
@@ -766,7 +774,7 @@ msgstr "Pressupost..."
 
 #: ../src/dsp-mainwindow.c:1975
 msgid "Budget (table view)..."
-msgstr ""
+msgstr "Pressupost (vista de taula)..."
 
 #: ../src/dsp-mainwindow.c:1977
 msgid "_Transactions"
@@ -838,7 +846,7 @@ msgstr "C_ontingut"
 
 #: ../src/dsp-mainwindow.c:2006 ../src/dsp-mainwindow.c:2065
 msgid "Get Help Online..."
-msgstr ""
+msgstr "Obtenir Ajuda en Línia..."
 
 #: ../src/dsp-mainwindow.c:2009
 msgid "Check for updates..."
@@ -862,7 +870,7 @@ msgstr "_Quant a"
 
 #: ../src/dsp-mainwindow.c:2027
 msgid "New"
-msgstr ""
+msgstr "Nou"
 
 #: ../src/dsp-mainwindow.c:2027
 msgid "Create a new file"
@@ -870,7 +878,7 @@ msgstr "Crea un fitxer nou"
 
 #: ../src/dsp-mainwindow.c:2030
 msgid "Open"
-msgstr ""
+msgstr "Obre"
 
 #: ../src/dsp-mainwindow.c:2031
 msgid "Open a file"
@@ -882,7 +890,7 @@ msgstr "Obre un fitxer utilitzat recentment"
 
 #: ../src/dsp-mainwindow.c:2038
 msgid "Save"
-msgstr ""
+msgstr "Desa"
 
 #: ../src/dsp-mainwindow.c:2038
 msgid "Save the current file"
@@ -910,7 +918,7 @@ msgstr "Compte"
 
 #: ../src/dsp-mainwindow.c:2042
 msgid "Manage the accounts"
-msgstr ""
+msgstr "Gestiona els comptes"
 
 #. g_string_append (node, "payee" );
 #. column: Payee
@@ -932,7 +940,7 @@ msgstr "Beneficiari"
 
 #: ../src/dsp-mainwindow.c:2043
 msgid "Manage the payees"
-msgstr ""
+msgstr "Gestiona els beneficiaris"
 
 #. g_string_append (node, "category" );
 #. column: Category
@@ -956,7 +964,7 @@ msgstr "Categoria"
 
 #: ../src/dsp-mainwindow.c:2044
 msgid "Manage the categories"
-msgstr ""
+msgstr "Gestiona les categories"
 
 #: ../src/dsp-mainwindow.c:2045
 msgid "Scheduled/Template"
@@ -974,7 +982,7 @@ msgstr "Pressupost"
 
 #: ../src/dsp-mainwindow.c:2046
 msgid "Manage the budget"
-msgstr ""
+msgstr "Gestiona el pressupost"
 
 #: ../src/dsp-mainwindow.c:2047 ../src/ui-assign.c:957 ../src/ui-dialogs.c:306
 msgid "Assignment"
@@ -1039,11 +1047,11 @@ msgstr "Obriu l'informe de costos del vehicle"
 
 #: ../src/dsp-mainwindow.c:2065
 msgid "Help"
-msgstr ""
+msgstr "Ajuda"
 
 #: ../src/dsp-mainwindow.c:2066
 msgid "Donate"
-msgstr ""
+msgstr "Feu una donació"
 
 #: ../src/dsp-mainwindow.c:2066
 msgid "Donate to HomeBank project"
@@ -1086,12 +1094,12 @@ msgstr "format CSV no vàlid"
 
 #: ../src/hb-filter.c:1101
 msgid "Invalid date range!"
-msgstr ""
+msgstr "Interval de dates no vàlid!"
 
 #. header
 #: ../src/hb-filter.c:1118 ../src/ui-filter.c:1266 ../src/ui-filter.c:1429
 msgid "Type"
-msgstr ""
+msgstr "Tipus"
 
 #. /TRANSLATORS: n-exp > normal espense
 #: ../src/hb-filter.c:1121
@@ -1146,7 +1154,7 @@ msgstr "Etiqueta"
 #: ../src/ui-filter.c:1206 ../src/ui-filter.c:1451 ../src/ui-payee.c:987
 #: ../src/ui-pref.c:78
 msgid "Payment"
-msgstr ""
+msgstr "Pagament"
 
 #. g_string_append (node, "amount" );
 #. column: Amount
@@ -1164,7 +1172,7 @@ msgstr "Quantitat"
 #. header
 #: ../src/hb-filter.c:1197 ../src/ui-filter.c:1162
 msgid "Text"
-msgstr ""
+msgstr "Text"
 
 #: ../src/hb-hbfile.c:635 ../src/ui-assist-import.c:2160
 msgid "Unknown"
@@ -1240,7 +1248,7 @@ msgstr ""
 
 #: ../src/homebank.c:73
 msgid "Show the application’s version"
-msgstr ""
+msgstr "Mostra la versió de l'aplicació"
 
 #: ../src/homebank.c:79
 msgid "[FILE]"
@@ -1265,15 +1273,15 @@ msgstr "Els teus comptes"
 
 #: ../src/hub-account.c:588
 msgid "Copy to clipboard"
-msgstr ""
+msgstr "Copia al porta-retalls"
 
 #: ../src/hub-account.c:593
 msgid "Group by"
-msgstr ""
+msgstr "Agrupa per"
 
 #: ../src/hub-account.c:594
 msgid "type"
-msgstr ""
+msgstr "tipus"
 
 #: ../src/hub-account.c:595
 msgid "group"
@@ -1390,7 +1398,7 @@ msgstr ""
 #: ../src/hub-reptotal.c:143 ../src/hub-reptime.c:136
 #, c-format
 msgid "Account Balance"
-msgstr ""
+msgstr "Saldo del compte"
 
 #: ../src/hub-reptotal.c:146 ../src/hub-reptime.c:140
 #, c-format
@@ -1456,7 +1464,7 @@ msgstr "Ingressos"
 
 #: ../src/hub-reptime.c:131 ../src/hub-reptime.c:529
 msgid "Spending & Revenue"
-msgstr ""
+msgstr "Despeses i ingressos"
 
 #: ../src/hub-reptime.c:133
 msgid "Expense & Income"
@@ -1730,11 +1738,11 @@ msgstr "Mes"
 
 #: ../src/rep-budget.c:655
 msgid "Budget by category"
-msgstr ""
+msgstr "Pressupost per categoria"
 
 #: ../src/rep-budget.c:657
 msgid "Budget by month"
-msgstr ""
+msgstr "Pressupost per mes"
 
 #: ../src/rep-budget.c:1418 ../src/rep-budget.c:1661
 msgid " over"
@@ -1933,7 +1941,7 @@ msgstr ""
 msgid "Time slice"
 msgstr "Partició temporal"
 
-#. 
+#.
 #. LST_CAR_DATE,
 #. LST_CAR_MEMO,
 #. LST_CAR_METER,
@@ -1942,10 +1950,10 @@ msgstr "Partició temporal"
 #. LST_CAR_AMOUNT,
 #. LST_CAR_DIST,
 #. LST_CAR_100KM
-#. 
-#. 
+#.
+#.
 #. column: Memo
-#. 
+#.
 #. column = gtk_tree_view_column_new();
 #. gtk_tree_view_column_set_title(column, _("Memo"));
 #. gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
@@ -1953,7 +1961,7 @@ msgstr "Partició temporal"
 #. gtk_tree_view_column_pack_start(column, renderer, TRUE);
 #. gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_MEMO);
 #. //gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
-#. 
+#.
 #. column: Meter
 #: ../src/rep-vehicle.c:175 ../src/rep-vehicle.c:1377
 msgid "Meter"
@@ -2102,7 +2110,7 @@ msgstr "Suprimeix"
 
 #: ../src/ui-account.c:1888
 msgid "Rename"
-msgstr ""
+msgstr "Canvia el nom"
 
 #: ../src/ui-account.c:1895 ../src/ui-assign.c:1909
 msgid "Move up"
@@ -2110,7 +2118,7 @@ msgstr ""
 
 #: ../src/ui-account.c:1899 ../src/ui-assign.c:1913
 msgid "Move down"
-msgstr ""
+msgstr "Mou avall"
 
 #: ../src/ui-account.c:1915 ../src/ui-hbfile.c:276 ../src/ui-pref.c:74
 #: ../src/ui-pref.c:1587 ../src/ui-pref.c:2001
@@ -2119,7 +2127,7 @@ msgstr "General"
 
 #: ../src/ui-account.c:1935
 msgid "_Group:"
-msgstr ""
+msgstr "_Grup:"
 
 #: ../src/ui-account.c:1944
 msgid "_Institution:"
@@ -2143,7 +2151,7 @@ msgstr "aquest compte ha estat _tancat"
 
 #: ../src/ui-account.c:1980
 msgid "Website:"
-msgstr ""
+msgstr "Pàgina web:"
 
 #: ../src/ui-account.c:1988 ../src/ui-assign.c:1183 ../src/ui-payee.c:1279
 msgid "Notes:"
@@ -2151,7 +2159,7 @@ msgstr "Notes:"
 
 #: ../src/ui-account.c:2007
 msgid "Behaviour"
-msgstr ""
+msgstr "Comportament"
 
 #: ../src/ui-account.c:2016
 msgid "Automation"
@@ -2183,7 +2191,7 @@ msgstr "exclou de qualsevol _informe"
 
 #: ../src/ui-account.c:2072
 msgid "Misc."
-msgstr ""
+msgstr "Altres"
 
 #: ../src/ui-account.c:2081
 msgid "Current check number"
@@ -2216,6 +2224,7 @@ msgstr ""
 #: ../src/ui-archive.c:401
 msgid "This template is used as an account template and cannot be deleted."
 msgstr ""
+"Aquesta plantilla s'utilitza com a plantilla de compte i no es pot suprimir."
 
 #: ../src/ui-archive.c:411
 msgid "If you delete a scheduled/template, it will be permanently lost."
@@ -2279,18 +2288,18 @@ msgstr ""
 #. column : Notes
 #: ../src/ui-assign.c:583
 msgid "Notes"
-msgstr ""
+msgstr "Notes"
 
 #. #2042035
 #: ../src/ui-assign.c:726
 #, c-format
 msgid "Search cannot be empty"
-msgstr ""
+msgstr "La cerca no pot estar buida"
 
 #: ../src/ui-assign.c:738
 #, c-format
 msgid "This search text already exists at position %d"
-msgstr ""
+msgstr "Aquest text de cerca ja existeix a la posició %d"
 
 #. GTK_FILE_CHOOSER_ACTION_OPEN,
 #: ../src/ui-assign.c:960 ../src/ui-assist-import.c:752
@@ -2399,7 +2408,7 @@ msgstr "Gestiona les assignacions"
 
 #: ../src/ui-assign.c:1902
 msgid "Duplicate"
-msgstr ""
+msgstr "Duplica"
 
 #: ../src/ui-assist-start.c:57
 msgid ""
@@ -2423,10 +2432,12 @@ msgid ""
 "HomeBank will display a title for the main window,\n"
 "it can be a free label or your name."
 msgstr ""
+"HomeBank mostrarà un títol a la finestra principal,\n"
+"Pot ser una etiqueta qualsevol o el teu nom."
 
 #: ../src/ui-assist-start.c:146 ../src/ui-hbfile.c:280
 msgid "_Title:"
-msgstr ""
+msgstr "_Títol:"
 
 #. 123456789012345678901234567890123456789012345678901234567890
 #: ../src/ui-assist-start.c:264
@@ -2441,7 +2452,7 @@ msgstr ""
 
 #: ../src/ui-assist-start.c:282
 msgid "Setup additional currencies"
-msgstr ""
+msgstr "Configurar monedes addicionals"
 
 #: ../src/ui-assist-start.c:294 ../src/ui-transaction.c:1495
 msgid "_Add"
@@ -2460,7 +2471,7 @@ msgstr ""
 
 #: ../src/ui-assist-start.c:417
 msgid "Setup categories for my language"
-msgstr ""
+msgstr "Configurar categories per al meu idioma"
 
 #: ../src/ui-assist-start.c:427
 msgid "Preset file:"
@@ -2475,7 +2486,7 @@ msgstr ""
 
 #: ../src/ui-assist-start.c:513
 msgid "Create my first account"
-msgstr ""
+msgstr "Crea el meu primer compte"
 
 #: ../src/ui-assist-start.c:525 ../src/ui-category.c:1716
 #: ../src/ui-currency.c:1237 ../src/ui-payee.c:1269 ../src/ui-tag.c:905
@@ -2488,6 +2499,9 @@ msgid ""
 "\n"
 "press 'Apply' to apply changes"
 msgstr ""
+"Aquesta és una pàgina de confirmació.\n"
+"\n"
+"premeu 'Aplica' per aplicar canvis"
 
 #: ../src/ui-assist-start.c:733
 msgid "Start File Setup"
@@ -2887,7 +2901,7 @@ msgstr "Des"
 
 #: ../src/ui-budget-tabview.c:89
 msgid "Summary"
-msgstr ""
+msgstr "Resum"
 
 #: ../src/ui-budget-tabview.c:535 ../src/ui-budget-tabview.c:536
 msgid "Totals"
@@ -3965,7 +3979,7 @@ msgstr "Finestra principal d'informes"
 #. widget = make_daterange(label, DATE_RANGE_CUSTOM_HIDDEN);
 #. data->CY_daterange_wal = widget;
 #. gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-#. 
+#.
 #. row++;
 #: ../src/ui-pref.c:2338
 msgid "Max _items:"

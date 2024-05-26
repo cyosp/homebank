@@ -9,13 +9,13 @@ msgstr ""
 "Project-Id-Version: HomeBank 3.2 alpha2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-05-11 12:04+0200\n"
-"PO-Revision-Date: 2024-05-06 06:54+0000\n"
-"Last-Translator: Adolfo Jayme Barrientos <fitoschido@gmail.com>\n"
+"PO-Revision-Date: 2024-05-14 16:30+0000\n"
+"Last-Translator: Luis Blanco <luislblancod@hotmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2024-05-11 13:40+0000\n"
+"X-Launchpad-Export-Date: 2024-05-26 05:44+0000\n"
 "X-Generator: Launchpad (build 0e1f616671af724398db43b36ddfb3ed1f2682ec)\n"
 "Language: es\n"
 
@@ -81,11 +81,11 @@ msgstr "Desbloqueado. Click para bloquear"
 
 #: ../src/dsp-account.c:904 ../src/ui-hbfile.c:353
 msgid "Life Energy"
-msgstr ""
+msgstr "Energía vital"
 
 #: ../src/dsp-account.c:905
 msgid "'Earn by hour' is not set into the current Wallet."
-msgstr ""
+msgstr "El \"salario por hora\" no está configurado en la cartera actual."
 
 #: ../src/dsp-account.c:1816
 #, c-format
@@ -273,7 +273,7 @@ msgstr "Púrpura"
 
 #: ../src/dsp-account.c:2930
 msgid "_Flag"
-msgstr ""
+msgstr "_Marca"
 
 #: ../src/dsp-account.c:2934
 msgid "_None"
@@ -479,7 +479,7 @@ msgstr "Editar filtro"
 #: ../src/dsp-account.c:3299 ../src/rep-balance.c:1165 ../src/rep-stats.c:2173
 #: ../src/rep-time.c:1484
 msgid "Clear filter"
-msgstr ""
+msgstr "Quitar el filtro"
 
 #: ../src/dsp-account.c:3305 ../src/rep-balance.c:868 ../src/rep-budget.c:1935
 #: ../src/rep-stats.c:1734 ../src/rep-time.c:1157 ../src/rep-vehicle.c:792
@@ -488,7 +488,7 @@ msgstr "Actualizar resultados"
 
 #: ../src/dsp-account.c:3310
 msgid "Toggle Life Energy"
-msgstr ""
+msgstr "Actiivar energía vital"
 
 #. TRANSLATORS: this is for Euro specific users, a toggle to display in 'Minor' currency
 #: ../src/dsp-account.c:3316 ../src/rep-balance.c:1122 ../src/rep-budget.c:2228
@@ -786,7 +786,7 @@ msgstr "_Transacciones"
 
 #: ../src/dsp-mainwindow.c:1979
 msgid "Show All..."
-msgstr ""
+msgstr "Mostrar todo..."
 
 #: ../src/dsp-mainwindow.c:1981
 msgid "Add..."
@@ -1108,22 +1108,22 @@ msgstr "Tipo"
 #. /TRANSLATORS: n-exp > normal espense
 #: ../src/hb-filter.c:1121
 msgid "n-exp"
-msgstr ""
+msgstr "Gasto normal"
 
 #. /TRANSLATORS: n-inc > normal income
 #: ../src/hb-filter.c:1124
 msgid "n-inc"
-msgstr ""
+msgstr "Ingreso normal"
 
 #. /TRANSLATORS: x-exp > transfer espense
 #: ../src/hb-filter.c:1127
 msgid "x-exp"
-msgstr ""
+msgstr "Gasto por transferencia"
 
 #. /TRANSLATORS: x-inc > transfer income
 #: ../src/hb-filter.c:1130
 msgid "x-inc"
-msgstr ""
+msgstr "Ingreso por transferencia"
 
 #. header
 #: ../src/hb-filter.c:1138 ../src/list-operation.c:1896
@@ -1138,11 +1138,11 @@ msgstr "ninguno"
 
 #: ../src/hb-filter.c:1142
 msgid "cleared"
-msgstr ""
+msgstr "Liquidado"
 
 #: ../src/hb-filter.c:1144
 msgid "reconciled"
-msgstr ""
+msgstr "Conciliado"
 
 #. header
 #: ../src/hb-filter.c:1176 ../src/ui-dialogs.c:343 ../src/ui-filter.c:1049
@@ -1435,7 +1435,7 @@ msgstr "Grupo de cuenta"
 
 #: ../src/hub-reptime.c:121 ../src/hub-reptime.c:526
 msgid "Spending"
-msgstr ""
+msgstr "Gastos"
 
 #. column: Expense
 #: ../src/hub-reptime.c:123 ../src/list-operation.c:1919
@@ -1452,7 +1452,7 @@ msgstr "Gasto"
 #. 5.7.5
 #: ../src/hub-reptime.c:126 ../src/hub-reptime.c:528
 msgid "Revenue"
-msgstr ""
+msgstr "Ingresos"
 
 #. column: Income
 #: ../src/hub-reptime.c:128 ../src/list-operation.c:1922
@@ -1946,7 +1946,7 @@ msgstr ""
 msgid "Time slice"
 msgstr "Fracción de tiempo"
 
-#. 
+#.
 #. LST_CAR_DATE,
 #. LST_CAR_MEMO,
 #. LST_CAR_METER,
@@ -1955,10 +1955,10 @@ msgstr "Fracción de tiempo"
 #. LST_CAR_AMOUNT,
 #. LST_CAR_DIST,
 #. LST_CAR_100KM
-#. 
-#. 
+#.
+#.
 #. column: Memo
-#. 
+#.
 #. column = gtk_tree_view_column_new();
 #. gtk_tree_view_column_set_title(column, _("Memo"));
 #. gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
@@ -1966,7 +1966,7 @@ msgstr "Fracción de tiempo"
 #. gtk_tree_view_column_pack_start(column, renderer, TRUE);
 #. gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_MEMO);
 #. //gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
-#. 
+#.
 #. column: Meter
 #: ../src/rep-vehicle.c:175 ../src/rep-vehicle.c:1377
 msgid "Meter"
@@ -4012,7 +4012,7 @@ msgstr "Ventana principal de informes"
 #. widget = make_daterange(label, DATE_RANGE_CUSTOM_HIDDEN);
 #. data->CY_daterange_wal = widget;
 #. gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-#. 
+#.
 #. row++;
 #: ../src/ui-pref.c:2338
 msgid "Max _items:"

@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: homebank\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-05-11 12:04+0200\n"
-"PO-Revision-Date: 2024-01-05 15:47+0000\n"
+"PO-Revision-Date: 2024-05-16 18:57+0000\n"
 "Last-Translator: scb <Unknown>\n"
 "Language-Team: Polish <pl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2024-05-11 13:40+0000\n"
+"X-Launchpad-Export-Date: 2024-05-26 05:44+0000\n"
 "X-Generator: Launchpad (build 0e1f616671af724398db43b36ddfb3ed1f2682ec)\n"
 "Language: pl\n"
 
@@ -79,20 +79,20 @@ msgstr "Odblokowane. Kliknij aby zablokować"
 
 #: ../src/dsp-account.c:904 ../src/ui-hbfile.c:353
 msgid "Life Energy"
-msgstr ""
+msgstr "Energia życiowa"
 
 #: ../src/dsp-account.c:905
 msgid "'Earn by hour' is not set into the current Wallet."
-msgstr ""
+msgstr "Opcja „Zarobki na godzinę” nie jest ustawiona w bieżącym Portfelu."
 
 #: ../src/dsp-account.c:1816
 #, c-format
 msgid "Are you sure you want to delete the %d selected transaction?"
-msgstr ""
+msgstr "Czy jesteś pewien że chcesz usunąć %d wybraną transakcję?"
 
 #: ../src/dsp-account.c:1821
 msgid "If you delete a transaction, it will be permanently lost."
-msgstr ""
+msgstr "Jeśli usuniesz transakcję, zostanie ona trwale utracona."
 
 #: ../src/dsp-account.c:1822 ../src/ui-account.c:1468 ../src/ui-archive.c:417
 #: ../src/ui-assign.c:1574 ../src/ui-budget-tabview.c:2320
@@ -118,7 +118,7 @@ msgstr "_Zmień"
 
 #: ../src/dsp-account.c:2021
 msgid "Are you sure you want to change the status to Cleared?"
-msgstr ""
+msgstr "Czy na pewno chcesz zmienić status na Rozliczony?"
 
 #: ../src/dsp-account.c:2068
 msgid "Are you sure you want to toggle the status Reconciled?"
@@ -132,7 +132,7 @@ msgstr "_Przełącz"
 #, c-format
 msgid ""
 "Are you sure you want to create template from the %d selected transaction?"
-msgstr ""
+msgstr "Czy na pewno chcesz utworzyć szablon z %d wybranej transakcji?"
 
 #: ../src/dsp-account.c:2131 ../src/dsp-account.c:2204
 msgid "_Create"
@@ -145,13 +145,13 @@ msgstr "Utwórz szablon"
 #: ../src/dsp-account.c:2176 ../src/dsp-account.c:2248
 #, c-format
 msgid "%d created with a prefilled icon"
-msgstr ""
+msgstr "%d utworzony z wstępnie wypełnioną ikoną"
 
 #: ../src/dsp-account.c:2199
 #, c-format
 msgid ""
 "Are you sure you want to create assignment from the %d selected transaction?"
-msgstr ""
+msgstr "Czy na pewno chcesz utworzyć przypisanie z %d wybranej transakcji?"
 
 #: ../src/dsp-account.c:2247
 msgid "Create Assignment"
@@ -196,6 +196,7 @@ msgstr "Kwota każdej transakcji zostanie podzielona przez %.6f."
 msgid ""
 "Are you sure you want to convert this account to Euro as Major currency?"
 msgstr ""
+"Czy na pewno chcesz przekonwertować to konto na euro jako główną walutę?"
 
 #: ../src/dsp-account.c:2618
 msgid "_Convert"
@@ -328,7 +329,7 @@ msgstr "Przeglądaj stronę internetową"
 
 #: ../src/dsp-account.c:2983
 msgid "Close"
-msgstr ""
+msgstr "Zamknij"
 
 #. ...
 #: ../src/dsp-account.c:2985
@@ -349,7 +350,7 @@ msgstr "Wklej (dziś)"
 
 #: ../src/dsp-account.c:2999
 msgid "Copy clipboard"
-msgstr ""
+msgstr "Skopiuj schowek"
 
 #: ../src/dsp-account.c:3000
 msgid "Find"
@@ -470,7 +471,7 @@ msgstr "Edytuj filtr"
 #: ../src/dsp-account.c:3299 ../src/rep-balance.c:1165 ../src/rep-stats.c:2173
 #: ../src/rep-time.c:1484
 msgid "Clear filter"
-msgstr ""
+msgstr "Wyczyść filtr"
 
 #: ../src/dsp-account.c:3305 ../src/rep-balance.c:868 ../src/rep-budget.c:1935
 #: ../src/rep-stats.c:1734 ../src/rep-time.c:1157 ../src/rep-vehicle.c:792
@@ -776,7 +777,7 @@ msgstr "_Transakcje"
 
 #: ../src/dsp-mainwindow.c:1979
 msgid "Show All..."
-msgstr ""
+msgstr "Pokaż wszystkie..."
 
 #: ../src/dsp-mainwindow.c:1981
 msgid "Add..."
@@ -1124,7 +1125,7 @@ msgstr "Status"
 
 #: ../src/hb-filter.c:1140 ../src/list-account.c:686
 msgid "none"
-msgstr ""
+msgstr "brak"
 
 #: ../src/hb-filter.c:1142
 msgid "cleared"
@@ -1275,7 +1276,7 @@ msgstr "Grupuj według"
 
 #: ../src/hub-account.c:594
 msgid "type"
-msgstr ""
+msgstr "typ"
 
 #: ../src/hub-account.c:595
 msgid "group"
@@ -1367,7 +1368,7 @@ msgstr "Największe %d wydatków / Kategoria"
 #: ../src/hub-reptotal.c:127
 #, c-format
 msgid "Top %d Expense / Category"
-msgstr ""
+msgstr "Największe %d Kosztów / Kategoria"
 
 #: ../src/hub-reptotal.c:131
 #, c-format
@@ -1377,7 +1378,7 @@ msgstr "Największe %d wydatków / Odbiorca"
 #: ../src/hub-reptotal.c:133
 #, c-format
 msgid "Top %d Expense / Payee"
-msgstr ""
+msgstr "Największe %d Kosztów / Odbiorca"
 
 #: ../src/hub-reptotal.c:137
 #, c-format
@@ -1387,7 +1388,7 @@ msgstr "Największe %d wydatków / Konto"
 #: ../src/hub-reptotal.c:139
 #, c-format
 msgid "Top %d Expense / Account"
-msgstr ""
+msgstr "Największe %d Kosztów / Konto"
 
 #: ../src/hub-reptotal.c:143 ../src/hub-reptime.c:136
 #, c-format
@@ -1425,7 +1426,7 @@ msgstr "Grupa kont"
 
 #: ../src/hub-reptime.c:121 ../src/hub-reptime.c:526
 msgid "Spending"
-msgstr ""
+msgstr "Wydatki"
 
 #. column: Expense
 #: ../src/hub-reptime.c:123 ../src/list-operation.c:1919
@@ -1437,12 +1438,12 @@ msgstr ""
 #: ../src/ui-widgets-data.c:142 ../src/ui-widgets-data.c:266
 #: ../src/ui-widgets-data.c:276
 msgid "Expense"
-msgstr "Wydatek"
+msgstr "Koszt"
 
 #. 5.7.5
 #: ../src/hub-reptime.c:126 ../src/hub-reptime.c:528
 msgid "Revenue"
-msgstr ""
+msgstr "Przychód"
 
 #. column: Income
 #: ../src/hub-reptime.c:128 ../src/list-operation.c:1922
@@ -1458,11 +1459,11 @@ msgstr "Przychód"
 
 #: ../src/hub-reptime.c:131 ../src/hub-reptime.c:529
 msgid "Spending & Revenue"
-msgstr ""
+msgstr "Wydatki i przychody"
 
 #: ../src/hub-reptime.c:133
 msgid "Expense & Income"
-msgstr ""
+msgstr "Koszty i dochody"
 
 #: ../src/hub-reptime.c:144
 msgid "Global Balance"
@@ -1474,7 +1475,7 @@ msgstr "Wykres czasowy"
 
 #: ../src/hub-reptime.c:543
 msgid "Global"
-msgstr ""
+msgstr "Globalne"
 
 #: ../src/hb-import.c:1421
 msgid "imported account"
@@ -1543,7 +1544,7 @@ msgstr "Data"
 #. g_string_append (node, "info" );
 #: ../src/list-operation.c:993 ../src/ui-widgets-data.c:338
 msgid "Number"
-msgstr ""
+msgstr "Numer"
 
 #. g_string_append (node, "memo" );
 #. column: Memo
@@ -1567,7 +1568,7 @@ msgstr ""
 
 #: ../src/list-operation.c:1840
 msgid "Flag"
-msgstr ""
+msgstr "Flaga"
 
 #: ../src/list-operation.c:1860
 msgid "Match"
@@ -1723,7 +1724,7 @@ msgstr "Wydatki"
 
 #: ../src/rep-budget.c:115 ../src/rep-budget.c:450
 msgid "Fulfilled"
-msgstr ""
+msgstr "Spełnione"
 
 #: ../src/rep-budget.c:494 ../src/ui-widgets-data.c:64
 #: ../src/ui-widgets-data.c:135 ../src/ui-widgets-data.c:162
@@ -1910,7 +1911,7 @@ msgstr "Przychód:"
 
 #: ../src/rep-stats.c:2245 ../src/ui-budget.c:1266
 msgid "Expense:"
-msgstr "Wydatek:"
+msgstr "Koszt:"
 
 #: ../src/rep-time.c:858
 #, c-format
@@ -1927,7 +1928,7 @@ msgstr "_Kumuluj"
 
 #: ../src/rep-time.c:1512
 msgid "Item"
-msgstr ""
+msgstr "Pozycja"
 
 #: ../src/rep-time.c:1516
 msgid "_By:"
@@ -1937,7 +1938,7 @@ msgstr ""
 msgid "Time slice"
 msgstr "Wycinek czasu"
 
-#. 
+#.
 #. LST_CAR_DATE,
 #. LST_CAR_MEMO,
 #. LST_CAR_METER,
@@ -1946,10 +1947,10 @@ msgstr "Wycinek czasu"
 #. LST_CAR_AMOUNT,
 #. LST_CAR_DIST,
 #. LST_CAR_100KM
-#. 
-#. 
+#.
+#.
 #. column: Memo
-#. 
+#.
 #. column = gtk_tree_view_column_new();
 #. gtk_tree_view_column_set_title(column, _("Memo"));
 #. gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
@@ -1957,7 +1958,7 @@ msgstr "Wycinek czasu"
 #. gtk_tree_view_column_pack_start(column, renderer, TRUE);
 #. gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_MEMO);
 #. //gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
-#. 
+#.
 #. column: Meter
 #: ../src/rep-vehicle.c:175 ../src/rep-vehicle.c:1377
 msgid "Meter"
@@ -2287,7 +2288,7 @@ msgstr "Notatki"
 #: ../src/ui-assign.c:726
 #, c-format
 msgid "Search cannot be empty"
-msgstr ""
+msgstr "Wyszukiwanie nie może być puste"
 
 #: ../src/ui-assign.c:738
 #, c-format
@@ -3033,7 +3034,7 @@ msgstr ""
 
 #: ../src/ui-category.c:1651
 msgid "Duplicate category name. Try another name."
-msgstr ""
+msgstr "Zduplikowana nazwa kategorii. Spróbuj innej nazwy."
 
 #: ../src/ui-category.c:1696
 msgid "Edit Category"
@@ -3097,7 +3098,7 @@ msgstr "Pokaż użycie"
 
 #: ../src/ui-category.c:2464 ../src/ui-payee.c:1862 ../src/ui-tag.c:1333
 msgid "_Delete unused..."
-msgstr ""
+msgstr "_Usuń nieużywane..."
 
 #: ../src/ui-category.c:2517 ../src/ui-payee.c:1907 ../src/ui-tag.c:1372
 msgid "Move/Merge"
@@ -3403,11 +3404,11 @@ msgstr "Rozróżnianie wielkości _liter"
 
 #: ../src/ui-filter.c:1288
 msgid "Expense Transfer"
-msgstr ""
+msgstr "Transfer kosztów"
 
 #: ../src/ui-filter.c:1293
 msgid "Income Transfer"
-msgstr ""
+msgstr "Transfer dochodów"
 
 #: ../src/ui-filter.c:1365 ../src/ui-pref.c:2435 ../src/ui-pref.c:2462
 msgid "_Reset"
@@ -3415,7 +3416,7 @@ msgstr "_Resetuj"
 
 #: ../src/ui-filter.c:1371
 msgid "_Save & Use"
-msgstr ""
+msgstr "_Zapisz i użyj"
 
 #: ../src/ui-filter.c:1373
 msgid "_Use"
@@ -3423,7 +3424,7 @@ msgstr "_Użyj"
 
 #: ../src/ui-filter.c:1376
 msgid "default"
-msgstr ""
+msgstr "domyślny"
 
 #: ../src/ui-filter.c:1454
 msgid "Amount/Text"
@@ -3447,28 +3448,28 @@ msgstr "Zmodyfikowane"
 
 #: ../src/ui-flt-widget.c:127
 msgid "(default)"
-msgstr ""
+msgstr "(domyślny)"
 
 #: ../src/ui-flt-widget.c:228
 msgid "Filter rename"
-msgstr ""
+msgstr "Zmień nazwę filtra"
 
 #: ../src/ui-flt-widget.c:262
 #, c-format
 msgid "New filter %d"
-msgstr ""
+msgstr "Nowy filtr %d"
 
 #: ../src/ui-flt-widget.c:263
 msgid "Filter name"
-msgstr ""
+msgstr "Nazwa filtru"
 
 #: ../src/ui-flt-widget.c:453
 msgid "_Save as..."
-msgstr ""
+msgstr "_Zapisz jako..."
 
 #: ../src/ui-flt-widget.c:454
 msgid "_Rename..."
-msgstr ""
+msgstr "_Zmień nazwę..."
 
 #: ../src/ui-hbfile.c:45
 msgid "Due Date"
@@ -3504,7 +3505,7 @@ msgstr "miesiąc"
 
 #: ../src/ui-hbfile.c:356
 msgid "_Earn by hour:"
-msgstr ""
+msgstr "_Dochód na godzinę:"
 
 #: ../src/ui-payee.c:1043
 msgid "Delete unused payee"
@@ -3520,7 +3521,7 @@ msgstr ""
 
 #: ../src/ui-payee.c:1211
 msgid "Duplicate payee name. Try another name."
-msgstr ""
+msgstr "Zduplikowana nazwa odbiorcy. Spróbuj innej nazwy."
 
 #: ../src/ui-payee.c:1247
 msgid "Edit Payee"
@@ -3615,7 +3616,7 @@ msgstr "Foldery"
 
 #: ../src/ui-pref.c:85
 msgid "Advanced"
-msgstr ""
+msgstr "Zaawansowane"
 
 #: ../src/ui-pref.c:434
 msgid "System Language"
@@ -3643,7 +3644,7 @@ msgstr ""
 
 #: ../src/ui-pref.c:1217
 msgid "Use drag & drop to reorder"
-msgstr ""
+msgstr "Użyj „przeciągnij i upuść”, aby zmienić kolejność"
 
 #: ../src/ui-pref.c:1251
 msgid "Currency API"
@@ -3925,7 +3926,7 @@ msgstr "Użyj własnych kolorów"
 
 #: ../src/ui-pref.c:2091
 msgid "_Expense:"
-msgstr "_Wydatek:"
+msgstr "_Koszt:"
 
 #: ../src/ui-pref.c:2103
 msgid "_Income:"
@@ -3997,7 +3998,7 @@ msgstr "Raporty w oknie głównym"
 #. widget = make_daterange(label, DATE_RANGE_CUSTOM_HIDDEN);
 #. data->CY_daterange_wal = widget;
 #. gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-#. 
+#.
 #. row++;
 #: ../src/ui-pref.c:2338
 msgid "Max _items:"
@@ -4089,17 +4090,19 @@ msgstr "Uwaga: suma kwot podziału oraz łączna kwota transakcji nie są równe
 
 #: ../src/ui-tag.c:690
 msgid "Delete unused tag"
-msgstr ""
+msgstr "Usuń nieużywany tag"
 
 #: ../src/ui-tag.c:691
 msgid ""
 "Are you sure you want to\n"
 "permanently delete unused tag?"
 msgstr ""
+"Czy na pewno chcesz\n"
+"trwale usunąć nieużywany tag?"
 
 #: ../src/ui-tag.c:842
 msgid "Duplicate tag name. Try another name."
-msgstr ""
+msgstr "Zduplikowana nazwa tagu. Spróbuj innej nazwy."
 
 #: ../src/ui-tag.c:877
 msgid "Edit Tag"

@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: homebank\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2024-05-11 12:04+0200\n"
-"PO-Revision-Date: 2024-05-04 17:23+0000\n"
-"Last-Translator: Stephan Woidowski <swoidowski@t-online.de>\n"
+"PO-Revision-Date: 2024-05-13 19:39+0000\n"
+"Last-Translator: Andi Chandler <Unknown>\n"
 "Language-Team: English (United Kingdom) <en_GB@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2024-05-11 13:40+0000\n"
+"X-Launchpad-Export-Date: 2024-05-26 05:44+0000\n"
 "X-Generator: Launchpad (build 0e1f616671af724398db43b36ddfb3ed1f2682ec)\n"
 
 #: ../data/homebank.desktop.in.in.h:1 ../src/dsp-mainwindow.c:720
@@ -117,7 +117,7 @@ msgstr "_Change"
 
 #: ../src/dsp-account.c:2021
 msgid "Are you sure you want to change the status to Cleared?"
-msgstr ""
+msgstr "Are you sure you want to change the status to Cleared?"
 
 #: ../src/dsp-account.c:2068
 msgid "Are you sure you want to toggle the status Reconciled?"
@@ -778,7 +778,7 @@ msgstr "_Transactions"
 
 #: ../src/dsp-mainwindow.c:1979
 msgid "Show All..."
-msgstr ""
+msgstr "Show All..."
 
 #: ../src/dsp-mainwindow.c:1981
 msgid "Add..."
@@ -1369,7 +1369,7 @@ msgstr "Top %d Spending / Category"
 #: ../src/hub-reptotal.c:127
 #, c-format
 msgid "Top %d Expense / Category"
-msgstr ""
+msgstr "Top %d Expense / Category"
 
 #: ../src/hub-reptotal.c:131
 #, c-format
@@ -1379,7 +1379,7 @@ msgstr "Top %d Spending / Payee"
 #: ../src/hub-reptotal.c:133
 #, c-format
 msgid "Top %d Expense / Payee"
-msgstr ""
+msgstr "Top %d Expense / Payee"
 
 #: ../src/hub-reptotal.c:137
 #, c-format
@@ -1389,7 +1389,7 @@ msgstr "Top %d Spending / Account"
 #: ../src/hub-reptotal.c:139
 #, c-format
 msgid "Top %d Expense / Account"
-msgstr ""
+msgstr "Top %d Expense / Account"
 
 #: ../src/hub-reptotal.c:143 ../src/hub-reptime.c:136
 #, c-format
@@ -1419,7 +1419,7 @@ msgstr "Top by"
 #. g_menu_append_section (menu, NULL, G_MENU_MODEL(section));
 #: ../src/hub-reptotal.c:643 ../src/hub-reptime.c:535
 msgid "Raw amount"
-msgstr ""
+msgstr "Raw amount"
 
 #: ../src/hub-reptotal.c:650 ../src/hub-reptime.c:542
 msgid "Account group"
@@ -1464,7 +1464,7 @@ msgstr "Spending & Revenue"
 
 #: ../src/hub-reptime.c:133
 msgid "Expense & Income"
-msgstr ""
+msgstr "Expense & Income"
 
 #: ../src/hub-reptime.c:144
 msgid "Global Balance"
@@ -1937,7 +1937,7 @@ msgstr "_By:"
 msgid "Time slice"
 msgstr "Time slice"
 
-#. 
+#.
 #. LST_CAR_DATE,
 #. LST_CAR_MEMO,
 #. LST_CAR_METER,
@@ -1946,10 +1946,10 @@ msgstr "Time slice"
 #. LST_CAR_AMOUNT,
 #. LST_CAR_DIST,
 #. LST_CAR_100KM
-#. 
-#. 
+#.
+#.
 #. column: Memo
-#. 
+#.
 #. column = gtk_tree_view_column_new();
 #. gtk_tree_view_column_set_title(column, _("Memo"));
 #. gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
@@ -1957,7 +1957,7 @@ msgstr "Time slice"
 #. gtk_tree_view_column_pack_start(column, renderer, TRUE);
 #. gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_MEMO);
 #. //gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
-#. 
+#.
 #. column: Meter
 #: ../src/rep-vehicle.c:175 ../src/rep-vehicle.c:1377
 msgid "Meter"
@@ -3382,7 +3382,7 @@ msgstr ""
 #. 5.8 chnage text
 #: ../src/ui-dialogs.c:1299
 msgid "No transaction match."
-msgstr ""
+msgstr "No transaction match."
 
 #: ../src/ui-filter.c:1157
 msgid "Input From -30 To -15 to filter on expense"
@@ -3447,28 +3447,28 @@ msgstr "Edited"
 
 #: ../src/ui-flt-widget.c:127
 msgid "(default)"
-msgstr ""
+msgstr "(default)"
 
 #: ../src/ui-flt-widget.c:228
 msgid "Filter rename"
-msgstr ""
+msgstr "Filter rename"
 
 #: ../src/ui-flt-widget.c:262
 #, c-format
 msgid "New filter %d"
-msgstr ""
+msgstr "New filter %d"
 
 #: ../src/ui-flt-widget.c:263
 msgid "Filter name"
-msgstr ""
+msgstr "Filter name"
 
 #: ../src/ui-flt-widget.c:453
 msgid "_Save as..."
-msgstr ""
+msgstr "_Save as..."
 
 #: ../src/ui-flt-widget.c:454
 msgid "_Rename..."
-msgstr ""
+msgstr "_Rename..."
 
 #: ../src/ui-hbfile.c:45
 msgid "Due Date"
@@ -3996,7 +3996,7 @@ msgstr "Main window reports"
 #. widget = make_daterange(label, DATE_RANGE_CUSTOM_HIDDEN);
 #. data->CY_daterange_wal = widget;
 #. gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-#. 
+#.
 #. row++;
 #: ../src/ui-pref.c:2338
 msgid "Max _items:"

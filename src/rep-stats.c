@@ -101,11 +101,11 @@ struct repstats_data *data = user_data;
 
 	gtk_toggle_tool_button_set_active(GTK_TOGGLE_TOOL_BUTTON(data->BT_list), TRUE);
 	repstats_action_viewlist(radiobutton, data);
-	
+
 	if( data->detail == TRUE )
 	{
 	gint tmpmode  = hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_mode));
-	
+
 		if( tmpmode == 0 )
 			repstats_selection(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_report)), NULL);
 		else
@@ -170,13 +170,13 @@ gchar *title, *name;
 	tmptype  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_type));
 	tmpintvl = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_intvl));
 	page = gtk_notebook_get_current_page(GTK_NOTEBOOK(data->GR_result));
-	
+
 	name = g_strdup_printf("hb-repstat_%s", hbtk_get_label(CYA_REPORT_SRC,tmpsrc));
 
 	if( page == 0 )
 	{
 	GString *node;
-	
+
 		title = repstats_compute_title(tmpmode, tmpsrc, tmptype, tmpintvl);
 		if( tmpmode == 0 )
 			node = lst_report_to_string(GTK_TREE_VIEW(data->LV_report), tmpsrc, hbtk_get_label(CYA_REPORT_SRC, tmpsrc), TRUE);
@@ -196,7 +196,7 @@ gchar *title, *name;
 			gtk_chart_print(GTK_CHART(data->RE_chart2), GTK_WINDOW(data->window), PREFS->path_export, name);
 
 	}
-	
+
 	g_free(name);
 
 }
@@ -228,7 +228,7 @@ gint response_id;
 				{
 					filter_preset_daterange_set(data->filter, data->filter->range, 0);
 				}
-				break;			
+				break;
 		}
 
 		//beta 5.8
@@ -286,7 +286,7 @@ GtkWidget * combobox;
 
 	combobox = ui_flt_popover_hub_get_combobox(GTK_BOX(data->PO_hubfilter), NULL);
 	g_signal_handlers_block_by_func (G_OBJECT (combobox), G_CALLBACK (beta_repstats_filter_cb_preset_change), NULL);
-	gtk_combo_box_set_active(GTK_COMBO_BOX(combobox), 0);		
+	gtk_combo_box_set_active(GTK_COMBO_BOX(combobox), 0);
 	g_signal_handlers_unblock_by_func (G_OBJECT (combobox), G_CALLBACK (beta_repstats_filter_cb_preset_change), NULL);
 
 	repstats_filter_setup(data);
@@ -379,8 +379,8 @@ gint range;
 
 	//5.7.1 test add disable forecast
 	/*g_signal_handler_block(data->CM_forecast, data->handler_id[HID_REPDIST_FORECAST]);
-	gint can_future = filter_preset_daterange_future_enable(data->filter, range); 
-	
+	gint can_future = filter_preset_daterange_future_enable(data->filter, range);
+
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_forecast), can_future ? PREFS->rep_forcast : FALSE);
 
 	gtk_widget_set_sensitive(data->CM_forecast, can_future);
@@ -413,12 +413,12 @@ gchar *title;
 	tmpsrc   = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_src));
 	tmptype  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_type));
 	tmpintvl = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_intvl));
-	
+
 	//debug option
 	DB( g_print(" option: byamount=%d tmptype=%d '%s' tmpsrc=%d '%s'\n\n", byamount, tmptype, hbtk_get_label(CYA_REPORT_TYPE,tmptype), tmpsrc, hbtk_get_label(CYA_REPORT_SRC,tmpsrc)) );
 
 	// define view/sort column
-	column = LST_REPORT_POS; 
+	column = LST_REPORT_POS;
 
 	if( byamount )
 	{
@@ -478,10 +478,10 @@ gchar *title;
 	{
 		switch(tmptype)
 		{
-			case REPORT_TYPE_EXPENSE: 
+			case REPORT_TYPE_EXPENSE:
 				column = LST_REPORT_EXPENSE;
 				break;
-			case REPORT_TYPE_INCOME: 
+			case REPORT_TYPE_INCOME:
 				column = LST_REPORT_INCOME;
 				break;
 			default:
@@ -489,12 +489,12 @@ gchar *title;
 				column = LST_REPORT_TOTAL;
 				break;
 		}
-		
+
 		DB( g_print(" set data total to col=%d\n\n", column) );
 		//set column1 != column2 will dual display
 		gtk_chart_set_datas_total(GTK_CHART(data->RE_chart), model, column, column, title, NULL);
 	}
-	
+
 
 	#endif
 
@@ -528,10 +528,10 @@ struct repstats_data *data;
 
 	g_signal_handler_block(data->PO_mindate, data->handler_id[HID_REPDIST_MINDATE]);
 	g_signal_handler_block(data->PO_maxdate, data->handler_id[HID_REPDIST_MAXDATE]);
-	
+
 	gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_mindate), data->filter->mindate);
 	gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_maxdate), data->filter->maxdate);
-	
+
 	g_signal_handler_unblock(data->PO_mindate, data->handler_id[HID_REPDIST_MINDATE]);
 	g_signal_handler_unblock(data->PO_maxdate, data->handler_id[HID_REPDIST_MAXDATE]);
 
@@ -592,7 +592,7 @@ gint tmpmode, tmpsrc;
 	title = hbtk_get_label(CYA_REPORT_SRC,tmpsrc);
 	/*if(tmpsrc == REPORT_GRPBY_SUBCATEGORY)
 	{
-		catsubcat = g_strjoin(":",hbtk_get_label(CYA_REPORT_SRC, REPORT_GRPBY_CATEGORY), hbtk_get_label(CYA_REPORT_SRC, REPORT_GRPBY_SUBCATEGORY), NULL); 
+		catsubcat = g_strjoin(":",hbtk_get_label(CYA_REPORT_SRC, REPORT_GRPBY_CATEGORY), hbtk_get_label(CYA_REPORT_SRC, REPORT_GRPBY_SUBCATEGORY), NULL);
 		title = catsubcat;
 	}*/
 
@@ -605,7 +605,7 @@ gint tmpmode, tmpsrc;
 	gtk_clipboard_set_text(clipboard, node->str, node->len);
 
 	g_string_free(node, TRUE);
-	
+
 	g_free(catsubcat);
 }
 
@@ -627,7 +627,7 @@ gint tmpmode, tmpsrc;
 	tmpmode = hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_mode));
 	//tmpsrc  = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_src));
 	tmpsrc  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_src));
-	
+
 	name = g_strdup_printf("hb-repstat_%s.csv", hbtk_get_label(CYA_REPORT_SRC,tmpsrc));
 
 	if( ui_file_chooser_csv(GTK_WINDOW(data->window), GTK_FILE_CHOOSER_ACTION_SAVE, &filename, name) == TRUE )
@@ -642,7 +642,7 @@ gint tmpmode, tmpsrc;
 			title = hbtk_get_label(CYA_REPORT_SRC,tmpsrc);
 			/*if(tmpsrc == REPORT_GRPBY_SUBCATEGORY)
 			{
-				catsubcat = g_strjoin(":",hbtk_get_label(CYA_REPORT_SRC, REPORT_GRPBY_CATEGORY), hbtk_get_label(CYA_REPORT_SRC, REPORT_GRPBY_SUBCATEGORY), NULL); 
+				catsubcat = g_strjoin(":",hbtk_get_label(CYA_REPORT_SRC, REPORT_GRPBY_CATEGORY), hbtk_get_label(CYA_REPORT_SRC, REPORT_GRPBY_SUBCATEGORY), NULL);
 				title = catsubcat;
 			}*/
 
@@ -844,7 +844,7 @@ gboolean is_subcat = FALSE;
 			if( match == TRUE )
 			{
 				DB( g_print(" txn match to key=%d\n", active) );
-				
+
 				gtk_tree_store_insert_with_values (GTK_TREE_STORE(model), &iter, NULL, -1,
 				    MODEL_TXN_POINTER, ope,
 					MODEL_TXN_SPLITAMT, dtlamt,
@@ -872,8 +872,8 @@ gboolean is_subcat = FALSE;
 								sinsert = FALSE;
 							}
 						}
-											
-						if( sinsert == TRUE )							
+
+						if( sinsert == TRUE )
 						{
 							gtk_tree_store_insert_with_values (GTK_TREE_STORE(model), &child, &iter, -1,
 								MODEL_TXN_POINTER, ope,
@@ -882,7 +882,7 @@ gboolean is_subcat = FALSE;
 						}
 					}
 				}
-				
+
 			}
 		}
 
@@ -923,10 +923,10 @@ GtkTreeIter  iter, parent, *tmpparent;
 	gtk_tree_store_clear (GTK_TREE_STORE(model));
 	gtk_chart_set_datas_none(GTK_CHART(data->RE_chart));
 	#endif
-	
+
 	//refresh the datatable
 	if(data->trend)
-		da_datatable_free (data->trend);	
+		da_datatable_free (data->trend);
 	data->trend = NULL;
 	#if HB_STATS_DO_TIME == 1
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_report2));
@@ -982,7 +982,7 @@ GtkTreeIter  iter, parent, *tmpparent;
 
 
 	#if HB_STATS_DO_TOTAL == 1
-	
+
 	DB( g_print(" -- start total --\n") );
 
 //TODO: add if mode==0
@@ -996,7 +996,7 @@ GtkTreeIter  iter, parent, *tmpparent;
 	{
 	struct lst_report_data *lst_data;
 	DataRow *dr;
-	
+
 		//store the totals from total datarow
 		dr = dt->totrow;
 
@@ -1032,18 +1032,25 @@ GtkTreeIter  iter, parent, *tmpparent;
 
 			//since 5.7 we use the dt-keylst here to insert cat before subcat
 			reskey = dt->keylist[i];
-			DB( g_print(" get row for key=%d\n", reskey) ); 
+			DB( g_print(" get row for key=%d\n", reskey) );
 			dr = report_data_get_row(dt, reskey);
 
 			// skip empty results
 			insert = TRUE;
 			if( !(tmpsrc == REPORT_GRPBY_MONTH || tmpsrc == REPORT_GRPBY_YEAR) )
 			{
-				if( (tmptype == REPORT_TYPE_EXPENSE && !dr->rowexp) || 
+				if( (tmptype == REPORT_TYPE_EXPENSE && !dr->rowexp) ||
 				    (tmptype == REPORT_TYPE_INCOME  && !dr->rowinc) ||
 				    (!dr->rowexp && !dr->rowinc)
 				  )
 				  insert = FALSE;
+			}
+
+			//#2065531 skip tag filtered
+			if( tmpsrc == REPORT_GRPBY_TAG && data->filter->option[FLT_GRP_TAG] != 0)
+			{
+				if( !da_flt_status_tag_get(data->filter, reskey) )
+					insert = FALSE;
 			}
 
 			// skip no account
@@ -1052,7 +1059,7 @@ GtkTreeIter  iter, parent, *tmpparent;
 
 			if( insert == FALSE )
 			{
-				DB( g_printf("   skip: %2d, '%s', %9.2f  %9.2f  %9.2f\n", i, dr->label, 
+				DB( g_printf("   skip: %2d, '%s', %9.2f  %9.2f  %9.2f\n", i, dr->label,
 					dr->rowexp, dr->rowinc, dr->rowexp - dr->rowinc) );
 				continue;
 			}
@@ -1067,7 +1074,7 @@ GtkTreeIter  iter, parent, *tmpparent;
 			Category *tmpcat = da_cat_get(reskey);
 
 				if( tmpcat != NULL )
-				{			
+				{
 					overlabel = (tmpcat->key == 0) ? NULL : tmpcat->typename;
 
 					if( tmpcat->parent != 0 )
@@ -1084,10 +1091,10 @@ GtkTreeIter  iter, parent, *tmpparent;
 					}
 					else
 					//if( tmpcat->parent == 0 )
-					//only sum for category, not subcat				
+					//only sum for category, not subcat
 					{
 						totexp += dr->rowexp;
-						totinc += dr->rowinc;				
+						totinc += dr->rowinc;
 					}
 				}
 			}
@@ -1109,18 +1116,18 @@ GtkTreeIter  iter, parent, *tmpparent;
 				LST_REPORT_TOTAL  , dr->rowexp + dr->rowinc,
 				-1);
 
-			DB( g_printf(" insert: %2d, '%s', %9.2f  %9.2f  %9.2f\n", i, dr->label, 
+			DB( g_printf(" insert: %2d, '%s', %9.2f  %9.2f  %9.2f\n", i, dr->label,
 				dr->rowexp, dr->rowinc, dr->rowexp - dr->rowinc) );
 		}
 
 		// update column 0 title
 		GtkTreeViewColumn *column = gtk_tree_view_get_column( GTK_TREE_VIEW(data->LV_report), 0);
 		gtk_tree_view_column_set_title(column, hbtk_get_label(CYA_REPORT_SRC,tmpsrc));
-		
+
 		// Re-attach model to view
   		gtk_tree_view_set_model(GTK_TREE_VIEW(data->LV_report), model);
 		g_object_unref(model);
-		
+
 		gtk_tree_view_expand_all(GTK_TREE_VIEW(data->LV_report));
 		gtk_tree_view_columns_autosize (GTK_TREE_VIEW(data->LV_report));
 	}
@@ -1172,13 +1179,13 @@ GtkTreeIter  iter, parent, *tmpparent;
 		data->filter->maxdate = jmaxdateforecast;
 		DB( hb_print_date(saveddate, "saveddate:") );
 		DB( hb_print_date(data->filter->maxdate, "maxdate:") );
-		
+
 		guint flags = REPORT_COMP_FLG_NONE;
 		if( tmpforecast )
 			flags |= REPORT_COMP_FLG_FORECAST;
 		if( tmpaccbal )
 			flags |= REPORT_COMP_FLG_BALANCE;
-		
+
 		dt = report_compute(tmpsrc, tmpintvl, data->filter, data->txn_queue, flags);
 		data->trend = dt;
 		data->filter->maxdate = saveddate;
@@ -1215,6 +1222,16 @@ GtkTreeIter  iter, parent, *tmpparent;
 			{
 				DB( g_printf(" %4d:'%s' %.2f :: hide (no data)\n", i, dr->label, dr->rowexp + dr->rowinc ) );
 				continue;
+			}
+
+			//#2065531 skip tag filtered
+			if( tmpsrc == REPORT_GRPBY_TAG && data->filter->option[FLT_GRP_TAG] != 0)
+			{
+				if( !da_flt_status_tag_get(data->filter, reskey) )
+				{
+					DB( g_printf(" %4d:'%s' %.2f :: hide (tag filtered)\n", i, dr->label, dr->rowexp + dr->rowinc ) );
+					continue;
+				}
 			}
 
 			DB( g_printf(" %4d:'%s' %.2f :: insert\n", i, dr->label, dr->rowexp + dr->rowinc ) );
@@ -1293,7 +1310,7 @@ GtkTreeIter  iter, parent, *tmpparent;
 	//here we use data->total_expense/income
 	repstats_update_total(widget, NULL);
 	repstats_update(widget, user_data);
-		
+
 }
 
 
@@ -1338,27 +1355,27 @@ gint mode, type, tmpsrc, page;
 	hb_widget_visible(data->CM_balance, visible);
 
 	//zoom
-	visible = (data->charttype == CHART_TYPE_COL 
-			|| data->charttype == CHART_TYPE_STACK 
+	visible = (data->charttype == CHART_TYPE_COL
+			|| data->charttype == CHART_TYPE_STACK
 			|| data->charttype == CHART_TYPE_STACK100) ? TRUE : FALSE;
 	hb_widget_visible(data->LB_zoomx, visible);
 	hb_widget_visible(data->RG_zoomx, visible);
 
 	//compare
-	visible = (type == REPORT_TYPE_TOTAL) && (data->charttype == CHART_TYPE_COL) ? TRUE : FALSE; 
+	visible = (type == REPORT_TYPE_TOTAL) && (data->charttype == CHART_TYPE_COL) ? TRUE : FALSE;
 	hb_widget_visible(data->CM_compare, visible);
 
 	visible = page == 0 ? TRUE : FALSE;
 	hb_widget_visible (data->BT_detail  , visible);
 	hb_widget_visible (data->BT_export  , visible);
-	
-	visible = (page == 0 && tmpsrc == REPORT_GRPBY_CATEGORY) ? TRUE : FALSE; 
+
+	visible = (page == 0 && tmpsrc == REPORT_GRPBY_CATEGORY) ? TRUE : FALSE;
 	hb_widget_visible (data->GR_listbar, visible);
 
 	visible = (page > 0) ? TRUE : FALSE;
 	hb_widget_visible (data->BT_legend, visible);
 	//hb_widget_visible (data->BT_print, visible);
-	
+
 	page = gtk_tree_model_iter_n_children(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_detail)), NULL);
 	sensitive = ((page > 0) && data->detail) ? TRUE : FALSE;
 	g_simple_action_set_enabled(G_SIMPLE_ACTION(g_action_map_lookup_action (G_ACTION_MAP (data->actions), "detclip")), sensitive);
@@ -1401,7 +1418,7 @@ gboolean result;
 
 			//1936806 keep the selection
 			gint tmpmode  = hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_mode));
-			
+
 			treeselection = gtk_tree_view_get_selection (GTK_TREE_VIEW(tmpmode == 0 ? data->LV_report : data->LV_report2));
 			if (gtk_tree_selection_get_selected(treeselection, &model, &iter))
 			{
@@ -1727,13 +1744,13 @@ GtkWidget *toolbar, *button;
 	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), GTK_TOOL_ITEM(button), -1);
 
 	gtk_toolbar_insert(GTK_TOOLBAR(toolbar), gtk_separator_tool_item_new(), -1);
-	
+
 	//button = hbtk_toolbar_add_toolbutton(GTK_TOOLBAR(toolbar), ICONNAME_HB_FILTER, _("Filter"), _("Edit filter"));
 	//data->BT_filter = button;
-	
+
 	button = hbtk_toolbar_add_toolbutton(GTK_TOOLBAR(toolbar), ICONNAME_HB_REFRESH, _("Refresh"), _("Refresh results"));
 	data->BT_refresh = button;
-	
+
 	//export button
 	button = gtk_menu_button_new();
 	data->BT_export = button;
@@ -1766,8 +1783,8 @@ GtkWidget *toolbar, *button;
 
 	button = hbtk_toolbar_add_toolbutton(GTK_TOOLBAR(toolbar), ICONNAME_HB_PRINT, _("Print"), _("Print"));
 	data->BT_print = button;
-	
-	
+
+
 	return toolbar;
 }
 
@@ -1796,7 +1813,7 @@ static void repstats_window_setup(struct repstats_data *data)
 	DB( g_print("\n[repdist] setup\n") );
 
 	DB( g_print(" init data\n") );
-	
+
 	repstats_filter_setup(data);
 
 	//DB( g_print(" populate\n") );
@@ -1815,14 +1832,14 @@ static void repstats_window_setup(struct repstats_data *data)
 
 	g_object_set_data(G_OBJECT(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_report))), "minor", (gpointer)data->CM_minor);
 	g_object_set_data(G_OBJECT(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_detail))), "minor", (gpointer)data->CM_minor);
-	
+
 	gtk_chart_set_smallfont (GTK_CHART(data->RE_chart), PREFS->rep_smallfont);
 	gtk_chart_set_smallfont (GTK_CHART(data->RE_chart2), PREFS->rep_smallfont);
 
 	repstats_toggle_rate(data->window, NULL);
 
 	DB( g_print(" connect widgets signals\n") );
-	
+
 	g_signal_connect( ui_flt_popover_hub_get_combobox(GTK_BOX(data->PO_hubfilter), NULL), "changed", G_CALLBACK (beta_repstats_filter_cb_preset_change), NULL);
 	g_signal_connect (data->BT_reset , "clicked", G_CALLBACK (beta_repstats_filter_cb_reset), NULL);
 
@@ -1842,7 +1859,7 @@ static void repstats_window_setup(struct repstats_data *data)
 	g_signal_connect (data->RA_mode, "changed", G_CALLBACK (repstats_action_mode_changed), (gpointer)data);
 
 	g_signal_connect (data->CY_intvl, "changed", G_CALLBACK (repstats_compute), (gpointer)data);
-	
+
     data->handler_id[HID_REPDIST_VIEW] = g_signal_connect (data->CY_type, "changed", G_CALLBACK (repstats_compute), (gpointer)data);
 
 	g_signal_connect (data->RG_zoomx, "value-changed", G_CALLBACK (repstats_zoomx_callback), NULL);
@@ -1867,8 +1884,8 @@ static void repstats_window_setup(struct repstats_data *data)
 
 	//export is a menu
 
-	
-	
+
+
 	g_signal_connect (gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_report )), "changed", G_CALLBACK (repstats_selection), NULL);
 	g_signal_connect (gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_report)), "sort-column-changed", G_CALLBACK (repstats_cb_sortcolumnchanged), NULL);
 
@@ -1876,7 +1893,7 @@ static void repstats_window_setup(struct repstats_data *data)
 
 
 	g_signal_connect (GTK_TREE_VIEW(data->LV_detail), "row-activated", G_CALLBACK (repstats_detail_onRowActivated), NULL);
-	
+
 
 
 }
@@ -1894,7 +1911,7 @@ struct repstats_data *data;
 	DB( g_print("\n[repdist] window mapped\n") );
 
 	//setup, init and show window
-	repstats_window_setup(data);	
+	repstats_window_setup(data);
 
 	repstats_update_date_widget(data->window, NULL);
 	repstats_update_daterange(data->window, NULL);
@@ -1918,7 +1935,7 @@ struct WinGeometry *wg;
 	if(data->trend)
 		da_datatable_free (data->trend);
 
-	if(data->txn_queue)	
+	if(data->txn_queue)
 		g_queue_free (data->txn_queue);
 
 	da_flt_free(data->filter);
@@ -1970,7 +1987,7 @@ gint row;
 
 	DB( g_print("\n[repdist] new\n") );
 
-	
+
 	data = g_malloc0(sizeof(struct repstats_data));
 	if(!data) return NULL;
 
@@ -2015,7 +2032,7 @@ gint row;
 		label = make_label_group(_("Display"));
 		//gtk_grid_attach (GTK_GRID (table), label, 0, row, 3, 1);
 		gtk_box_pack_start (GTK_BOX (fbox), label, FALSE, FALSE, 0);
-		
+
 		//test button
 		/*bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 		gtk_style_context_add_class (gtk_widget_get_style_context (bbox), GTK_STYLE_CLASS_LINKED);
@@ -2070,7 +2087,7 @@ gint row;
 	hbtk_switcher_setup(HBTK_SWITCHER(widget), CYA_REPORT_MODE, TRUE);
 	data->RA_mode = widget;
 	gtk_grid_attach (GTK_GRID (table), widget, 2, row, 1, 1);
-	
+
 	row++;
 	label = make_label_widget(_("_View by:"));
 	gtk_grid_attach (GTK_GRID (table), label, 1, row, 1, 1);
@@ -2271,7 +2288,7 @@ gint row;
 
 	// list trend
 	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	data->SW_trend = scrollwin;	
+	data->SW_trend = scrollwin;
 	gtk_box_pack_start (GTK_BOX(vbox), scrollwin, TRUE, TRUE, 0);
 	treeview = lst_rep_time_create();
 	data->LV_report2 = treeview;
@@ -2301,7 +2318,7 @@ gint row;
 	treeview = create_list_transaction(LIST_TXN_TYPE_DETAIL, PREFS->lst_det_columns);
 	data->LV_detail = treeview;
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
-	gtk_paned_pack2 (GTK_PANED(vpaned), scrollwin, TRUE, TRUE);	
+	gtk_paned_pack2 (GTK_PANED(vpaned), scrollwin, TRUE, TRUE);
 
 	list_txn_set_save_column_width(GTK_TREE_VIEW(treeview), TRUE);
 
