@@ -51,6 +51,7 @@ struct _archive
 
 	/* automation data */
 	guint32		nextdate;
+	gboolean    endmonth;
 	gushort		daygap;
 	gushort		every;
 	gushort		unit;

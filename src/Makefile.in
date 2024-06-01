@@ -104,13 +104,13 @@ am_homebank_OBJECTS = dsp-account.$(OBJEXT) dsp-mainwindow.$(OBJEXT) \
 	gtk-chart-progress.$(OBJEXT) gtk-dateentry.$(OBJEXT) \
 	hb-account.$(OBJEXT) hb-archive.$(OBJEXT) hb-assign.$(OBJEXT) \
 	hb-category.$(OBJEXT) hb-currency.$(OBJEXT) \
-	hb-encoding.$(OBJEXT) hb-export.$(OBJEXT) hb-filter.$(OBJEXT) \
-	hb-hbfile.$(OBJEXT) hb-import.$(OBJEXT) \
-	hb-import-ofx.$(OBJEXT) hb-import-qif.$(OBJEXT) \
-	hb-import-csv.$(OBJEXT) hb-misc.$(OBJEXT) hb-payee.$(OBJEXT) \
-	hb-group.$(OBJEXT) hb-preferences.$(OBJEXT) \
-	hb-report.$(OBJEXT) hb-tag.$(OBJEXT) hb-split.$(OBJEXT) \
-	hb-transaction.$(OBJEXT) hb-xml.$(OBJEXT) \
+	hb-date-helper.$(OBJEXT) hb-encoding.$(OBJEXT) \
+	hb-export.$(OBJEXT) hb-filter.$(OBJEXT) hb-hbfile.$(OBJEXT) \
+	hb-import.$(OBJEXT) hb-import-ofx.$(OBJEXT) \
+	hb-import-qif.$(OBJEXT) hb-import-csv.$(OBJEXT) \
+	hb-misc.$(OBJEXT) hb-payee.$(OBJEXT) hb-group.$(OBJEXT) \
+	hb-preferences.$(OBJEXT) hb-report.$(OBJEXT) hb-tag.$(OBJEXT) \
+	hb-split.$(OBJEXT) hb-transaction.$(OBJEXT) hb-xml.$(OBJEXT) \
 	hbtk-switcher.$(OBJEXT) homebank.$(OBJEXT) \
 	hub-account.$(OBJEXT) hub-reptime.$(OBJEXT) \
 	hub-reptotal.$(OBJEXT) hub-scheduled.$(OBJEXT) \
@@ -153,26 +153,26 @@ am__depfiles_remade = ./$(DEPDIR)/dsp-account.Po \
 	./$(DEPDIR)/gtk-dateentry.Po ./$(DEPDIR)/hb-account.Po \
 	./$(DEPDIR)/hb-archive.Po ./$(DEPDIR)/hb-assign.Po \
 	./$(DEPDIR)/hb-category.Po ./$(DEPDIR)/hb-currency.Po \
-	./$(DEPDIR)/hb-encoding.Po ./$(DEPDIR)/hb-export.Po \
-	./$(DEPDIR)/hb-filter.Po ./$(DEPDIR)/hb-group.Po \
-	./$(DEPDIR)/hb-hbfile.Po ./$(DEPDIR)/hb-import-csv.Po \
-	./$(DEPDIR)/hb-import-ofx.Po ./$(DEPDIR)/hb-import-qif.Po \
-	./$(DEPDIR)/hb-import.Po ./$(DEPDIR)/hb-misc.Po \
-	./$(DEPDIR)/hb-payee.Po ./$(DEPDIR)/hb-preferences.Po \
-	./$(DEPDIR)/hb-report.Po ./$(DEPDIR)/hb-split.Po \
-	./$(DEPDIR)/hb-tag.Po ./$(DEPDIR)/hb-transaction.Po \
-	./$(DEPDIR)/hb-xml.Po ./$(DEPDIR)/hbtk-switcher.Po \
-	./$(DEPDIR)/homebank.Po ./$(DEPDIR)/hub-account.Po \
-	./$(DEPDIR)/hub-reptime.Po ./$(DEPDIR)/hub-reptotal.Po \
-	./$(DEPDIR)/hub-scheduled.Po ./$(DEPDIR)/hub-transaction.Po \
-	./$(DEPDIR)/language.Po ./$(DEPDIR)/list-account.Po \
-	./$(DEPDIR)/list-operation.Po ./$(DEPDIR)/list-report.Po \
-	./$(DEPDIR)/list-scheduled.Po ./$(DEPDIR)/rep-balance.Po \
-	./$(DEPDIR)/rep-budget.Po ./$(DEPDIR)/rep-stats.Po \
-	./$(DEPDIR)/rep-time.Po ./$(DEPDIR)/rep-vehicle.Po \
-	./$(DEPDIR)/ui-account.Po ./$(DEPDIR)/ui-archive.Po \
-	./$(DEPDIR)/ui-assign.Po ./$(DEPDIR)/ui-assist-import.Po \
-	./$(DEPDIR)/ui-assist-start.Po \
+	./$(DEPDIR)/hb-date-helper.Po ./$(DEPDIR)/hb-encoding.Po \
+	./$(DEPDIR)/hb-export.Po ./$(DEPDIR)/hb-filter.Po \
+	./$(DEPDIR)/hb-group.Po ./$(DEPDIR)/hb-hbfile.Po \
+	./$(DEPDIR)/hb-import-csv.Po ./$(DEPDIR)/hb-import-ofx.Po \
+	./$(DEPDIR)/hb-import-qif.Po ./$(DEPDIR)/hb-import.Po \
+	./$(DEPDIR)/hb-misc.Po ./$(DEPDIR)/hb-payee.Po \
+	./$(DEPDIR)/hb-preferences.Po ./$(DEPDIR)/hb-report.Po \
+	./$(DEPDIR)/hb-split.Po ./$(DEPDIR)/hb-tag.Po \
+	./$(DEPDIR)/hb-transaction.Po ./$(DEPDIR)/hb-xml.Po \
+	./$(DEPDIR)/hbtk-switcher.Po ./$(DEPDIR)/homebank.Po \
+	./$(DEPDIR)/hub-account.Po ./$(DEPDIR)/hub-reptime.Po \
+	./$(DEPDIR)/hub-reptotal.Po ./$(DEPDIR)/hub-scheduled.Po \
+	./$(DEPDIR)/hub-transaction.Po ./$(DEPDIR)/language.Po \
+	./$(DEPDIR)/list-account.Po ./$(DEPDIR)/list-operation.Po \
+	./$(DEPDIR)/list-report.Po ./$(DEPDIR)/list-scheduled.Po \
+	./$(DEPDIR)/rep-balance.Po ./$(DEPDIR)/rep-budget.Po \
+	./$(DEPDIR)/rep-stats.Po ./$(DEPDIR)/rep-time.Po \
+	./$(DEPDIR)/rep-vehicle.Po ./$(DEPDIR)/ui-account.Po \
+	./$(DEPDIR)/ui-archive.Po ./$(DEPDIR)/ui-assign.Po \
+	./$(DEPDIR)/ui-assist-import.Po ./$(DEPDIR)/ui-assist-start.Po \
 	./$(DEPDIR)/ui-budget-tabview.Po ./$(DEPDIR)/ui-budget.Po \
 	./$(DEPDIR)/ui-category.Po ./$(DEPDIR)/ui-currency.Po \
 	./$(DEPDIR)/ui-dialogs.Po ./$(DEPDIR)/ui-filter.Po \
@@ -378,6 +378,8 @@ homebank_SOURCES = \
 	hb-category.h \
 	hb-currency.c \
 	hb-currency.h \
+	hb-date-helper.c \
+	hb-date-helper.h \
 	hb-encoding.c \
 	hb-encoding.h \
 	hb-export.c \
@@ -593,6 +595,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hb-assign.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hb-category.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hb-currency.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hb-date-helper.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hb-encoding.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hb-export.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hb-filter.Po@am__quote@ # am--include-marker
@@ -807,6 +810,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/hb-assign.Po
 	-rm -f ./$(DEPDIR)/hb-category.Po
 	-rm -f ./$(DEPDIR)/hb-currency.Po
+	-rm -f ./$(DEPDIR)/hb-date-helper.Po
 	-rm -f ./$(DEPDIR)/hb-encoding.Po
 	-rm -f ./$(DEPDIR)/hb-export.Po
 	-rm -f ./$(DEPDIR)/hb-filter.Po
@@ -919,6 +923,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/hb-assign.Po
 	-rm -f ./$(DEPDIR)/hb-category.Po
 	-rm -f ./$(DEPDIR)/hb-currency.Po
+	-rm -f ./$(DEPDIR)/hb-date-helper.Po
 	-rm -f ./$(DEPDIR)/hb-encoding.Po
 	-rm -f ./$(DEPDIR)/hb-export.Po
 	-rm -f ./$(DEPDIR)/hb-filter.Po

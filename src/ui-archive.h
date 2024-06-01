@@ -44,9 +44,10 @@ struct ui_arc_manage_data
 	GtkWidget	*BT_add, *BT_rem, *BT_edit;
 
 	GtkWidget	*MB_schedule, *PO_schedule;
-	
+
 	GtkWidget	*CM_auto;
 	GtkWidget	*LB_next, *PO_next;
+	GtkWidget	*CM_endmonth;
 	GtkWidget	*LB_every, *NB_every;
 	GtkWidget   *LB_weekend, *CY_weekend;
 	GtkWidget	*CY_unit;
