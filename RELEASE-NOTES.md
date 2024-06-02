@@ -1,6 +1,9 @@
 Release notes
 -------------
 
+##### 5.8.1.2 ⑂ CYOSP (2024-06-02)
+ * Add switch to schedule a transaction at end of month
+
 ##### 5.8.1.1 ⑂ CYOSP (2024-05-26)
  * Import 5.8.1 release
 
