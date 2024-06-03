@@ -1,6 +1,9 @@
 Release notes
 -------------
 
+##### 5.8.1.3 ⑂ CYOSP (2024-06-03)
+ * Fix: Segmentation fault on "Manage scheduled/template transactions" window
+
 ##### 5.8.1.2 ⑂ CYOSP (2024-06-02)
  * Add switch to schedule a transaction at end of month
 
