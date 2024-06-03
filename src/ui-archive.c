@@ -530,23 +530,24 @@ GtkTreePath			*path;
 gboolean selected;
 
 	DB( g_print("\n[ui-scheduled] cb popover closed\n") );
+    GtkWidget * ancestor = gtk_widget_get_ancestor(popover, GTK_TYPE_WINDOW);
+    if(ancestor) {
+        data = g_object_get_data(G_OBJECT(ancestor), "inst_data");
+        /* redraw the row to display/hide the icon */
+        selected = gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_arc)), &model, &iter);
+        if(selected)
+        {
+            ui_arc_manage_getlast(data);
 
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(popover, GTK_TYPE_WINDOW)), "inst_data");
-
-	/* redraw the row to display/hide the icon */
-	selected = gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_arc)), &model, &iter);
-	if(selected)
-	{
-		ui_arc_manage_getlast(data);
-
-		path = gtk_tree_model_get_path(model, &iter);
-		#if MYDEBUG == 1
-			gchar *spath = gtk_tree_path_to_string(path);
-			g_print(" selected '%s'\n", spath);
-			g_free(spath);
-		#endif
-		gtk_tree_model_row_changed(model, path, &iter);
-		gtk_tree_path_free (path);
+            path = gtk_tree_model_get_path(model, &iter);
+            #if MYDEBUG == 1
+                gchar *spath = gtk_tree_path_to_string(path);
+                g_print(" selected '%s'\n", spath);
+                g_free(spath);
+            #endif
+            gtk_tree_model_row_changed(model, path, &iter);
+            gtk_tree_path_free (path);
+        }
 	}
 }
 
