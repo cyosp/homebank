@@ -570,10 +570,13 @@ Account *acc;
 
 	da_transaction_set_flag(child);	// set income/xpense
 
-	//#1268026 #1690555
-	if( (child->status == TXN_STATUS_CLEARED) || (child->status == TXN_STATUS_RECONCILED) )
-		child->status = TXN_STATUS_NONE;
-	//child->flags &= ~(OF_VALID);	// delete reconcile state
+	//#1268026 #1690555 #2067855
+	if( PREFS->xfer_syncstat == FALSE )
+	{
+		if( (child->status == TXN_STATUS_CLEARED) || (child->status == TXN_STATUS_RECONCILED) )
+			child->status = TXN_STATUS_NONE;
+		//child->flags &= ~(OF_VALID);	// delete reconcile state
+	}
 
 	child->kacc = child->kxferacc;
 	child->kxferacc = stxn->kacc;

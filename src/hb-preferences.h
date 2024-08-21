@@ -139,7 +139,7 @@ struct Preferences
 	//5.7
 	gboolean	rep_forcast;
 	gint		rep_forecat_nbmonth;
-
+		
 
 	//backup option
 	gboolean	bak_is_automatic;
@@ -185,7 +185,7 @@ struct Preferences
 	/* windows/dialogs size an position */
 	struct WinGeometry	wal_wg;
 	struct WinGeometry	acc_wg;
-
+	
 	struct WinGeometry	sta_wg;
 	struct WinGeometry	tme_wg;
 	struct WinGeometry	ove_wg;
@@ -195,7 +195,7 @@ struct Preferences
 	struct WinGeometry	txn_wg;
 	struct WinGeometry	dbud_wg;
 
-	// main window stuffs
+	// main window stuffs 
 	gboolean	wal_toolbar;
 	gboolean	wal_totchart;
 	gboolean	wal_timchart;
@@ -227,11 +227,11 @@ struct Preferences
 	gshort		pnl_upc_col_mem_show;
 	gshort		pnl_upc_col_mem_width;
 	gint		pnl_upc_range;
-
+	
 	gchar		*pnl_list_tab;
 
 	//vehiclecost units (mile/gal or km/liters)
-
+	
 	gchar	   *vehicle_unit_dist0;
 	gchar	   *vehicle_unit_dist1;
 	gchar	   *vehicle_unit_vol;

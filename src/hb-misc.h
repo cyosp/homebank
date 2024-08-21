@@ -21,6 +21,14 @@
 #define __HB_MISC__H__
 
 
+//amount sign
+enum {
+	HB_AMT_SIGN_OFF,
+	HB_AMT_SIGN_EXP,
+	HB_AMT_SIGN_INC
+};
+
+
 double hb_amount_round(const double x, unsigned int n);
 gdouble hb_amount_base(gdouble value, guint32 kcur);
 gdouble hb_amount_convert(gdouble value, guint32 skcur, guint32 dkcur);
@@ -29,6 +37,7 @@ gboolean hb_amount_type_match(gdouble amount, gint type);
 gboolean hb_amount_equal(gdouble val1, gdouble val2);
 gint hb_amount_compare(gdouble val1, gdouble val2);
 gboolean hb_amount_between(gdouble val, gdouble min, gdouble max);
+gint hb_amount_forced_sign(const gchar *text);
 
 
 gdouble hb_rate(gdouble value, gdouble total);

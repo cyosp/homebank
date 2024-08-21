@@ -603,22 +603,22 @@ guint lastmeter = 0;
 
 				distbyvol = 0;
 				if(centkm != 0)
-					distbyvol = hb_amount_round((1/centkm)*100, 0);
-
+					//#2073233 round to 1 digit
+					distbyvol = hb_amount_round((1/centkm)*100, 1);
 
 		    	gtk_list_store_append (GTK_LIST_STORE(model), &iter);
 
 				gtk_list_store_set (GTK_LIST_STORE(model), &iter,
-					LST_CAR_DATE    , item->date,
-					LST_CAR_MEMO    , item->memo,
-					LST_CAR_METER   , item->meter,
-					LST_CAR_FUEL    , item->fuel,
-					LST_CAR_PRICE   , ABS(amount) / item->fuel,
-					LST_CAR_AMOUNT  , amount,
-					LST_CAR_DIST    , dist,
-					LST_CAR_100KM   , centkm,
-				    LST_CAR_DISTBYVOL, distbyvol,
-				    LST_CAR_PARTIAL, item->partial,
+					LST_CAR_DATE,	item->date,
+					LST_CAR_MEMO,	item->memo,
+					LST_CAR_METER,	item->meter,
+					LST_CAR_FUEL,	item->fuel,
+					LST_CAR_PRICE,	ABS(amount) / item->fuel,
+					LST_CAR_AMOUNT,	amount,
+					LST_CAR_DIST,	dist,
+					LST_CAR_100KM,	centkm,
+				    LST_CAR_DISTBYVOL,	distbyvol,
+				    LST_CAR_PARTIAL,	item->partial,
 					-1);
 
 				//DB( g_print("\n insert d=%d v=%4.2f $%8.2f %d %5.2f\n", item->meter, item->fuel, amount, dist, centkm) );

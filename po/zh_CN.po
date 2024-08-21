@@ -3,14 +3,14 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-05-11 12:04+0200\n"
-"PO-Revision-Date: 2024-05-05 10:12+0000\n"
+"PO-Revision-Date: 2024-06-28 12:01+0000\n"
 "Last-Translator: Noah Li <Unknown>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2024-05-26 05:44+0000\n"
-"X-Generator: Launchpad (build 0e1f616671af724398db43b36ddfb3ed1f2682ec)\n"
+"X-Launchpad-Export-Date: 2024-08-07 17:28+0000\n"
+"X-Generator: Launchpad (build e3ace39cea497a5ecb83e8fb6dd8e7e169f02939)\n"
 
 #: ../data/homebank.desktop.in.in.h:1 ../src/dsp-mainwindow.c:720
 msgid "HomeBank"
@@ -18,16 +18,16 @@ msgstr "HomeBank"
 
 #: ../data/homebank.desktop.in.in.h:2
 msgid "Personal finance"
-msgstr "个人理财"
+msgstr "个人财务"
 
 #: ../data/homebank.desktop.in.in.h:3 ../src/dsp-mainwindow.c:212
 #: ../src/dsp-mainwindow.c:724
 msgid "Free, easy, personal accounting for everyone"
-msgstr "免费、方便、适合所有人的个人财务软件"
+msgstr "自由、易用、适合所有人的个人财务软件"
 
 #: ../data/homebank.desktop.in.in.h:4
 msgid "finance;accounting;budget;personal;money;"
-msgstr "财务，会计，预算，个人，现金"
+msgstr "财务;会计;预算;个人;理财;"
 
 #: ../data/homebank.appdata.xml.in.h:1
 msgid ""
@@ -67,7 +67,7 @@ msgstr "已解锁，点击锁定。"
 
 #: ../src/dsp-account.c:904 ../src/ui-hbfile.c:353
 msgid "Life Energy"
-msgstr ""
+msgstr "生命能耗"
 
 #: ../src/dsp-account.c:905
 msgid "'Earn by hour' is not set into the current Wallet."
@@ -106,7 +106,7 @@ msgstr "更改(_C)"
 
 #: ../src/dsp-account.c:2021
 msgid "Are you sure you want to change the status to Cleared?"
-msgstr ""
+msgstr "确定将状态设为已结清吗？"
 
 #: ../src/dsp-account.c:2068
 msgid "Are you sure you want to toggle the status Reconciled?"
@@ -369,11 +369,11 @@ msgstr "工具(_T)"
 
 #: ../src/dsp-account.c:3040
 msgid "Move transaction up"
-msgstr "交易上移"
+msgstr "上移交易"
 
 #: ../src/dsp-account.c:3044
 msgid "Move transaction down"
-msgstr "交易下移"
+msgstr "下移交易"
 
 #: ../src/dsp-account.c:3051
 msgid "Add a new transaction"
@@ -416,7 +416,7 @@ msgstr "切换所选交易的核对状态"
 
 #: ../src/dsp-account.c:3077
 msgid "Edit multiple transaction"
-msgstr "编辑多个交易选项"
+msgstr "编辑多笔交易"
 
 #: ../src/dsp-account.c:3081
 msgid "Delete selected transaction(s)"
@@ -428,7 +428,7 @@ msgstr "锁定已核对的变化"
 
 #: ../src/dsp-account.c:3174
 msgid "(closed)"
-msgstr "关闭"
+msgstr "（已关闭）"
 
 #: ../src/dsp-account.c:3181
 #, c-format
@@ -465,7 +465,7 @@ msgstr "刷新"
 
 #: ../src/dsp-account.c:3310
 msgid "Toggle Life Energy"
-msgstr ""
+msgstr "切换显示生命能耗（每笔支出所需工作时长）"
 
 #. TRANSLATORS: this is for Euro specific users, a toggle to display in 'Minor' currency
 #: ../src/dsp-account.c:3316 ../src/rep-balance.c:1122 ../src/rep-budget.c:2228
@@ -621,7 +621,7 @@ msgstr "该文件自上次读取以来已被更改。"
 #: ../src/dsp-mainwindow.c:1276
 msgid ""
 "If you save it, all the external changes could be lost. Save it anyway?"
-msgstr "如果您保存的话，外部的所有更改都将丢失。仍然保存吗？"
+msgstr "如果现在保存，所有外部更改都将丢失。仍然保存吗？"
 
 #: ../src/dsp-mainwindow.c:1277
 msgid "S_ave Anyway"
@@ -734,7 +734,7 @@ msgstr "标签..."
 
 #: ../src/dsp-mainwindow.c:1970
 msgid "Scheduled/Template..."
-msgstr "计划/模板..."
+msgstr "计划 / 模板..."
 
 #: ../src/dsp-mainwindow.c:1971
 msgid "Assignments..."
@@ -1080,12 +1080,12 @@ msgstr "类型"
 #. /TRANSLATORS: n-exp > normal espense
 #: ../src/hb-filter.c:1121
 msgid "n-exp"
-msgstr "普通支出"
+msgstr "正常支出"
 
 #. /TRANSLATORS: n-inc > normal income
 #: ../src/hb-filter.c:1124
 msgid "n-inc"
-msgstr "普通收入"
+msgstr "正常收入"
 
 #. /TRANSLATORS: x-exp > transfer espense
 #: ../src/hb-filter.c:1127
@@ -1158,7 +1158,7 @@ msgstr "未知"
 #: ../src/hb-preferences.c:84
 #, c-format
 msgid "%.2f l"
-msgstr "%.2f l"
+msgstr "%.2f 升"
 
 #. TRANSLATORS: kilometer per liter
 #: ../src/hb-preferences.c:87
@@ -1206,21 +1206,21 @@ msgstr "H%d"
 #: ../src/hb-report.c:1680
 #, c-format
 msgid "%d-w%02d"
-msgstr "%d-w%02d"
+msgstr "%d 年 W%d"
 
 #. todo: will be innacurrate here if fiscal year start not 1/jan
 #. TRANSLATORS: printf string for year of quarter Q, ex. 2019-Q4 for quarter 4 of 2019
 #: ../src/hb-report.c:1692
 #, c-format
 msgid "%d-q%d"
-msgstr "%d 至 %d 季度"
+msgstr "%d 年 Q%d"
 
 #. #2007712
 #. TRANSLATORS: printf string for half-year H, ex. 2019-H1 for 1st half-year of 2019
 #: ../src/hb-report.c:1697
 #, c-format
 msgid "%d-h%d"
-msgstr "%d H%d"
+msgstr "%d 年 H%d"
 
 #: ../src/homebank.c:73
 msgid "Show the application’s version"
@@ -1245,7 +1245,7 @@ msgstr "（无机构）"
 
 #: ../src/hub-account.c:445 ../src/hub-account.c:578
 msgid "Your accounts"
-msgstr "你的帐户"
+msgstr "帐户"
 
 #: ../src/hub-account.c:588
 msgid "Copy to clipboard"
@@ -1349,7 +1349,7 @@ msgstr "前 %d 个支出类别"
 #: ../src/hub-reptotal.c:127
 #, c-format
 msgid "Top %d Expense / Category"
-msgstr ""
+msgstr "前 %d 个支出类别"
 
 #: ../src/hub-reptotal.c:131
 #, c-format
@@ -1359,7 +1359,7 @@ msgstr "前 %d 名支出交易人"
 #: ../src/hub-reptotal.c:133
 #, c-format
 msgid "Top %d Expense / Payee"
-msgstr ""
+msgstr "前 %d 名支出交易人"
 
 #: ../src/hub-reptotal.c:137
 #, c-format
@@ -1369,7 +1369,7 @@ msgstr "前 %d 个支出账户"
 #: ../src/hub-reptotal.c:139
 #, c-format
 msgid "Top %d Expense / Account"
-msgstr ""
+msgstr "前 %d 个支出账户"
 
 #: ../src/hub-reptotal.c:143 ../src/hub-reptime.c:136
 #, c-format
@@ -1399,7 +1399,7 @@ msgstr "排序方式"
 #. g_menu_append_section (menu, NULL, G_MENU_MODEL(section));
 #: ../src/hub-reptotal.c:643 ../src/hub-reptime.c:535
 msgid "Raw amount"
-msgstr ""
+msgstr "原始金额"
 
 #: ../src/hub-reptotal.c:650 ../src/hub-reptime.c:542
 msgid "Account group"
@@ -1497,7 +1497,7 @@ msgstr "已结清"
 #. Today
 #: ../src/list-account.c:835 ../src/ui-widgets-data.c:185
 msgid "Today"
-msgstr "今天"
+msgstr "今日余额"
 
 #: ../src/list-operation.c:156 ../src/list-operation.c:164
 #: ../src/list-operation.c:733 ../src/list-scheduled.c:211
@@ -1545,7 +1545,7 @@ msgstr "标签"
 #: ../src/list-operation.c:1628 ../src/list-scheduled.c:917
 #: ../src/ui-assist-import.c:387
 msgid "Pay./Number"
-msgstr ""
+msgstr "支付方式 / 编号"
 
 #: ../src/list-operation.c:1840
 msgid "Flag"
@@ -1559,7 +1559,7 @@ msgstr "匹配"
 #: ../src/list-report.c:90 ../src/list-report.c:402 ../src/rep-budget.c:115
 #: ../src/rep-budget.c:458 ../src/rep-budget.c:1205
 msgid "Result"
-msgstr "事项"
+msgstr "结果"
 
 #: ../src/list-report.c:949
 msgid "Average"
@@ -1568,12 +1568,12 @@ msgstr "平均"
 #. TRANSLATORS: title of list column to inform the scheduled transaction is Late
 #: ../src/list-scheduled.c:1046
 msgid "Late"
-msgstr "最近"
+msgstr "超时"
 
 #. TRANSLATORS: title of list column to inform how many occurence remain to post for limited scheduled txn
 #: ../src/list-scheduled.c:1065
 msgid "Still"
-msgstr "固定"
+msgstr "剩余"
 
 #: ../src/list-scheduled.c:1082 ../src/list-scheduled.c:1239
 msgid "Next date"
@@ -1650,7 +1650,7 @@ msgstr "显示空行"
 
 #: ../src/rep-balance.c:1127 ../src/rep-stats.c:2120 ../src/rep-time.c:1446
 msgid "_Zoom X:"
-msgstr "拉伸 X 轴(_Z)："
+msgstr "缩放 X 轴(_Z)："
 
 #: ../src/rep-balance.c:1146 ../src/rep-budget.c:2240 ../src/rep-stats.c:2151
 #: ../src/rep-time.c:1465 ../src/rep-vehicle.c:1004
@@ -1696,7 +1696,7 @@ msgstr "全部"
 #: ../src/rep-balance.c:1218 ../src/rep-time.c:1539
 #: ../src/ui-assist-import.c:1808 ../src/ui-filter.c:899
 msgid "Invert"
-msgstr "反向选择"
+msgstr "反选"
 
 #. column: Expense
 #: ../src/rep-budget.c:115 ../src/rep-budget.c:439
@@ -1911,13 +1911,13 @@ msgstr "条目"
 
 #: ../src/rep-time.c:1516
 msgid "_By:"
-msgstr ""
+msgstr "每(_B)："
 
 #: ../src/rep-time.c:1697
 msgid "Time slice"
 msgstr "时间段"
 
-#.
+#. 
 #. LST_CAR_DATE,
 #. LST_CAR_MEMO,
 #. LST_CAR_METER,
@@ -1926,10 +1926,10 @@ msgstr "时间段"
 #. LST_CAR_AMOUNT,
 #. LST_CAR_DIST,
 #. LST_CAR_100KM
-#.
-#.
+#. 
+#. 
 #. column: Memo
-#.
+#. 
 #. column = gtk_tree_view_column_new();
 #. gtk_tree_view_column_set_title(column, _("Memo"));
 #. gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
@@ -1937,7 +1937,7 @@ msgstr "时间段"
 #. gtk_tree_view_column_pack_start(column, renderer, TRUE);
 #. gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_MEMO);
 #. //gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
-#.
+#. 
 #. column: Meter
 #: ../src/rep-vehicle.c:175 ../src/rep-vehicle.c:1377
 msgid "Meter"
@@ -2026,7 +2026,7 @@ msgstr "错误"
 msgid ""
 "Cannot add an account '%s',\n"
 "this name already exists."
-msgstr "账户“%s”已经存在，无法添加。"
+msgstr "账户“%s”已存在，无法添加。"
 
 #: ../src/ui-account.c:1435
 #, c-format
@@ -2043,11 +2043,11 @@ msgstr "该账户接受转账"
 
 #: ../src/ui-account.c:1441
 msgid "It has scheduled/template"
-msgstr "该账户有计划任务/模板"
+msgstr "该账户有计划任务 / 模板"
 
 #: ../src/ui-account.c:1442
 msgid "It is target of xfer scheduled/template"
-msgstr "该账户有转账计划任务/模板"
+msgstr "该账户有转账计划任务 / 模板"
 
 #: ../src/ui-account.c:1460 ../src/ui-archive.c:409 ../src/ui-assign.c:1566
 #: ../src/ui-budget-tabview.c:2308 ../src/ui-category.c:1997
@@ -2198,7 +2198,7 @@ msgstr "该模板已有账户使用，无法删除。"
 
 #: ../src/ui-archive.c:411
 msgid "If you delete a scheduled/template, it will be permanently lost."
-msgstr "计划/模板删除后不可恢复。"
+msgstr "计划 / 模板删除后不可恢复。"
 
 #: ../src/ui-archive.c:725
 msgid "Next _date:"
@@ -2226,7 +2226,7 @@ msgstr "过账"
 
 #: ../src/ui-archive.c:806
 msgid "Manage scheduled/template transactions"
-msgstr "管理计划/模板交易"
+msgstr "管理计划 / 模板交易"
 
 #: ../src/ui-archive.c:844 ../src/ui-dialogs.c:298
 msgid "Template"
@@ -2234,7 +2234,7 @@ msgstr "模板"
 
 #: ../src/ui-archive.c:901
 msgid "_Schedule"
-msgstr "计划安排(_S)"
+msgstr "计划(_S)"
 
 #: ../src/ui-assign.c:50
 msgid "Disabled"
@@ -2360,7 +2360,7 @@ msgstr "归类删除后不可恢复。"
 
 #: ../src/ui-assign.c:1765
 msgid "Move to..."
-msgstr "移动至..."
+msgstr "移至..."
 
 #: ../src/ui-assign.c:1774
 msgid "Move rule"
@@ -2386,7 +2386,7 @@ msgstr "本助手将引导您完成新 HomeBank 文件的基本设置。"
 
 #: ../src/ui-assist-start.c:62
 msgid "All the elements you setup here can be changed later if required."
-msgstr "可以以后需要时更改此处的所有设置。"
+msgstr "您可在以后需要时更改此处的所有设置。"
 
 #: ../src/ui-assist-start.c:67
 msgid ""
@@ -2536,7 +2536,7 @@ msgstr "QIF 文件(.qif)"
 
 #: ../src/ui-assist-import.c:783
 msgid "OFX/QFX files"
-msgstr "OFX/QFX 文件"
+msgstr "OFX / QFX 文件"
 
 #: ../src/ui-assist-import.c:791 ../src/ui-dialogs.c:624
 msgid "CSV files"
@@ -2689,7 +2689,7 @@ msgstr "OFX 备忘(_M)："
 
 #: ../src/ui-assist-import.c:1830 ../src/ui-pref.c:1306
 msgid "Sentence _case memo/payee"
-msgstr "按句规范化备忘/交易人名称大小写(_C)"
+msgstr "按句规范化备忘 / 交易人名称大小写(_C)"
 
 #: ../src/ui-assist-import.c:1834
 msgid "_Toggle amount"
@@ -2770,7 +2770,7 @@ msgstr "确定清除输入吗？"
 
 #: ../src/ui-budget.c:930 ../src/ui-budget-tabview.c:2529
 msgid "If you proceed, every amount will be set to 0."
-msgstr "继续操作所有金额将置为0"
+msgstr "如果继续，所有金额将会归零。"
 
 #: ../src/ui-budget.c:936 ../src/ui-budget-tabview.c:2535
 msgid "_Clear"
@@ -2779,7 +2779,7 @@ msgstr "清除(_C)"
 #: ../src/ui-budget.c:991
 #, c-format
 msgid "Budget for %s"
-msgstr "%s预算"
+msgstr "%s 的预算"
 
 #. create window
 #: ../src/ui-budget.c:1153 ../src/ui-budget-tabview.c:2782
@@ -3152,7 +3152,7 @@ msgstr "修改基准货币"
 msgid ""
 "If you proceed, rates of other currencies\n"
 "will be set to 0, don't forget to update it"
-msgstr "如果继续，其它货币的汇率将被设为 0，请记得更新。"
+msgstr "如果继续，其它货币的汇率将会归零，请记得更新。"
 
 #: ../src/ui-currency.c:1721
 msgid "Currencies"
@@ -3239,7 +3239,7 @@ msgstr "关闭前保存所有更改吗？"
 msgid ""
 "If you don't save, changes will be permanently lost.\n"
 "Number of changes: %d."
-msgstr "如果您不保存，%d 处更改将永久丢失。"
+msgstr "如果不保存，%d 处更改将永久丢失。"
 
 #: ../src/ui-dialogs.c:807
 msgid "Close _without saving"
@@ -3325,7 +3325,7 @@ msgstr "没有匹配的交易。"
 
 #: ../src/ui-filter.c:1157
 msgid "Input From -30 To -15 to filter on expense"
-msgstr ""
+msgstr "输入 -30 到 -15 之间的数字以过滤支出"
 
 #: ../src/ui-filter.c:1174
 msgid "_Memo:"
@@ -3366,7 +3366,7 @@ msgstr "默认"
 
 #: ../src/ui-filter.c:1454
 msgid "Amount/Text"
-msgstr "金额/文本"
+msgstr "金额 / 文本"
 
 #: ../src/ui-filter.c:1469
 msgid "Always show"
@@ -3443,7 +3443,7 @@ msgstr "月"
 
 #: ../src/ui-hbfile.c:356
 msgid "_Earn by hour:"
-msgstr "每小时收入(E)..."
+msgstr "每小时收入(_E)："
 
 #: ../src/ui-payee.c:1043
 msgid "Delete unused payee"
@@ -3526,7 +3526,7 @@ msgstr "交易"
 
 #: ../src/ui-pref.c:79
 msgid "Import/Export"
-msgstr "导入/导出"
+msgstr "导入 / 导出"
 
 #: ../src/ui-pref.c:80
 msgid "Report"
@@ -3570,7 +3570,7 @@ msgstr "选择默认导出文件夹"
 
 #: ../src/ui-pref.c:1213
 msgid "Payment shows & chooses"
-msgstr ""
+msgstr "显示的支付方式"
 
 #: ../src/ui-pref.c:1217
 msgid "Use drag & drop to reorder"
@@ -3582,7 +3582,7 @@ msgstr "汇率 API"
 
 #: ../src/ui-pref.c:1255
 msgid "Url:"
-msgstr "Url："
+msgstr "URL："
 
 #: ../src/ui-pref.c:1264
 msgid "Key:"
@@ -3594,7 +3594,7 @@ msgstr "常规选项"
 
 #: ../src/ui-pref.c:1317
 msgid "OFX/QFX options"
-msgstr "OFX/QFX 选项"
+msgstr "OFX / QFX 选项"
 
 #: ../src/ui-pref.c:1342
 msgid "QIF options"
@@ -3804,7 +3804,7 @@ msgstr "转账行为"
 
 #: ../src/ui-pref.c:1938
 msgid "Show action for target creation dialog for Add"
-msgstr ""
+msgstr "添加交易时选择创建目标的动作"
 
 #: ../src/ui-pref.c:1943
 msgid "Transfer target date tolerance:"
@@ -3906,7 +3906,7 @@ msgstr "显示启动画面"
 
 #: ../src/ui-pref.c:2304
 msgid "Load last opened file"
-msgstr "自动打开上次的财务文档"
+msgstr "打开上次使用的文件"
 
 #: ../src/ui-pref.c:2309
 msgid "Post pending scheduled transactions"
@@ -3926,7 +3926,7 @@ msgstr "主窗口图表"
 #. widget = make_daterange(label, DATE_RANGE_CUSTOM_HIDDEN);
 #. data->CY_daterange_wal = widget;
 #. gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-#.
+#. 
 #. row++;
 #: ../src/ui-pref.c:2338
 msgid "Max _items:"
@@ -3999,19 +3999,19 @@ msgstr "未归类："
 
 #: ../src/ui-split.c:1095
 msgid "Sum of splits:"
-msgstr "拆分的总数"
+msgstr "拆分交易总额："
 
 #: ../src/ui-split.c:1107
 msgid "Number of splits limit is reached"
-msgstr "分割线数量到达上限"
+msgstr "拆分交易数到达上限"
 
 #: ../src/ui-split.c:1115
 msgid "Warning: sum of splits and transaction type don't match"
-msgstr "警告：分割总和与交易类型不符"
+msgstr "警告：拆分交易总额与交易类型不符"
 
 #: ../src/ui-split.c:1123
 msgid "Warning: sum of splits and transaction amount don't match"
-msgstr "警告：分割总和与交易金额不符"
+msgstr "警告：拆分交易总额与交易金额不符"
 
 #: ../src/ui-tag.c:690
 msgid "Delete unused tag"
@@ -4082,13 +4082,13 @@ msgid ""
 "\n"
 "Proceeding will delete the target transaction."
 msgstr ""
-"确定停止内部交易？\n"
+"确定分离内部转账吗？\n"
 "\n"
-"将会删除目标交易！"
+"如果继续，目标交易将被删除。"
 
 #: ../src/ui-transaction.c:1025
 msgid "_Break"
-msgstr "终止(_B)"
+msgstr "分离(_B)"
 
 #: ../src/ui-transaction.c:1345
 msgid "Show _scheduled"
@@ -4120,7 +4120,7 @@ msgstr "套用交易"
 
 #: ../src/ui-transaction.c:1514
 msgid "Inherit template"
-msgstr "集成模板"
+msgstr "沿用模板"
 
 #: ../src/ui-transaction.c:1517
 msgid "Edit transaction"
@@ -4151,7 +4151,7 @@ msgstr "到(_O)："
 
 #: ../src/ui-transaction.c:1639
 msgid "No rate available to auto fill"
-msgstr "没有可用于自动填充的比例"
+msgstr "没有可用于自动填充的金额"
 
 #: ../src/ui-transaction.c:1652 ../src/ui-txn-multi.c:523
 msgid "A_ccount:"
@@ -4245,7 +4245,7 @@ msgstr "年"
 
 #: ../src/ui-widgets-data.c:71
 msgid "Possible"
-msgstr "可能的"
+msgstr "可能"
 
 #: ../src/ui-widgets-data.c:72
 msgid "Before"
@@ -4446,27 +4446,27 @@ msgstr "系统默认值"
 
 #: ../src/ui-widgets-data.c:302
 msgid "Icons only"
-msgstr "只有图标"
+msgstr "仅图标"
 
 #: ../src/ui-widgets-data.c:303
 msgid "Text only"
-msgstr "只有文字"
+msgstr "仅文本"
 
 #: ../src/ui-widgets-data.c:304
 msgid "Text under icons"
-msgstr "文字在图标下"
+msgstr "文本在图标下"
 
 #: ../src/ui-widgets-data.c:305
 msgid "Text beside icons"
-msgstr "文字在图标旁"
+msgstr "文本在图标旁"
 
 #: ../src/ui-widgets-data.c:312
 msgid "Horizontal"
-msgstr "水平显示"
+msgstr "水平"
 
 #: ../src/ui-widgets-data.c:313
 msgid "Vertical"
-msgstr "垂直显示"
+msgstr "垂直"
 
 #: ../src/ui-widgets-data.c:314
 msgid "Both"
@@ -4474,15 +4474,15 @@ msgstr "兼有"
 
 #: ../src/ui-widgets-data.c:321
 msgid "Tango light"
-msgstr "浅色"
+msgstr "Tango 亮色"
 
 #: ../src/ui-widgets-data.c:322
 msgid "Tango medium"
-msgstr "中等颜色"
+msgstr "Tango 中等"
 
 #: ../src/ui-widgets-data.c:323
 msgid "Tango dark"
-msgstr "深色"
+msgstr "Tango 暗色"
 
 #: ../src/ui-widgets-data.c:328
 msgid "m-d-y"
@@ -4502,11 +4502,11 @@ msgstr "忽略"
 
 #: ../src/ui-widgets-data.c:344
 msgid "Append to Number"
-msgstr ""
+msgstr "附加至数值"
 
 #: ../src/ui-widgets-data.c:345
 msgid "Append to Memo"
-msgstr "添加到提示"
+msgstr "附加至备忘"
 
 #: ../src/ui-widgets-data.c:346
 msgid "Append to Payee"

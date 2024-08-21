@@ -2278,7 +2278,7 @@ gint crow, row;
 
 static GtkWidget *defpref_page_general (struct defpref_data *data)
 {
-GtkWidget *content_grid, *group_grid, *hbox, *label, *widget;
+GtkWidget *content_grid, *group_grid, *label, *widget;
 gint crow, row;
 
 	content_grid = gtk_grid_new();

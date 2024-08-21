@@ -1920,6 +1920,7 @@ GError *error = NULL;
 	return retval;
 }
 
+
 /*
 ** XML category save
 */
@@ -1928,7 +1929,6 @@ static gint homebank_save_xml_cat(GIOChannel *io)
 GList *lcat, *list;
 GString *node;
 char buf[G_ASCII_DTOSTR_BUF_SIZE];
-guint i;
 gint retval = XML_OK;
 GError *error = NULL;
 
@@ -1938,6 +1938,7 @@ GError *error = NULL;
 	while (list != NULL)
 	{
 	Category *item = list->data;
+	guint i;
 
 		if(item->key != 0)
 		{
@@ -2252,6 +2253,7 @@ GError *error = NULL;
 
 		list = g_list_next(list);
 	}
+	//no list free here it is already the global list
 	g_string_free(node, TRUE);
 	return retval;
 }
@@ -2347,31 +2349,48 @@ GError *error = NULL;
 	return retval;
 }
 
+
+static GError *
+homebank_save_xml_ver(GIOChannel *io)
+{
+GError *error = NULL;
+char buf1[G_ASCII_DTOSTR_BUF_SIZE];
+gchar *outstr;
+
+	g_ascii_dtostr (buf1, sizeof (buf1), FILE_VERSION);
+	outstr = g_strdup_printf("<homebank v=\"%s\" d=\"%06d\">\n", buf1, HB_VERSION_NUM);
+	g_io_channel_write_chars(io, outstr, -1, NULL, &error);
+	g_free(outstr);
+
+	return error;
+}
+
+
 /*
 ** XML save homebank file: hbfile
 */
 gint homebank_save_xml(gchar *filename)
 {
 GIOChannel *io;
-char buf1[G_ASCII_DTOSTR_BUF_SIZE];
-gchar *outstr;
-gint retval = XML_OK;
 GError *error = NULL;
+gint retval = XML_IO_ERROR;
 
-	io = g_io_channel_new_file(filename, "w", &error);
 	//The default encoding for the external file is UTF-8.
-	if(error)
+	io = g_io_channel_new_file(filename, "w", &error);
+	if(error) goto failure;
+
+	//#2069152 handle windows Controlled Folder Access (CFA) write access 
+	if( !(g_io_channel_get_flags(io) & G_IO_FLAG_IS_WRITABLE) )
 	{
-		g_warning("unable to save file %s: %s", filename, error->message);
-		g_error_free(error);
-		return(XML_IO_ERROR);
+		retval = XML_NOT_WRITABLE;
+		goto failure;
 	}
 
-	g_io_channel_write_chars(io, "<?xml version=\"1.0\"?>\n", -1, NULL, NULL);
+	g_io_channel_write_chars(io, "<?xml version=\"1.0\"?>\n", -1, NULL, &error);
+	if(error) goto failure;
 
-	outstr = g_strdup_printf("<homebank v=\"%s\" d=\"%06d\">\n", g_ascii_dtostr (buf1, sizeof (buf1), FILE_VERSION), HB_VERSION_NUM);
-	g_io_channel_write_chars(io, outstr, -1, NULL, NULL);
-	g_free(outstr);
+	error = homebank_save_xml_ver(io);
+	if(error) goto failure;
 
 	retval = homebank_save_xml_prop(io);
 	retval = homebank_save_xml_cur(io);
@@ -2385,7 +2404,18 @@ GError *error = NULL;
 	retval = homebank_save_xml_ope(io);
 	retval = homebank_save_xml_flt(io);
 
-	g_io_channel_write_chars(io, "</homebank>\n", -1, NULL, NULL);
+	g_io_channel_write_chars(io, "</homebank>\n", -1, NULL, &error);
+	if(error) goto failure;
+
+	retval = XML_OK;
+
+failure:
+	if(error)
+	{
+		g_warning("unable to save file %s: %s", filename, error->message);
+		//TODO: later: propagate up
+		g_error_free(error);
+	}
 
 	g_io_channel_unref (io);
 

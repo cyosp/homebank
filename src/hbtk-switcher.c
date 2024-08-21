@@ -96,17 +96,17 @@ GSList *list = gtk_radio_button_get_group(GTK_RADIO_BUTTON(rbutton));
 gint nb, i = 0;
 gint active = -1;
 
-	//list is build with prepend
+	//list is build with prepend 
 	nb = g_slist_length(list) - 1;
 	//g_print("-------- from %p, nb:%d\n", togglebutton, nb+1);
 
 	while(nb >= 0 && list)
 	{
 	GtkToggleButton *tmp = g_slist_nth_data(list, nb);
-
-		/*g_print("%d %d: %p %d %s\n", nb, i,
-			tmp,
-			gtk_toggle_button_get_active(tmp),
+	
+		/*g_print("%d %d: %p %d %s\n", nb, i, 
+			tmp, 
+			gtk_toggle_button_get_active(tmp), 
 			gtk_button_get_label(GTK_BUTTON(tmp))
 		);*/
 
@@ -142,7 +142,7 @@ gint active;
 
 	active = _radiotest_get_active(GTK_RADIO_BUTTON(togglebutton));
 	//g_print(" > active:%d\n", active);
-
+	
 	if(priv->active != active)
 	{
 		DB( g_print(" **emit 'changed' signal** %d\n", active) );
@@ -155,7 +155,7 @@ gint active;
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-static void
+static void 
 hbtk_switcher_destroy (GtkWidget *object)
 {
 //HbtkSwitcher *switcher = HBTK_SWITCHER (object);
@@ -182,7 +182,7 @@ hbtk_switcher_dispose (GObject *gobject)
 
 	DB( g_print("\n[switcher] dispose\n") );
 
-
+	
   //g_clear_object (&self->priv->an_object);
 
   G_OBJECT_CLASS (hbtk_switcher_parent_class)->dispose (gobject);
@@ -198,7 +198,7 @@ hbtk_switcher_finalize (GObject *gobject)
 
 	DB( g_print("\n[switcher] finalize\n") );
 
-
+	
 	//g_date_free(self->date);
   //g_free (self->priv->a_string);
 
@@ -227,7 +227,7 @@ GtkWidgetClass *widget_class;
 	object_class->finalize = hbtk_switcher_finalize;
 
 	widget_class->destroy  = hbtk_switcher_destroy;
-
+	
 	switcher_signals[CHANGED] =
 		g_signal_new ("changed",
                   G_TYPE_FROM_CLASS (class),
@@ -238,7 +238,7 @@ GtkWidgetClass *widget_class;
                   G_TYPE_NONE, 0);
 
 	//g_type_class_add_private (object_class, sizeof (HbtkSwitcherPrivate));
-
+	
 }
 
 
@@ -266,7 +266,7 @@ HbtkSwitcher *switcher;
 
 	DB( g_print("\n[switcher] new\n") );
 
-	switcher = g_object_new (HBTK_TYPE_SWITCHER,
+	switcher = g_object_new (HBTK_TYPE_SWITCHER, 
 		"orientation", orientation,
 		NULL);
 
@@ -274,7 +274,7 @@ HbtkSwitcher *switcher;
 }
 
 
-void
+void 
 hbtk_switcher_setup (HbtkSwitcher *switcher, gchar **items, gboolean buttonstyle)
 {
 HbtkSwitcherPrivate *priv = switcher->priv;

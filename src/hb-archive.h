@@ -46,7 +46,7 @@ struct _archive
 	//guint32		kxfer;		//strong link xfer key
 	guint32		kxferacc;
 	gdouble		xferamount;	//xfer target alount
-
+	
 	GPtrArray	*splits;
 
 	/* automation data */
