@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: homebank\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2024-05-11 12:04+0200\n"
-"PO-Revision-Date: 2024-05-12 13:29+0000\n"
+"PO-Revision-Date: 2024-06-29 02:19+0000\n"
 "Last-Translator: TG <Unknown>\n"
 "Language-Team: French (Canada) <fr_CA@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2024-05-26 05:44+0000\n"
-"X-Generator: Launchpad (build 0e1f616671af724398db43b36ddfb3ed1f2682ec)\n"
+"X-Launchpad-Export-Date: 2024-08-07 17:28+0000\n"
+"X-Generator: Launchpad (build e3ace39cea497a5ecb83e8fb6dd8e7e169f02939)\n"
 
 #: ../data/homebank.desktop.in.in.h:1 ../src/dsp-mainwindow.c:720
 msgid "HomeBank"
@@ -120,7 +120,7 @@ msgstr "_Modifier"
 
 #: ../src/dsp-account.c:2021
 msgid "Are you sure you want to change the status to Cleared?"
-msgstr ""
+msgstr "Etes-vous sûr de vouloir changer le statut en Pointée ?"
 
 #: ../src/dsp-account.c:2068
 msgid "Are you sure you want to toggle the status Reconciled?"
@@ -248,31 +248,31 @@ msgstr "Aucun"
 #. { GRPFLAG_NONE,			"hb-gf-none",		N_("(none)") },
 #: ../src/dsp-account.c:2924 ../src/ui-widgets.c:1398
 msgid "Red"
-msgstr ""
+msgstr "Rouge"
 
 #: ../src/dsp-account.c:2925 ../src/ui-widgets.c:1399
 msgid "Orange"
-msgstr ""
+msgstr "Orange"
 
 #: ../src/dsp-account.c:2926 ../src/ui-widgets.c:1400
 msgid "Yellow"
-msgstr ""
+msgstr "Jaune"
 
 #: ../src/dsp-account.c:2927 ../src/ui-widgets.c:1401
 msgid "Green"
-msgstr ""
+msgstr "Vert"
 
 #: ../src/dsp-account.c:2928 ../src/ui-widgets.c:1402
 msgid "Blue"
-msgstr ""
+msgstr "Bleu"
 
 #: ../src/dsp-account.c:2929 ../src/ui-widgets.c:1403
 msgid "Purple"
-msgstr ""
+msgstr "Violet"
 
 #: ../src/dsp-account.c:2930
 msgid "_Flag"
-msgstr ""
+msgstr "_Drapeau"
 
 #: ../src/dsp-account.c:2934
 msgid "_None"
@@ -336,7 +336,7 @@ msgstr "Visiter le site web"
 
 #: ../src/dsp-account.c:2983
 msgid "Close"
-msgstr ""
+msgstr "Fermer"
 
 #. ...
 #: ../src/dsp-account.c:2985
@@ -357,11 +357,11 @@ msgstr "Coller (date du jour)"
 
 #: ../src/dsp-account.c:2999
 msgid "Copy clipboard"
-msgstr ""
+msgstr "Copier presse-papier"
 
 #: ../src/dsp-account.c:3000
 msgid "Find"
-msgstr ""
+msgstr "Rechercher"
 
 #. ...
 #: ../src/dsp-account.c:3002 ../src/dsp-mainwindow.c:1943
@@ -478,7 +478,7 @@ msgstr "Modifier le filtre"
 #: ../src/dsp-account.c:3299 ../src/rep-balance.c:1165 ../src/rep-stats.c:2173
 #: ../src/rep-time.c:1484
 msgid "Clear filter"
-msgstr ""
+msgstr "Effacer les filtres"
 
 #: ../src/dsp-account.c:3305 ../src/rep-balance.c:868 ../src/rep-budget.c:1935
 #: ../src/rep-stats.c:1734 ../src/rep-time.c:1157 ../src/rep-vehicle.c:792
@@ -785,7 +785,7 @@ msgstr "_Opérations"
 
 #: ../src/dsp-mainwindow.c:1979
 msgid "Show All..."
-msgstr ""
+msgstr "Tout montrer..."
 
 #: ../src/dsp-mainwindow.c:1981
 msgid "Add..."
@@ -1097,7 +1097,7 @@ msgstr "format CSV invalide"
 
 #: ../src/hb-filter.c:1101
 msgid "Invalid date range!"
-msgstr ""
+msgstr "Plage de dates invalide !"
 
 #. header
 #: ../src/hb-filter.c:1118 ../src/ui-filter.c:1266 ../src/ui-filter.c:1429
@@ -1107,22 +1107,22 @@ msgstr "Type"
 #. /TRANSLATORS: n-exp > normal espense
 #: ../src/hb-filter.c:1121
 msgid "n-exp"
-msgstr ""
+msgstr "n-débit"
 
 #. /TRANSLATORS: n-inc > normal income
 #: ../src/hb-filter.c:1124
 msgid "n-inc"
-msgstr ""
+msgstr "n-crédit"
 
 #. /TRANSLATORS: x-exp > transfer espense
 #: ../src/hb-filter.c:1127
 msgid "x-exp"
-msgstr ""
+msgstr "x-débit"
 
 #. /TRANSLATORS: x-inc > transfer income
 #: ../src/hb-filter.c:1130
 msgid "x-inc"
-msgstr ""
+msgstr "x-crédit"
 
 #. header
 #: ../src/hb-filter.c:1138 ../src/list-operation.c:1896
@@ -1133,15 +1133,15 @@ msgstr "État"
 
 #: ../src/hb-filter.c:1140 ../src/list-account.c:686
 msgid "none"
-msgstr ""
+msgstr "aucun"
 
 #: ../src/hb-filter.c:1142
 msgid "cleared"
-msgstr ""
+msgstr "effacé"
 
 #: ../src/hb-filter.c:1144
 msgid "reconciled"
-msgstr ""
+msgstr "rapproché"
 
 #. header
 #: ../src/hb-filter.c:1176 ../src/ui-dialogs.c:343 ../src/ui-filter.c:1049
@@ -1251,7 +1251,7 @@ msgstr "%d's%d"
 
 #: ../src/homebank.c:73
 msgid "Show the application’s version"
-msgstr ""
+msgstr "Afficher la version de l’application"
 
 #: ../src/homebank.c:79
 msgid "[FILE]"
@@ -1376,7 +1376,7 @@ msgstr "Top %d Dépense / Catégorie"
 #: ../src/hub-reptotal.c:127
 #, c-format
 msgid "Top %d Expense / Category"
-msgstr ""
+msgstr "Top %d débit / catégorie"
 
 #: ../src/hub-reptotal.c:131
 #, c-format
@@ -1386,7 +1386,7 @@ msgstr "Top %d Dépense / Tiers"
 #: ../src/hub-reptotal.c:133
 #, c-format
 msgid "Top %d Expense / Payee"
-msgstr ""
+msgstr "Top %d débit / tiers"
 
 #: ../src/hub-reptotal.c:137
 #, c-format
@@ -1396,7 +1396,7 @@ msgstr "Top %d Dépense / Compte"
 #: ../src/hub-reptotal.c:139
 #, c-format
 msgid "Top %d Expense / Account"
-msgstr ""
+msgstr "Top %d débit / compte"
 
 #: ../src/hub-reptotal.c:143 ../src/hub-reptime.c:136
 #, c-format
@@ -1426,7 +1426,7 @@ msgstr "Top par"
 #. g_menu_append_section (menu, NULL, G_MENU_MODEL(section));
 #: ../src/hub-reptotal.c:643 ../src/hub-reptime.c:535
 msgid "Raw amount"
-msgstr ""
+msgstr "Montant bruts"
 
 #: ../src/hub-reptotal.c:650 ../src/hub-reptime.c:542
 msgid "Account group"
@@ -1434,7 +1434,7 @@ msgstr "Groupe de compte"
 
 #: ../src/hub-reptime.c:121 ../src/hub-reptime.c:526
 msgid "Spending"
-msgstr ""
+msgstr "Dépenses"
 
 #. column: Expense
 #: ../src/hub-reptime.c:123 ../src/list-operation.c:1919
@@ -1451,7 +1451,7 @@ msgstr "Dépenses"
 #. 5.7.5
 #: ../src/hub-reptime.c:126 ../src/hub-reptime.c:528
 msgid "Revenue"
-msgstr ""
+msgstr "Revenus"
 
 #. column: Income
 #: ../src/hub-reptime.c:128 ../src/list-operation.c:1922
@@ -1467,11 +1467,11 @@ msgstr "Revenus"
 
 #: ../src/hub-reptime.c:131 ../src/hub-reptime.c:529
 msgid "Spending & Revenue"
-msgstr ""
+msgstr "Dépenses & Revenus"
 
 #: ../src/hub-reptime.c:133
 msgid "Expense & Income"
-msgstr ""
+msgstr "Débit & crédit"
 
 #: ../src/hub-reptime.c:144
 msgid "Global Balance"
@@ -1552,7 +1552,7 @@ msgstr "Date"
 #. g_string_append (node, "info" );
 #: ../src/list-operation.c:993 ../src/ui-widgets-data.c:338
 msgid "Number"
-msgstr ""
+msgstr "Numéro"
 
 #. g_string_append (node, "memo" );
 #. column: Memo
@@ -1572,11 +1572,11 @@ msgstr "Étiquettes"
 #: ../src/list-operation.c:1628 ../src/list-scheduled.c:917
 #: ../src/ui-assist-import.c:387
 msgid "Pay./Number"
-msgstr ""
+msgstr "Pay./Numéro"
 
 #: ../src/list-operation.c:1840
 msgid "Flag"
-msgstr ""
+msgstr "Drapeau"
 
 #: ../src/list-operation.c:1860
 msgid "Match"
@@ -1687,7 +1687,7 @@ msgstr "Filtre"
 #. active
 #: ../src/rep-balance.c:1151 ../src/rep-stats.c:2156 ../src/rep-time.c:1470
 msgid "Active:"
-msgstr ""
+msgstr "Actif:"
 
 #: ../src/rep-balance.c:1175 ../src/rep-budget.c:2248 ../src/rep-stats.c:2190
 #: ../src/rep-time.c:1494 ../src/rep-vehicle.c:1013 ../src/ui-filter.c:1089
@@ -1761,7 +1761,7 @@ msgstr " en-dessous"
 
 #: ../src/rep-budget.c:1494
 msgid "(unbudgeted)"
-msgstr ""
+msgstr "(non-budgeté)"
 
 #: ../src/rep-budget.c:1920 ../src/rep-stats.c:1690
 msgid "Stack"
@@ -1937,17 +1937,17 @@ msgstr "_Cumuler"
 
 #: ../src/rep-time.c:1512
 msgid "Item"
-msgstr ""
+msgstr "Élément"
 
 #: ../src/rep-time.c:1516
 msgid "_By:"
-msgstr ""
+msgstr "_Par:"
 
 #: ../src/rep-time.c:1697
 msgid "Time slice"
 msgstr "Part de temps"
 
-#.
+#. 
 #. LST_CAR_DATE,
 #. LST_CAR_MEMO,
 #. LST_CAR_METER,
@@ -1956,10 +1956,10 @@ msgstr "Part de temps"
 #. LST_CAR_AMOUNT,
 #. LST_CAR_DIST,
 #. LST_CAR_100KM
-#.
-#.
+#. 
+#. 
 #. column: Memo
-#.
+#. 
 #. column = gtk_tree_view_column_new();
 #. gtk_tree_view_column_set_title(column, _("Memo"));
 #. gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
@@ -1967,7 +1967,7 @@ msgstr "Part de temps"
 #. gtk_tree_view_column_pack_start(column, renderer, TRUE);
 #. gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_MEMO);
 #. //gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
-#.
+#. 
 #. column: Meter
 #: ../src/rep-vehicle.c:175 ../src/rep-vehicle.c:1377
 msgid "Meter"
@@ -2225,11 +2225,13 @@ msgstr "Max_imum:"
 
 #: ../src/ui-archive.c:400
 msgid "Template delete"
-msgstr ""
+msgstr "Effacer Modèle"
 
 #: ../src/ui-archive.c:401
 msgid "This template is used as an account template and cannot be deleted."
 msgstr ""
+"Ce modèle est utilisé en tant que modèle de compte\r\n"
+"et ne peut pas être supprimé"
 
 #: ../src/ui-archive.c:411
 msgid "If you delete a scheduled/template, it will be permanently lost."
@@ -2840,12 +2842,12 @@ msgstr "Gérer le budget"
 #: ../src/ui-budget.c:1207 ../src/ui-category.c:2458 ../src/ui-payee.c:1856
 #: ../src/ui-tag.c:1327
 msgid "_Import CSV..."
-msgstr ""
+msgstr "_Importer CSV..."
 
 #: ../src/ui-budget.c:1208 ../src/ui-category.c:2459 ../src/ui-payee.c:1857
 #: ../src/ui-tag.c:1328
 msgid "E_xport CSV..."
-msgstr ""
+msgstr "E_xporter CSV..."
 
 #: ../src/ui-budget.c:1280
 msgid "Balance:"
@@ -3046,7 +3048,7 @@ msgstr ""
 
 #: ../src/ui-category.c:1651
 msgid "Duplicate category name. Try another name."
-msgstr ""
+msgstr "Nom de catégorie en double. Essayez un autre nom."
 
 #: ../src/ui-category.c:1696
 msgid "Edit Category"
@@ -3110,7 +3112,7 @@ msgstr "Afficher l'utilisation"
 
 #: ../src/ui-category.c:2464 ../src/ui-payee.c:1862 ../src/ui-tag.c:1333
 msgid "_Delete unused..."
-msgstr ""
+msgstr "_Supprimer inutilisés...."
 
 #: ../src/ui-category.c:2517 ../src/ui-payee.c:1907 ../src/ui-tag.c:1372
 msgid "Move/Merge"
@@ -3395,11 +3397,11 @@ msgstr ""
 #. 5.8 chnage text
 #: ../src/ui-dialogs.c:1299
 msgid "No transaction match."
-msgstr ""
+msgstr "Pas d'opération correpondante."
 
 #: ../src/ui-filter.c:1157
 msgid "Input From -30 To -15 to filter on expense"
-msgstr ""
+msgstr "Saisir de -30 a -15 pour filtrer sur des débits"
 
 #: ../src/ui-filter.c:1174
 msgid "_Memo:"
@@ -3408,7 +3410,7 @@ msgstr "_Mémo :"
 #: ../src/ui-filter.c:1181 ../src/ui-transaction.c:1692
 #: ../src/ui-txn-multi.c:559
 msgid "_Number:"
-msgstr ""
+msgstr "_Numéro:"
 
 #: ../src/ui-filter.c:1189
 msgid "Case _sensitive"
@@ -3416,11 +3418,11 @@ msgstr "_Sensible à la casse"
 
 #: ../src/ui-filter.c:1288
 msgid "Expense Transfer"
-msgstr ""
+msgstr "Débit virement"
 
 #: ../src/ui-filter.c:1293
 msgid "Income Transfer"
-msgstr ""
+msgstr "Crédit virement"
 
 #: ../src/ui-filter.c:1365 ../src/ui-pref.c:2435 ../src/ui-pref.c:2462
 msgid "_Reset"
@@ -3428,7 +3430,7 @@ msgstr "_Réinitialiser"
 
 #: ../src/ui-filter.c:1371
 msgid "_Save & Use"
-msgstr ""
+msgstr "_Sauver & utiliser"
 
 #: ../src/ui-filter.c:1373
 msgid "_Use"
@@ -3436,7 +3438,7 @@ msgstr "_Utiliser"
 
 #: ../src/ui-filter.c:1376
 msgid "default"
-msgstr ""
+msgstr "Par défaut"
 
 #: ../src/ui-filter.c:1454
 msgid "Amount/Text"
@@ -3460,28 +3462,28 @@ msgstr "Modifié"
 
 #: ../src/ui-flt-widget.c:127
 msgid "(default)"
-msgstr ""
+msgstr "(par défaut)"
 
 #: ../src/ui-flt-widget.c:228
 msgid "Filter rename"
-msgstr ""
+msgstr "Renommer filtre"
 
 #: ../src/ui-flt-widget.c:262
 #, c-format
 msgid "New filter %d"
-msgstr ""
+msgstr "Nouveau filtre %d"
 
 #: ../src/ui-flt-widget.c:263
 msgid "Filter name"
-msgstr ""
+msgstr "Nom du filtre"
 
 #: ../src/ui-flt-widget.c:453
 msgid "_Save as..."
-msgstr ""
+msgstr "_Enregistrer sous..."
 
 #: ../src/ui-flt-widget.c:454
 msgid "_Rename..."
-msgstr ""
+msgstr "_Renommer…"
 
 #: ../src/ui-hbfile.c:45
 msgid "Due Date"
@@ -3533,7 +3535,7 @@ msgstr ""
 
 #: ../src/ui-payee.c:1211
 msgid "Duplicate payee name. Try another name."
-msgstr ""
+msgstr "Nom de tiers en double. Essayez un autre nom."
 
 #: ../src/ui-payee.c:1247
 msgid "Edit Payee"
@@ -3650,11 +3652,11 @@ msgstr "Choisir le dossier par défaut des exportations"
 
 #: ../src/ui-pref.c:1213
 msgid "Payment shows & chooses"
-msgstr ""
+msgstr "Paiement affichés et choisis"
 
 #: ../src/ui-pref.c:1217
 msgid "Use drag & drop to reorder"
-msgstr ""
+msgstr "Utiliser le glisser et déposer pour ordonnancer"
 
 #: ../src/ui-pref.c:1251
 msgid "Currency API"
@@ -3877,15 +3879,15 @@ msgstr "Voir confimation ajout de 5s"
 
 #: ../src/ui-pref.c:1923
 msgid "Show template list when edit"
-msgstr ""
+msgstr "Montrer la liste des modèle en édition"
 
 #: ../src/ui-pref.c:1934
 msgid "Transfer behavior"
-msgstr ""
+msgstr "Comportement virement"
 
 #: ../src/ui-pref.c:1938
 msgid "Show action for target creation dialog for Add"
-msgstr ""
+msgstr "Afficher le dialogue d'action de cible pour les Ajouts"
 
 #: ../src/ui-pref.c:1943
 msgid "Transfer target date tolerance:"
@@ -3907,7 +3909,7 @@ msgstr "Lignes de _grille:"
 
 #: ../src/ui-pref.c:2022
 msgid "_Icon theme:"
-msgstr ""
+msgstr "Thème icônes:"
 
 #: ../src/ui-pref.c:2045
 msgid "Gtk settings"
@@ -4007,7 +4009,7 @@ msgstr "Rapports de l'accueil"
 #. widget = make_daterange(label, DATE_RANGE_CUSTOM_HIDDEN);
 #. data->CY_daterange_wal = widget;
 #. gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-#.
+#. 
 #. row++;
 #: ../src/ui-pref.c:2338
 msgid "Max _items:"
@@ -4104,17 +4106,19 @@ msgstr ""
 
 #: ../src/ui-tag.c:690
 msgid "Delete unused tag"
-msgstr ""
+msgstr "Effacer les étiquettes inutilisées"
 
 #: ../src/ui-tag.c:691
 msgid ""
 "Are you sure you want to\n"
 "permanently delete unused tag?"
 msgstr ""
+"Êtes-vous sûr de vouloir\n"
+"effacer définitivement les étiquettes inutilisées ?"
 
 #: ../src/ui-tag.c:842
 msgid "Duplicate tag name. Try another name."
-msgstr ""
+msgstr "Nom d'étiquette en double. Essayez un autre nom."
 
 #: ../src/ui-tag.c:877
 msgid "Edit Tag"
@@ -4596,7 +4600,7 @@ msgstr "Ignorer"
 
 #: ../src/ui-widgets-data.c:344
 msgid "Append to Number"
-msgstr ""
+msgstr "Ajouter après numéro"
 
 #: ../src/ui-widgets-data.c:345
 msgid "Append to Memo"
@@ -4676,7 +4680,7 @@ msgstr "Rechercher..."
 
 #: ../src/ui-widgets.c:1425
 msgid "Any flag"
-msgstr ""
+msgstr "Drapeaux quelconques"
 
 #: ../src/ui-widgets.c:1496
 msgid "Check"
@@ -4714,4 +4718,4 @@ msgstr "Prélèvement direct"
 #. #1817274
 #: ../src/ui-widgets.c:1507
 msgid "Mobile Phone"
-msgstr ""
+msgstr "Téléphone mobile"

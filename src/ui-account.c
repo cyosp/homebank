@@ -1249,7 +1249,7 @@ static void ui_acc_manage_update(GtkWidget *widget, gpointer user_data)
 struct ui_acc_manage_data *data;
 GtkTreeModel		 *model;
 GtkTreeIter			 iter;
-gboolean valid, selected, sensitive, canup, candw;
+gboolean selected, sensitive, canup, candw;
 guint32 key;
 gint sort_column_id;
 GtkSortType sort_order;
@@ -1280,7 +1280,7 @@ GtkSortType sort_order;
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_acc));
 	sort_column_id = GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID;
 	sort_order = GTK_SORT_DESCENDING;
-	valid = gtk_tree_sortable_get_sort_column_id(GTK_TREE_SORTABLE(model), &sort_column_id, &sort_order);
+	gtk_tree_sortable_get_sort_column_id(GTK_TREE_SORTABLE(model), &sort_column_id, &sort_order);
 	DB( g_print(" sort is %d colid=%d order=%d (ok is %d %d)\n", valid, sort_column_id, sort_order, LST_DEFACC_SORT_POS, GTK_SORT_ASCENDING) );
 
 	if( !((sort_column_id == LST_DEFACC_SORT_POS) && (sort_order == GTK_SORT_ASCENDING)) )

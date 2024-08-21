@@ -1661,6 +1661,8 @@ ui_bud_tabview_data_t *data = user_data;
 		"enable-tree-lines", FALSE,
 		NULL);
 
+	gtk_tree_view_set_enable_tree_lines(GTK_TREE_VIEW (view), TRUE);
+
 	return view;
 }
 
@@ -1737,6 +1739,7 @@ GtkTreeIter filter_iter, iter;
 GtkTreeModel *filter, *budget;
 Category* category;
 gdouble amount;
+gint forcedsign;
 guint32 category_key;
 
 	DB(g_print("\n[ui_bud_tabview] amount updated:\n"));
@@ -1764,10 +1767,26 @@ guint32 category_key;
 		return;
 	}
 
-	amount = ABS(g_strtod(new_text, NULL));
-	//#2052304 ensure sign
-	if( !(category->flags & GF_INCOME) )
-		amount *= -1;
+	//#2071648 enable input +/- force sign
+	forcedsign = hb_amount_forced_sign(new_text);
+	amount = g_strtod(new_text, NULL);
+
+	switch( forcedsign )
+	{
+		case HB_AMT_SIGN_EXP:
+			if( amount > 0)
+				amount *= -1;
+			break;
+		case HB_AMT_SIGN_INC:
+			if( amount < 0)
+				amount *= -1;
+			break;
+		//#2052304 ensure sign to category sign
+		default:
+			if( amount > 0 && !(category->flags & GF_INCOME) )
+				amount *= -1;
+			break;
+	}
 
 	DB(g_print("\tcolumn: %d (month: %d), category key: %d, amount %.2f\n", column_id, column_id - UI_BUD_TABVIEW_JANUARY + 1, category_key, amount));
 

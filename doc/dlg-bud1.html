@@ -22,6 +22,53 @@
     </ul>
   </div>
 
+
+  <div class="row">
+  <div class="gfx">
+    <img class="gtkshot right" src="images/dlg-budget2.png">
+  </div>
+  <div class="rounded content">
+    <h2>Using budget table view dialog</h2>
+
+    <h3><img src="images/1.png" width="15" height="15"> Summary/Expense/Income switcher</h3>
+    <p>Toggle the category list with Expense/Income categories only or summary</p>
+
+    <h3><img src="images/2.png" width="15" height="15"> Quick search</h3>
+    <p>A quick search text filter. You can use CTRL+F to activate and ESC to clear.</p>
+
+    <h3><img src="images/3.png" width="15" height="15"> Budget list</h3>
+    <p>the category and budget columns.</p>
+    <p>
+      <img src="images/hb-ope-budget.png"> = category has budget set (and is also displayed bold)<br>
+      <img src="images/hb-ope-forced.png"> = category is forced to be displayed
+    </p>  
+
+    <p>Usage of this list:</p>
+    <ul>
+      <li>double click on row/column you want to edit<br>
+      <img src="images/d-info.png" width="16" height="16">&nbsp;you can force the amount sign with prefix with +/-</li>
+      <li>when the checkbox in Monthly column is ticked, the budget is the same for each month, and so only this column can be edited</li>
+    </ul>
+
+    <h3><img src="images/4.png" width="15" height="15"> Options</h3>
+
+    <table class="widgetinfo">
+        <tr>
+        <th>Clear input</th>
+        <td>clear any budget for the selected category</td>
+      </tr>
+      <tr>
+        <th>Force monitoring this category</th>
+        <td>By default, if a transaction has no amount (0.00) it it not displayed into the budget report. This checkbox will change this and can manage such case.</td>
+      </tr>
+    </table>
+
+  </div>
+  </div>
+
+  <hr>
+  <p><img src="images/d-warn.png">&nbsp;<span class="warning">This dialog is deprecated and will be removed in a future version</span></p>
+
   <div class="row">
   <div class="gfx">
     <img class="gtkshot right" src="images/dlg-budget1.png">
@@ -87,16 +134,7 @@
   </div>
   </div>
 
-  <h1>Table view budget dialog</h1>
-  <div class="row">
-  <div class="gfx">
-    <img class="gtkshot right" src="images/dlg-budget2.png">
-  </div>
-  <div class="rounded content">
-    <h2>Using budget table view dialog</h2>
-    <p>the way of using this window is quite the same, only the displaying changes.</p>
 
-  </div>
   
 </body>
 </html>

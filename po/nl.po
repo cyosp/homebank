@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: 3.2alpha1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2024-05-11 12:04+0200\n"
-"PO-Revision-Date: 2024-02-21 17:58+0000\n"
+"PO-Revision-Date: 2024-07-15 19:54+0000\n"
 "Last-Translator: Gregory Dk <Unknown>\n"
 "Language-Team: Dutch <vertaling@nl.linux.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2024-05-26 05:44+0000\n"
-"X-Generator: Launchpad (build 0e1f616671af724398db43b36ddfb3ed1f2682ec)\n"
+"X-Launchpad-Export-Date: 2024-08-07 17:28+0000\n"
+"X-Generator: Launchpad (build e3ace39cea497a5ecb83e8fb6dd8e7e169f02939)\n"
 "Language: nl\n"
 
 #: ../data/homebank.desktop.in.in.h:1 ../src/dsp-mainwindow.c:720
@@ -79,7 +79,7 @@ msgstr "Ontgrendeld. Klik om te vergrendelen."
 
 #: ../src/dsp-account.c:904 ../src/ui-hbfile.c:353
 msgid "Life Energy"
-msgstr ""
+msgstr "Levensenergie"
 
 #: ../src/dsp-account.c:905
 msgid "'Earn by hour' is not set into the current Wallet."
@@ -172,7 +172,7 @@ msgstr "Er werd geen soortgelijke transactie gevonden !"
 
 #: ../src/dsp-account.c:2503 ../src/dsp-account.c:2513
 msgid "Check internal transfer result"
-msgstr "Resultaat van de interne overboekingscontrole"
+msgstr "Intern overboekingsresultaat controleren"
 
 #: ../src/dsp-account.c:2504
 msgid "No inconsistency found !"
@@ -196,10 +196,12 @@ msgstr "Ieder transactiebedrag wordt gedeeld door %.6f."
 msgid ""
 "Are you sure you want to convert this account to Euro as Major currency?"
 msgstr ""
+"Weet je zeker dat je deze account wilt converteren naar de euro als "
+"belangrijkste valuta?"
 
 #: ../src/dsp-account.c:2618
 msgid "_Convert"
-msgstr "_Omzetten"
+msgstr "_Converteren"
 
 #: ../src/dsp-account.c:2775
 msgid "No transaction changed"
@@ -240,27 +242,27 @@ msgstr "Geen"
 #. { GRPFLAG_NONE,			"hb-gf-none",		N_("(none)") },
 #: ../src/dsp-account.c:2924 ../src/ui-widgets.c:1398
 msgid "Red"
-msgstr ""
+msgstr "Rood"
 
 #: ../src/dsp-account.c:2925 ../src/ui-widgets.c:1399
 msgid "Orange"
-msgstr ""
+msgstr "Oranje"
 
 #: ../src/dsp-account.c:2926 ../src/ui-widgets.c:1400
 msgid "Yellow"
-msgstr ""
+msgstr "Geel"
 
 #: ../src/dsp-account.c:2927 ../src/ui-widgets.c:1401
 msgid "Green"
-msgstr ""
+msgstr "Groen"
 
 #: ../src/dsp-account.c:2928 ../src/ui-widgets.c:1402
 msgid "Blue"
-msgstr ""
+msgstr "Blauw"
 
 #: ../src/dsp-account.c:2929 ../src/ui-widgets.c:1403
 msgid "Purple"
-msgstr ""
+msgstr "Paars"
 
 #: ../src/dsp-account.c:2930
 msgid "_Flag"
@@ -312,11 +314,11 @@ msgstr "Om_laag"
 
 #: ../src/dsp-account.c:2978
 msgid "Export QIF..."
-msgstr "Exporteer QIF..."
+msgstr "QIF exporteren..."
 
 #: ../src/dsp-account.c:2979
 msgid "Export CSV..."
-msgstr "Naar een CSV-bestand exporteren..."
+msgstr "CSV exporteren..."
 
 #: ../src/dsp-account.c:2980 ../src/hub-account.c:589
 msgid "Print..."
@@ -324,11 +326,11 @@ msgstr "Afdrukken..."
 
 #: ../src/dsp-account.c:2982 ../src/hub-account.c:635
 msgid "Browse Website"
-msgstr "Browse website"
+msgstr "Website bekijken"
 
 #: ../src/dsp-account.c:2983
 msgid "Close"
-msgstr ""
+msgstr "Sluiten"
 
 #. ...
 #: ../src/dsp-account.c:2985
@@ -349,11 +351,11 @@ msgstr "Plakken (vandaag)"
 
 #: ../src/dsp-account.c:2999
 msgid "Copy clipboard"
-msgstr ""
+msgstr "Klembord kopiëren"
 
 #: ../src/dsp-account.c:3000
 msgid "Find"
-msgstr ""
+msgstr "Zoeken"
 
 #. ...
 #: ../src/dsp-account.c:3002 ../src/dsp-mainwindow.c:1943
@@ -362,11 +364,11 @@ msgstr "_Bewerken"
 
 #: ../src/dsp-account.c:3012
 msgid "Mark duplicate..."
-msgstr "Markeer duplicaat..."
+msgstr "Duplicaat markeren..."
 
 #: ../src/dsp-account.c:3013
 msgid "Check internal transfer"
-msgstr "Controleer interne overboeking"
+msgstr "Interne overboeking controleren"
 
 #: ../src/dsp-account.c:3014
 msgid "Auto. assignments"
@@ -374,7 +376,7 @@ msgstr "Automatische toewijzingen"
 
 #: ../src/dsp-account.c:3015
 msgid "Convert to Euro..."
-msgstr "Converteer naar Euro"
+msgstr "Naar euro converteren..."
 
 #. ...
 #: ../src/dsp-account.c:3017 ../src/dsp-mainwindow.c:1995
@@ -411,7 +413,7 @@ msgstr "Overnemen"
 
 #: ../src/dsp-account.c:3061
 msgid "Edit the active transaction"
-msgstr "Wijzig de geselecteerde transactie(s)"
+msgstr "Wijzig de geselecteerde transactie"
 
 #. widget = gtk_button_new_with_mnemonic(_("_Edit"));
 #: ../src/dsp-account.c:3062 ../src/ui-archive.c:887 ../src/ui-assign.c:1898
@@ -470,7 +472,7 @@ msgstr "Filter bewerken"
 #: ../src/dsp-account.c:3299 ../src/rep-balance.c:1165 ../src/rep-stats.c:2173
 #: ../src/rep-time.c:1484
 msgid "Clear filter"
-msgstr ""
+msgstr "Filter wissen"
 
 #: ../src/dsp-account.c:3305 ../src/rep-balance.c:868 ../src/rep-budget.c:1935
 #: ../src/rep-stats.c:1734 ../src/rep-time.c:1157 ../src/rep-vehicle.c:792
@@ -485,7 +487,7 @@ msgstr ""
 #: ../src/dsp-account.c:3316 ../src/rep-balance.c:1122 ../src/rep-budget.c:2228
 #: ../src/rep-stats.c:2128 ../src/rep-time.c:1441 ../src/rep-vehicle.c:992
 msgid "Euro _minor"
-msgstr "Euro alternati_ef"
+msgstr "Euro '_minor'"
 
 #: ../src/dsp-account.c:3376
 msgid "Reconciled:"
@@ -501,7 +503,7 @@ msgstr "Vandaag:"
 
 #: ../src/dsp-account.c:3403
 msgid "Future:"
-msgstr "Toekomst:"
+msgstr "Toekomstig:"
 
 #: ../src/dsp-mainwindow.c:129
 #, c-format
@@ -725,7 +727,7 @@ msgstr "_Lijstvenster"
 
 #: ../src/dsp-mainwindow.c:1958 ../src/ui-pref.c:84
 msgid "Euro minor"
-msgstr "Euro"
+msgstr "Euro 'minor'"
 
 #: ../src/dsp-mainwindow.c:1962
 msgid "_Manage"
@@ -773,11 +775,11 @@ msgstr "Budget (tabelweergave)..."
 
 #: ../src/dsp-mainwindow.c:1977
 msgid "_Transactions"
-msgstr "_Transactie(s)"
+msgstr "_Transacties"
 
 #: ../src/dsp-mainwindow.c:1979
 msgid "Show All..."
-msgstr ""
+msgstr "Alles weergeven..."
 
 #: ../src/dsp-mainwindow.c:1981
 msgid "Add..."
@@ -993,7 +995,7 @@ msgstr "Tonen"
 
 #: ../src/dsp-mainwindow.c:2051
 msgid "Shows selected account transactions"
-msgstr "Geselecteerde rekeningtransactie(s) tonen"
+msgstr "Geselecteerde rekeningtransacties tonen"
 
 #: ../src/dsp-mainwindow.c:2052
 msgid "Add transactions"
@@ -1059,7 +1061,7 @@ msgstr "Gepland"
 #. Future
 #: ../src/dsp-mainwindow.c:2194 ../src/list-account.c:839
 msgid "Future"
-msgstr "Toekomst"
+msgstr "Toekomstig"
 
 #: ../src/dsp-mainwindow.c:2197 ../src/ui-filter.c:1472
 #: ../src/ui-widgets-data.c:103
@@ -1125,15 +1127,15 @@ msgstr "Status"
 
 #: ../src/hb-filter.c:1140 ../src/list-account.c:686
 msgid "none"
-msgstr ""
+msgstr "geen"
 
 #: ../src/hb-filter.c:1142
 msgid "cleared"
-msgstr ""
+msgstr "gewist"
 
 #: ../src/hb-filter.c:1144
 msgid "reconciled"
-msgstr ""
+msgstr "gereconcilieerd"
 
 #. header
 #: ../src/hb-filter.c:1176 ../src/ui-dialogs.c:343 ../src/ui-filter.c:1049
@@ -1243,7 +1245,7 @@ msgstr "%d-h%d"
 
 #: ../src/homebank.c:73
 msgid "Show the application’s version"
-msgstr ""
+msgstr "De toepassingsversie tonen"
 
 #: ../src/homebank.c:79
 msgid "[FILE]"
@@ -1310,16 +1312,16 @@ msgstr "som: %s (%s + %s)"
 
 #: ../src/hub-scheduled.c:418
 msgid "No transaction to add"
-msgstr "Geen transactie(s) toe te voegen"
+msgstr "Geen transactie toe te voegen"
 
 #: ../src/hub-scheduled.c:420
 #, c-format
 msgid "transaction added: %d"
-msgstr "Transactie(s) toegevoegd: %d"
+msgstr "transactie toegevoegd: %d"
 
 #: ../src/hub-scheduled.c:423
 msgid "Check scheduled transactions result"
-msgstr "Het resultaat van de geplande transactie(s) bekijken"
+msgstr "Het resultaat van de geplande transacties bekijken"
 
 #: ../src/hub-scheduled.c:475
 msgid "Post when program start"
@@ -1373,7 +1375,7 @@ msgstr ""
 #: ../src/hub-reptotal.c:131
 #, c-format
 msgid "Top %d Spending / Payee"
-msgstr "Top %d Uitgave / Begunstigde"
+msgstr "Top %d uitgaven/begunstigde"
 
 #: ../src/hub-reptotal.c:133
 #, c-format
@@ -1398,7 +1400,7 @@ msgstr "Balans rekening"
 #: ../src/hub-reptotal.c:146 ../src/hub-reptime.c:140
 #, c-format
 msgid "Account Group Balance"
-msgstr ""
+msgstr "Balans rekeninggroep"
 
 #: ../src/hub-reptotal.c:422
 msgid "Other"
@@ -1544,7 +1546,7 @@ msgstr "Datum"
 #. g_string_append (node, "info" );
 #: ../src/list-operation.c:993 ../src/ui-widgets-data.c:338
 msgid "Number"
-msgstr ""
+msgstr "Nummer"
 
 #. g_string_append (node, "memo" );
 #. column: Memo
@@ -1564,7 +1566,7 @@ msgstr "Labels"
 #: ../src/list-operation.c:1628 ../src/list-scheduled.c:917
 #: ../src/ui-assist-import.c:387
 msgid "Pay./Number"
-msgstr ""
+msgstr "Betaling/Nummer"
 
 #: ../src/list-operation.c:1840
 msgid "Flag"
@@ -1773,7 +1775,7 @@ msgstr "_Resultaat naar CSV"
 
 #: ../src/rep-budget.c:1957 ../src/rep-stats.c:1756 ../src/rep-time.c:1179
 msgid "_Detail to clipboard"
-msgstr "_Details naar kladblok"
+msgstr "_Details naar klembord"
 
 #: ../src/rep-budget.c:1958 ../src/rep-stats.c:1757 ../src/rep-time.c:1180
 msgid "_Detail to CSV"
@@ -1937,7 +1939,7 @@ msgstr ""
 msgid "Time slice"
 msgstr "Tijdsegment"
 
-#.
+#. 
 #. LST_CAR_DATE,
 #. LST_CAR_MEMO,
 #. LST_CAR_METER,
@@ -1946,10 +1948,10 @@ msgstr "Tijdsegment"
 #. LST_CAR_AMOUNT,
 #. LST_CAR_DIST,
 #. LST_CAR_100KM
-#.
-#.
+#. 
+#. 
 #. column: Memo
-#.
+#. 
 #. column = gtk_tree_view_column_new();
 #. gtk_tree_view_column_set_title(column, _("Memo"));
 #. gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
@@ -1957,7 +1959,7 @@ msgstr "Tijdsegment"
 #. gtk_tree_view_column_pack_start(column, renderer, TRUE);
 #. gtk_tree_view_column_add_attribute(column, renderer, "text", LST_CAR_MEMO);
 #. //gtk_tree_view_column_set_cell_data_func(column, renderer, repvehicle_text_cell_data_function, NULL, NULL);
-#.
+#. 
 #. column: Meter
 #: ../src/rep-vehicle.c:175 ../src/rep-vehicle.c:1377
 msgid "Meter"
@@ -1984,7 +1986,7 @@ msgstr "Exporteren"
 
 #: ../src/rep-vehicle.c:794 ../src/ui-dialogs.c:607 ../src/ui-dialogs.c:882
 msgid "Export as CSV"
-msgstr "Exporteer als een CSV-bestand"
+msgstr "Als CSV exporteren"
 
 #: ../src/rep-vehicle.c:961
 msgid "Vehicle cost report"
@@ -2191,7 +2193,7 @@ msgstr "Overig"
 
 #: ../src/ui-account.c:2081
 msgid "Current check number"
-msgstr "Huidig controle nummer"
+msgstr "Huidig chequenummer"
 
 #: ../src/ui-account.c:2085
 msgid "Checkbook _1:"
@@ -3259,7 +3261,7 @@ msgstr "Valuta:"
 
 #: ../src/ui-dialogs.c:557
 msgid "Export as QIF"
-msgstr "Exporteer als QIF"
+msgstr "Als QIF exporteren"
 
 #: ../src/ui-dialogs.c:601
 msgid "Import from CSV"
@@ -3304,7 +3306,7 @@ msgstr ""
 
 #: ../src/ui-dialogs.c:807
 msgid "Close _without saving"
-msgstr "Afsluiten _zonder opslaan"
+msgstr "Sluiten _zonder opslaan"
 
 #: ../src/ui-dialogs.c:886
 msgid "Export as _CSV"
@@ -3382,8 +3384,8 @@ msgid ""
 "HomeBank has found some transaction that may be the associated transaction "
 "for the internal transfer."
 msgstr ""
-"HomeBank heeft transactie(s) gevonden die gelinkt kunnen worden aan "
-"transactie(s) voor een interne overboeking."
+"HomeBank heeft een transactie gevonden die mogelijk de bijhorende transactie "
+"is voor de interne overboeking."
 
 #. 5.8 chnage text
 #: ../src/ui-dialogs.c:1299
@@ -3401,7 +3403,7 @@ msgstr "_Memo:"
 #: ../src/ui-filter.c:1181 ../src/ui-transaction.c:1692
 #: ../src/ui-txn-multi.c:559
 msgid "_Number:"
-msgstr ""
+msgstr "_Nummer:"
 
 #: ../src/ui-filter.c:1189
 msgid "Case _sensitive"
@@ -3421,7 +3423,7 @@ msgstr "_Vernieuw"
 
 #: ../src/ui-filter.c:1371
 msgid "_Save & Use"
-msgstr ""
+msgstr "_Opslaan & Gebruiken"
 
 #: ../src/ui-filter.c:1373
 msgid "_Use"
@@ -3429,7 +3431,7 @@ msgstr "_Gebruiken"
 
 #: ../src/ui-filter.c:1376
 msgid "default"
-msgstr ""
+msgstr "standaard"
 
 #: ../src/ui-filter.c:1454
 msgid "Amount/Text"
@@ -3453,7 +3455,7 @@ msgstr "Bewerkt"
 
 #: ../src/ui-flt-widget.c:127
 msgid "(default)"
-msgstr ""
+msgstr "(standaard)"
 
 #: ../src/ui-flt-widget.c:228
 msgid "Filter rename"
@@ -3470,11 +3472,11 @@ msgstr ""
 
 #: ../src/ui-flt-widget.c:453
 msgid "_Save as..."
-msgstr ""
+msgstr "Op_slaan als...."
 
 #: ../src/ui-flt-widget.c:454
 msgid "_Rename..."
-msgstr ""
+msgstr "_Hernoemen…"
 
 #: ../src/ui-hbfile.c:45
 msgid "Due Date"
@@ -3620,7 +3622,7 @@ msgstr "Mappen"
 
 #: ../src/ui-pref.c:85
 msgid "Advanced"
-msgstr ""
+msgstr "Geavanceerd"
 
 #: ../src/ui-pref.c:434
 msgid "System Language"
@@ -3652,15 +3654,15 @@ msgstr ""
 
 #: ../src/ui-pref.c:1251
 msgid "Currency API"
-msgstr ""
+msgstr "Valuta API"
 
 #: ../src/ui-pref.c:1255
 msgid "Url:"
-msgstr ""
+msgstr "URL:"
 
 #: ../src/ui-pref.c:1264
 msgid "Key:"
-msgstr ""
+msgstr "Sleutel:"
 
 #: ../src/ui-pref.c:1294
 msgid "General options"
@@ -3823,7 +3825,7 @@ msgstr "Transactielijst"
 
 #: ../src/ui-pref.c:1855
 msgid "_Show future:"
-msgstr "_Toekomst tonen:"
+msgstr "_Toekomstig tonen:"
 
 #. TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days in advance the current date
 #: ../src/ui-pref.c:1864
@@ -3902,7 +3904,7 @@ msgstr "_Rasterlijn:"
 
 #: ../src/ui-pref.c:2022
 msgid "_Icon theme:"
-msgstr ""
+msgstr "_Icoon thema:"
 
 #: ../src/ui-pref.c:2045
 msgid "Gtk settings"
@@ -4002,7 +4004,7 @@ msgstr "Hoofdvensterrapporten"
 #. widget = make_daterange(label, DATE_RANGE_CUSTOM_HIDDEN);
 #. data->CY_daterange_wal = widget;
 #. gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-#.
+#. 
 #. row++;
 #: ../src/ui-pref.c:2338
 msgid "Max _items:"
@@ -4359,7 +4361,7 @@ msgstr "Tijd"
 
 #: ../src/ui-widgets-data.c:133
 msgid "Account Group"
-msgstr ""
+msgstr "Rekeninggroep"
 
 #: ../src/ui-widgets-data.c:161
 msgid "Fortnight"
@@ -4592,7 +4594,7 @@ msgstr "Negeren"
 
 #: ../src/ui-widgets-data.c:344
 msgid "Append to Number"
-msgstr ""
+msgstr "Aan nummer toevoegen"
 
 #: ../src/ui-widgets-data.c:345
 msgid "Append to Memo"
@@ -4710,4 +4712,4 @@ msgstr "Automatische incasso"
 #. #1817274
 #: ../src/ui-widgets.c:1507
 msgid "Mobile Phone"
-msgstr ""
+msgstr "Mobiele telefoon"

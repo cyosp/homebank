@@ -57,7 +57,7 @@ static void da_flt_clean(Filter *flt)
 
 		g_free(flt->name);
 		flt->name = NULL;
-
+		
 		if(flt->gbtag != NULL)
 		{
 			g_array_free(flt->gbtag, TRUE);
@@ -132,7 +132,7 @@ Filter *flt;
 static guint count_garray(GArray *array)
 {
 guint count, i;
-
+	
 	for(i=0,count=0 ; i < array->len ; i++)
 	{
 		if( array->data[i] == 1 )
@@ -150,7 +150,7 @@ guint i, count;
 	for(i=0;i<FLT_GRP_MAX;i++)
 	{
 		if( flt->option[i] == 1 )
-		flt->n_active++;
+		flt->n_active++;	
 	}
 
 	flt->n_item[FLT_GRP_ACCOUNT]  = count_garray(flt->gbacc);
@@ -189,7 +189,7 @@ void da_flt_copy(Filter *src, Filter *dst)
 	dst->name   = g_strdup(src->name);
 	dst->number = g_strdup(src->number);
 	dst->memo   = g_strdup(src->memo);
-
+	
 	dst->gbacc = g_array_copy(src->gbacc);
 	dst->gbpay = g_array_copy(src->gbpay);
 	dst->gbcat = g_array_copy(src->gbcat);
@@ -279,7 +279,7 @@ GtkTreeIter iter;
 	if( strlen(item->name) > 20 )
 	{
 	gchar *truncname = g_strdup_printf("%.20s...", item->name);
-
+	
 		gtk_list_store_insert_with_values(GTK_LIST_STORE(GLOBALS->fltmodel), &iter, 0,
 			0, item->key,
 			1, truncname,
@@ -350,7 +350,7 @@ gchar *stripname;
 		g_free(stripname);
 	}
 
-	return retval;
+	return retval; 
 }
 
 
@@ -400,7 +400,7 @@ static void my_debug_garray(gchar *type, GArray *array)
 guint i;
 
 	g_print(" debug '%s' len=%d\n", type, array->len);
-
+	
 	for(i=0 ; i < array->len ; i++)
 	{
 		g_print("%02d ", array->data[i]);
@@ -417,7 +417,7 @@ guint change = 0;
 	if(key < array->len)
 	{
 	gchar *sel = &g_array_index(array, gchar, key);
-
+		
 		change += (*sel != status) ? 1 : 0;
 		*sel = status;
 		DB( g_print(" >update [%d]=>%d\n", key, status) );
@@ -516,7 +516,7 @@ void filter_status_acc_clear_except(Filter *flt, guint32 selkey)
 guint i;
 
 	DB( g_print("[filter] acc clear %d\n", flt->gbacc->len) );
-
+	
 	for(i=0;i<flt->gbacc->len;i++)
 	{
 		flt->gbacc->data[i] = 0;
@@ -529,7 +529,7 @@ void filter_status_pay_clear_except(Filter *flt, guint32 selkey)
 guint i;
 
 	DB( g_print("[filter] pay clear %d\n", flt->gbpay->len) );
-
+	
 	for(i=0;i<flt->gbpay->len;i++)
 	{
 		flt->gbpay->data[i] = 0;
@@ -543,7 +543,7 @@ guint i;
 
 	DB( g_print("[filter] cat clear %d\n", flt->gbcat->len) );
 
-
+	
 	for(i=0;i<flt->gbcat->len;i++)
 	{
 		flt->gbcat->data[i] = 0;
@@ -619,12 +619,12 @@ GList *lnk_txn;
 	while (lnk_acc != NULL)
 	{
 	Account *acc = lnk_acc->data;
-
+	
 		//#1674045 only rely on nosummary
 		//if( !(acc->flags & AF_CLOSED) )
 		{
 		Transaction *txn;
-
+		
 			DB( g_print(" collect date for '%s'\n", acc->name) );
 
 			lnk_txn = g_queue_peek_head_link(acc->txn_queue);
@@ -654,17 +654,17 @@ GList *lnk_txn;
 		}
 		lnk_acc = g_list_next(lnk_acc);
 	}
-
+	
 	if( flt->mindate == 0 )
 		//changed 5.3
 		//flt->mindate = HB_MINDATE;
 		flt->mindate = GLOBALS->today - 365;
-
+	
 	if( flt->maxdate == 0 )
 		//changed 5.3
 		//flt->maxdate = HB_MAXDATE;
 		flt->maxdate = GLOBALS->today + flt->nbdaysfuture;
-
+	
 	g_list_free(lst_acc);
 }
 
@@ -703,7 +703,7 @@ gboolean retval = FALSE;
 	GDate *date1, *date2;
 
 		DB( g_print(" eval alldate\n") );
-
+	
 		date1 = g_date_new_julian(GLOBALS->today);
 		date2 = g_date_new_julian(flt->maxdate);
 
@@ -724,7 +724,7 @@ gboolean retval = FALSE;
 }
 
 
-//5.7 used only in rep_stats
+//5.7 used only in rep_stats 
 guint32 filter_get_maxdate_forecast(Filter *flt)
 {
 guint32 retval;
@@ -756,7 +756,7 @@ void filter_preset_daterange_add_futuregap(Filter *flt, gint nbdays)
 	g_return_if_fail( flt != NULL );
 
 	DB( g_print("\n[filter] range add future gap\n") );
-
+	
 	flt->nbdaysfuture = 0;
 	//#1840998 if future active and visible: we should always maxdate to today + nbdays
 	if( filter_preset_daterange_future_enable(flt, flt->range) )
@@ -785,7 +785,7 @@ GDateWeekday wday;
 	DB( g_print("\n[filter] daterange set %p %d\n", flt, range) );
 
 	flt->range = range;
-
+	
 	jtoday = GLOBALS->today;
 
 	tmpdate  = g_date_new_julian(jtoday);
@@ -797,7 +797,7 @@ GDateWeekday wday;
 	qnum = 0;
 	yfiscal = year;
 	if( range == FLT_RANGE_LAST_QUARTER || range == FLT_RANGE_THIS_QUARTER ||range == FLT_RANGE_NEXT_QUARTER ||
-		//#2000834
+		//#2000834    
 	    range == FLT_RANGE_LAST_YEAR || range == FLT_RANGE_THIS_YEAR ||range == FLT_RANGE_NEXT_YEAR
 	  )
 	{
@@ -818,7 +818,7 @@ GDateWeekday wday;
 			DB( g_print(" qnum: %d\n", qnum ) );
 		}
 	}
-
+		
 	switch( range )
 	{
 		case FLT_RANGE_LAST_DAY:
@@ -945,17 +945,17 @@ GDateWeekday wday;
 
 		// case FLT_RANGE_MISC_CUSTOM:
 			//nothing to do
-
+			
 		case FLT_RANGE_MISC_ALLDATE:
 			filter_set_date_bounds(flt, kacc);
 			break;
 		case FLT_RANGE_MISC_30DAYS:
 			flt->mindate = jtoday - 30;
-			flt->maxdate = jtoday + 30;
+			flt->maxdate = jtoday + 30;		
 			break;
 	}
 	g_date_free(tmpdate);
-
+	
 	DB( hb_print_date(flt->mindate , " min ") );
 	DB( hb_print_date(flt->maxdate , " max ") );
 }
@@ -1006,7 +1006,7 @@ void filter_preset_status_set(Filter *flt, gint status)
 	g_return_if_fail( flt != NULL );
 
 	DB( g_print("\n[filter] preset status set\n") );
-
+	
 	/* any status */
 	//#1991459 dont reset type
 	//flt->option[FLT_GRP_TYPE] = 0;
@@ -1038,9 +1038,9 @@ void filter_preset_status_set(Filter *flt, gint status)
 				//flt->type = FLT_TYPE_INTXFER;
 				flt->option[FLT_GRP_CATEGORY] = 1;
 				filter_status_cat_clear_except(flt, 0);
-
+				
 				DB( my_debug_garray("cat", flt->gbcat) );
-
+				
 				break;
 
 			case FLT_STATUS_UNRECONCILED:
@@ -1086,10 +1086,10 @@ gchar *retval = NULL;
 
 		date = g_date_new_julian(flt->mindate);
 		g_date_strftime (buffer1, 128-1, PREFS->date_format, date);
-
+		
 		g_date_set_julian(date, flt->maxdate);
 		g_date_strftime (buffer2, 128-1, PREFS->date_format, date);
-
+		
 		if( flt->nbdaysfuture > 0 )
 		{
 			g_date_set_julian(date, flt->maxdate + flt->nbdaysfuture);
@@ -1098,7 +1098,7 @@ gchar *retval = NULL;
 		}
 		else
 			retval = g_strdup_printf("%s — %s", buffer1, buffer2);
-
+		
 		g_date_free(date);
 	}
 	else
@@ -1116,8 +1116,8 @@ GString *node;
 	node = g_string_sized_new(128);
 
 	if( flt->option[FLT_GRP_TYPE] )
-	{
-		g_string_append_printf(node, "%c%s: ",
+	{ 
+		g_string_append_printf(node, "%c%s: ", 
 			flt->option[FLT_GRP_TYPE] == FLT_INCLUDE ? '+' : '-',
 			_("Type"));
 		if(flt->typ_nexp)
@@ -1137,7 +1137,7 @@ GString *node;
 
 	if( flt->option[FLT_GRP_STATUS] )
 	{
-		g_string_append_printf(node, "%c%s: ",
+		g_string_append_printf(node, "%c%s: ", 
 			flt->option[FLT_GRP_STATUS] == FLT_INCLUDE ? '+' : '-',
 			_("Status"));
 		if(flt->sta_non)
@@ -1152,51 +1152,51 @@ GString *node;
 	if( flt->option[FLT_GRP_ACCOUNT] )
 	{
 		DB( my_debug_garray("acc", flt->gbacc) );
-		g_string_append_printf(node, "%c%s: %d\n",
+		g_string_append_printf(node, "%c%s: %d\n", 
 			flt->option[FLT_GRP_ACCOUNT] == FLT_INCLUDE ? '+' : '-',
 			_("Account"), flt->n_item[FLT_GRP_ACCOUNT]);
 	}
 
 	if( flt->option[FLT_GRP_PAYEE] )
-	{
+	{ 
 		DB( my_debug_garray("pay", flt->gbpay) );
 
-		g_string_append_printf(node, "%c%s: %d\n",
+		g_string_append_printf(node, "%c%s: %d\n", 
 			flt->option[FLT_GRP_PAYEE] == FLT_INCLUDE ? '+' : '-',
 			_("Payee"), flt->n_item[FLT_GRP_PAYEE]);
 	}
 
 	if( flt->option[FLT_GRP_CATEGORY] )
-	{
-		g_string_append_printf(node, "%c%s: %d\n",
+	{ 
+		g_string_append_printf(node, "%c%s: %d\n", 
 			flt->option[FLT_GRP_CATEGORY] == FLT_INCLUDE ? '+' : '-',
 			_("Category"), flt->n_item[FLT_GRP_CATEGORY]);
 	}
 
 	if( flt->option[FLT_GRP_TAG] )
-	{
-		g_string_append_printf(node, "%c%s: %d\n",
+	{ 
+		g_string_append_printf(node, "%c%s: %d\n", 
 			flt->option[FLT_GRP_TAG] == FLT_INCLUDE ? '+' : '-',
 			_("Tag"), flt->n_item[FLT_GRP_TAG]);
 	}
 
 	if( flt->option[FLT_GRP_PAYMODE] )
-	{
-		g_string_append_printf(node, "%c%s: %d\n",
+	{ 
+		g_string_append_printf(node, "%c%s: %d\n", 
 			flt->option[FLT_GRP_PAYMODE] == FLT_INCLUDE ? '+' : '-',
 			_("Payment"), flt->n_item[FLT_GRP_PAYMODE]);
 	}
 
 	if( flt->option[FLT_GRP_AMOUNT] )
-	{
-		g_string_append_printf(node, "%c%s: [%.2f | +%.2f]\n",
+	{ 
+		g_string_append_printf(node, "%c%s: [%.2f | +%.2f]\n", 
 			flt->option[FLT_GRP_AMOUNT] == FLT_INCLUDE ? '+' : '-',
 			_("Amount"), flt->minamount, flt->maxamount);
 	}
 
 	if( flt->option[FLT_GRP_TEXT] )
-	{
-		g_string_append_printf(node, "%c%s: '%s', '%s'\n",
+	{ 
+		g_string_append_printf(node, "%c%s: '%s', '%s'\n", 
 			flt->option[FLT_GRP_TEXT] == FLT_INCLUDE ? '+' : '-',
 			_("Text"), flt->memo, flt->number);
 	}
@@ -1219,14 +1219,14 @@ gboolean retval = FALSE;
 Payee *payitem;
 
 	DB( g_print("\n[filter] tpl search match\n") );
-
+	
 	//#1668036 always try match on txn memo first
 	if(arc->memo)
 	{
 		retval |= hb_string_utf8_strstr(arc->memo, needle, FALSE);
 	}
 	if(retval) goto end;
-
+	
 	//#1509485
 	if(arc->flags & OF_SPLIT)
 	{
@@ -1237,7 +1237,7 @@ Payee *payitem;
 		for(i=0;i<count;i++)
 		{
 		gint tmpinsert = 0;
-
+	
 			split = da_splits_get(arc->splits, i);
 			tmpinsert = hb_string_utf8_strstr(split->memo, needle, FALSE);
 			retval |= tmpinsert;
@@ -1246,7 +1246,7 @@ Payee *payitem;
 		}
 	}
 	if(retval) goto end;
-
+	
 	if(arc->number)
 	{
 		retval |= hb_string_utf8_strstr(arc->number, needle, FALSE);
@@ -1263,12 +1263,12 @@ Payee *payitem;
 	//#1741339 add quicksearch for amount
 	{
 	gchar formatd_buf[G_ASCII_DTOSTR_BUF_SIZE];
-
+	
 		hb_strfnum(formatd_buf, G_ASCII_DTOSTR_BUF_SIZE-1, arc->amount, GLOBALS->kcur, FALSE);
 		retval |= hb_string_utf8_strstr(formatd_buf, needle, FALSE);
 	}
 
-
+	
 end:
 	return retval;
 }
@@ -1300,7 +1300,7 @@ gboolean retval = FALSE;
 		for(i=0;i<flt->gbtag->len;i++)
 		{
 			g_print("[%d]=%d ", i, flt->gbtag->data[i]);
-		}
+		}	
 		g_print("\n\n");
 		#endif
 
@@ -1330,7 +1330,7 @@ Category *catitem;
 gchar *tags;
 
 	DB( g_print("\n[filter] tnx search match\n") );
-
+	
 	if(flags & FLT_QSEARCH_MEMO)
 	{
 		//#1668036 always try match on txn memo first
@@ -1339,7 +1339,7 @@ gchar *tags;
 			retval |= hb_string_utf8_strstr(txn->memo, needle, FALSE);
 		}
 		if(retval) goto end;
-
+		
 		//#1509485
 		if(txn->flags & OF_SPLIT)
 		{
@@ -1350,7 +1350,7 @@ gchar *tags;
 			for(i=0;i<count;i++)
 			{
 			gint tmpinsert = 0;
-
+		
 				split = da_splits_get(txn->splits, i);
 				tmpinsert = hb_string_utf8_strstr(split->memo, needle, FALSE);
 				retval |= tmpinsert;
@@ -1360,7 +1360,7 @@ gchar *tags;
 		}
 		if(retval) goto end;
 	}
-
+	
 	if(flags & FLT_QSEARCH_NUMBER)
 	{
 		if(txn->number)
@@ -1392,7 +1392,7 @@ gchar *tags;
 			for(i=0;i<count;i++)
 			{
 			gint tmpinsert = 0;
-
+				
 				split = da_splits_get(txn->splits, i);
 				catitem = da_cat_get(split->kcat);
 				if(catitem)
@@ -1415,7 +1415,7 @@ gchar *tags;
 		}
 		if(retval) goto end;
 	}
-
+	
 	if(flags & FLT_QSEARCH_TAGS)
 	{
 		//TODO: chnage this
@@ -1435,12 +1435,12 @@ gchar *tags;
 	gchar formatd_buf[G_ASCII_DTOSTR_BUF_SIZE];
 
 		DB( g_print(" needle='%s' txnamt='%s'\n", needle, formatd_buf) );
-
+		
 		hb_strfnum(formatd_buf, G_ASCII_DTOSTR_BUF_SIZE-1, txn->amount, txn->kcur, FALSE);
 		retval |= hb_string_utf8_strstr(formatd_buf, needle, FALSE);
 	}
 
-
+	
 end:
 	return retval;
 }
@@ -1460,7 +1460,7 @@ gint insert = 1;
 		insert = ( status == TRUE ) ? 1 : 0;
 		if(flt->option[FLT_GRP_ACCOUNT] == 2) insert ^= 1;
 	}
-
+	
 	return(insert);
 }
 
@@ -1515,7 +1515,7 @@ gint insert;
 			for(i=0;i<count;i++)
 			{
 			gint tmpinsert = 0;
-
+				
 				split = da_splits_get(txn->splits, i);
 				status = da_flt_status_cat_get(flt, split->kcat);
 				tmpinsert = ( status == TRUE ) ? 1 : 0;
@@ -1601,7 +1601,8 @@ gint insert;
 	gint insert1, insert2;
 
 		insert1 = insert2 = 0;
-		if(flt->number)
+		//2068664 test for empty string as well
+		if( flt->number && (*flt->number != 0) )
 		{
 			if(txn->number)
 			{
@@ -1611,7 +1612,8 @@ gint insert;
 		else
 			insert1 = 1;
 
-		if(flt->memo)
+		//2068664 test for empty string as well
+		if( flt->memo && (*flt->memo != 0) )
 		{
 			//#1668036 always try match on txn memo first
 			if(txn->memo)
@@ -1628,7 +1630,7 @@ gint insert;
 				for(i=0;i<count;i++)
 				{
 				gint tmpinsert = 0;
-
+			
 					split = da_splits_get(txn->splits, i);
 					tmpinsert = hb_string_utf8_strstr(split->memo, flt->memo, flt->exact);
 					insert2 |= tmpinsert;
@@ -1662,12 +1664,12 @@ end:
 	{
 		insert = flt->forceremind;
 	}
-
+	
 	if( txn->status == TXN_STATUS_VOID )
 	{
 		insert = flt->forcevoid;
 	}
-
+	
 //	DB( g_print(" %d :: %d :: %d\n", flt->mindate, txn->date, flt->maxdate) );
 //	DB( g_print(" [%d] %s => %d (%d)\n", txn->account, txn->memo, insert, count) );
 	return(insert);

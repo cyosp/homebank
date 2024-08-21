@@ -232,6 +232,7 @@ GDate tokendate;
 GDateDay nday;
 GDateMonth nmonth;
 GDateYear nyear;
+gboolean tokened = FALSE;
 
 	// initialize with today's date
 	g_date_set_time_t(&tokendate, time(NULL));
@@ -242,30 +243,6 @@ GDateYear nyear;
 	hb_date_fill_parse_tokens(str, &pt);
 	DB( g_print(" token raw %d values: %d %d %d\n", pt.num_ints, pt.n[0], pt.n[1], pt.n[2]) );
 
-	// adjust necessary values
-	if( pt.num_ints == 3 )
-	{
-		hb_date_parse_token_reorder(&pt, &nday, &nmonth, &nyear);
-
-		//adjust 2digits year: windowing 40:60
-		if( nyear < 100 )
-		{
-		GDateYear thisyear = g_date_get_year(&tokendate);
-		GDateYear millenium = (gint)(thisyear/100) * 100;
-
-			if( nyear <= (( thisyear % 100 ) + 60 ) )
-				nyear += millenium;
-			else
-				nyear += (millenium - 100);
-		
-			DB( g_print(" token fixed year: %04d\n", nyear) );
-		}
-
-		g_date_set_day(&tokendate, nday);
-		g_date_set_month(&tokendate, nmonth);
-		g_date_set_year(&tokendate, nyear);
-	}
-	else
 	//user input day/month or month/day
 	if( pt.num_ints == 2 )
 	{
@@ -273,6 +250,7 @@ GDateYear nyear;
 
 		g_date_set_day(&tokendate, nday);
 		g_date_set_month(&tokendate, nmonth);
+		tokened = TRUE;
 	}
 	else
 	//user input day
@@ -280,10 +258,11 @@ GDateYear nyear;
 	{
 		nday = pt.n[0];
 		g_date_set_day(&tokendate, nday);
+		tokened = TRUE;
 	}
 
 	//update output date if tokendate is valid 
-	if( g_date_valid(&tokendate) )
+	if( tokened == TRUE && g_date_valid(&tokendate) )
 	{
 		g_date_set_julian(date, g_date_get_julian(&tokendate));
 	}
@@ -349,13 +328,30 @@ const gchar *str;
 	str = gtk_entry_get_text (GTK_ENTRY (priv->entry));
 	DB( g_print(" inputstr='%s'\n", str) );
 
-	//1) my parse of d, dm, md, dmy, mdy, ymd 
+	//1) give a try to tokens = day, day/month, month/day
 	hb_date_parse_tokens(priv->date, str);
 
 	//2) invalid: glib failover
 	if(!g_date_valid(priv->date))
 	{
+		//2) we parse the string according to the locale
 		g_date_set_parse (priv->date, str);
+
+		DB( g_print(" 1/ glib parsed :: valid=%d\n", g_date_valid(priv->date)) );
+
+		//#1956185 adjust for 2 digits year, note: IBM is windowing 40, not 60
+		if( g_date_valid(priv->date) == TRUE )
+		{
+			if( g_date_get_year(priv->date) < 1970 )
+			{
+				DB( g_print(" > adjusting year %04d from 2 to 4 digits\n", g_date_get_year(priv->date)) );
+				if( g_date_get_year(priv->date) < 60 )
+					g_date_add_years(priv->date, 2000);
+				else
+					g_date_add_years(priv->date, 1900);
+				DB( g_print(" > year set to %d\n", g_date_get_year(priv->date)) );
+			}
+		}
 	}
 
 	//3) invalid: warn user put today's

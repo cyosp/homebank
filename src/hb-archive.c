@@ -158,10 +158,10 @@ guint32 max_key = 0;
 	{
 	Archive *item = tmplist->data;
 
-		max_key = MAX(item->key, max_key);
+		max_key = MAX(item->key, max_key);		
 		tmplist = g_list_next(tmplist);
 	}
-
+	
 	return max_key;
 }
 
@@ -267,7 +267,7 @@ guint nbsplit;
 		GLOBALS->changes_count++;
 	}
 
-	//#1340142 check split category
+	//#1340142 check split category 	
 	if( item->splits != NULL )
 	{
 		nbsplit = da_splits_consistency(item->splits);
@@ -279,7 +279,7 @@ guint nbsplit;
 			GLOBALS->changes_count++;
 		}
 	}
-
+	
 	// check payee exists
 	pay = da_pay_get(item->kpay);
 	if(pay == NULL)
@@ -297,7 +297,7 @@ guint nbsplit;
 		item->paymode = PAYMODE_XFER;
 		item->kxferacc = 0;
 	}
-
+	
 	// reset dst acc for non xfer transaction
 	if( !((item->flags & OF_INTXFER) || (item->paymode == OLDPAYMODE_INTXFER)) )
 		item->kxferacc = 0;
@@ -399,7 +399,7 @@ Archive *da_archive_init_from_transaction(Archive *arc, Transaction *txn, gboole
 	if( fromledger == FALSE )
 	{
 		if(txn->memo != NULL)
-			arc->memo = g_strdup(txn->memo);
+			arc->memo = g_strdup(txn->memo);	
 	}
 	else
 	{
@@ -410,7 +410,7 @@ Archive *da_archive_init_from_transaction(Archive *arc, Transaction *txn, gboole
 			//arc->memo = g_strdup_printf("%s %s", _("**PREFILLED**"), txn->memo );
 		//else
 		//	arc->memo = g_strdup(_("**PREFILLED**"));
-	}
+	}	
 
 	if(txn->number != NULL)
 		arc->number = g_strdup(txn->number);
@@ -420,7 +420,7 @@ Archive *da_archive_init_from_transaction(Archive *arc, Transaction *txn, gboole
 
 	if( da_splits_length (arc->splits) > 0 )
 		arc->flags |= OF_SPLIT; //Flag that Splits are active
-
+	
 	return arc;
 }
 
@@ -445,7 +445,7 @@ gboolean retval = FALSE;
 		list = g_list_next(list);
 	}
 	g_list_free(lacc);
-
+	
 	return retval;
 }
 
@@ -502,7 +502,7 @@ guint32 nextpostdate = nextdate;
 
 	/* get the final post date */
 	nextpostdate = g_date_get_julian(date);
-
+	
 	return nextpostdate;
 }
 
@@ -547,7 +547,7 @@ guint32 scheduled_get_latepost_count(GDate *date, Archive *arc, guint32 jrefdate
 {
 guint32 jcurdate = arc->nextdate;
 guint32 nblate = 0;
-
+	
 	while (jcurdate <= jrefdate)
 	{
 		jcurdate = _sched_date_get_next_post(date, arc, jcurdate);
@@ -571,9 +571,9 @@ gint shift;
 	DB2( g_print("\n[scheduled] get_postdate\n") );
 
 	finalpostdate = postdate;
-
+	
 	DB2( hb_print_date(finalpostdate, "in:") );
-
+	
 	g_date_set_julian(&date, finalpostdate);
 
 	/* manage weekend exception */
@@ -601,12 +601,12 @@ gint shift;
 			}
 		}
 	}
-
+	
 	/* get the final post date and free */
 	finalpostdate = g_date_get_julian(&date);
-
+	
 	DB2( hb_print_date(finalpostdate, "out:") );
-
+	
 	return finalpostdate;
 }
 
@@ -644,7 +644,7 @@ gushort lastday;
 			}
 
 			arc->daygap = CLAMP(lastday - g_date_get_day(&date), 0, 3);
-
+		
 			DB2( g_print(" daygap is %d\n", arc->daygap) );
 		}
 		else
@@ -686,7 +686,7 @@ guint16 month, year;
 				g_date_add_months(date, 1);
 			*mindate = g_date_get_julian(date);
 			month = g_date_get_month(date);
-			year  = g_date_get_year(date);
+			year  = g_date_get_year(date);		
 			g_date_add_days(date, g_date_get_days_in_month(month, year));
 			*maxdate = g_date_get_julian(date) - 1;
 			break;
@@ -705,7 +705,7 @@ guint16 month, year;
 		default:
 			*mindate = HB_MINDATE;
 			*maxdate = HB_MAXDATE;
-			break;
+			break;	
 	}
 
 	g_date_free(date);
@@ -730,13 +730,13 @@ guint32 nbdays;
 		{
 		GDate *tdate, *date;
 		gshort tday;
-
+		
 			DB2( g_print(" payout %d of %d months\n", auto_weekday, nbmonth) );
 
 			tdate = g_date_new_julian(start);
 			tday = g_date_get_day(tdate);
 
-			//set <payoutday>/xx/xxxx
+			//set <payoutday>/xx/xxxx			
 			date = g_date_new_julian(start);
 			g_date_set_day(date, auto_weekday);
 
@@ -796,7 +796,7 @@ gint count = 0;
 guint32 maxpostdate;
 
 	DB( g_print("\n[scheduled] -- post_all_pending --\n") );
-
+	
 	maxpostdate = scheduled_date_get_post_max(GLOBALS->today, GLOBALS->auto_smode, GLOBALS->auto_nbdays, GLOBALS->auto_weekday, GLOBALS->auto_nbmonths);
 	DB( hb_print_date(maxpostdate, " >maxpostdate") );
 
@@ -808,9 +808,9 @@ guint32 maxpostdate;
 		if( !(arc->flags & OF_AUTO) )
 			goto nextarchive;
 
-		DB( g_print("----\neval %d w.e=%s limit=%d '%s'\n",
-			arc->nextdate,
-			hbtk_get_label(CYA_ARC_WEEKEND, arc->weekend),
+		DB( g_print("----\neval %d w.e=%s limit=%d '%s'\n", 
+			arc->nextdate, 
+			hbtk_get_label(CYA_ARC_WEEKEND, arc->weekend), 
 			arc->flags & OF_LIMIT ? arc->limit : -1,
 			arc->memo) );
 
@@ -845,7 +845,7 @@ guint32 maxpostdate;
 				transaction_add(NULL, FALSE, txn);
 				da_transaction_free (txn);
 				count++;
-
+				
 				//can switch OF_AUTO off, if limit reached
 				scheduled_date_advance(arc);
 				if( !(arc->flags & OF_AUTO) )

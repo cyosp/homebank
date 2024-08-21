@@ -49,7 +49,7 @@ struct hbfile_data
 	GtkWidget	*MI_new, *MI_open, *MI_save, *MI_saveas, *MI_import, *MI_exportqif, *MI_revert, *MI_openbak, *MI_properties, *MI_close, *MI_quit;
 	GtkWidget	*MI_prefs, *MI_showtbar, *MI_showtotchart, *MI_showtimchart, *MI_showbotlist, *MI_eurominor;
 	GtkWidget	*MI_manwal, *MI_manacc, *MI_manpay, *MI_mancat, *MI_mantpl, *MI_manbud, *MI_manbudtable, *MI_manasg, *MI_mancur, *MI_mantag;
-	GtkWidget	*MI_txnadd, *MI_txnshow, *MI_txnshowall, *MI_scheduler, *MI_addscheduled;
+	GtkWidget	*MI_txnadd, *MI_txnshow, *MI_txnshowall, *MI_scheduler, *MI_addscheduled; 
 	GtkWidget	*MI_repstat, *MI_reptime, *MI_repbal, *MI_repbudg, *MI_repvehi;
 	GtkWidget	*MI_welcome, *MI_filestats, *MI_anonymise;
 	GtkWidget	*MI_contents, *MI_online, *MI_updates, *MI_relnote, *MI_problem, *MI_translate, *MI_about;
@@ -60,7 +60,7 @@ struct hbfile_data
 	GtkWidget	*BT_txnshow, *BT_txnadd;
 	GtkWidget	*BT_repstat, *BT_reptime, *BT_repbal, *BT_repbudg, *BT_repvehi;
 	GtkWidget	*BT_help, *BT_donate;
-
+	 
 	GtkWidget	*vpaned;
 	GtkWidget	*hpaned;
 
@@ -112,7 +112,7 @@ struct hbfile_data
 	GtkWidget	*stack;
 	// max is 2=HUB_TXN_TYPE_REMIND, so 3 elt
 	GtkWidget	*LV_txn[3];
-
+	 
 	gchar	*wintitle;
 
 	Account *acc;

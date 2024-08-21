@@ -75,7 +75,7 @@ Archive *arc = user_data;
 			gtk_tree_selection_select_iter (selection, &iter);
 			break;
 		}
-
+	
 		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
 	}
 }
@@ -114,7 +114,7 @@ gboolean selected, sensitive;
 		if( arc->flags & OF_AUTO )
 			sensitive = TRUE;
 	}
-
+	
 	gtk_widget_set_sensitive(data->LB_next, sensitive);
 	gtk_widget_set_sensitive(data->PO_next, sensitive);
 
@@ -125,17 +125,17 @@ gboolean selected, sensitive;
 	gtk_widget_set_sensitive(data->CY_weekend, sensitive);
 
 	gtk_widget_set_sensitive(data->EX_options, sensitive);
-
+	
 	gtk_widget_set_sensitive(data->CY_unit, sensitive);
 	gtk_widget_set_sensitive(data->CM_limit, sensitive);
 
 	gtk_widget_set_sensitive(data->LB_posts, sensitive);
-
+	
 	sensitive = (sensitive == TRUE) ? gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_limit)) : sensitive;
 	gtk_widget_set_sensitive(data->NB_limit, sensitive);
 
 	DB( g_print(" row changed\n") );
-
+	
 	if(selected)
 	{
 	GtkTreePath *path;
@@ -166,7 +166,7 @@ gboolean selected, sensitive;
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
 	sensitive = FALSE;
-
+	
 	selected = gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_arc)), &model, &iter);
 	if(selected)
 	{
@@ -177,9 +177,9 @@ gboolean selected, sensitive;
 		if(sensitive)
 			arcitem->flags |= OF_AUTO;
 	}
-
+	
 	ui_arc_manage_update(widget, user_data);
-
+		
 }
 
 
@@ -195,7 +195,7 @@ GList *list;
 gchar *needle;
 gboolean hastext;
 gint i, typsch, typtpl;
-
+	
 	DB( g_print("\n[ui-scheduled] populate listview\n") );
 
 	typsch = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->BT_typsch));
@@ -204,7 +204,7 @@ gint i, typsch, typtpl;
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_arc));
 	hastext = (gtk_entry_get_text_length (GTK_ENTRY(data->ST_search)) >= 2) ? TRUE : FALSE;
 	needle = (gchar *)gtk_entry_get_text(GTK_ENTRY(data->ST_search));
-
+	
 	DB( g_print(" typsch=%d / typtpl=%d\n", typsch, typtpl) );
 
 	gtk_list_store_clear (GTK_LIST_STORE(model));
@@ -289,20 +289,20 @@ gboolean result;
 
 		typsch = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->BT_typsch));
 		typtpl = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->BT_typtpl));
-
+		
 		if( typsch && !typtpl )
 			item->flags |= OF_AUTO;
 
 		item->every = 1;
 		item->unit = AUTO_UNIT_MONTH;
 		item->nextdate = GLOBALS->today;
-
+		
 		//GLOBALS->arc_list = g_list_append(GLOBALS->arc_list, item);
 		da_archive_append_new(item);
 
 		DB( g_print(" kacc: '%d'\n", item->kacc) );
 
-
+		
 		gtk_list_store_append (GTK_LIST_STORE(model), &iter);
 		gtk_list_store_set (GTK_LIST_STORE(model), &iter,
 			LST_DSPUPC_DATAS, item,
@@ -316,7 +316,7 @@ gboolean result;
 
 	deftransaction_dispose(dialog, NULL);
 	gtk_window_destroy (GTK_WINDOW(dialog));
-
+	
 	da_transaction_free(new_txn);
 
 }
@@ -363,7 +363,7 @@ gboolean result;
 
 		deftransaction_dispose(dialog, NULL);
 		gtk_window_destroy (GTK_WINDOW(dialog));
-
+		
 		da_transaction_free(new_txn);
 	}
 }
@@ -388,7 +388,7 @@ gint result;
 	{
 	gchar *title;
 	gchar *secondtext;
-
+		
 		gtk_tree_model_get(model, &iter, LST_DSPUPC_DATAS, &item, -1);
 
 		//5.7.4 check if template is used
@@ -400,8 +400,8 @@ gint result;
 					_("Template delete"),
 					_("This template is used as an account template and cannot be deleted.")
 				);
-				return;
-			}
+				return;	
+			}		
 		}
 
 		//#1940103 as memo can be null, use (no memo) instead
@@ -409,7 +409,7 @@ gint result;
 			_("Are you sure you want to permanently delete '%s'?"), item->memo != NULL ? item->memo : _("(no memo)") );
 
 		secondtext = _("If you delete a scheduled/template, it will be permanently lost.");
-
+		
 		result = ui_dialog_msg_confirm_alert(
 				GTK_WINDOW(data->dialog),
 				title,
@@ -419,7 +419,7 @@ gint result;
 			);
 
 		g_free(title);
-
+		
 		if( result == GTK_RESPONSE_OK )
 		{
 			gtk_list_store_remove(GTK_LIST_STORE(model), &iter);
@@ -461,7 +461,7 @@ Archive *item;
 		DB( g_print(" nb_limit = %d %g\n", item->limit, (gdouble)item->limit) );
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_limit), (gdouble)item->limit);
 		hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_weekend), item->weekend);
-
+		
 		g_signal_handlers_unblock_by_func (G_OBJECT (data->CM_limit), G_CALLBACK (ui_arc_manage_cb_schedule_changed), NULL);
 		g_signal_handlers_unblock_by_func (G_OBJECT (data->CM_auto ), G_CALLBACK (ui_arc_manage_cb_schedule_changed), NULL);
 	}
@@ -484,7 +484,7 @@ gboolean active;
 
 		//#1863484: reset flag to enable remove auto and limit :)
 		item->flags &= ~(OF_AUTO|OF_LIMIT);
-
+		
 		active = gtk_switch_get_active(GTK_SWITCH(data->CM_auto));
 		if(active == 1) item->flags |= OF_AUTO;
 
@@ -505,11 +505,11 @@ gboolean active;
 		scheduled_nextdate_weekend_adjust(item);
 
 		data->change++;
-	}
+	}	
 }
 
 
-static void
+static void 
 ui_arc_manage_cb_popover_closed(GtkWidget *popover, gpointer user_data)
 {
 struct ui_arc_manage_data *data;
@@ -582,7 +582,7 @@ Archive *arcitem;
 	treeview = (GtkWidget *)gtk_tree_selection_get_tree_view (treeselection);
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(treeview, GTK_TYPE_WINDOW)), "inst_data");
-
+	
 	selected = gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_arc)), &model, &iter);
 
 	DB( g_print(" a row is selected = %d\n", selected) );
@@ -628,7 +628,7 @@ gboolean doupdate = FALSE;
 }
 
 
-static void
+static void 
 ui_arc_manage_setup(struct ui_arc_manage_data *data)
 {
 
@@ -660,7 +660,7 @@ ui_arc_manage_setup(struct ui_arc_manage_data *data)
 	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(data->LV_arc), FALSE);
 
 	g_signal_connect (data->ST_search, "search-changed", G_CALLBACK (ui_arc_manage_cb_flttype_changed), data);
-
+	
 	g_signal_connect (gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_arc)), "changed", G_CALLBACK (ui_arc_manage_cb_selection_changed), NULL);
 	g_signal_connect (data->LV_arc, "row-activated", G_CALLBACK (ui_arc_manage_cb_row_activated), NULL);
 
@@ -669,7 +669,7 @@ ui_arc_manage_setup(struct ui_arc_manage_data *data)
 	g_signal_connect (data->BT_rem , "clicked", G_CALLBACK (ui_arc_manage_cb_delete_clicked), NULL);
 
 	g_signal_connect (data->PO_schedule, "closed", G_CALLBACK (ui_arc_manage_cb_popover_closed), NULL);
-
+	
 	g_signal_connect (data->CM_auto,  "notify::active", G_CALLBACK (ui_arc_manage_cb_schedule_changed), NULL);
 	g_signal_connect (data->CM_limit, "toggled", G_CALLBACK (ui_arc_manage_cb_schedule_changed), NULL);
 
@@ -720,7 +720,7 @@ gint row;
 	data->CM_auto = widget;
 	gtk_widget_set_halign(widget, GTK_ALIGN_START);
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
-
+	
 	row++;
 	label = gtk_label_new_with_mnemonic (_("Next _date:"));
 	data->LB_next = label;
@@ -755,7 +755,7 @@ gint row;
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
 	hb_widget_set_margin(GTK_WIDGET(group_grid), SPACING_SMALL);
 	gtk_expander_set_child (GTK_EXPANDER(expander), group_grid);
-
+	
 	row++;
 	label = make_label_widget(_("Week end:"));
 	data->LB_weekend = label;
@@ -784,7 +784,7 @@ gint row;
 	    gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
 	gtk_widget_show_all(content);
-
+	
 	return content;
 }
 
@@ -830,7 +830,7 @@ gint w, h, dw, dh;
 	content = gtk_box_new(GTK_ORIENTATION_VERTICAL, SPACING_MEDIUM);
 	hb_widget_set_margin(GTK_WIDGET(content), SPACING_LARGE);
 	gtk_box_pack_start (GTK_BOX (content_area), content, TRUE, TRUE, 0);
-
+	
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_pack_start (GTK_BOX (content), hbox, FALSE, FALSE, 0);
 
@@ -840,11 +840,11 @@ gint w, h, dw, dh;
 		widget = gtk_toggle_button_new_with_label(_("Scheduled"));
 		data->BT_typsch = widget;
 		gtk_box_pack_start (GTK_BOX (box), widget, FALSE, FALSE, 0);
-
+		
 		widget = gtk_toggle_button_new_with_label(_("Template"));
 		data->BT_typtpl = widget;
 		gtk_box_pack_start (GTK_BOX (box), widget, FALSE, FALSE, 0);
-
+	
 	widget = make_search ();
 	data->ST_search = widget;
 	gtk_widget_set_size_request(widget, HB_MINWIDTH_SEARCH, -1);
@@ -854,7 +854,7 @@ gint w, h, dw, dh;
 	// list + toolbar
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_box_pack_start (GTK_BOX (content), vbox, TRUE, TRUE, 0);
-
+	
 	// listview
 	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	//#1970509 enable hscrollbar
@@ -907,7 +907,7 @@ gint w, h, dw, dh;
 		GtkWidget *popover = create_popover (menubutton, template, GTK_POS_TOP);
 		data->PO_schedule = popover;
 		gtk_menu_button_set_popover(GTK_MENU_BUTTON(menubutton), popover);
-
+	
 
 	// connect dialog signals
 	g_signal_connect (dialog, "destroy", G_CALLBACK (gtk_widget_destroyed), &dialog);
@@ -931,7 +931,7 @@ gint w, h, dw, dh;
 	gtk_window_destroy (GTK_WINDOW(dialog));
 
 	g_free(data);
-
+	
 	return NULL;
 }
 

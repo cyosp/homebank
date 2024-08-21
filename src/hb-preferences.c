@@ -319,12 +319,12 @@ gint i;
 
 	PREFS->toolbar_style = 4;	//text beside icons
 	PREFS->grid_lines = GTK_TREE_VIEW_GRID_LINES_NONE;
-
+	
 	PREFS->gtk_override = FALSE;
 	PREFS->gtk_fontsize = 10;
 
 	PREFS->icontheme = g_strdup("legacy");
-
+	
 	PREFS->custom_colors = TRUE;
 	PREFS->color_exp  = g_strdup(DEFAULT_EXP_COLOR);
 	PREFS->color_inc  = g_strdup(DEFAULT_INC_COLOR);
@@ -339,7 +339,7 @@ gint i;
 	currency_get_system_iso();
 
 	PREFS->wal_toolbar = TRUE;
-	PREFS->wal_totchart = TRUE;
+	PREFS->wal_totchart = TRUE;	
 	PREFS->wal_timchart = TRUE;
 	PREFS->wal_upcoming = TRUE;
 	PREFS->wal_vpaned = 600/2;
@@ -495,13 +495,13 @@ static void homebank_pref_get_intlist(
 
 		src = g_key_file_get_integer_list(key_file, group_name, key, &length, NULL);
 
-		DB( g_print(" - length %d (max=%d)\n", (int)length, maxlength) );
+		DB( g_print(" - length %d (max=%d)\n", (int)length, (int)maxlength) );
 		if( length == maxlength )
 		{
 			DB( g_print(" > storing\n") );
 			memcpy(storage, src, length*sizeof(gint));
 		}
-
+		
 		g_free(src);
 	}
 }
@@ -673,7 +673,7 @@ void homebank_pref_icon_symbolic(gboolean active)
 	{
 		gtk_style_context_remove_provider_for_screen (gdk_screen_get_default (),
 						  GTK_STYLE_PROVIDER (GLOBALS->provider));
-
+		
 		g_clear_object (&GLOBALS->provider);
 	}
 }
@@ -750,7 +750,7 @@ GError *error = NULL;
 			g_warning("unable to load file %s: %s", filename, error->message);
 			g_error_free (error);
 		}
-
+			
 		if( loaded == TRUE )
 		{
 
@@ -833,7 +833,7 @@ GError *error = NULL;
 
 				homebank_pref_get_string(keyfile, group, "WalletPath", &PREFS->path_hbfile);
 				homebank_pref_get_string(keyfile, group, "BackupPath", &PREFS->path_hbbak);
-				//#1870433 default backup path folder not initialized with wallet folder
+				//#1870433 default backup path folder not initialized with wallet folder			
 				if( version < 530 )
 				{
 					homebank_pref_get_string(keyfile, group, "WalletPath", &PREFS->path_hbbak);
@@ -845,7 +845,7 @@ GError *error = NULL;
 				homebank_pref_get_boolean(keyfile, group, "ShowWelcome", &PREFS->showwelcome);
 				homebank_pref_get_boolean(keyfile, group, "LoadLast", &PREFS->loadlast);
 				homebank_pref_get_boolean(keyfile, group, "AppendScheduled", &PREFS->appendscheduled);
-				homebank_pref_get_boolean(keyfile, group, "UpdateCurrency", &PREFS->do_update_currency);
+				homebank_pref_get_boolean(keyfile, group, "UpdateCurrency", &PREFS->do_update_currency);	
 
 				homebank_pref_get_boolean(keyfile, group, "BakIsAutomatic", &PREFS->bak_is_automatic);
 				homebank_pref_get_short  (keyfile, group, "BakMaxNumCopies", &PREFS->bak_max_num_copies);
@@ -860,11 +860,11 @@ GError *error = NULL;
 				homebank_pref_get_boolean(keyfile, group, "LockReconciled", &PREFS->lockreconciled);
 				homebank_pref_get_boolean(keyfile, group, "TxnMemoAcp", &PREFS->txn_memoacp);
 				homebank_pref_get_short  (keyfile, group, "TxnMemoAcpDays", &PREFS->txn_memoacp_days);
-
+				
 				homebank_pref_get_boolean(keyfile, group, "TxnXferShowDialog", &PREFS->xfer_showdialog);
 				homebank_pref_get_short  (keyfile, group, "TxnXferDayGap", &PREFS->xfer_daygap);
 				homebank_pref_get_boolean(keyfile, group, "TxnXferSyncStatus", &PREFS->xfer_syncstat);
-
+				
 
 				if( g_key_file_has_key(keyfile, group, "ColumnsOpe", NULL) )
 				{
@@ -956,9 +956,9 @@ GError *error = NULL;
 				homebank_pref_get_short(keyfile, group, "FiscYearDay", &PREFS->fisc_year_day);
 				homebank_pref_get_short(keyfile, group, "FiscYearMonth", &PREFS->fisc_year_month);
 
-				//5.8 payment
+				//5.8 payment, NUM_PAYMODE_KEY-1 because PAYMODE_OBSOLETEINTXFER
 				PREFS->lst_paymode[0] = PAYMODE_NONE;
-				homebank_pref_get_intlist(keyfile, group, "Payment", &PREFS->lst_paymode[1], NUM_PAYMODE_KEY);
+				homebank_pref_get_intlist(keyfile, group, "Payment", &PREFS->lst_paymode[1], NUM_PAYMODE_KEY-1);
 
 
 			group = "Windows";
@@ -1019,13 +1019,13 @@ GError *error = NULL;
 						memcpy(PREFS->lst_acc_columns, src, length*sizeof(gint));
 					}
 					g_free(src);
-				}
+				}						
 
 				//hub total/time
 				homebank_pref_get_short(keyfile, group, "HubTotView" , &PREFS->hub_tot_view);
 				homebank_pref_get_short(keyfile, group, "HubTotViewRange", &PREFS->hub_tot_range);
 				homebank_pref_get_short(keyfile, group, "HubTotRaw" , &PREFS->hub_tot_raw);
-
+				
 				homebank_pref_get_short(keyfile, group, "HubTimView" , &PREFS->hub_tim_view);
 				homebank_pref_get_short(keyfile, group, "HubTimViewRange", &PREFS->hub_tim_range);
 				homebank_pref_get_short(keyfile, group, "HubTimRaw" , &PREFS->hub_tim_raw);
@@ -1044,7 +1044,7 @@ GError *error = NULL;
 						DB( g_print(" - copying column order from pref file\n") );
 						memcpy(PREFS->lst_sch_columns, src, length*sizeof(gint));
 					}
-
+					
 					g_free(src);
 				}
 
@@ -1210,7 +1210,7 @@ GError *error = NULL;
 			{
 				DB( g_print(" ugrade 5.6 daterange\n") );
 				//convert old daterange
-				//PREFS->date_range_wal = homebank_pref_upgrade_560_daterange(PREFS->date_range_wal);	//top spending
+				//PREFS->date_range_wal = homebank_pref_upgrade_560_daterange(PREFS->date_range_wal);	//top spending	
 				PREFS->date_range_txn = homebank_pref_upgrade_560_daterange(PREFS->date_range_txn);	//transactions
 				PREFS->date_range_rep = homebank_pref_upgrade_560_daterange(PREFS->date_range_rep);	//report options
 			}
@@ -1319,7 +1319,7 @@ GError *error = NULL;
 		g_key_file_set_boolean (keyfile, group, "LockReconciled", PREFS->lockreconciled);
 		g_key_file_set_boolean (keyfile, group, "TxnMemoAcp", PREFS->txn_memoacp);
 		g_key_file_set_integer (keyfile, group, "TxnMemoAcpDays" , PREFS->txn_memoacp_days);
-
+		
 		g_key_file_set_boolean (keyfile, group, "TxnXferShowDialog", PREFS->xfer_showdialog);
 		g_key_file_set_integer (keyfile, group, "TxnXferDayGap" , PREFS->xfer_daygap);
 		g_key_file_set_boolean (keyfile, group, "TxnXferSyncStatus", PREFS->xfer_syncstat);
@@ -1337,7 +1337,7 @@ GError *error = NULL;
 		g_key_file_set_integer     (keyfile, group, "FiscYearDay" , PREFS->fisc_year_day);
 		g_key_file_set_integer     (keyfile, group, "FiscYearMonth" , PREFS->fisc_year_month);
 
-		//5.8 payment
+		//5.8 payment, NUM_PAYMODE_KEY-1 because PAYMODE_OBSOLETEINTXFER
 		g_key_file_set_integer_list(keyfile, group, "Payment", &PREFS->lst_paymode[1], NUM_PAYMODE_KEY-1);
 
 		// added v3.4
@@ -1374,7 +1374,7 @@ GError *error = NULL;
 		g_key_file_set_integer(keyfile, group, "HubTotView" , PREFS->hub_tot_view);
 		g_key_file_set_integer(keyfile, group, "HubTotViewRange" , PREFS->hub_tot_range);
 		g_key_file_set_integer(keyfile, group, "HubTotRaw" , PREFS->hub_tot_raw);
-
+		
 		g_key_file_set_integer(keyfile, group, "HubTimView" , PREFS->hub_tim_view);
 		g_key_file_set_integer(keyfile, group, "HubTimViewRange" , PREFS->hub_tim_range);
 		g_key_file_set_integer(keyfile, group, "HubTimRaw" , PREFS->hub_tim_raw);
@@ -1492,7 +1492,7 @@ GError *error = NULL;
 			g_error_free (error);
 			error = NULL;
 		}
-
+		
 		DB( g_print(" -> contents: %s\n", contents) );
 
 		DB( g_print(" -> freeing filename\n") );

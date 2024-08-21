@@ -1,10 +1,27 @@
 
 
+2024-07-08  Maxime Doyen
+
+ Made 5.8.2 release
+
+ * bugfix: #2073805 switching saved filter with same date range doesn't refresh
+ * bugfix: #2073233 vehicle cost distance/volume is rounded to distance and always xx,0
+ * bugfix: #2071648 possibility for positive or negative budget values gone
+ * bugfix: #2069152 windows: CFA protected folder save fail with no dialog warning
+ * bugfix: #2068825 budget report type filter do not work anymore
+ * bugfix: #2068664 filter text option only work when both memo and number are filled
+ * bugfix: #2068634 copy/paste a txn do not enable save
+ * bugfix: #2067855 transfer from one account to another does not sync statuse even with "Sync transfer Status" checked
+ * bugfix: #2067440 payment settings not retained
+ * bugfix: #2066539 budget Report - unbudgeted includes transactions for subcats where main cat has a budget
+ * bugfix: #2062021 transaction date may change if system shortdate is not dd/MM/yy 
+
+
 2024-05-26  Maxime Doyen
 
  Made 5.8.1 release
 
- * bugfix: #2066161 "Raw amount" check menu is not saved
+ * bugfix: #2066161 "Raw amount" check menu is not saved 
  * bugfix: #2065955 scheduled transactions not automatically posted before weekend
  * bugfix: #2065929 saved filter does not show txn with remind status
  * bugfix: #2065781 balance not updated after edit a transaction in ledger
@@ -61,7 +78,7 @@
  * wish  : #1817274 add more paymode + user order position + disable
  * wish  : #1674016 assignment to assign tags
  * wish  : #1600356 add colour flag/group to transaction
- * wish  : #613894 favorite saved filter list to use in report and ledger show all
+ * wish  : #613894 favorite saved filter list to use in report and ledger show all 
  * bugfix: multiple txn edit tag was not displaying the tag list
  * bugfix: time report quick filter item list were displaying too much columns
  * bugfix: #2064839 post of today due date txn do not happen
@@ -72,7 +89,7 @@
  * bugfix: #2059709 filter exclusion of payment=none hide transfer
  * bugfix: #2055101 windows: recent file Clear keep deleted/renamed files
  * bugfix: #2052678 home time chart spending by month should show net expense
- * bugfix: #2052304 budget should warn/fix when we input positive number for expense
+ * bugfix: #2052304 budget should warn/fix when we input positive number for expense 
 
 
 2024-04-15  Maxime Doyen
@@ -88,7 +105,7 @@
  * change: statistic report default type is now Total
  * wish  : #2037200 add a used feature for tags like for payee/categories
  * wish  : #2044850 revert 5.7.2 print single account (statement) fit to the page width
- * wish  : #2051419 management dialogs to shows hidden items by default
+ * wish  : #2051419 management dialogs to shows hidden items by default 
  * bugfix: template deletion was possible despite used into an account
  * bugfix: dateentry was faultly trigger double parse/eval/update sequence
  * bugfix: filter for report was faultly show always show items
@@ -102,7 +119,7 @@
  * bugfix: #2047647 cross-currency transfer do not propose target transaction
  * bugfix: #2046157 info icon for transfers is not displayed
  * bugfix: #2046032 date filter shows wrong date
- * bugfix: #2043523 exclude zero-sum categories from Top Spending
+ * bugfix: #2043523 exclude zero-sum categories from Top Spending 
 
 
 2023-12-08  Maxime Doyen
@@ -110,7 +127,7 @@
  Made 5.7.3 release
 
  * change: budget report added sign on categories like in manage dialog
- * change: budget report only display fulfilled for budegt category
+ * change: budget report only display fulfilled for budget category
  * wish  : #2042699 chart drill down shows the cat total when drawing subcat
  * wish  : #2042683 assigment rule dialog to be wider and/or size saved
  * bugfix: forecast was sometimes faultly done for excluded/closed account
@@ -122,7 +139,7 @@
  * bugfix: #2043366 budget forced category remains displayed with exp/inc filter
  * bugfix: #2043223 budget report fulfilled column badly rounded display 99% vs 100%
  * bugfix: #2042676 accound dialog exclude from any report do not refresh the graph after close
- * bugfix: #2020181 mate: only french flag for payment icons
+ * bugfix: #2020181 mate: only french flag for payment icons 
 
 
 2023-11-12  Maxime Doyen
@@ -141,7 +158,7 @@
  * bugfix: #2040494 app crashes when exporting a report after I delete a category that contained data
  * bugfix: #2040010 ISO 8601 date format not respected when exporting to clipboard or CSV
  * bugfix: #2039995 budget by time do not filter txn type exp/inc
- * bugfix: #2039493 statistics report crash when opened with a too wide date range
+ * bugfix: #2039493 statistics report crash when opened with a too wide date range 
 
 
 2023-10-08  Maxime Doyen
@@ -168,7 +185,7 @@
  * bugfix: #2035129 incorrect values in "tooltip" message for forcast view (subcategory)
  * bugfix: #2034764 statistics Report Total Row not reflecting displayed amounts
  * bugfix: #2034647 trend time Report Title does not match Interval
- * bugfix: #2034618 statistics report sometimes crashes with half year interval
+ * bugfix: #2034618 statistics report sometimes crashes with half year interval 
 
 
 2023-09-06  Maxime Doyen
@@ -188,20 +205,20 @@
  * change: avoid refreshing undisplayed items on the home main window
  * change: chart legend is hidden when not enough space to display chart
  * change: export PDF of transaction migrated to a standard print feature
- * wish  : #2030322 add weekday display in date input
+ * wish  : #2030322 add weekday display in date input 
  * wish  : #2024956 sort the scheduled transaction by date order
- * wish  : #2028464 manage account add sort header, search and website
+ * wish  : #2028464 manage account add sort header, search and website 
  * wish  : #2023477 stack chart to display income above and expense below
  * wish  : #2019193 preference to sync transfer status by default
  * wish  : #2018680 replace **PREFILLED** for new assignement/archive from register with added icon
  * wish  : #2018174 change currency rate api to a more fulfilled one
- * wish  : #2008641 add a duplicate assignment action
+ * wish  : #2008641 add a duplicate assignment action 
  * wish  : #2004078 print option missing in Show all
  * wish  : #1964434 optimize the legend position to maximize chart size
  * wish  : #1933165 budget report includes Category & Subcategory
- * wish  : #1932198 pdf print txn report, custom title, total and portrait/paysage
- * wish  : #1918459 adding pdf print function - show the result as a list
- * wish  : #1912973 ability to print "Your accounts" list in main window
+ * wish  : #1932198 pdf print txn report, custom title, total and portrait/paysage 
+ * wish  : #1918459 adding pdf print function - show the result as a list 
+ * wish  : #1912973 ability to print "Your accounts" list in main window 
  * wish  : #1909851 filter scheduled operations add Next payout (max post date)
  * wish  : #1857890 home chart to show account balance total/time
  * wish  : #1816389 home chart to show spending by month
@@ -229,7 +246,7 @@
  * bugfix: #2026184 statistics report doesn't always show total for parent category
  * bugfix: #2024940 statistics faulty hide items with data when result is 0.0
  * bugfix: #2024389 filter Status always show section should always be visible
- * bugfix: #2019312 status column included in export detail txn from report break re-import
+ * bugfix: #2019312 status column included in export detail txn from report break re-import 
 
 
 2023-06-21  Maxime Doyen
@@ -239,7 +256,7 @@
  * bugfix: #2024243 when creating splits for income transactions, expenses are added as incomes regardless of amount sign
  * bugfix: #2023388 account cannot be deleted message is not precise enough
  * bugfix: #2022049 windows: displayed values overflow int32 in 5.6.4
- * bugfix: #2018039 lock icon for reconciled txn is not displayed in report detail
+ * bugfix: #2018039 lock icon for reconciled txn is not displayed in report detail 
 
 
 2023-05-18  Maxime Doyen
@@ -270,11 +287,11 @@
  * bugfix: #2007712 report half-year column header is not translated
  * bugfix: #2000728 wayland: template window closes only on third attempt
  * bugfix: #1999699 wayland: click on schedule button select first item and don't open popover
- * wish  : #2007714 table budget dialog view improvements
- * wish  : #2000290 Fortnight interval in Reports
+ * wish  : #2007714 table budget dialog view improvements 
+ * wish  : #2000290 Fortnight interval in Reports 
  * wish  : #1996505 Sum SELECTED scheduled transaction at main window
  * wish  : #1956060 sort by amount in statistics report to take sign into consideration
- * wish  : #1886123 Remind status transactions not calculated in reports despite include preference
+ * wish  : #1886123 Remind status transactions not calculated in reports despite include preference 
 
 
 2023-02-06  Maxime Doyen
@@ -290,7 +307,7 @@
  * bugfix: #2002650 update currency at program start always mark the file changed
  * bugfix: #2002348 impossible to schedule income template with an amount equal to 0
  * bugfix: #2000480 crash importing OFX under specific conditions
- * bugfix: #2000452 vehicle cost report shows duplicated subcats
+ * bugfix: #2000452 vehicle cost report shows duplicated subcats 
 
 
 2023-01-08  Maxime Doyen
@@ -368,12 +385,12 @@
  * wish  : #1673260 internal transfer with different currency
  * wish  : #1530170 more date range option and redesign
  * wish  : #1173135 charts for stat over time items (pay, cate, acc...) report
- * wish  : #625527  multiselectable combobox in trendtime reports
+ * wish  : #625527  multiselectable combobox in trendtime reports 
  * bugfix: unused tags were not saved
  * bugfix: add ellipsize to some report columns for large item name
  * bugfix: report budget layout problem with large category name
  * bugfix: #1993599 your accounts tooltip fail when account name contains a &
- * bugfix: #1993727 import assistant selection counts do not update
+ * bugfix: #1993727 import assistant selection counts do not update 
 
 
 2022-11-08  Maxime Doyen
@@ -387,7 +404,7 @@
 
  * bugfix: #1992548 linking transfers between accounts fails to join correctly
  * bugfix: #1992284 manage tag edit input is empty
-
+ 
 
 2022-10-04  Maxime Doyen
 
@@ -400,7 +417,7 @@
  * bugfix: #1988489 Statistics "total" percentage breakdown incorrect
  * bugfix: #1988594 edit txn with keyboard ok button (alt) don't update focused amount
  * bugfix: #1989171 Invalid appdata confuse gnome-software
- * bugfix: #1991459 register apply type=income + status=uncategorized shows expense
+ * bugfix: #1991459 register apply type=income + status=uncategorized shows expense 
 
 
 2022-06-28  Maxime Doyen
@@ -421,13 +438,13 @@
  Made 5.5.5 release
 
  * change: windows: upgraded to GTK 3.24.33
- * wish  : #1960755 add a refresh button in account detail screen
+ * wish  : #1960755 add a refresh button in account detail screen 
  * wish  : #1960380 void transaction icon improved visibility in dark mode
  * wish  : #1950234 your account show total for single group foreign currency
  * wish  : #1948608 scheduled list (manage/bottom) could show category column
  * wish  : #1945636 detail report list amount sort in base currency
  * bugfix: fixed double trigger on some radiobutton: category, budget, assign, repstats
- * bugfix: #1968249 templates names not displayed in Transaction dialog
+ * bugfix: #1968249 templates names not displayed in Transaction dialog 
  * bugfix: #1965594 children windows should be transient for their parents
  * bugfix: #1964433 'Top Spending' home chart option button disapear
  * bugfix: #1963833 window: main window don't open in primary screen
@@ -453,7 +470,7 @@
  * bugfix: #1942494 statistics "total" percentage breakdown incorrect
  * bugfix: #1940103 (null) is shown in dialog when deleting a template/scheduled
  * bugfix: #1919063 windows: scaling in 'Top Spending' text too big in UHD 3840 x 2160
- * bugfix: #1801655 windows: button order for GtkAssistant import is confusing
+ * bugfix: #1801655 windows: button order for GtkAssistant import is confusing 
 
 
 2021-08-08  Maxime Doyen
@@ -471,7 +488,7 @@
  * bugfix: #1931816 changing a date from 'show all transaction' don't sort by date
  * bugfix: #1930924 import back a csv reads categories as tags
  * bugfix: #1928147 account column don't sort in scheduled dialog
- * bugfix: #1919936 document what the account maximum balance limit does in practice
+ * bugfix: #1919936 document what the account maximum balance limit does in practice 
 
 
 2021-05-08  Maxime Doyen
@@ -480,7 +497,7 @@
 
  * new   : statistics report add result/detail to clipboard/csv file
  * wish  : #1923368 calendar "Today" button to not auto-close widget
- * wish  : #1916365 please add Toggle detail function to Time mode on Statistics report
+ * wish  : #1916365 please add Toggle detail function to Time mode on Statistics report 
  * bugfix: #1925976 statistics "total" percentage breakdown incorrect
  * bugfix: #1922829 reorder transaction buttons not updated after date change
  * bugfix: #1921741 top spending chart legend text overlap

@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.71])
-AC_INIT([homebank],[5.8.1])
+AC_INIT([homebank],[5.8.2])
 #AC_INIT([homebank],[x.x-rc])
 
 AC_CONFIG_HEADERS(config.h)
@@ -46,7 +46,7 @@ CFLAGS="${CFLAGS} -Wno-deprecated-declarations"
 # profiling valgrind/gprof flags
 #CFLAGS="${CFLAGS} -g -O0 -pg"
 
-# pre-relase # 2 - error as warning for
+# pre-relase # 2 - error as warning for 
 #CFLAGS="${CFLAGS} -Werror"
 
 # GTK4 migration
@@ -91,7 +91,7 @@ AC_C_VOLATILE
 AC_CHECK_FUNCS([floor localeconv memset modf pow setlocale sqrt strcasecmp strtoul])
 
 # International support
-ALL_LINGUAS="af ar be bg br ca ckb cs cy da de el en_AU en_CA en_GB es et eu fa fi fr_CA fr gl he hr hu id is it ja ko lt lv ms nb nds nl oc pl pt_BR pt pt_PT ro ru si sl sq sr sv ta tr uk vi zh_CN zh_TW"
+ALL_LINGUAS="af ar be bg br ca ckb cs cy da de el en_AU en_CA en_GB es et eu fa fi fr_CA fr gl he hr hu id is it ja ko lt lv ms nb nds nl oc pl pt_BR pt pt_PT ro ru si sl sq sr sv ta tr uk vi zh_CN zh_TW" 
 
 AM_GLIB_GNU_GETTEXT
 
@@ -101,7 +101,7 @@ AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["${GETTEXT_PACKAGE}"], [gettext domain])
 
 AC_CONFIG_FILES([
 Makefile
-src/Makefile
+src/Makefile 
 data/homebank.desktop.in
 data/Makefile
 data/datas/Makefile
@@ -122,7 +122,7 @@ AC_OUTPUT
 
 echo
 echo $PACKAGE $VERSION
-echo
+echo 
 echo Compiler................ : $CC
 echo Build with OFX support.. : $build_ofx
 if test "x$noofx" = "xtrue" ; then
