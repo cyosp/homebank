@@ -1,6 +1,9 @@
 Release notes
 -------------
 
+##### 5.8.2.1 ⑂ CYOSP (2024-08-21)
+ * Import 5.8.2 release
+
 ##### 5.8.1.3 ⑂ CYOSP (2024-06-03)
  * Fix: Segmentation fault on "Manage scheduled/template transactions" window
 
