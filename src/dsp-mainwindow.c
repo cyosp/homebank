@@ -362,7 +362,7 @@ static void ui_mainwindow_action_defaccount(void)
 
 	//our global list has changed, so update the treeview
 	//todo: optimize this, should not call compute balance here
-	account_compute_balances ();
+	account_compute_balances (FALSE);
 	
 	ui_hub_account_populate(GLOBALS->mainwindow, NULL);
 	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_REFRESHALL));
@@ -461,7 +461,7 @@ gboolean prv_includeremind;
 	//#1914935 if include remind change, we update balance
 	if( prv_includeremind != PREFS->includeremind )
 	{
-		account_compute_balances();
+		account_compute_balances(FALSE);
 	}
 	
 	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_VISUAL+UF_REFRESHALL));
@@ -1185,7 +1185,7 @@ gint r;
 
 			//TODO: delete this after computing done at xml read
 			DB( g_print(" - compute balance\n") );
-			account_compute_balances();
+			account_compute_balances(TRUE);
 
 			ui_mainwindow_recent_add(data, GLOBALS->xhb_filepath);
 		}
@@ -1980,10 +1980,10 @@ GtkAccelGroup *accel_group = NULL;
 	
 	menu = hbtk_menubar_add_menu(menubar, _("_Transactions"), &data->ME_menutxn);
 
-		data->MI_txnshowall   = menuitem = hbtk_menu_add_menuitem(menu, _("Show All...") );
-		gtk_widget_add_accelerator(menuitem, "activate", accel_group, GDK_KEY_a, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 		data->MI_txnadd       = hbtk_menu_add_menuitem(menu, _("Add..."));
 		data->MI_txnshow      = hbtk_menu_add_menuitem(menu, _("Show..."));
+		data->MI_txnshowall   = menuitem = hbtk_menu_add_menuitem(menu, _("Show All...") );
+		gtk_widget_add_accelerator(menuitem, "activate", accel_group, GDK_KEY_a, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), gtk_separator_menu_item_new());
 		data->MI_scheduler    = hbtk_menu_add_menuitem(menu, _("Set scheduler..."));
 		data->MI_addscheduled = hbtk_menu_add_menuitem(menu, _("Post scheduled"));

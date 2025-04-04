@@ -157,7 +157,7 @@ gdouble tmpval = 0;
 				else
 				{
 				Category *cat = da_cat_get(ope1->kcat);
-					name1 = cat->fullname;
+					name1 = (cat != NULL) ? cat->fullname : NULL;
 				}
 			
 				if( ope2->flags & OF_SPLIT )
@@ -165,7 +165,7 @@ gdouble tmpval = 0;
 				else
 				{
 				Category *cat = da_cat_get(ope2->kcat);
-					name2 = cat->fullname;
+					name2 = (cat != NULL) ? cat->fullname : NULL;
 				}
 			
 				retval = list_txn_sort_iter_compare_strings(name1, name2);
@@ -879,10 +879,14 @@ char strbuf[G_ASCII_DTOSTR_BUF_SIZE];
 
 	//payee	
 	payee = da_pay_get(ope->kpay);
-	//g_string_append (node, (payee->name != NULL) ? payee->name : "");
 	g_string_append_c (node, sep );
-	DB( g_print(" pay: '%s'\n", payee->name) );
-	list_txn_to_string_csv_text(node, sep, payee->name);
+	//#2078281
+	if(payee != NULL)
+	{
+		//g_string_append (node, (payee->name != NULL) ? payee->name : "");
+		DB( g_print(" pay: '%s'\n", payee->name) );
+		list_txn_to_string_csv_text(node, sep, payee->name);
+	}
 
 	//memo
 	//g_string_append (node, (memo != NULL) ? memo : "" );
@@ -915,11 +919,14 @@ char strbuf[G_ASCII_DTOSTR_BUF_SIZE];
 	//category
 	if( flags & LST_TXN_EXP_CAT )
 	{
-		category = da_cat_get(kcat);
-		//g_string_append (node, (category->fullname != NULL) ? category->fullname : "" );
 		g_string_append_c (node, sep );
-		DB( g_print(" cat: '%s'\n", category->fullname) );
-		list_txn_to_string_csv_text(node, sep, category->fullname);
+		category = da_cat_get(kcat);
+		if(category != NULL)
+		{
+			//g_string_append (node, (category->fullname != NULL) ? category->fullname : "" );
+			DB( g_print(" cat: '%s'\n", category->fullname) );
+			list_txn_to_string_csv_text(node, sep, category->fullname);
+		}
 	}
 
 	//tags

@@ -282,16 +282,36 @@ GList *da_transaction_sort(GList *list)
 
 gboolean da_transaction_insert_memo(gchar *memo, guint32 date)
 {
-gboolean retval = FALSE;
-
+	if( date < (GLOBALS->today - PREFS->txn_memoacp_days) )
+		return FALSE;
 	if( memo != NULL )
 	{
-		//# 1673048 add filter on status and date obsolete
-		if( (PREFS->txn_memoacp == TRUE) && (date >= (GLOBALS->today - PREFS->txn_memoacp_days)) )
+		if( g_hash_table_lookup(GLOBALS->h_memo, memo) == NULL )
 		{
-			if( g_hash_table_lookup(GLOBALS->h_memo, memo) == NULL )
+			g_hash_table_insert(GLOBALS->h_memo, g_strdup(memo), NULL);
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+
+gboolean da_transaction_insert_memos(Transaction *txn)
+{
+gboolean retval = FALSE;
+
+	if( txn->date < (GLOBALS->today - PREFS->txn_memoacp_days) )
+		return FALSE;
+
+	da_transaction_insert_memo(txn->memo, txn->date);
+	if( txn->splits != NULL )
+	{
+		for(guint i=0;i<txn->splits->len;i++)
+		{
+		Split *split = g_ptr_array_index(txn->splits, i);
+			if( split != NULL )
 			{
-				retval = g_hash_table_insert(GLOBALS->h_memo, g_strdup(memo), NULL);
+				da_transaction_insert_memo(split->memo, txn->date);
 			}
 		}
 	}
@@ -322,7 +342,12 @@ GList *lnk_txn;
 	// we're at insert point, insert after txn
 	g_queue_insert_after(acc->txn_queue, lnk_txn, newitem);
 
-	da_transaction_insert_memo(newitem->memo, newitem->date);
+	if(PREFS->txn_memoacp == TRUE)
+	{
+		DB( g_print(" add memo to completion\n") );
+		da_transaction_insert_memos(newitem);
+	}
+
 	return TRUE;
 }
 
@@ -339,7 +364,6 @@ Account *acc;
 	
 	item->kcur = acc->kcur;
 	g_queue_push_tail(acc->txn_queue, item);
-	da_transaction_insert_memo(item->memo, item->date);
 	return TRUE;
 }
 
@@ -918,7 +942,9 @@ Account *acc;
 	account_balances_sub (child);
 
 	//# 1708974 enable different date
-	//child->date		= s_txn->date;
+	//# 2065633 with option
+	if( PREFS->xfer_syncdate == TRUE )
+		child->date		= s_txn->date;
 
 	//#2019193 option the sync xfer status
 	if( PREFS->xfer_syncstat == TRUE )

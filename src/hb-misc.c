@@ -71,6 +71,36 @@ gdouble hb_amount_to_euro(gdouble amount)
 }
 
 
+static gdouble hb_amount_minor(gdouble value, guint32 kcur)
+{
+Currency *cur = da_cur_get(kcur);
+gdouble monval = value;
+
+	//g_print("\nminor :: %.2f kcur=%s, mceii:%d\n", value, cur->iso_code, PREFS->euro_mceii);
+	//euro is major
+	if(PREFS->euro_mceii == TRUE)
+	{
+		monval = hb_amount_base(value, kcur);
+		monval = hb_amount_to_euro(monval);
+		//g_print("> old behavior %.2f\n", monval);
+	}
+	//euro is futur major
+	else
+	{
+		//not EUR
+		if( strcmp("EUR", cur->iso_code) )
+		{
+			monval = hb_amount_base(value, kcur);
+			monval = hb_amount_to_euro(monval);
+			//g_print("> convert base/eur %.2f\n", monval);
+		}
+	}
+	return monval;
+}
+
+
+
+
 /* new >5.1 currency fct
 *
  *	convert an amount in base currency
@@ -94,6 +124,7 @@ Currency *cur;
 
 
 /* we have rate versus base curency */
+/* only use in ui-txn */
 gdouble hb_amount_convert(gdouble value, guint32 skcur, guint32 dkcur)
 {
 gdouble newvalue;
@@ -336,6 +367,8 @@ gchar formatd_buf[outlen];
 Currency *cur;
 gdouble monval;
 
+	//g_print(" strfmon: %.2f kcur=%d, minor:%d\n", value, kcur, minor);
+
 	if(minor == FALSE)
 	{
 		cur = hb_strfmon_check(outstr, kcur);
@@ -348,8 +381,7 @@ gdouble monval;
 	}
 	else
 	{
-		monval = hb_amount_base(value, kcur);
-		monval = hb_amount_to_euro(monval);
+		monval = hb_amount_minor(value, kcur);
 		cur = &PREFS->minor_cur;
 		g_ascii_formatd(formatd_buf, outlen, cur->format, monval);
 		hb_str_formatd(outstr, outlen, formatd_buf, cur, TRUE);
@@ -376,8 +408,7 @@ gdouble monval;
 	}
 	else
 	{
-		monval = hb_amount_base(value, kcur);
-		monval = hb_amount_to_euro(monval);
+		monval = hb_amount_minor(value, kcur);
 		cur = &PREFS->minor_cur;
 		g_ascii_formatd(formatd_buf, outlen, cur->format, monval);
 		hb_str_formatd(outstr, outlen, formatd_buf, cur, TRUE);
@@ -403,8 +434,8 @@ gdouble monval;
 	}
 	else
 	{
+		monval = hb_amount_minor(value, kcur);
 		cur = &PREFS->minor_cur;
-		monval = hb_amount_to_euro(value);
 		//#1868185 print raw number, not with monetary
 		g_ascii_formatd(outstr, outlen, "%.2f", monval);
 	}

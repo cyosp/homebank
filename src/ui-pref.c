@@ -20,6 +20,7 @@
 
 #include "homebank.h"
 
+#include "hb-pref-data.h"
 #include "ui-pref.h"
 #include "dsp-mainwindow.h"
 #include "gtk-chart-colors.h"
@@ -99,250 +100,11 @@ extern HbKvData CYA_CHART_COLORSCHEME[];
 extern HbKvData CYA_MONTHS[];
 
 
+extern EuroParams euro_params[];
+extern guint nb_euro_params;
+extern EuroParams euro_params_euro;
+extern LangName languagenames[];
 
-
-/*
-source:
- http://en.wikipedia.org/wiki/Currencies_of_the_European_Union
- http://www.xe.com/euro.php
- http://fr.wikipedia.org/wiki/Liste_des_unit%C3%A9s_mon%C3%A9taires_remplac%C3%A9es_par_l%27euro
- http://www.inter-locale.com/LocalesDemo.jsp
-*/
-static EuroParams euro_params[] =
-{
-//                                , rate     , symb  , prfx , dec, grp, frac
-// ---------------------------------------------------------------------
-	{  0, ""   , "--------"       , 1.0		, ""    , FALSE, ",", ".", 2  },
-	{  1, "ATS", "Austria"        , 13.7603	, "S"   , TRUE , ",", ".", 2  },	// -S 1.234.567,89
-	{  2, "BEF", "Belgium"        , 40.3399	, "BF"  , TRUE , ",", ".", 2  },	// BF 1.234.567,89 -
-	{ 20, "BGN", "Bulgaria"       , 1.95583	, "лв." , TRUE , ",", " ", 2  },	// non-fixé - 2014 target for euro
-	{ 24, "HRK", "Croatia"        , 1.0000   , "kn"  , FALSE, "" , ".", 0  },	// non-fixé - 2015 target for euro earliest
-	{ 14, "CYP", "Cyprus"         , 0.585274 , "£"   , TRUE , ",", "" , 2  },	//
-	{ 23, "CZK", "Czech Republic" , 28.36	   , "Kč"  , FALSE, ",", " ", 2  },	// non-fixé - 2015 earliest
-	// Denmark
-	{ 17, "EEK", "Estonia"        , 15.6466  , "kr"  , FALSE, ",", " ", 2  },	//
-	{  3, "FIM", "Finland"        , 5.94573	, "mk"  , FALSE, ",", " ", 2  },	// -1 234 567,89 mk
-	{  4, "FRF", "France"         , 6.55957	, "F"   , FALSE, ",", " ", 2  },	// -1 234 567,89 F
-	{  5, "DEM", "Germany"        , 1.95583	, "DM"  , FALSE, ",", ".", 2  },	// -1.234.567,89 DM
-	{  6, "GRD", "Greece"         , 340.750	, "d"   , TRUE , ".", ",", 2  },	// ??
-	{ 21, "HUF", "Hungary"        , 261.51	, "Ft"  , TRUE , ",", " ", 2  },	// non-fixé - No current target for euro
-	{  7, "IEP", "Ireland"        , 0.787564  , "£"   , TRUE , ".", ",", 2  },	// -£1,234,567.89
-	{  8, "ITL", "Italy"          , 1936.27	, "L"   , TRUE , "" , ".", 0  },	// L -1.234.567
-	{ 18, "LVL", "Latvia"         , 0.702804 , "lat.", FALSE, ",", "" , 2  },	// jan. 2014
-	{ 19, "LTL", "Lithuania"      , 3.45280	, "Lt"  , FALSE, ",", "" , 2  },	// jan. 2015
-	{  9, "LUF", "Luxembourg"     , 40.3399	, "LU"  , TRUE , ",", ".", 2  },	// LU 1.234.567,89 -
-	{ 15, "MTL", "Malta"          , 0.429300 , "Lm"  , TRUE , ",", "" , 2  },	//
-	{ 10, "NLG", "Netherlands"    , 2.20371	, "F"   , TRUE , ",", ".", 2  },	// F 1.234.567,89-
-	{ 25, "PLN", "Poland"         , 0.25     , "zł"  , FALSE, ",", "" , 2  },	// non-fixé - No current target for euro
-	{ 11, "PTE", "Portugal"       , 200.482	, "Esc.", FALSE, "$", ".", 2  },	// -1.234.567$89 Esc.
-	{ 22, "RON", "Romania"        , 3.5155	, "Leu" , FALSE, ",", ".", 2  },	// non-fixé - 2015 target for euro earliest
-	{ 16, "SKK", "Slovak Republic", 30.12600 , "Sk"  , FALSE, ",", " ", 2  },	//
-	{ 13, "SIT", "Slovenia"       , 239.640	, "tol" , TRUE , ",", ".", 2  },	//
-	{ 12, "ESP", "Spain"          , 166.386	, "Pts" , TRUE , "" , ".", 0  },	// -Pts 1.234.567
-	//Sweden
-	//United Kingdom
-//	{ "   ", ""    , 1.00000	, ""   , ""  , FALSE, ",", "", 2  },
-};
-
-
-/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*/
-
-
-static LangName languagenames[] =
-{
-// af ar ast be bg ca cs cy da de el en_AU en_CA en_GB es et eu fa fi fr ga gl he hr hu id is it 
-//ja ka ko lt lv ms nb nds nl oc pl pt_BR pt pt_PT ro ru si sk sl sr sv tr uk vi zh_CN zh_TW
-	
-	{ "aa", "Afar" },
-	{ "ab", "Abkhazian" },
-	{ "ae", "Avestan" },
-	{ "af", "Afrikaans" },
-	{ "ak", "Akan" },
-	{ "am", "Amharic" },
-	{ "an", "Aragonese" },
-	{ "ar", "Arabic" },
-	{ "as", "Assamese" },
-	{ "ast", "Asturian, Bable, Leonese, Asturleonese" },
-	{ "av", "Avaric" },
-	{ "ay", "Aymara" },
-	{ "az", "Azerbaijani" },
-	{ "ba", "Bashkir" },
-	{ "be", "Belarusian" },
-	{ "bg", "Bulgarian" },
-	{ "bh", "Bihari" },
-	{ "bi", "Bislama" },
-	{ "bm", "Bambara" },
-	{ "bn", "Bengali" },
-	{ "bo", "Tibetan" },
-	{ "br", "Breton" },
-	{ "bs", "Bosnian" },
-	{ "ca", "Catalan" },
-	{ "ce", "Chechen" },
-	{ "ch", "Chamorro" },
-	{ "ckb", "Kurdish, Central" },
-	{ "co", "Corsican" },
-	{ "cr", "Cree" },
-	{ "cs", "Czech" },
-	{ "cu", "Old Church Slavonic" },
-	{ "cv", "Chuvash" },
-	{ "cy", "Welsh" },
-	{ "da", "Danish" },
-	{ "de", "German" },
-	{ "dv", "Divehi" },
-	{ "dz", "Dzongkha" },
-	{ "ee", "Ewe" },
-	{ "el", "Greek" },
-	{ "en", "English" },
-	{ "eo", "Esperanto" },
-	{ "es", "Spanish" },
-	{ "et", "Estonian" },
-	{ "eu", "Basque" },
-	{ "fa", "Persian" },
-	{ "ff", "Fulah" },
-	{ "fi", "Finnish" },
-	{ "fj", "Fijian" },
-	{ "fo", "Faroese" },
-	{ "fr", "French" },
-	{ "fy", "Western Frisian" },
-	{ "ga", "Irish" },
-	{ "gd", "Scottish Gaelic" },
-	{ "gl", "Galician" },
-	{ "gn", "Guarani" },
-	{ "gu", "Gujarati" },
-	{ "gv", "Manx" },
-	{ "ha", "Hausa" },
-	{ "he", "Hebrew" },
-	{ "hi", "Hindi" },
-	{ "ho", "Hiri Motu" },
-	{ "hr", "Croatian" },
-	{ "ht", "Haitian" },
-	{ "hu", "Hungarian" },
-	{ "hy", "Armenian" },
-	{ "hz", "Herero" },
-	{ "ia", "Interlingua" },
-	{ "id", "Indonesian" },
-	{ "ie", "Interlingue" },
-	{ "ig", "Igbo" },
-	{ "ii", "Sichuan Yi" },
-	{ "ik", "Inupiaq" },
-	{ "io", "Ido" },
-	{ "is", "Icelandic" },
-	{ "it", "Italian" },
-	{ "iu", "Inuktitut" },
-	{ "ja", "Japanese" },
-	{ "jv", "Javanese" },
-	{ "ka", "Georgian" },
-	{ "kg", "Kongo" },
-	{ "ki", "Kikuyu" },
-	{ "kj", "Kwanyama" },
-	{ "kk", "Kazakh" },
-	{ "kl", "Kalaallisut" },
-	{ "km", "Khmer" },
-	{ "kn", "Kannada" },
-	{ "ko", "Korean" },
-	{ "kr", "Kanuri" },
-	{ "ks", "Kashmiri" },
-	{ "ku", "Kurdish" },
-	{ "kv", "Komi" },
-	{ "kw", "Cornish" },
-	{ "ky", "Kirghiz" },
-	{ "la", "Latin" },
-	{ "lb", "Luxembourgish" },
-	{ "lg", "Ganda" },
-	{ "li", "Limburgish" },
-	{ "ln", "Lingala" },
-	{ "lo", "Lao" },
-	{ "lt", "Lithuanian" },
-	{ "lu", "Luba-Katanga" },
-	{ "lv", "Latvian" },
-	{ "mg", "Malagasy" },
-	{ "mh", "Marshallese" },
-	{ "mi", "Māori" },
-	{ "mk", "Macedonian" },
-	{ "ml", "Malayalam" },
-	{ "mn", "Mongolian" },
-	{ "mo", "Moldavian" },
-	{ "mr", "Marathi" },
-	{ "ms", "Malay" },
-	{ "mt", "Maltese" },
-	{ "my", "Burmese" },
-	{ "na", "Nauru" },
-	{ "nb", "Norwegian Bokmål" },
-	{ "nd", "North Ndebele" },
-	{ "nds", "Low German, Low Saxon" },
-	{ "ne", "Nepali" },
-	{ "ng", "Ndonga" },
-	{ "nl", "Dutch" },
-	{ "nn", "Norwegian Nynorsk" },
-	{ "no", "Norwegian" },
-	{ "nr", "South Ndebele" },
-	{ "nv", "Navajo" },
-	{ "ny", "Chichewa" },
-	{ "oc", "Occitan" },
-	{ "oj", "Ojibwa" },
-	{ "om", "Oromo" },
-	{ "or", "Oriya" },
-	{ "os", "Ossetian" },
-	{ "pa", "Panjabi" },
-	{ "pi", "Pāli" },
-	{ "pl", "Polish" },
-	{ "ps", "Pashto" },
-	{ "pt", "Portuguese" },
-	{ "qu", "Quechua" },
-	{ "rm", "Romansh" },
-	{ "rn", "Kirundi" },
-	{ "ro", "Romanian" },
-	{ "ru", "Russian" },
-	{ "rw", "Kinyarwanda" },
-	{ "sa", "Sanskrit" },
-	{ "sc", "Sardinian" },
-	{ "sd", "Sindhi" },
-	{ "se", "Northern Sami" },
-	{ "sg", "Sango" },
-	{ "si", "Sinhalese" },
-	{ "sk", "Slovak" },
-	{ "sl", "Slovene" },
-	{ "sm", "Samoan" },
-	{ "sn", "Shona" },
-	{ "so", "Somali" },
-	{ "sq", "Albanian" },
-	{ "sr", "Serbian" },
-	{ "ss", "Swati" },
-	{ "st", "Sotho" },
-	{ "su", "Sundanese" },
-	{ "sv", "Swedish" },
-	{ "sw", "Swahili" },
-	{ "ta", "Tamil" },
-	{ "te", "Telugu" },
-	{ "tg", "Tajik" },
-	{ "th", "Thai" },
-	{ "ti", "Tigrinya" },
-	{ "tk", "Turkmen" },
-	{ "tl", "Tagalog" },
-	{ "tn", "Tswana" },
-	{ "to", "Tonga" },
-	{ "tr", "Turkish" },
-	{ "ts", "Tsonga" },
-	{ "tt", "Tatar" },
-	{ "tw", "Twi" },
-	{ "ty", "Tahitian" },
-	{ "ug", "Uighur" },
-	{ "uk", "Ukrainian" },
-	{ "ur", "Urdu" },
-	{ "uz", "Uzbek" },
-	{ "ve", "Venda" },
-	{ "vi", "Viêt Namese" },
-	{ "vo", "Volapük" },
-	{ "wa", "Walloon" },
-	{ "wo", "Wolof" },
-	{ "xh", "Xhosa" },
-	{ "yi", "Yiddish" },
-	{ "yo", "Yoruba" },
-	{ "za", "Zhuang" },
-	{ "zh", "Chinese" },
-	{ "zu", "Zulu" }
-
-};
 
 
 static GtkWidget *pref_list_create(void);
@@ -368,20 +130,6 @@ gchar *name1, *name2;
     g_free(name1);
 
   	return retval;
-}
-
-
-static gchar *languagename_get(const gchar *locale)
-{
-guint i;
-
-	for (i = 0; i < G_N_ELEMENTS (languagenames); i++)
-	{
-		if( g_ascii_strncasecmp(locale, languagenames[i].locale, -1) == 0 )
-			return languagenames[i].name;
-	}
-
-	return NULL;
 }
 
 
@@ -515,14 +263,14 @@ GtkCellRenderer *renderer;
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*/
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*/
 
+
 static gint ui_euro_combobox_id_to_active(gint id)
 {
-guint i, retval;
+guint retval = 0;
 
 	DB( g_print("\n[ui-pref] ui_euro_combobox_id_to_active\n") );
 
-	retval = 0;
-	for (i = 0; i < G_N_ELEMENTS (euro_params); i++)
+	for (guint i = 0; i < nb_euro_params; i++)
 	{
 		if( euro_params[i].id == id )
 		{
@@ -546,7 +294,7 @@ gint id;
 	DB( g_print("- to %d\n", active) );
 
 	id = 0;
-	if( active < (gint)G_N_ELEMENTS (euro_params) )
+	if( active < (gint)nb_euro_params )
 	{
 		id = euro_params[active].id;
 		DB( g_print("- id (country)=%d '%s'\n", id, euro_params[active].name) );
@@ -563,7 +311,7 @@ guint i;
 	DB( g_print("\n[ui-pref] make euro preset\n") );
 
 	combobox = gtk_combo_box_text_new();
-	for (i = 0; i < G_N_ELEMENTS (euro_params); i++)
+	for (i = 0; i < nb_euro_params; i++)
 	{
 		gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT(combobox), euro_params[i].name);
 	}
@@ -704,8 +452,9 @@ gboolean sensitive;
 
 	sensitive = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_euro_enable));
 
-	gtk_widget_set_sensitive(data->GRP_currency	 , sensitive);
-	gtk_widget_set_sensitive(data->GRP_rate 	 , sensitive);
+	gtk_widget_set_sensitive(data->LB_euro_preset, sensitive);
+	gtk_widget_set_sensitive(data->CY_euro_preset, sensitive);
+	gtk_widget_set_sensitive(data->GRP_configuration, sensitive);
 	gtk_widget_set_sensitive(data->GRP_format	 , sensitive);
 }
 
@@ -717,7 +466,7 @@ static void defpref_eurosetcurrency(GtkWidget *widget, gint country)
 {
 struct defpref_data *data;
 EuroParams *euro;
-gchar *buf;
+gchar *buf, *buf2;
 gint active;
 	
 	DB( g_print("\n[ui-pref] eurosetcurrency\n") );
@@ -729,6 +478,24 @@ gint active;
 	buf = g_strdup_printf("%s - %s", euro->iso, euro->name);
 	gtk_label_set_markup(GTK_LABEL(data->ST_euro_country), buf);
 	g_free(buf);
+
+	//5.9 change label
+	if(euro->mceii == FALSE)
+	{
+		buf  = g_strdup_printf("1 %s _=", euro->iso);
+		buf2 = g_strdup("EUR");
+	}
+	else
+	{
+		buf = g_strdup("1 EUR _=");
+		buf2 = g_strdup(euro->iso);
+	}
+
+	gtk_label_set_text_with_mnemonic(GTK_LABEL(data->LB_euro_src), buf);
+	gtk_label_set_text_with_mnemonic(GTK_LABEL(data->LB_euro_dst), buf2);
+	g_free(buf);
+	g_free(buf2);
+	
 }
 
 
@@ -738,6 +505,7 @@ gint active;
 static void defpref_europreset(GtkWidget *widget, gpointer user_data)
 {
 struct defpref_data *data;
+EuroParams *euro;
 gint active;
 
 	DB( g_print("\n[ui-pref] euro preset\n") );
@@ -745,18 +513,31 @@ gint active;
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
 	active = gtk_combo_box_get_active (GTK_COMBO_BOX(data->CY_euro_preset));
-	data->country = ui_euro_combobox_active_to_id (active);;
+	data->country = ui_euro_combobox_active_to_id (active);
 
 	defpref_eurosetcurrency(widget, data->country);
 
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_euro_value), euro_params[active].value);
+	euro = &euro_params[active];
 
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_euro_fracdigits), euro_params[active].frac_digits);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_euro_value), euro->value);
 
-	gtk_entry_set_text(GTK_ENTRY(data->ST_euro_symbol)   , euro_params[active].symbol);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_euro_isprefix), euro_params[active].sym_prefix);
-	gtk_entry_set_text(GTK_ENTRY(data->ST_euro_decimalchar) , euro_params[active].decimal_char);
-	gtk_entry_set_text(GTK_ENTRY(data->ST_euro_groupingchar), euro_params[active].grouping_char);
+	//#2066110 force EUR for non mceii
+	if( euro->mceii == FALSE)
+	{
+		euro = &euro_params_euro;
+		if( euro_country_notmceii_rate_update(data->country) )
+		{
+			DB( g_print(" >update rate\n") );
+			gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_euro_value), PREFS->euro_value);
+		}
+	}
+
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_euro_fracdigits), euro->frac_digits);
+
+	gtk_entry_set_text(GTK_ENTRY(data->ST_euro_symbol)   , euro->symbol);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_euro_isprefix), euro->sym_prefix);
+	gtk_entry_set_text(GTK_ENTRY(data->ST_euro_decimalchar) , euro->decimal_char);
+	gtk_entry_set_text(GTK_ENTRY(data->ST_euro_groupingchar), euro->grouping_char);
 
 }
 
@@ -980,6 +761,7 @@ GdkRGBA rgba;
 	//xfer
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_xfer_showdialog), PREFS->xfer_showdialog);
 	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_xfer_daygap), PREFS->xfer_daygap);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_xfer_syncdate), PREFS->xfer_syncdate);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_xfer_syncstat), PREFS->xfer_syncstat);
 
 	// display format
@@ -1129,6 +911,7 @@ const gchar *datfmt;
 	// txn xfer
 	PREFS->xfer_showdialog = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_xfer_showdialog));
 	PREFS->xfer_daygap = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_xfer_daygap));
+	PREFS->xfer_syncdate = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_xfer_syncdate));
 	PREFS->xfer_syncstat = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_xfer_syncstat));
 
 	// display format
@@ -1585,54 +1368,48 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
 	
 	label = make_label_group(_("General"));
-	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 4, 1);
 
 	row=1;
 	widget = gtk_check_button_new_with_mnemonic (_("_Enable"));
 	data->CM_euro_enable = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
 
-	// group :: Currency
+	row++;
+	label = make_label_widget(_("_Preset:"));
+	data->LB_euro_preset =label;
+	//----------------------------------------- l, r, t, b
+	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
+	widget = ui_euro_combobox_new (label);
+	data->CY_euro_preset = widget;
+	gtk_widget_set_margin_start (label, 2*SPACING_LARGE);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+
+	// group :: Configuration
     group_grid = gtk_grid_new ();
-	data->GRP_currency = group_grid;
+	data->GRP_configuration = group_grid;
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
 	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
 	
-	label = make_label_group(_("Currency"));
+	label = make_label_group(_("Configuration"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 4, 1);
 
 	row=1;
 	widget = make_label(NULL, 0.0, 0.5);
 	data->ST_euro_country = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
 
-	//row++;
-	label = make_label_widget(_("_Preset:"));
-	//----------------------------------------- l, r, t, b
-	gtk_grid_attach (GTK_GRID (group_grid), label, 2, row, 1, 1);
-	widget = ui_euro_combobox_new (label);
-	data->CY_euro_preset = widget;
-	gtk_widget_set_margin_start (label, 2*SPACING_LARGE);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 3, row, 1, 1);
-
-	
-	// group :: Exchange rate
-    group_grid = gtk_grid_new ();
-	data->GRP_rate = group_grid;
-	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
-	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
-
-	label = make_label_group(_("Exchange rate"));
-	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
-
-	row=1;
+	row++;
 	label = make_label_widget("1 EUR _=");
+	data->LB_euro_src = label;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = make_exchange_rate(label);
 	data->NB_euro_value = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+	label = make_label_widget(NULL);
+	data->LB_euro_dst = label;
+	gtk_grid_attach (GTK_GRID (group_grid), label, 3, row, 1, 1);
 
 	// group :: Numbers format
     group_grid = gtk_grid_new ();
@@ -1642,7 +1419,7 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
 	
 	label = make_label_group(_("Format"));
-	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 4, 1);
 
 	row = 1;
 	widget = make_label(NULL, 0, 0.0);
@@ -1949,7 +1726,12 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 3, row, 1, 1);
 
 	row++;
-	widget = gtk_check_button_new_with_mnemonic (_("Sync transfer Status"));
+	widget = gtk_check_button_new_with_mnemonic (_("Sync Date"));
+	data->CM_xfer_syncdate = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
+
+	row++;
+	widget = gtk_check_button_new_with_mnemonic (_("Sync Status"));
 	data->CM_xfer_syncstat = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
 
@@ -2517,7 +2299,7 @@ GtkWidget *hbox, *vbox, *scrollwin, *widget, *notebook, *page, *image, *label;
 	#endif
 
 	label = gtk_label_new (NULL);
-	hb_widget_set_margins(GTK_WIDGET(label), SPACING_MEDIUM, 0, SPACING_MEDIUM, SPACING_MEDIUM);
+	hb_widget_set_margins(GTK_WIDGET(label), SPACING_SMALL, 0, SPACING_SMALL, SPACING_SMALL);
 	gimp_label_set_attributes (GTK_LABEL (label),
                              PANGO_ATTR_SCALE,  PANGO_SCALE_XX_LARGE,
                              PANGO_ATTR_WEIGHT, PANGO_WEIGHT_BOLD,
@@ -2528,7 +2310,7 @@ GtkWidget *hbox, *vbox, *scrollwin, *widget, *notebook, *page, *image, *label;
 	data->label = label;
 
 	image = gtk_image_new ();
-	hb_widget_set_margins(GTK_WIDGET(image), SPACING_MEDIUM, SPACING_MEDIUM, SPACING_MEDIUM, 0);
+	hb_widget_set_margins(GTK_WIDGET(image), SPACING_SMALL, SPACING_SMALL, SPACING_SMALL, 0);
 	gtk_box_pack_end (GTK_BOX (hbox), image, FALSE, FALSE, 0);
 	gtk_widget_show (image);
 	data->image = image;
@@ -2548,7 +2330,7 @@ GtkWidget *hbox, *vbox, *scrollwin, *widget, *notebook, *page, *image, *label;
 
 	//interface
 	page = defpref_page_interface(data);
-	scrollwin = make_scrolled_window_ns(GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+	scrollwin = make_scrolled_window_ns(GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), page);
 	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), scrollwin, NULL);
 
@@ -2558,7 +2340,7 @@ GtkWidget *hbox, *vbox, *scrollwin, *widget, *notebook, *page, *image, *label;
 
 	//transaction
 	page = defpref_page_transactions(data);
-	scrollwin = make_scrolled_window_ns(GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+	scrollwin = make_scrolled_window_ns(GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), page);
 	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), scrollwin, NULL);
 
@@ -2572,7 +2354,7 @@ GtkWidget *hbox, *vbox, *scrollwin, *widget, *notebook, *page, *image, *label;
 
 	//report
 	page = defpref_page_reports(data);
-	scrollwin = make_scrolled_window_ns(GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+	scrollwin = make_scrolled_window_ns(GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), page);
 	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), scrollwin, NULL);
 

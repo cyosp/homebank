@@ -808,11 +808,12 @@ guint32 maxpostdate;
 		if( !(arc->flags & OF_AUTO) )
 			goto nextarchive;
 
-		DB( g_print("----\neval %d w.e=%s limit=%d '%s'\n", 
+		DB( g_print("----\neval %d w.e=%s limit=%d '%s' flags=0x%04x\n", 
 			arc->nextdate, 
 			hbtk_get_label(CYA_ARC_WEEKEND, arc->weekend), 
 			arc->flags & OF_LIMIT ? arc->limit : -1,
-			arc->memo) );
+			arc->memo,
+			arc->flags) );
 
 		if( !scheduled_is_postable(arc) )
 		{
@@ -843,6 +844,7 @@ guint32 maxpostdate;
 				txn->date = jpostdate;
 				/* todo: ? fill in cheque number */
 				transaction_add(NULL, FALSE, txn);
+				
 				da_transaction_free (txn);
 				count++;
 				

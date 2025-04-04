@@ -2262,7 +2262,7 @@ struct import_data *data = user_data;
 		//GLOBALS->changes_count += data->imp_cnt_trn;
 
 		//our global list has changed, so update the treeview
-		account_compute_balances ();
+		account_compute_balances (FALSE);
 		ui_hub_account_populate(GLOBALS->mainwindow, NULL);
 		ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_REFRESHALL));
 	//}

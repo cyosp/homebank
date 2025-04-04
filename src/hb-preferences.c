@@ -21,6 +21,7 @@
 #include "homebank.h"
 
 #include "hb-preferences.h"
+#include "hb-pref-data.h"
 #include "hb-filter.h"
 #include "gtk-chart-colors.h"
 
@@ -38,6 +39,11 @@
 #else
 #define DB(x);
 #endif
+
+
+#define DBKF(x);
+//#define DBKF(x) (x);
+
 
 /* our global datas */
 extern struct HomeBank *GLOBALS;
@@ -486,7 +492,7 @@ static void homebank_pref_get_intlist(
 	gsize maxlength)
 {
 
-	DB( g_print(" search %s in %s\n", key, group_name) );
+	DBKF( g_print(" search %s in %s\n", key, group_name) );
 
 	if( g_key_file_has_key(key_file, group_name, key, NULL) )
 	{
@@ -495,10 +501,10 @@ static void homebank_pref_get_intlist(
 
 		src = g_key_file_get_integer_list(key_file, group_name, key, &length, NULL);
 
-		DB( g_print(" - length %d (max=%d)\n", (int)length, (int)maxlength) );
+		DBKF( g_print(" - length %d (max=%d)\n", (int)length, (int)maxlength) );
 		if( length == maxlength )
 		{
-			DB( g_print(" > storing\n") );
+			DBKF( g_print(" > storing\n") );
 			memcpy(storage, src, length*sizeof(gint));
 		}
 		
@@ -513,12 +519,12 @@ static void homebank_pref_get_boolean(
     const gchar *key,
 	gboolean *storage)
 {
-	DB( g_print(" search %s in %s\n", key, group_name) );
+	DBKF( g_print(" search %s in %s\n", key, group_name) );
 
 	if( g_key_file_has_key(key_file, group_name, key, NULL) )
 	{
 		*storage = g_key_file_get_boolean(key_file, group_name, key, NULL);
-		DB( g_print(" > stored boolean %d for %s at %p\n", *storage, key, storage) );
+		DBKF( g_print(" > stored boolean %d for %s at %p\n", *storage, key, storage) );
 	}
 }
 
@@ -528,12 +534,12 @@ static void homebank_pref_get_integer(
     const gchar *key,
 	gint *storage)
 {
-	DB( g_print(" search %s in %s\n", key, group_name) );
+	DBKF( g_print(" search %s in %s\n", key, group_name) );
 
 	if( g_key_file_has_key(key_file, group_name, key, NULL) )
 	{
 		*storage = g_key_file_get_integer(key_file, group_name, key, NULL);
-		DB( g_print(" > stored integer %d for %s at %p\n", *storage, key, storage) );
+		DBKF( g_print(" > stored integer %d for %s at %p\n", *storage, key, storage) );
 	}
 }
 
@@ -543,12 +549,12 @@ static void homebank_pref_get_guint32(
     const gchar *key,
 	guint32 *storage)
 {
-	DB( g_print(" search %s in %s\n", key, group_name) );
+	DBKF( g_print(" search %s in %s\n", key, group_name) );
 
 	if( g_key_file_has_key(key_file, group_name, key, NULL) )
 	{
 		*storage = g_key_file_get_integer(key_file, group_name, key, NULL);
-		DB( g_print(" > stored guint32 %d for %s at %p\n", *storage, key, storage) );
+		DBKF( g_print(" > stored guint32 %d for %s at %p\n", *storage, key, storage) );
 	}
 }
 
@@ -558,12 +564,12 @@ static void homebank_pref_get_short(
     const gchar *key,
 	gshort *storage)
 {
-	DB( g_print(" search %s in %s\n", key, group_name) );
+	DBKF( g_print(" search %s in %s\n", key, group_name) );
 
 	if( g_key_file_has_key(key_file, group_name, key, NULL) )
 	{
 		*storage = (gshort)g_key_file_get_integer(key_file, group_name, key, NULL);
-		DB( g_print(" > stored short %d for %s at %p\n", *storage, key, storage) );
+		DBKF( g_print(" > stored short %d for %s at %p\n", *storage, key, storage) );
 	}
 }
 
@@ -575,14 +581,14 @@ static void homebank_pref_get_string(
 {
 gchar *string;
 
-	DB( g_print(" search %s in %s\n", key, group_name) );
+	DBKF( g_print(" search %s in %s\n", key, group_name) );
 
 	if( g_key_file_has_key(key_file, group_name, key, NULL) )
 	{
 		/* free any previous string */
 		if( *storage != NULL )
 		{
-			DB( g_print(" storage was not null, freeing\n") );
+			DBKF( g_print(" storage was not null, freeing\n") );
 
 			g_free(*storage);
 		}
@@ -596,7 +602,7 @@ gchar *string;
 			//leak
 			*storage = string;	//already a new allocated string
 
-			DB( g_print(" > stored '%s' for %s at %p\n", *storage, key, *storage) );
+			DBKF( g_print(" > stored '%s' for %s at %p\n", *storage, key, *storage) );
 		}
 	}
 
@@ -680,6 +686,30 @@ void homebank_pref_icon_symbolic(gboolean active)
 //#beta end
 
 
+//#2076474
+void homebank_pref_apply_scheme(void)
+{
+GtkSettings *settings = gtk_settings_get_default();
+gboolean dark = (GLOBALS->color_scheme == PREFER_DARK);
+
+	DB( g_print("\n[preferences] pref apply scheme\n") );
+
+	DB( g_print(" scheme : %d\n", GLOBALS->color_scheme) );
+	DB( g_print(" appdark: %d\n", PREFS->gtk_darktheme) );
+
+	// system or app choice
+	if( GLOBALS->color_scheme == DEFAULT )
+	{
+ 		//we set from the user preferences
+		g_object_set(settings, "gtk-application-prefer-dark-theme", PREFS->gtk_darktheme, NULL);
+	}
+	else
+	{
+		g_object_set(settings, "gtk-application-prefer-dark-theme", dark, NULL);
+	}
+}
+
+
 void homebank_pref_apply(void)
 {
 GtkSettings *settings = gtk_settings_get_default();
@@ -711,8 +741,7 @@ gboolean symbolic;
 		gtk_settings_reset_property(settings, "gtk-font-name");
 	}
 
-	g_object_set(settings, "gtk-application-prefer-dark-theme", PREFS->gtk_darktheme, NULL);
-	//gtk_settings_reset_property(settings, "gtk-application-prefer-dark-theme");
+	homebank_pref_apply_scheme();
 
 	//beta
 	symbolic = ( !strcmp(PREFS->icontheme, "symbolic") ) ? TRUE : FALSE;
@@ -756,7 +785,7 @@ GError *error = NULL;
 
 			group = "General";
 
-				DB( g_print(" -> ** General\n") );
+				DBKF( g_print(" -> ** General\n") );
 
 				//since 4.51 version is integer
 				homebank_pref_get_guint32 (keyfile, group, "Version", &version);
@@ -766,7 +795,7 @@ GError *error = NULL;
 					version = (guint32)(v * 10);
 				}
 
-				DB( g_print(" - version: %d\n", version) );
+				DBKF( g_print(" - version: %d\n", version) );
 
 				homebank_pref_get_string(keyfile, group, "Language", &PREFS->language);
 
@@ -826,9 +855,9 @@ GError *error = NULL;
 						PREFS->showwelcome = FALSE;
 				}
 
-				DB( g_print(" - color exp: %s\n", PREFS->color_exp) );
-				DB( g_print(" - color inc: %s\n", PREFS->color_inc) );
-				DB( g_print(" - color wrn: %s\n", PREFS->color_warn) );
+				DBKF( g_print(" - color exp: %s\n", PREFS->color_exp) );
+				DBKF( g_print(" - color inc: %s\n", PREFS->color_inc) );
+				DBKF( g_print(" - color wrn: %s\n", PREFS->color_warn) );
 
 
 				homebank_pref_get_string(keyfile, group, "WalletPath", &PREFS->path_hbfile);
@@ -863,6 +892,7 @@ GError *error = NULL;
 				
 				homebank_pref_get_boolean(keyfile, group, "TxnXferShowDialog", &PREFS->xfer_showdialog);
 				homebank_pref_get_short  (keyfile, group, "TxnXferDayGap", &PREFS->xfer_daygap);
+				homebank_pref_get_boolean(keyfile, group, "TxnXferSyncDate", &PREFS->xfer_syncdate);				
 				homebank_pref_get_boolean(keyfile, group, "TxnXferSyncStatus", &PREFS->xfer_syncstat);
 				
 
@@ -889,11 +919,11 @@ GError *error = NULL;
 					{
 						src = g_key_file_get_integer_list(keyfile, group, "ColumnsOpe", &length, NULL);
 
-						DB( g_print(" - length %d (max=%d)\n", (int)length, NUM_LST_DSPOPE) );
+						DBKF( g_print(" - length %d (max=%d)\n", (int)length, NUM_LST_DSPOPE) );
 
 						if( length == NUM_LST_DSPOPE )
 						{
-							DB( g_print(" - copying column order from pref file\n") );
+							DBKF( g_print(" - copying column order from pref file\n") );
 							memcpy(PREFS->lst_ope_columns, src, length*sizeof(gint));
 						}
 						else
@@ -902,8 +932,8 @@ GError *error = NULL;
 							{
 								if( length == NUM_LST_DSPOPE-2 )	//1 less column before v4.5.1
 								{
-									DB( g_print(" - upgrade from v7\n") );
-									DB( g_print(" - copying column order from pref file\n") );
+									DBKF( g_print(" - upgrade from v7\n") );
+									DBKF( g_print(" - copying column order from pref file\n") );
 									memcpy(PREFS->lst_ope_columns, src, length*sizeof(gint));
 									//append balance column
 									PREFS->lst_ope_columns[10] = LST_DSPOPE_BALANCE;
@@ -914,8 +944,8 @@ GError *error = NULL;
 							{
 								if( length == NUM_LST_DSPOPE-2 )	//1 less column before v4.5.1
 								{
-									DB( g_print(" - upgrade prior v5.0\n") );
-									DB( g_print(" - copying column order from pref file\n") );
+									DBKF( g_print(" - upgrade prior v5.0\n") );
+									DBKF( g_print(" - copying column order from pref file\n") );
 									gboolean added = FALSE;
 									for(i=0,j=0; i<NUM_LST_DSPOPE-1 ; i++)
 									{
@@ -945,7 +975,7 @@ GError *error = NULL;
 				homebank_pref_get_integer(keyfile, group, "OpeSortId", &PREFS->lst_ope_sort_id);
 				homebank_pref_get_integer(keyfile, group, "OpeSortOrder", &PREFS->lst_ope_sort_order);
 
-			    DB( g_print(" - set sort to %d %d\n", PREFS->lst_ope_sort_id, PREFS->lst_ope_sort_order) );
+			    DBKF( g_print(" - set sort to %d %d\n", PREFS->lst_ope_sort_id, PREFS->lst_ope_sort_order) );
 
 				//detail list
 				homebank_pref_get_intlist(keyfile, group, "ColumnsDet", PREFS->lst_det_columns, NUM_LST_DSPOPE);
@@ -963,7 +993,7 @@ GError *error = NULL;
 
 			group = "Windows";
 
-				DB( g_print(" -> ** Windows\n") );
+				DBKF( g_print(" -> ** Windows\n") );
 
 				homebank_pref_get_wingeometry(keyfile, group, "Wal", &PREFS->wal_wg);
 				homebank_pref_get_wingeometry(keyfile, group, "Acc", &PREFS->acc_wg);
@@ -1001,7 +1031,7 @@ GError *error = NULL;
 			//since 5.1.3
 			group = "Panels";
 
-				DB( g_print(" -> ** Panels\n") );
+				DBKF( g_print(" -> ** Panels\n") );
 
 				homebank_pref_get_short(keyfile, group, "AccColAccW", &PREFS->pnl_acc_col_acc_width);
 				homebank_pref_get_short(keyfile, group, "AccShowBy" , &PREFS->pnl_acc_show_by);
@@ -1038,10 +1068,10 @@ GError *error = NULL;
 
 					src = g_key_file_get_integer_list(keyfile, group, "ColumnsSch", &length, NULL);
 
-					DB( g_print(" - length %d (max=%d)\n", (int)length, NUM_COL_SCH_UID) );
+					DBKF( g_print(" - length %d (max=%d)\n", (int)length, NUM_COL_SCH_UID) );
 					if( length == NUM_COL_SCH_UID )
 					{
-						DB( g_print(" - copying column order from pref file\n") );
+						DBKF( g_print(" - copying column order from pref file\n") );
 						memcpy(PREFS->lst_sch_columns, src, length*sizeof(gint));
 					}
 					
@@ -1060,7 +1090,7 @@ GError *error = NULL;
 
 			group = "Format";
 
-				DB( g_print(" -> ** Format\n") );
+				DBKF( g_print(" -> ** Format\n") );
 
 				homebank_pref_get_string(keyfile, group, "DateFmt", &PREFS->date_format);
 
@@ -1082,7 +1112,7 @@ GError *error = NULL;
 
 			group = "Filter";
 
-				DB( g_print(" -> ** Filter\n") );
+				DBKF( g_print(" -> ** Filter\n") );
 
 				//homebank_pref_get_integer(keyfile, group, "DateRangeWal", &PREFS->date_range_wal);
 				homebank_pref_get_integer(keyfile, group, "DateRangeTxn", &PREFS->date_range_txn);
@@ -1102,7 +1132,7 @@ GError *error = NULL;
 
 			group = "API";
 
-				DB( g_print(" -> ** API\n") );
+				DBKF( g_print(" -> ** API\n") );
 
 				homebank_pref_get_string(keyfile, group, "APIRateUrl", &PREFS->api_rate_url);
 				homebank_pref_get_string(keyfile, group, "APIRateKey", &PREFS->api_rate_key);
@@ -1112,7 +1142,7 @@ GError *error = NULL;
 				{
 					if( hb_string_ascii_compare("https://api.exchangerate.host", PREFS->api_rate_url) == 0 )
 					{
-						DB( g_print(" fix bad host in 5.7\n") );
+						DBKF( g_print(" fix bad host in 5.7\n") );
 						g_free(PREFS->api_rate_url);
 						PREFS->api_rate_url = g_strdup("https://api.frankfurter.app/latest");
 					}
@@ -1120,12 +1150,15 @@ GError *error = NULL;
 
 			group = "Euro";
 
-				DB( g_print(" -> ** Euro\n") );
+				DBKF( g_print(" -> ** Euro\n") );
 
 				//homebank_pref_get_string(keyfile, group, "DefCurrency" , &PREFS->curr_default);
 
 				homebank_pref_get_boolean(keyfile, group, "Active", &PREFS->euro_active);
 				homebank_pref_get_integer(keyfile, group, "Country", &PREFS->euro_country);
+
+				//2066110
+				PREFS->euro_mceii = euro_country_is_mceii(PREFS->euro_country);
 
 				gchar *ratestr = g_key_file_get_string (keyfile, group, "ChangeRate", NULL);
 				if(ratestr != NULL) PREFS->euro_value = g_ascii_strtod(ratestr, NULL);
@@ -1172,7 +1205,7 @@ GError *error = NULL;
 
 			group = "Report";
 
-				DB( g_print(" -> ** Report\n") );
+				DBKF( g_print(" -> ** Report\n") );
 
 				homebank_pref_get_boolean(keyfile, group, "StatByAmount", &PREFS->stat_byamount);
 				homebank_pref_get_boolean(keyfile, group, "StatDetail", &PREFS->stat_showdetail);
@@ -1188,7 +1221,7 @@ GError *error = NULL;
 
 			group = "Exchange";
 
-				DB( g_print(" -> ** Exchange\n") );
+				DBKF( g_print(" -> ** Exchange\n") );
 
 				homebank_pref_get_boolean(keyfile, group, "DoIntro", &PREFS->dtex_nointro);
 				homebank_pref_get_boolean(keyfile, group, "UcFirst", &PREFS->dtex_ucfirst);
@@ -1208,7 +1241,7 @@ GError *error = NULL;
 			/* file upgrade */
 			if(version < 560)
 			{
-				DB( g_print(" ugrade 5.6 daterange\n") );
+				DBKF( g_print(" ugrade 5.6 daterange\n") );
 				//convert old daterange
 				//PREFS->date_range_wal = homebank_pref_upgrade_560_daterange(PREFS->date_range_wal);	//top spending	
 				PREFS->date_range_txn = homebank_pref_upgrade_560_daterange(PREFS->date_range_txn);	//transactions
@@ -1270,7 +1303,7 @@ GError *error = NULL;
 	if(keyfile )
 	{
 
-		DB( g_print(" -> ** general\n") );
+		DBKF( g_print(" -> ** general\n") );
 
 
 		group = "General";
@@ -1322,6 +1355,7 @@ GError *error = NULL;
 		
 		g_key_file_set_boolean (keyfile, group, "TxnXferShowDialog", PREFS->xfer_showdialog);
 		g_key_file_set_integer (keyfile, group, "TxnXferDayGap" , PREFS->xfer_daygap);
+		g_key_file_set_boolean (keyfile, group, "TxnXferSyncDate", PREFS->xfer_syncdate);
 		g_key_file_set_boolean (keyfile, group, "TxnXferSyncStatus", PREFS->xfer_syncstat);
 
 		//ledger colums
@@ -1341,7 +1375,7 @@ GError *error = NULL;
 		g_key_file_set_integer_list(keyfile, group, "Payment", &PREFS->lst_paymode[1], NUM_PAYMODE_KEY-1);
 
 		// added v3.4
-		DB( g_print(" -> ** windows\n") );
+		DBKF( g_print(" -> ** windows\n") );
 
 		group = "Windows";
 		g_key_file_set_integer_list(keyfile, group, "Wal", (gint *)&PREFS->wal_wg, 5);
@@ -1363,7 +1397,7 @@ GError *error = NULL;
 		g_key_file_set_boolean (keyfile, group, "WalUpcoming", PREFS->wal_upcoming);
 
 		//since 5.1.3
-		DB( g_print(" -> ** Panels\n") );
+		DBKF( g_print(" -> ** Panels\n") );
 
 		group = "Panels";
 		g_key_file_set_integer(keyfile, group, "AccColAccW", PREFS->pnl_acc_col_acc_width);
@@ -1391,7 +1425,7 @@ GError *error = NULL;
 
 		homebank_pref_set_string  (keyfile, group, "PnlLstTab", PREFS->pnl_list_tab);
 
-		DB( g_print(" -> ** format\n") );
+		DBKF( g_print(" -> ** format\n") );
 
 		group = "Format";
 		homebank_pref_set_string  (keyfile, group, "DateFmt"   , PREFS->date_format);
@@ -1401,7 +1435,7 @@ GError *error = NULL;
 		g_key_file_set_boolean (keyfile, group, "UnitIsGal" , PREFS->vehicle_unit_isgal);
 
 
-		DB( g_print(" -> ** filter\n") );
+		DBKF( g_print(" -> ** filter\n") );
 
 		group = "Filter";
 		//g_key_file_set_integer (keyfile, group, "DateRangeWal", PREFS->date_range_wal);
@@ -1409,7 +1443,7 @@ GError *error = NULL;
 		g_key_file_set_integer (keyfile, group, "DateFutureNbDays", PREFS->date_future_nbdays);
 		g_key_file_set_integer (keyfile, group, "DateRangeRep", PREFS->date_range_rep);
 
-		DB( g_print(" -> ** API\n") );
+		DBKF( g_print(" -> ** API\n") );
 
 		group = "API";
 
@@ -1417,7 +1451,7 @@ GError *error = NULL;
 		homebank_pref_set_string(keyfile, group, "APIRateKey", PREFS->api_rate_key);
 
 
-		DB( g_print(" -> ** euro\n") );
+		DBKF( g_print(" -> ** euro\n") );
 
 	//euro options
 		group = "Euro";
@@ -1439,7 +1473,7 @@ GError *error = NULL;
 		}
 
 	//report options
-		DB( g_print(" -> ** report\n") );
+		DBKF( g_print(" -> ** report\n") );
 
 		group = "Report";
 		g_key_file_set_boolean (keyfile, group, "StatByAmount" , PREFS->stat_byamount);

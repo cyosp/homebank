@@ -266,15 +266,13 @@ Filter *newflt;
 		DB( g_print(" key:%d, copy filter\n", newflt->key) );
 		da_flt_copy(newflt, data->filter);
 
-		//#2073805
+		//#2073805 same range will not trigger
 		//hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_range), data->filter->range);
 		g_signal_handler_block(data->CY_range, data->handler_id[HID_REPDIST_RANGE]);
 		hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_range), data->filter->range);
 		g_signal_handler_unblock(data->CY_range, data->handler_id[HID_REPDIST_RANGE]);
-
-		repstats_update_date_widget(data->window, NULL);
-		repstats_update_daterange(data->window, NULL);
-		repstats_compute(data->window, NULL);
+		////#2076458 force update
+		repstats_range_change(widget, user_data);
 		ui_flt_manage_header_sensitive(data->PO_hubfilter, NULL);
 	}
 	else

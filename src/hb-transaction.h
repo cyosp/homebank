@@ -61,34 +61,32 @@ struct _transaction
 
 #include "hb-archive.h"
 
-// display flags (not related to below real flags)
-#define	TXN_DSPFLG_OVER		(1<<1)
-#define	TXN_DSPFLG_LOWBAL	(1<<2)
 
-#define	TXN_DSPFLG_DUPSRC	(1<<9)
-#define	TXN_DSPFLG_DUPDST	(1<<10)
-
-
-// data flags
+// saved flags -- data
 //gushort is 2 bytes / 16 bits
 //FREE (1<<0) 
-#define OF_INCOME	(1<<1)
-#define OF_AUTO		(1<<2)	//scheduled
-#define OF_INTXFER	(1<<3)
-#define OF_ADVXFER  (1<<4)	//xfer with != kcur
+#define OF_INCOME	(1<< 1)
+#define OF_AUTO		(1<< 2)	//scheduled
+#define OF_INTXFER	(1<< 3)
+#define OF_ADVXFER  (1<< 4)	//xfer with != kcur
 //FREE (1<<5)
-#define OF_CHEQ2	(1<<6)
-#define OF_LIMIT	(1<<7)	//scheduled
-#define OF_SPLIT	(1<<8)
+#define OF_CHEQ2	(1<< 6)
+#define OF_LIMIT	(1<< 7)	//scheduled
+#define OF_SPLIT	(1<< 8)
 
-//unsaved tmp flags
+
+//deprecated since 5.x
+#define OLDF_VALID	(1<<0)
+#define OLDF_REMIND	(1<<5)
+
+// unsaved flags -- display/session
 #define OF_ADDED		(1<<9)  //was 1<<3 < 5.3
 #define OF_CHANGED		(1<<10) //was 1<<4 < 5.3
 #define OF_PREFILLED	(1<<11)
-
-//deprecated since 5.x
-#define OLDF_VALID	(1<<0)  
-#define OLDF_REMIND	(1<<5)
+#define	TXN_DSPFLG_OVER		(1<<1)
+#define	TXN_DSPFLG_LOWBAL	(1<<2)
+#define	TXN_DSPFLG_DUPSRC	(1<<9)
+#define	TXN_DSPFLG_DUPDST	(1<<10)
 
 
 typedef enum {
@@ -156,6 +154,7 @@ guint da_transaction_length(void);
 void transaction_remove(Transaction *ope);
 void transaction_changed(Transaction *txn, gboolean saverecondate);
 gboolean da_transaction_insert_memo(gchar *memo, guint32 date);
+gboolean da_transaction_insert_memos(Transaction *txn);
 Transaction *transaction_add(GtkWindow *parent, gboolean addmode, Transaction *ope);
 
 gchar *transaction_get_status_string(Transaction *txn);

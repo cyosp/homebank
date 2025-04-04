@@ -1643,7 +1643,6 @@ gint insert;
 			insert2 = 1;
 
 		insert = insert1 && insert2 ? 1 : 0;
-
 		if(flt->option[FLT_GRP_TEXT] == 2) insert ^= 1;
 
 	}
