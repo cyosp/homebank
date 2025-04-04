@@ -1312,6 +1312,19 @@ gdouble unbudgeted;
 
 	DB( g_print("\n+ compute budget for category\n") );
 
+	// fill tmp_budget
+	//get ordered cat/subcat
+	DB( g_print(" + cat compute budget\n") );
+	lcat = category_glist_sorted(HB_GLIST_SORT_KEY);
+	list = lcat;
+	while (list != NULL)
+	{
+	Category *catitem = list->data;		
+
+		repbudget_fill_budget_for_category(catitem, tmp_budget, startmonth, nbmonth);
+		list = g_list_next(list);
+	}
+
 	// compute spent for each transaction
 	// fill tmp_spent
 	DB( g_print(" + cat compute spent\n") );
@@ -1350,7 +1363,6 @@ gdouble unbudgeted;
 	DB( g_printf(" unbudgeted=%.2f\n\n", unbudgeted) );
 
 	id = 0;
-	lcat = category_glist_sorted(HB_GLIST_SORT_KEY);
 	list = lcat;
 	while (list != NULL)
 	{
@@ -1362,12 +1374,11 @@ gdouble unbudgeted;
 	gint fulfilled;
 	gchar *status;
 
+		if( catitem == NULL)
+			continue;
+
 		name = catitem->key == 0 ? "(None)" : catitem->name;
 		guint pos = catitem->key;
-
-		// fill tmp_budget
-		repbudget_fill_budget_for_category(catitem, tmp_budget, startmonth, nbmonth);
-
 
 		DB( g_print(" eval %d: %d '%s' b:%d f:%d : spen=%.2f bud=%.2f \n", 
 			id, pos, name, (catitem->flags & GF_BUDGET), (catitem->flags & GF_FORCED), 
@@ -1453,6 +1464,8 @@ gdouble unbudgeted;
 					//DB( g_print(" !! no parent %d found for %d '%s'\n", entry->parent, entry->key, entry->fullname) );
 				}
 			}
+
+			DB( g_print("  >insert '%s' s:%.2f b:%.2f r:%.2f (%%%.2f) '%s' '%d'\n", name, tmp_spent[pos], tmp_budget[pos], result, rawrate, status, outofbudget ) );
 
 			//5.7.3 dont fulfill if no budget
 			fulfilled = 0;

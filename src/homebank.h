@@ -81,13 +81,13 @@
 
 #define HOMEBANK_MAJOR	5
 #define HOMEBANK_MINOR	8
-#define HOMEBANK_MICRO	2
+#define HOMEBANK_MICRO	3
 
-#define HB_VERSION		"5.8.2"
+#define HB_VERSION		"5.8.3"
 #define HB_VERSION_NUM	(HOMEBANK_MAJOR*10000) + (HOMEBANK_MINOR*100) + HOMEBANK_MICRO
 
 #define FILE_VERSION		1.5
-#define PREF_VERSION		582
+#define PREF_VERSION		583
 
 #if HB_UNSTABLE == FALSE
 	#define	PROGNAME		"HomeBank"
@@ -239,6 +239,7 @@ struct HomeBank
 	//gint			lst_pixbuf_maxwidth;
 	
 	GDBusProxy		*settings_portal;
+	ColorScheme		color_scheme;
 
 };
 

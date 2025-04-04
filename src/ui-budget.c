@@ -784,7 +784,7 @@ Category *item;
 
 
 static void
-ui_bud_manage_toggle(GtkRadioButton *radiobutton, gpointer user_data)
+ui_bud_manage_toggle(GtkCheckButton *checkbutton, gpointer user_data)
 {
 //struct ui_bud_manage_data *data;
 
@@ -795,7 +795,7 @@ ui_bud_manage_toggle(GtkRadioButton *radiobutton, gpointer user_data)
 	//ui_bud_manage_get(GTK_WIDGET(radiobutton), GINT_TO_POINTER(FIELD_TYPE));
 
 	//data->custom ^= 1;
-	ui_bud_manage_update(GTK_WIDGET(radiobutton), NULL);
+	ui_bud_manage_update(GTK_WIDGET(checkbutton), NULL);
 }
 
 

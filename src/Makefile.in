@@ -109,8 +109,8 @@ am_homebank_OBJECTS = dsp-account.$(OBJEXT) dsp-mainwindow.$(OBJEXT) \
 	hb-import-ofx.$(OBJEXT) hb-import-qif.$(OBJEXT) \
 	hb-import-csv.$(OBJEXT) hb-misc.$(OBJEXT) hb-payee.$(OBJEXT) \
 	hb-group.$(OBJEXT) hb-preferences.$(OBJEXT) \
-	hb-report.$(OBJEXT) hb-tag.$(OBJEXT) hb-split.$(OBJEXT) \
-	hb-transaction.$(OBJEXT) hb-xml.$(OBJEXT) \
+	hb-pref-data.$(OBJEXT) hb-report.$(OBJEXT) hb-tag.$(OBJEXT) \
+	hb-split.$(OBJEXT) hb-transaction.$(OBJEXT) hb-xml.$(OBJEXT) \
 	hbtk-switcher.$(OBJEXT) homebank.$(OBJEXT) \
 	hub-account.$(OBJEXT) hub-reptime.$(OBJEXT) \
 	hub-reptotal.$(OBJEXT) hub-scheduled.$(OBJEXT) \
@@ -158,21 +158,21 @@ am__depfiles_remade = ./$(DEPDIR)/dsp-account.Po \
 	./$(DEPDIR)/hb-hbfile.Po ./$(DEPDIR)/hb-import-csv.Po \
 	./$(DEPDIR)/hb-import-ofx.Po ./$(DEPDIR)/hb-import-qif.Po \
 	./$(DEPDIR)/hb-import.Po ./$(DEPDIR)/hb-misc.Po \
-	./$(DEPDIR)/hb-payee.Po ./$(DEPDIR)/hb-preferences.Po \
-	./$(DEPDIR)/hb-report.Po ./$(DEPDIR)/hb-split.Po \
-	./$(DEPDIR)/hb-tag.Po ./$(DEPDIR)/hb-transaction.Po \
-	./$(DEPDIR)/hb-xml.Po ./$(DEPDIR)/hbtk-switcher.Po \
-	./$(DEPDIR)/homebank.Po ./$(DEPDIR)/hub-account.Po \
-	./$(DEPDIR)/hub-reptime.Po ./$(DEPDIR)/hub-reptotal.Po \
-	./$(DEPDIR)/hub-scheduled.Po ./$(DEPDIR)/hub-transaction.Po \
-	./$(DEPDIR)/language.Po ./$(DEPDIR)/list-account.Po \
-	./$(DEPDIR)/list-operation.Po ./$(DEPDIR)/list-report.Po \
-	./$(DEPDIR)/list-scheduled.Po ./$(DEPDIR)/rep-balance.Po \
-	./$(DEPDIR)/rep-budget.Po ./$(DEPDIR)/rep-stats.Po \
-	./$(DEPDIR)/rep-time.Po ./$(DEPDIR)/rep-vehicle.Po \
-	./$(DEPDIR)/ui-account.Po ./$(DEPDIR)/ui-archive.Po \
-	./$(DEPDIR)/ui-assign.Po ./$(DEPDIR)/ui-assist-import.Po \
-	./$(DEPDIR)/ui-assist-start.Po \
+	./$(DEPDIR)/hb-payee.Po ./$(DEPDIR)/hb-pref-data.Po \
+	./$(DEPDIR)/hb-preferences.Po ./$(DEPDIR)/hb-report.Po \
+	./$(DEPDIR)/hb-split.Po ./$(DEPDIR)/hb-tag.Po \
+	./$(DEPDIR)/hb-transaction.Po ./$(DEPDIR)/hb-xml.Po \
+	./$(DEPDIR)/hbtk-switcher.Po ./$(DEPDIR)/homebank.Po \
+	./$(DEPDIR)/hub-account.Po ./$(DEPDIR)/hub-reptime.Po \
+	./$(DEPDIR)/hub-reptotal.Po ./$(DEPDIR)/hub-scheduled.Po \
+	./$(DEPDIR)/hub-transaction.Po ./$(DEPDIR)/language.Po \
+	./$(DEPDIR)/list-account.Po ./$(DEPDIR)/list-operation.Po \
+	./$(DEPDIR)/list-report.Po ./$(DEPDIR)/list-scheduled.Po \
+	./$(DEPDIR)/rep-balance.Po ./$(DEPDIR)/rep-budget.Po \
+	./$(DEPDIR)/rep-stats.Po ./$(DEPDIR)/rep-time.Po \
+	./$(DEPDIR)/rep-vehicle.Po ./$(DEPDIR)/ui-account.Po \
+	./$(DEPDIR)/ui-archive.Po ./$(DEPDIR)/ui-assign.Po \
+	./$(DEPDIR)/ui-assist-import.Po ./$(DEPDIR)/ui-assist-start.Po \
 	./$(DEPDIR)/ui-budget-tabview.Po ./$(DEPDIR)/ui-budget.Po \
 	./$(DEPDIR)/ui-category.Po ./$(DEPDIR)/ui-currency.Po \
 	./$(DEPDIR)/ui-dialogs.Po ./$(DEPDIR)/ui-filter.Po \
@@ -399,6 +399,8 @@ homebank_SOURCES = \
 	hb-group.h \
 	hb-preferences.c \
 	hb-preferences.h \
+	hb-pref-data.c \
+	hb-pref-data.h \
 	hb-report.c \
 	hb-report.h \
 	hb-tag.c \
@@ -604,6 +606,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hb-import.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hb-misc.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hb-payee.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hb-pref-data.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hb-preferences.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hb-report.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hb-split.Po@am__quote@ # am--include-marker
@@ -818,6 +821,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/hb-import.Po
 	-rm -f ./$(DEPDIR)/hb-misc.Po
 	-rm -f ./$(DEPDIR)/hb-payee.Po
+	-rm -f ./$(DEPDIR)/hb-pref-data.Po
 	-rm -f ./$(DEPDIR)/hb-preferences.Po
 	-rm -f ./$(DEPDIR)/hb-report.Po
 	-rm -f ./$(DEPDIR)/hb-split.Po
@@ -930,6 +934,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/hb-import.Po
 	-rm -f ./$(DEPDIR)/hb-misc.Po
 	-rm -f ./$(DEPDIR)/hb-payee.Po
+	-rm -f ./$(DEPDIR)/hb-pref-data.Po
 	-rm -f ./$(DEPDIR)/hb-preferences.Po
 	-rm -f ./$(DEPDIR)/hb-report.Po
 	-rm -f ./$(DEPDIR)/hb-split.Po

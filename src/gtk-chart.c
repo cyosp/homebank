@@ -817,7 +817,7 @@ gint index, first, px;
 			if( item )
 			{
 				retval = index;
-				if( item->n_child > 1 )
+				if( item->n_child > 0 )
 					chart->drillable = TRUE;
 			}
 		}
@@ -1320,7 +1320,7 @@ gboolean valid;
 							retval = r;
 							DBD( g_print("  ** match\n") );
 							//5.7 drill down
-							if( gtk_tree_model_iter_n_children(GTK_TREE_MODEL(model), &iter) > 1 )
+							if( gtk_tree_model_iter_n_children(GTK_TREE_MODEL(model), &iter) > 0 )
 								chart->drillable = TRUE;
 							break;
 						}
@@ -1334,7 +1334,7 @@ gboolean valid;
 							retval = r;
 							DBD( g_print("  ** match\n") );
 							//5.7 drill down
-							if( gtk_tree_model_iter_n_children(GTK_TREE_MODEL(model), &iter) > 1 )
+							if( gtk_tree_model_iter_n_children(GTK_TREE_MODEL(model), &iter) > 0 )
 								chart->drillable = TRUE;
 							break;
 						}
@@ -1485,7 +1485,7 @@ double radius, h;
 				if( cumul > angle )
 				{
 					retval = index;
-					if( item->n_child > 1 )
+					if( item->n_child > 0 )
 						chart->drillable = TRUE;
 					break;
 				}
@@ -2676,6 +2676,10 @@ gboolean retval = FALSE;
 
 		if( item )
 		{
+			gint colid = chart->colhover;	
+
+			DBT( g_print("\n   rowid=%d colid=%d drill=%d\n", chart->hover, colid, chart->drillable) );
+
 			if( chart->type != CHART_TYPE_STACK && chart->type != CHART_TYPE_STACK100 )
 			{
 				strval = chart_print_double(chart, chart->buffer1, item->serie1);
@@ -2696,12 +2700,9 @@ gboolean retval = FALSE;
 			}
 			else
 			{
-			gint colid = chart->colhover;	
 			GtkTreeIter iter;
 			DataRow *dr;
 			gdouble value, rate = 0.0;
-
-				DBT( g_print("\n   rowid=%d colid=%d\n", chart->hover, colid) );
 
 				if( colid > -1 )
 				{
@@ -2810,7 +2811,7 @@ guint button = 0;
 				//ChartItem *item = &g_array_index(chart->items, ChartItem, chart->hover);
 				ChartItem *item = chart_chartitem_get(chart, chart->hover);
 
-					if( item && item->n_child > 1 )
+					if( item && item->n_child > 0 )
 					{
 						DBDT( g_print(" should init total with indice %d\n", chart->hover) );
 						chart_clear_items(chart);
@@ -2826,7 +2827,7 @@ guint button = 0;
 				//ChartItem *item = &g_array_index(chart->items, ChartItem, chart->hover);
 				ChartItem *item = chart_chartitem_get(chart, chart->hover);
 
-					if( item && item->n_child > 1 )
+					if( item && item->n_child > 0 )
 					{
 						DBDT( g_print(" should init time with indice %d\n", chart->hover) );				
 						chart_clear_items(chart);
@@ -2910,7 +2911,7 @@ gint x, y;
 					if( item )
 					{
 						DBD( g_print(" hover is '%s'\n", item->label) );
-						if( item->n_child > 1 )
+						if( item->n_child > 0 )
 							chart->drillable = TRUE;
 					}
 					

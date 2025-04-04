@@ -1,5 +1,17 @@
 
 
+2024-09-08  Maxime Doyen
+
+ Made 5.8.3 release
+
+ * bugfix: #2066535 cannot see a 1 sub-category in Stats Rept donut view
+ * bugfix: #2076458 saved filter date ranges going wrong
+ * bugfix: #2076474 dark mode applied live, but not on app startup or when exiting preferences dialog
+ * bugfix: #2077180 budget report category do not sum their subcat budget in 5.8.2
+ * bugfix: #2078281 csv export crash
+ * bugfix: #2078679 category appeard Empty and crashes Homebank on Linux 
+
+
 2024-07-08  Maxime Doyen
 
  Made 5.8.2 release

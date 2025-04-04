@@ -112,6 +112,7 @@ struct Preferences
 	//txn xfer
 	gboolean	xfer_showdialog;
 	gshort		xfer_daygap;
+	gboolean	xfer_syncdate;
 	gboolean	xfer_syncstat;
 
 	//5.8 paymode
@@ -159,6 +160,7 @@ struct Preferences
 	//euro zone
 	gboolean	euro_active;
 	gint		euro_country;
+	gboolean	euro_mceii;
 	gdouble		euro_value;
 	Currency	minor_cur;
 
@@ -254,6 +256,7 @@ void homebank_pref_init_measurement_units(void);
 
 
 void homebank_pref_icon_symbolic(gboolean active);
+void homebank_pref_apply_scheme(void);
 void homebank_pref_apply(void);
 
 

@@ -132,7 +132,7 @@
 #define ICONNAME_HB_OPE_MULTIEDIT   "hb-ope-multiedit"   //
 #define ICONNAME_HB_OPE_DELETE      "hb-ope-delete" //? "edit-delete"
 #define ICONNAME_CONVERT			"hb-ope-convert"	// obsolete ?
-#define ICONNAME_HB_ASSIGN_RUN      "hb-assign-run"
+#define ICONNAME_HB_ASSIGN_RUN      "hb-assign-run"     // obsolete ?
 #define ICONNAME_HB_OPE_MOVUP		"hb-go-up"
 #define ICONNAME_HB_OPE_MOVDW		"hb-go-down"
 

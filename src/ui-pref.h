@@ -89,6 +89,7 @@ struct defpref_data
 	
 	GtkWidget	*CM_xfer_showdialog;
 	GtkWidget	*ST_xfer_daygap;
+	GtkWidget	*CM_xfer_syncdate;
 	GtkWidget	*CM_xfer_syncstat;
 
 	GtkWidget	*ST_datefmt;
@@ -109,13 +110,14 @@ struct defpref_data
 	GtkWidget	*BT_default; 
 	
 	GtkWidget	*CM_euro_enable;
-	GtkWidget	*GRP_currency;
-	GtkWidget	*GRP_rate;
+	GtkWidget	*GRP_configuration;
 	GtkWidget	*GRP_format;
 	 
-	GtkWidget	*CY_euro_preset;
+	GtkWidget	*LB_euro_preset, *CY_euro_preset;
 	GtkWidget	*ST_euro_country;
+	GtkWidget	*LB_euro_src;
 	GtkWidget	*NB_euro_value;
+	GtkWidget	*LB_euro_dst;
 
 	GtkWidget	*ST_euro_symbol;
 	GtkWidget	*CM_euro_isprefix;
@@ -161,29 +163,6 @@ struct defpref_data
 	GtkWidget	*ST_adv_apirate_key;
 
 };
-
-
-typedef struct 
-{
-	gchar   *locale;
-	gchar   *name;
-} LangName;
-
-
-typedef struct
-{
-	gshort		id;
-	gchar		*iso;
-	gchar		*name;
-	gdouble		value;
-	//gchar		*prefix_symbol;		/* max symbol is 3 digits in unicode */
-	//gchar		*suffix_symbol;		/* but mostly is 1 digit */
-	gchar		*symbol;
-	gboolean	sym_prefix;
-	gchar		*decimal_char;
-	gchar		*grouping_char;
-	gshort		frac_digits;
-} EuroParams;
 
 
 enum {

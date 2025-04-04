@@ -33,7 +33,7 @@
 
 /* our global datas */
 extern struct HomeBank *GLOBALS;
-
+extern struct Preferences *PREFS;
 
 /* = = = = = = = = = = = = = = = = */
 
@@ -739,7 +739,7 @@ gboolean account_balances_add(Transaction *txn)
 
 
 //todo: optim called 2 times from dsp_mainwindow
-void account_compute_balances(void)
+void account_compute_balances(gboolean init)
 {
 GList *lst_acc, *lnk_acc;
 GList *lnk_txn;
@@ -768,6 +768,12 @@ GList *lnk_txn;
 			{
 				account_balances_add_internal(acc, txn);
 			}
+			
+			//5.9 moved completion memo here
+			if( (init == TRUE) && (PREFS->txn_memoacp == TRUE) )
+			{
+				da_transaction_insert_memos(txn);
+			}
 			lnk_txn = g_list_next(lnk_txn);
 		}
 		
@@ -783,6 +789,9 @@ GList *lnk_txn;
 void account_convert_euro(Account *acc)
 {
 GList *lnk_txn;
+
+	//TODO: should ignore already EUR account...
+	
 
 	lnk_txn = g_queue_peek_head_link(acc->txn_queue);
 	while (lnk_txn != NULL)

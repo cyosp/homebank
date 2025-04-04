@@ -577,19 +577,15 @@ static void
 _color_scheme_set(GVariant   *variant)
 {
 ColorScheme color_scheme = g_variant_get_uint32 (variant);
-gboolean dark;
 
 	if (color_scheme > PREFER_LIGHT)
 		color_scheme = DEFAULT;
 
+	GLOBALS->color_scheme = color_scheme;
+
 	DB( g_print(" set color-scheme: %d\n", color_scheme) );
 
-	dark = color_scheme == PREFER_DARK;
-	//data->queue_redraw = TRUE;
-	GtkSettings *settings = gtk_settings_get_default();
-	
-	g_object_set(settings, "gtk-application-prefer-dark-theme", dark, NULL);
-	
+	homebank_pref_apply_scheme();
 }
 
 static void
@@ -1283,6 +1279,7 @@ homebank_app_startup (GApplication *application)
 	g_object_set (gtk_settings_get_default (), "gtk-recent-files-enabled", FALSE, NULL);
 	#endif	
 
+	GLOBALS->color_scheme = DEFAULT;
 	#ifdef G_OS_UNIX
 	init_portal();
 	#endif

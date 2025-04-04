@@ -21,6 +21,7 @@
 #include "homebank.h"
 
 #include "hb-currency.h"
+#include "hb-pref-data.h"
 #include <libsoup/soup.h>
 
 #ifdef G_OS_WIN32
@@ -802,6 +803,12 @@ gboolean retval = TRUE;
 			//#1750426 ignore the retval here (false when no rate was found, as we don't care)
 			//api_fixerio_parse(msg->response_body->data, error);
 			api_fixerio_parse(body, error);
+			
+			//#2066110 update euro minor rate
+			if(PREFS->euro_active == TRUE)
+			{
+				euro_country_notmceii_rate_update(PREFS->euro_country);
+			}
 		}
 		else
 		{

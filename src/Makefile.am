@@ -58,6 +58,8 @@ homebank_SOURCES =  \
 	hb-group.h \
 	hb-preferences.c \
 	hb-preferences.h \
+	hb-pref-data.c \
+	hb-pref-data.h \
 	hb-report.c \
 	hb-report.h \
 	hb-tag.c \
