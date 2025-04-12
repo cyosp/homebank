@@ -1491,7 +1491,6 @@ static void ui_acc_manage_rename(GtkWidget *widget, gpointer user_data)
 struct ui_acc_manage_data *data;
 Account *item;
 guint32 key;
-gboolean valid;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 	DB( g_print("\n(ui_acc_manage_rename) data=%p\n", data) );
@@ -1504,7 +1503,12 @@ gboolean valid;
 		gchar *name = dialog_get_name(_("Account name"), item->name, GTK_WINDOW(data->dialog));
 		if(name != NULL)
 		{
-			if(account_exists(name))
+			if(account_rename(item, name))
+			{
+				gtk_tree_view_columns_autosize (GTK_TREE_VIEW(data->LV_acc));
+				data->change++;
+			}
+			else
 			{
 				ui_dialog_msg_infoerror(GTK_WINDOW(data->dialog), GTK_MESSAGE_ERROR,
 					_("Error"),
@@ -1515,18 +1519,7 @@ gboolean valid;
 					name
 				    );
 			}
-			else
-			{
-				valid = account_rename(item, name);					
-				if(valid)
-				{
-					gtk_tree_view_columns_autosize (GTK_TREE_VIEW(data->LV_acc));
-					data->change++;
-				}
-			}
-
 		}
-		
 	}
 }
 

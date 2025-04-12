@@ -125,6 +125,8 @@ enum ui_bud_tabview_store
 	UI_BUD_TABVIEW_IS_SAME_AMOUNT,
 	UI_BUD_TABVIEW_IS_SUB_CATEGORY,
 	UI_BUD_TABVIEW_HAS_BUDGET,
+
+	UI_BUD_TABVIEW_TOTAL,
 	UI_BUD_TABVIEW_SAME_AMOUNT,
 	UI_BUD_TABVIEW_JANUARY,
 	UI_BUD_TABVIEW_FEBRUARY,
@@ -302,7 +304,7 @@ ui_bud_tabview_search_criteria_t parent_search = ui_bud_tabview_search_criteria_
 	{
 		if (parent_search.iterator)
 		{
-			DB(g_print("\tRecursion optimisation: parent key %d already exists\n", parent_search.row_category_key));
+			DB(g_print("  Recursion optimisation: parent key %d already exists\n", parent_search.row_category_key));
 			// If parent already exists, stop recursion
 			parent = parent_search.iterator;
 		}
@@ -326,8 +328,7 @@ ui_bud_tabview_search_criteria_t parent_search = ui_bud_tabview_search_criteria_
 			-1);
 	}
 
-	DB(g_print("insert new category %s (key: %d, type: %d)\n",
-		bdg_category->name, bdg_category->key, category_type_get (bdg_category)));
+	DB(g_print(" >insert '%s'\n", bdg_category->fullname));
 
 	gtk_tree_store_set(
 		budget,
@@ -542,60 +543,130 @@ GtkTreeIter iter, root;
 	return;
 }
 
+
+static gdouble test_sum(Category *catitem, gdouble *total_tab)
+{
+gdouble totalcat = 0.0;
+
+	for(gint j=1;j<=12;j++)
+	{
+		if(!(catitem->flags & GF_CUSTOM))
+		{
+			total_tab[j] += catitem->budget[0];
+			totalcat += catitem->budget[0];
+		}
+		else
+		{
+			total_tab[j] += catitem->budget[j];
+			totalcat += catitem->budget[j];
+		}
+	}
+	total_tab[0] += totalcat;
+	return totalcat;
+}
+
+
+
+static void test_total_sum(GtkTreeStore *budget, GtkTreeIter *root, gdouble *total_tab)
+{
+GtkTreeIter iter, child;
+gboolean valid, cvalid, cheader, sep;
+guint32 key, ckey;
+
+	//valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(budget), &iter);
+	valid = gtk_tree_model_iter_children (GTK_TREE_MODEL(budget), &iter, root);
+	while (valid)
+	{
+	Category *catitem;
+
+		gtk_tree_model_get(GTK_TREE_MODEL(budget), &iter,
+			UI_BUD_TABVIEW_CATEGORY_KEY, &key,
+			UI_BUD_TABVIEW_IS_CHILD_HEADER, &cheader,
+			UI_BUD_TABVIEW_IS_SEPARATOR, &sep,
+			-1);
+
+		if( cheader == FALSE && sep == FALSE )
+		{
+		gdouble tmpsum = 0.0;
+
+			catitem = da_cat_get(key);
+			DB( g_print(" iter: %d %s\n", key, catitem->name) );
+			tmpsum += test_sum(catitem, total_tab);
+
+			// children ?
+			cvalid = gtk_tree_model_iter_children (GTK_TREE_MODEL(budget), &child, &iter);
+			while (cvalid)
+			{
+				gtk_tree_model_get(GTK_TREE_MODEL(budget), &child,
+					UI_BUD_TABVIEW_CATEGORY_KEY, &ckey,
+					UI_BUD_TABVIEW_IS_CHILD_HEADER, &cheader,
+					UI_BUD_TABVIEW_IS_SEPARATOR, &sep,
+					-1);
+
+				if( cheader == FALSE && sep == FALSE )
+				{
+				gdouble cbudget;
+
+					catitem = da_cat_get(ckey);
+					DB( g_print(" child: %d %s\n", ckey, catitem->name) );
+					cbudget = test_sum(catitem, total_tab);
+
+					tmpsum += cbudget;
+					gtk_tree_store_set (
+						budget,
+						&child,
+						UI_BUD_TABVIEW_TOTAL, cbudget,
+						-1);
+
+				}
+
+				cvalid = gtk_tree_model_iter_next(GTK_TREE_MODEL(budget), &child);
+			}
+
+			gtk_tree_store_set (
+				budget,
+				&iter,
+				UI_BUD_TABVIEW_TOTAL, tmpsum,
+				-1);
+
+		}
+
+		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(budget), &iter);
+	}
+
+
+}
+
+
+
 // Update (or insert) total rows for a budget according to the view mode
 // This function will is used to initiate model and to refresh it after change by user
 static void ui_bud_tabview_model_update_monthly_total(GtkTreeStore* budget)
 {
 ui_bud_tabview_search_criteria_t root_search = ui_bud_tabview_search_criteria_default;
 GtkTreeIter total_root, child;
-double total_income[12] = {0}, total_expense[12] = {0};
-gboolean cat_is_same_amount;
-guint32 n_category;
+double total_income[13] = {0}, total_expense[13] = {0};
 
-	// Go through all categories to compute totals
-	n_category = da_cat_get_max_key();
+	// Retrieve required root
+	root_search.row_is_root = TRUE;
+	root_search.row_is_total = FALSE;
 
-	for(guint32 i=1; i<=n_category; ++i)
-	{
-	Category *bdg_category;
-	gboolean cat_is_income;
+	//#2036404 compute total
+	root_search.row_category_type = UI_BUD_TABVIEW_CAT_TYPE_INCOME;
+	gtk_tree_model_foreach(GTK_TREE_MODEL(budget),
+		(GtkTreeModelForeachFunc) ui_bud_tabview_model_search_iterator,
+		&root_search);
 
-		bdg_category = da_cat_get(i);
+	test_total_sum(budget, root_search.iterator, total_income);
 
-		if (bdg_category == NULL)
-		{
-			continue;
-		}
+	//#2036404 compute total
+	root_search.row_category_type = UI_BUD_TABVIEW_CAT_TYPE_EXPENSE;
+	gtk_tree_model_foreach(GTK_TREE_MODEL(budget),
+		(GtkTreeModelForeachFunc) ui_bud_tabview_model_search_iterator,
+		&root_search);
 
-		cat_is_income = (category_type_get (bdg_category) == 1);
-		cat_is_same_amount = (! (bdg_category->flags & GF_CUSTOM));
+	test_total_sum(budget, root_search.iterator, total_expense);
 
-		for (gint j=0; j<=11; ++j)
-		{
-			if (cat_is_income)
-			{
-				if (cat_is_same_amount)
-				{
-					total_income[j] += bdg_category->budget[0];
-				}
-				else
-				{
-					total_income[j] += bdg_category->budget[j+1];
-				}
-			}
-			else
-			{
-				if (cat_is_same_amount)
-				{
-					total_expense[j] += bdg_category->budget[0];
-				}
-				else
-				{
-					total_expense[j] += bdg_category->budget[j+1];
-				}
-			}
-		}
-	}
 
 	// Retrieve total root and insert required total rows
 	root_search.row_is_root = TRUE;
@@ -639,18 +710,19 @@ guint32 n_category;
 		UI_BUD_TABVIEW_CATEGORY_FULLNAME, _(UI_BUD_TABVIEW_VIEW_MODE[UI_BUD_TABVIEW_VIEW_INCOME]),
 		UI_BUD_TABVIEW_CATEGORY_TYPE, UI_BUD_TABVIEW_CAT_TYPE_INCOME,
 		UI_BUD_TABVIEW_IS_TOTAL, TRUE,
-		UI_BUD_TABVIEW_JANUARY, total_income[0],
-		UI_BUD_TABVIEW_FEBRUARY, total_income[1],
-		UI_BUD_TABVIEW_MARCH, total_income[2],
-		UI_BUD_TABVIEW_APRIL, total_income[3],
-		UI_BUD_TABVIEW_MAY, total_income[4],
-		UI_BUD_TABVIEW_JUNE, total_income[5],
-		UI_BUD_TABVIEW_JULY, total_income[6],
-		UI_BUD_TABVIEW_AUGUST, total_income[7],
-		UI_BUD_TABVIEW_SEPTEMBER, total_income[8],
-		UI_BUD_TABVIEW_OCTOBER, total_income[9],
-		UI_BUD_TABVIEW_NOVEMBER, total_income[10],
-		UI_BUD_TABVIEW_DECEMBER, total_income[11],
+		UI_BUD_TABVIEW_TOTAL, total_income[0],
+		UI_BUD_TABVIEW_JANUARY, total_income[1],
+		UI_BUD_TABVIEW_FEBRUARY, total_income[2],
+		UI_BUD_TABVIEW_MARCH, total_income[3],
+		UI_BUD_TABVIEW_APRIL, total_income[4],
+		UI_BUD_TABVIEW_MAY, total_income[5],
+		UI_BUD_TABVIEW_JUNE, total_income[6],
+		UI_BUD_TABVIEW_JULY, total_income[7],
+		UI_BUD_TABVIEW_AUGUST, total_income[8],
+		UI_BUD_TABVIEW_SEPTEMBER, total_income[9],
+		UI_BUD_TABVIEW_OCTOBER, total_income[10],
+		UI_BUD_TABVIEW_NOVEMBER, total_income[11],
+		UI_BUD_TABVIEW_DECEMBER, total_income[12],
 		-1);
 
 	// Then look for Expenses
@@ -676,18 +748,19 @@ guint32 n_category;
 		UI_BUD_TABVIEW_CATEGORY_FULLNAME, _(UI_BUD_TABVIEW_VIEW_MODE[UI_BUD_TABVIEW_VIEW_EXPENSE]),
 		UI_BUD_TABVIEW_CATEGORY_TYPE, UI_BUD_TABVIEW_CAT_TYPE_EXPENSE,
 		UI_BUD_TABVIEW_IS_TOTAL, TRUE,
-		UI_BUD_TABVIEW_JANUARY, total_expense[0],
-		UI_BUD_TABVIEW_FEBRUARY, total_expense[1],
-		UI_BUD_TABVIEW_MARCH, total_expense[2],
-		UI_BUD_TABVIEW_APRIL, total_expense[3],
-		UI_BUD_TABVIEW_MAY, total_expense[4],
-		UI_BUD_TABVIEW_JUNE, total_expense[5],
-		UI_BUD_TABVIEW_JULY, total_expense[6],
-		UI_BUD_TABVIEW_AUGUST, total_expense[7],
-		UI_BUD_TABVIEW_SEPTEMBER, total_expense[8],
-		UI_BUD_TABVIEW_OCTOBER, total_expense[9],
-		UI_BUD_TABVIEW_NOVEMBER, total_expense[10],
-		UI_BUD_TABVIEW_DECEMBER, total_expense[11],
+		UI_BUD_TABVIEW_TOTAL, total_expense[0],
+		UI_BUD_TABVIEW_JANUARY, total_expense[1],
+		UI_BUD_TABVIEW_FEBRUARY, total_expense[2],
+		UI_BUD_TABVIEW_MARCH, total_expense[3],
+		UI_BUD_TABVIEW_APRIL, total_expense[4],
+		UI_BUD_TABVIEW_MAY, total_expense[5],
+		UI_BUD_TABVIEW_JUNE, total_expense[6],
+		UI_BUD_TABVIEW_JULY, total_expense[7],
+		UI_BUD_TABVIEW_AUGUST, total_expense[8],
+		UI_BUD_TABVIEW_SEPTEMBER, total_expense[9],
+		UI_BUD_TABVIEW_OCTOBER, total_expense[10],
+		UI_BUD_TABVIEW_NOVEMBER, total_expense[11],
+		UI_BUD_TABVIEW_DECEMBER, total_expense[12],
 		-1);
 
 	// Finally, set Balance total row
@@ -713,18 +786,19 @@ guint32 n_category;
 		UI_BUD_TABVIEW_CATEGORY_FULLNAME, _(UI_BUD_TABVIEW_VIEW_MODE[UI_BUD_TABVIEW_VIEW_SUMMARY]),
 		UI_BUD_TABVIEW_CATEGORY_TYPE, UI_BUD_TABVIEW_CAT_TYPE_NONE,
 		UI_BUD_TABVIEW_IS_TOTAL, TRUE,
-		UI_BUD_TABVIEW_JANUARY, total_income[0] + total_expense[0],
-		UI_BUD_TABVIEW_FEBRUARY, total_income[1] + total_expense[1],
-		UI_BUD_TABVIEW_MARCH, total_income[2] + total_expense[2],
-		UI_BUD_TABVIEW_APRIL, total_income[3] + total_expense[3],
-		UI_BUD_TABVIEW_MAY, total_income[4] + total_expense[4],
-		UI_BUD_TABVIEW_JUNE, total_income[5] + total_expense[5],
-		UI_BUD_TABVIEW_JULY, total_income[6] + total_expense[6],
-		UI_BUD_TABVIEW_AUGUST, total_income[7] + total_expense[7],
-		UI_BUD_TABVIEW_SEPTEMBER, total_income[8] + total_expense[8],
-		UI_BUD_TABVIEW_OCTOBER, total_income[9] + total_expense[9],
-		UI_BUD_TABVIEW_NOVEMBER, total_income[10] + total_expense[10],
-		UI_BUD_TABVIEW_DECEMBER, total_income[11] + total_expense[11],
+		UI_BUD_TABVIEW_TOTAL, total_income[0] + total_expense[0],
+		UI_BUD_TABVIEW_JANUARY, total_income[1] + total_expense[1],
+		UI_BUD_TABVIEW_FEBRUARY, total_income[2] + total_expense[2],
+		UI_BUD_TABVIEW_MARCH, total_income[3] + total_expense[3],
+		UI_BUD_TABVIEW_APRIL, total_income[4] + total_expense[4],
+		UI_BUD_TABVIEW_MAY, total_income[5] + total_expense[5],
+		UI_BUD_TABVIEW_JUNE, total_income[6] + total_expense[6],
+		UI_BUD_TABVIEW_JULY, total_income[7] + total_expense[7],
+		UI_BUD_TABVIEW_AUGUST, total_income[8] + total_expense[8],
+		UI_BUD_TABVIEW_SEPTEMBER, total_income[9] + total_expense[9],
+		UI_BUD_TABVIEW_OCTOBER, total_income[10] + total_expense[10],
+		UI_BUD_TABVIEW_NOVEMBER, total_income[11] + total_expense[11],
+		UI_BUD_TABVIEW_DECEMBER, total_income[12] + total_expense[12],
 		-1);
 
 	g_free(root_search.iterator);
@@ -1048,44 +1122,14 @@ gint order = 0;
 	return order;
 }
 
-// the budget model creation
-static GtkTreeModel * ui_bud_tabview_model_new ()
+
+static void ui_bud_tabview_model_populate (GtkTreeStore *budget)
 {
-GtkTreeStore *budget;
 GtkTreeIter *iter_income, *iter_expense;
 guint32 n_category;
 ui_bud_tabview_search_criteria_t root_search = ui_bud_tabview_search_criteria_default;
 
-	// Create Tree Store
-	budget = gtk_tree_store_new ( UI_BUD_TABVIEW_NUMBER_COLOMNS,
-		G_TYPE_UINT, // UI_BUD_TABVIEW_CATEGORY_KEY
-		G_TYPE_STRING, // UI_BUD_TABVIEW_CATEGORY_NAME
-		G_TYPE_STRING, // UI_BUD_TABVIEW_CATEGORY_FULLNAME
-		G_TYPE_INT, // UI_BUD_TABVIEW_CATEGORY_TYPE
-		G_TYPE_BOOLEAN, // UI_BUD_TABVIEW_IS_ROOT
-		G_TYPE_BOOLEAN, // UI_BUD_TABVIEW_IS_TOTAL
-		G_TYPE_BOOLEAN, // UI_BUD_TABVIEW_IS_CHILD_HEADER
-		G_TYPE_BOOLEAN, // UI_BUD_TABVIEW_IS_SEPARATOR
-		G_TYPE_BOOLEAN, // UI_BUD_TABVIEW_IS_MONITORING_FORCED
-		G_TYPE_BOOLEAN, // UI_BUD_TABVIEW_IS_SAME_AMOUNT
-		G_TYPE_BOOLEAN, // UI_BUD_TABVIEW_IS_SUB_CATEGORY
-		G_TYPE_BOOLEAN, // UI_BUD_TABVIEW_HAS_BUDGET
-		G_TYPE_DOUBLE, // UI_BUD_TABVIEW_SAME_AMOUNT
-		G_TYPE_DOUBLE, // UI_BUD_TABVIEW_JANUARY
-		G_TYPE_DOUBLE, // UI_BUD_TABVIEW_FEBRUARY
-		G_TYPE_DOUBLE, // UI_BUD_TABVIEW_MARCH
-		G_TYPE_DOUBLE, // UI_BUD_TABVIEW_APRIL
-		G_TYPE_DOUBLE, // UI_BUD_TABVIEW_MAY
-		G_TYPE_DOUBLE, // UI_BUD_TABVIEW_JUNE
-		G_TYPE_DOUBLE, // UI_BUD_TABVIEW_JULY
-		G_TYPE_DOUBLE, // UI_BUD_TABVIEW_AUGUST
-		G_TYPE_DOUBLE, // UI_BUD_TABVIEW_SEPTEMBER
-		G_TYPE_DOUBLE, // UI_BUD_TABVIEW_OCTOBER
-		G_TYPE_DOUBLE, // UI_BUD_TABVIEW_NOVEMBER
-		G_TYPE_DOUBLE  // UI_BUD_TABVIEW_DECEMBER
-	);
-
-	// Populate the store
+	DB( g_print("\n[ui-budget] model populate\n") )
 
 	/* Create tree roots */
 	ui_bud_tabview_model_insert_roots (budget);
@@ -1142,6 +1186,48 @@ ui_bud_tabview_search_criteria_t root_search = ui_bud_tabview_search_criteria_de
 	/* Create rows for total root */
 	ui_bud_tabview_model_update_monthly_total(GTK_TREE_STORE(budget));
 
+	g_free(root_search.iterator);
+}
+
+
+// the budget model creation
+static GtkTreeModel * ui_bud_tabview_model_new ()
+{
+GtkTreeStore *budget;
+
+	// Create Tree Store
+	budget = gtk_tree_store_new ( UI_BUD_TABVIEW_NUMBER_COLOMNS,
+		G_TYPE_UINT, // UI_BUD_TABVIEW_CATEGORY_KEY
+		G_TYPE_STRING, // UI_BUD_TABVIEW_CATEGORY_NAME
+		G_TYPE_STRING, // UI_BUD_TABVIEW_CATEGORY_FULLNAME
+		G_TYPE_INT, // UI_BUD_TABVIEW_CATEGORY_TYPE
+		G_TYPE_BOOLEAN, // UI_BUD_TABVIEW_IS_ROOT
+		G_TYPE_BOOLEAN, // UI_BUD_TABVIEW_IS_TOTAL
+		G_TYPE_BOOLEAN, // UI_BUD_TABVIEW_IS_CHILD_HEADER
+		G_TYPE_BOOLEAN, // UI_BUD_TABVIEW_IS_SEPARATOR
+		G_TYPE_BOOLEAN, // UI_BUD_TABVIEW_IS_MONITORING_FORCED
+		G_TYPE_BOOLEAN, // UI_BUD_TABVIEW_IS_SAME_AMOUNT
+		G_TYPE_BOOLEAN, // UI_BUD_TABVIEW_IS_SUB_CATEGORY
+		G_TYPE_BOOLEAN, // UI_BUD_TABVIEW_HAS_BUDGET
+		G_TYPE_DOUBLE, // UI_BUD_TABVIEW_TOTAL
+		G_TYPE_DOUBLE, // UI_BUD_TABVIEW_SAME_AMOUNT
+		G_TYPE_DOUBLE, // UI_BUD_TABVIEW_JANUARY
+		G_TYPE_DOUBLE, // UI_BUD_TABVIEW_FEBRUARY
+		G_TYPE_DOUBLE, // UI_BUD_TABVIEW_MARCH
+		G_TYPE_DOUBLE, // UI_BUD_TABVIEW_APRIL
+		G_TYPE_DOUBLE, // UI_BUD_TABVIEW_MAY
+		G_TYPE_DOUBLE, // UI_BUD_TABVIEW_JUNE
+		G_TYPE_DOUBLE, // UI_BUD_TABVIEW_JULY
+		G_TYPE_DOUBLE, // UI_BUD_TABVIEW_AUGUST
+		G_TYPE_DOUBLE, // UI_BUD_TABVIEW_SEPTEMBER
+		G_TYPE_DOUBLE, // UI_BUD_TABVIEW_OCTOBER
+		G_TYPE_DOUBLE, // UI_BUD_TABVIEW_NOVEMBER
+		G_TYPE_DOUBLE  // UI_BUD_TABVIEW_DECEMBER
+	);
+
+	// Populate the store
+	ui_bud_tabview_model_populate(budget);
+
 	/* Sort categories on same node level */
 	gtk_tree_sortable_set_sort_func (GTK_TREE_SORTABLE(budget),
 		UI_BUD_TABVIEW_CATEGORY_NAME, ui_bud_tabview_model_row_sort,
@@ -1149,18 +1235,16 @@ ui_bud_tabview_search_criteria_t root_search = ui_bud_tabview_search_criteria_de
 	gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (budget),
 		UI_BUD_TABVIEW_CATEGORY_NAME, GTK_SORT_ASCENDING);
 
-	g_free(root_search.iterator);
-
 	return GTK_TREE_MODEL(budget);
 }
+
 
 /**
  * GtkTreeView functions
  **/
-
 static void ui_bud_tabview_icon_cell_data_function (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
-ui_bud_tabview_data_t *data = user_data;
+//ui_bud_tabview_data_t *data = user_data;
 gchar *iconname = NULL;
 gboolean has_budget, is_monitoring_forced;
 ui_bud_tabview_view_mode_t view_mode = UI_BUD_TABVIEW_VIEW_SUMMARY;
@@ -1170,7 +1254,7 @@ ui_bud_tabview_view_mode_t view_mode = UI_BUD_TABVIEW_VIEW_SUMMARY;
 	UI_BUD_TABVIEW_HAS_BUDGET, &has_budget,
 	-1);
 
-	view_mode = hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_mode));
+	//view_mode = hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_mode));
 
 	//5.3 added
 	if( is_monitoring_forced )
@@ -1190,19 +1274,20 @@ ui_bud_tabview_view_mode_t view_mode = UI_BUD_TABVIEW_VIEW_SUMMARY;
 // Display category name in bold if it has budget
 static void ui_bud_tabview_view_display_category_name (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
-ui_bud_tabview_data_t *data = user_data;
+//ui_bud_tabview_data_t *data = user_data;
 gboolean has_budget, is_sub_category;
 PangoWeight weight = PANGO_WEIGHT_NORMAL;
-ui_bud_tabview_view_mode_t view_mode = UI_BUD_TABVIEW_VIEW_SUMMARY;
+//ui_bud_tabview_view_mode_t view_mode = UI_BUD_TABVIEW_VIEW_SUMMARY;
 
 	gtk_tree_model_get(model, iter,
 		UI_BUD_TABVIEW_IS_SUB_CATEGORY, &is_sub_category,
 		UI_BUD_TABVIEW_HAS_BUDGET, &has_budget,
 		-1);
 
-	view_mode = hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_mode));
+	//view_mode = hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_mode));
 
-	if (view_mode != UI_BUD_TABVIEW_VIEW_SUMMARY && has_budget)
+	//if (view_mode != UI_BUD_TABVIEW_VIEW_SUMMARY && has_budget)
+	if (has_budget)
 	{
 		weight = PANGO_WEIGHT_BOLD;
 	}
@@ -1311,7 +1396,7 @@ const ui_bud_tabview_store_t column_id = GPOINTER_TO_INT(user_data);
 // to enable or not edition on month columns
 static void ui_bud_tabview_view_display_is_same_amount (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
-gboolean is_same_amount, is_root, is_total, is_visible, is_sensitive;
+gboolean is_same_amount, is_total, is_root, is_visible, is_sensitive;
 
 	gtk_tree_model_get(model, iter,
 		UI_BUD_TABVIEW_IS_ROOT, &is_root,
@@ -1340,21 +1425,22 @@ gboolean is_same_amount, is_root, is_total, is_visible, is_sensitive;
 // Compute dynamically the annual total
 static void ui_bud_tabview_view_display_annual_total (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
-gboolean is_same_amount = FALSE, is_total = FALSE, is_root = FALSE;
-gdouble amount = 0.0;
-gdouble total = 0.0;
+gboolean is_root = FALSE;
 gchar *text;
 gchar *fgcolor;
 gboolean is_visible = TRUE;
+gdouble celltotal;
+		
 
 	gtk_tree_model_get(model, iter,
 		UI_BUD_TABVIEW_IS_ROOT, &is_root,
-		UI_BUD_TABVIEW_IS_SAME_AMOUNT, &is_same_amount,
-		UI_BUD_TABVIEW_SAME_AMOUNT, &amount,
-		UI_BUD_TABVIEW_IS_TOTAL, &is_total,
+		//UI_BUD_TABVIEW_IS_SAME_AMOUNT, &is_same_amount,
+		//UI_BUD_TABVIEW_SAME_AMOUNT, &amount,
+		//UI_BUD_TABVIEW_IS_TOTAL, &is_total,
+		UI_BUD_TABVIEW_TOTAL, &celltotal,
 		-1);
 
-	if (is_same_amount)
+	/*if (is_same_amount)
 	{
 		total = 12.0 * amount;
 	}
@@ -1367,8 +1453,9 @@ gboolean is_visible = TRUE;
 		}
 	}
 
-	text = g_strdup_printf("%.2f", total);
-	fgcolor = get_normal_color_amount(total);
+	text = g_strdup_printf("%.2f // %.2f", total, celltotal);*/
+	text = g_strdup_printf("%.2f", celltotal);
+	fgcolor = get_normal_color_amount(celltotal);
 
 	if (is_root)
 	{
@@ -1377,8 +1464,10 @@ gboolean is_visible = TRUE;
 
 	// Finally, visibility depends on set amount
 	//is_visible = (is_visible && amount != 0.0);
+
 	//#1859275 visibility to be tested on total
-	is_visible = (is_visible && total != 0.0);
+	is_visible = (is_visible && celltotal != 0.0);
+
 
 	g_object_set(renderer,
 		"text", text,
@@ -1394,7 +1483,7 @@ gboolean is_visible = TRUE;
 static void ui_bud_tabview_view_display_monthly_average(GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
 gboolean is_same_amount = FALSE, is_total = FALSE, is_root = FALSE;
-gdouble amount = 0.0;
+gdouble amount = 0.0, celltotal;
 gdouble average = 0.0;
 gchar *text;
 gchar *fgcolor;
@@ -1405,9 +1494,10 @@ gboolean is_visible = TRUE;
 		UI_BUD_TABVIEW_IS_SAME_AMOUNT, &is_same_amount,
 		UI_BUD_TABVIEW_SAME_AMOUNT, &amount,
 		UI_BUD_TABVIEW_IS_TOTAL, &is_total,
+		UI_BUD_TABVIEW_TOTAL, &celltotal,
 		-1);
 
-	if (is_same_amount)
+	/*if (is_same_amount)
 	{
 		average = amount;
 	}
@@ -1419,7 +1509,9 @@ gboolean is_visible = TRUE;
 			average += amount;
 		}
 		average = hb_amount_round(average / 12.0, 2);
-	}
+	}*/
+
+	average = hb_amount_round(celltotal / 12.0, 2);
 
 	text = g_strdup_printf("%.2f", average);
 	fgcolor = get_normal_color_amount(average);

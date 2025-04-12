@@ -582,7 +582,8 @@ gboolean retval = FALSE;
 	{
 		existitem = da_acc_get_by_name(stripname);
 		
-		if( existitem != NULL )
+		//#2083124 enable case renaming
+		if( existitem != NULL && existitem->key != item->key )
 		{
 			DB( g_print("- error, same name already exist with other key %d <> %d\n", existitem->key, item->key) );
 		}

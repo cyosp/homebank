@@ -1038,7 +1038,8 @@ GtkAdjustment *adj;
 	//gtk_spin_button_set_numeric (GTK_SPIN_BUTTON (spinner), TRUE);
 	//g_object_set(spinner, "xalign", 1.0, NULL);
 
-	//gtk_entry_set_width_chars(spinner, 10);
+	//#2081574 width too small
+	gtk_entry_set_width_chars(GTK_ENTRY(spinner), 10);
 
 	if(label)
 		gtk_label_set_mnemonic_widget (GTK_LABEL(label), spinner);
