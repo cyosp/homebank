@@ -41,14 +41,17 @@ extern struct Preferences *PREFS;
 
 
 
-static void lst_accview_to_string_row(GString *node, ToStringMode mode, GtkTreeModel *model, GtkTreeIter *iter, gchar *sub)
+static void lst_accview_to_string_row(GString *node, ToStringMode mode, GtkTreeModel *model, GtkTreeIter *iter, gchar *sub, gint flags)
 {
-const gchar *format;
 gpointer p;
 gint type;
 gchar *text = "";
+gchar sep;
 gdouble clear, recon, today, future;
 guint32 kcur = GLOBALS->kcur;
+gchar buf[G_ASCII_DTOSTR_BUF_SIZE];
+
+	sep = (mode == HB_STRING_EXPORT) ? ';' : '\t';
 
 	clear = recon = today = future = 0.0;
 
@@ -61,7 +64,7 @@ guint32 kcur = GLOBALS->kcur;
 	{
 	PnlAccGrp *g = p;
 		text = g->name;	
-		g_string_append_printf(node, "%s\t\t\t\t\n", text);
+		g_string_append_printf(node, "%s\n", text);
 	}
 	else
 	{
@@ -90,29 +93,37 @@ guint32 kcur = GLOBALS->kcur;
 		if( type == DSPACC_TYPE_TOTAL )
 			text = _("Grand total");
 
-		if( mode != HB_STRING_PRINT )
-		{
-			format = (mode == HB_STRING_CLIPBOARD) ? "%s%s\t%.2f\t%.2f\t%.2f\t%.2f\n" : "%s%s;%.2f;%.2f;%.2f;%.2f\n";
-			g_string_append_printf(node, format, sub, text, recon, clear, today, future);
-		}
-		else
-		{
-		gchar buf[G_ASCII_DTOSTR_BUF_SIZE];
+		g_string_append_printf(node, "%s%s", sub, text);
 
-			g_string_append_printf(node, "%s%s\t", sub, text);
+		if( flags & LST_TXN_ACC_REC )
+		{
 			hb_strfmon(buf, G_ASCII_DTOSTR_BUF_SIZE-1, recon, kcur, FALSE);
+			g_string_append_c(node, sep);
 			g_string_append(node, buf);
-			g_string_append_c(node, '\t');
-			hb_strfmon(buf, G_ASCII_DTOSTR_BUF_SIZE-1, clear, kcur, FALSE);
-			g_string_append(node, buf);
-			g_string_append_c(node, '\t');
-			hb_strfmon(buf, G_ASCII_DTOSTR_BUF_SIZE-1, today, kcur, FALSE);
-			g_string_append(node, buf);
-			g_string_append_c(node, '\t');
-			hb_strfmon(buf, G_ASCII_DTOSTR_BUF_SIZE-1, future, kcur, FALSE);
-			g_string_append(node, buf);
-			g_string_append(node, "\n");
 		}
+
+		if( flags & LST_TXN_ACC_CLR )
+		{
+			hb_strfmon(buf, G_ASCII_DTOSTR_BUF_SIZE-1, clear, kcur, FALSE);
+			g_string_append_c(node, sep);
+			g_string_append(node, buf);
+		}	
+		
+		if( flags & LST_TXN_ACC_TOD )
+		{
+			hb_strfmon(buf, G_ASCII_DTOSTR_BUF_SIZE-1, today, kcur, FALSE);
+			g_string_append_c(node, sep);
+			g_string_append(node, buf);
+		}
+
+		if( flags & LST_TXN_ACC_FUT )
+		{
+			hb_strfmon(buf, G_ASCII_DTOSTR_BUF_SIZE-1, future, kcur, FALSE);
+			g_string_append_c(node, sep);
+			g_string_append(node, buf);
+		}
+
+		g_string_append(node, "\n");
 	}
 }
 
@@ -124,6 +135,7 @@ GtkTreeModel *model;
 GtkTreeIter	iter, child;
 gboolean valid;
 guint32 nbcols, i;
+gint uid, flags = 0;
 gchar sep;
 
 	DB( g_print("\n[lst_accview] to string\n") );
@@ -141,15 +153,26 @@ gchar sep;
 		//todo: ? restrict to visibility
 		if( GTK_IS_TREE_VIEW_COLUMN(column) )
 		{
-			g_string_append(node, gtk_tree_view_column_get_title (column));
-			if( i < nbcols-1 )
+			if( gtk_tree_view_column_get_visible(column))
 			{
-				g_string_append_c(node, sep);
+				uid = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(column), "uid"));
+				switch(uid)
+				{
+					case COL_DSPACC_RECON : flags |= LST_TXN_ACC_REC; break;
+					case COL_DSPACC_CLEAR : flags |= LST_TXN_ACC_CLR; break;
+					case COL_DSPACC_TODAY : flags |= LST_TXN_ACC_TOD; break;
+					case COL_DSPACC_FUTURE: flags |= LST_TXN_ACC_FUT; break;
+				}
+				
+				g_string_append(node, gtk_tree_view_column_get_title (column));
+				if( i < nbcols-1 )
+				{
+					g_string_append_c(node, sep);
+				}
 			}
 		}
 	}
 	g_string_append_c(node, '\n');
-
 
 
 	//lines
@@ -157,13 +180,15 @@ gchar sep;
 	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
 	while (valid)
 	{
-		lst_accview_to_string_row(node, mode, model, &iter, "");
+		lst_accview_to_string_row(node, mode, model, &iter, "", flags);
+		
 		if( gtk_tree_model_iter_has_child(model, &iter) )
 		{
 			valid = gtk_tree_model_iter_children(model, &child, &iter);
 			while (valid)
 			{
-				lst_accview_to_string_row(node, mode, model, &child, "- ");
+				lst_accview_to_string_row(node, mode, model, &child, "- ", flags);
+		
 				valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &child);
 			}		
 		}

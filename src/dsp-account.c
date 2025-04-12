@@ -1189,19 +1189,31 @@ gboolean saverecondate = FALSE;
 	
 	//#492755 removed 4.3 let the child transfer unchanged
 	//#2019193 option the sync xfer status
-	if( PREFS->xfer_syncstat == TRUE )
+	if( txn->flags & OF_INTXFER )
 	{
-		if( txn->flags & OF_INTXFER )
+		if( PREFS->xfer_syncstat == TRUE )
 		{
 		Transaction *child = transaction_xfer_child_strong_get(txn);
+
 			if(child != NULL)
 			{
+			GtkWindow *accwin = homebank_app_find_window(txn->kxferacc);
+
+				//#2080756 recompute bal
+				account_balances_sub(child);
 				child->status = txn->status;
 				child->flags |= OF_CHANGED;
+				account_balances_add(child);
+
+				//#2080756 if open refresh target account balances
+				if(accwin != NULL)
+				{
+					DB( g_print(" xfer call refresh %d\n", txn->kxferacc));
+					hub_ledger_update(GTK_WIDGET(accwin), GINT_TO_POINTER(FLG_REG_BALANCE));
+				}
 			}
 		}
 	}
-
 }
 
 
@@ -3091,6 +3103,7 @@ GtkWidget *toolbar, *button, *bbox, *hbox, *widget, *label;
 	gtk_box_pack_start (GTK_BOX (toolbar), hbox, FALSE, FALSE, 0);
 
 		label = gtk_label_new (_("Reconciled changes is"));
+		gtk_label_set_ellipsize(GTK_LABEL(label), PANGO_ELLIPSIZE_END);
 		data->LB_lockreconciled = label;
 		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 
@@ -3117,8 +3130,8 @@ hub_ledger_window_new(Account *acc)
 {
 struct hub_ledger_data *data;
 struct WinGeometry *wg;
-GtkWidget *window, *mainvbox, *intbox, *menubar, *table, *scrollwin, *bar;
-GtkWidget *treeview, *label, *widget, *image;
+GtkWidget *window, *mainvbox,  *intbox, *actionbox, *hbox, *table;
+GtkWidget *menubar, *bar, *scrollwin, *treeview, *label, *widget, *image;
 GActionGroup *actions;
 gint col;
 
@@ -3211,10 +3224,11 @@ gint col;
 	mainvbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_window_set_child(GTK_WINDOW(window), mainvbox);
 
+	//1 - menubar
 	menubar = hub_ledger_menubar_create2(data);
 	gtk_box_pack_start (GTK_BOX (mainvbox), menubar, FALSE, FALSE, 0);	
 
-	// info bar for duplicate
+	//2 - info bar for duplicate
 	bar = gtk_info_bar_new_with_buttons (_("_Refresh"), HB_RESPONSE_REFRESH, NULL);
 	data->IB_duplicate = bar;
 	gtk_box_pack_start (GTK_BOX (mainvbox), bar, FALSE, FALSE, 0);
@@ -3231,105 +3245,87 @@ gint col;
 		data->NB_txn_daygap = widget;
 		gtk_box_pack_start (GTK_BOX (gtk_info_bar_get_content_area (GTK_INFO_BAR (bar))), widget, FALSE, FALSE, 0);
 
-	// windows interior
+	//3 - windows interior
 	intbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, SPACING_SMALL);
 	hb_widget_set_margin(GTK_WIDGET(intbox), SPACING_SMALL);
 	gtk_box_pack_start (GTK_BOX (mainvbox), intbox, TRUE, TRUE, 0);
 
-	table = gtk_grid_new();
-	gtk_grid_set_row_spacing (GTK_GRID (table), SPACING_SMALL);
-	gtk_grid_set_column_spacing (GTK_GRID (table), SPACING_MEDIUM);
-	gtk_box_pack_start (GTK_BOX (intbox), table, FALSE, FALSE, 0);
+	//3a - actionbox
+	actionbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
+	//gtk_widget_set_hexpand(actionbox, TRUE);
+	gtk_box_pack_start (GTK_BOX (intbox), actionbox, FALSE, FALSE, 0);
 
-	//Search bar
-	col = 0;
-	//label = make_label_widget(_("_Range:"));
-	//gtk_grid_attach (GTK_GRID(table), label, col, 0, 1, 1);
-	//col++;
-	data->CY_range = make_daterange(label, DATE_RANGE_FLAG_CUSTOM_DISABLE);
-	gtk_grid_attach (GTK_GRID(table), data->CY_range, col, 0, 1, 1);
+		hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
+		gtk_widget_set_halign(hbox, GTK_ALIGN_START);
+		//gtk_widget_set_hexpand(hbox, TRUE);
+		scrollwin = make_scrolled_window_ns(GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
+		//gtk_widget_set_hexpand(scrollwin, TRUE);
+		gtk_box_pack_start (GTK_BOX (actionbox), scrollwin, TRUE, TRUE, 0);
+		gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), hbox);
+		//gtk_box_prepend (GTK_BOX (actionbox), hbox);
 
-	col++;
-	widget = gtk_toggle_button_new();
-	//image = gtk_image_new_from_icon_name (ICONNAME_HB_OPE_FUTURE, GTK_ICON_SIZE_MENU);
-	image = gtk_image_new();
-	g_object_set(image, "icon-name", ICONNAME_HB_OPE_FUTURE, NULL);
-	g_object_set (widget, "image", image,  NULL);
-	data->CM_future = widget;
-	gtk_grid_attach (GTK_GRID(table), widget, col, 0, 1, 1);
+		widget = make_daterange(NULL, DATE_RANGE_FLAG_CUSTOM_DISABLE);
+		data->CY_range = widget;
+		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
 
-	//#2008521 set more accurate tooltip
-	gchar *tt = g_strdup_printf(_("Toggle show %d days ahead"), PREFS->date_future_nbdays);
-	gtk_widget_set_tooltip_text (widget, tt);
-	g_free(tt);
+		widget = gtk_toggle_button_new();
+		//image = gtk_image_new_from_icon_name (ICONNAME_HB_OPE_FUTURE, GTK_ICON_SIZE_MENU);
+		image = gtk_image_new();
+		g_object_set(image, "icon-name", ICONNAME_HB_OPE_FUTURE, NULL);
+		g_object_set (widget, "image", image,  NULL);
+		data->CM_future = widget;
+		//#2008521 set more accurate tooltip
+		gchar *tt = g_strdup_printf(_("Toggle show %d days ahead"), PREFS->date_future_nbdays);
+		gtk_widget_set_tooltip_text (widget, tt);
+		g_free(tt);
+		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
 
 	//5.8 flag
-	col++;
-	label = NULL;
-	data->CY_flag = make_fltgrpflag(label);
-	gtk_grid_attach (GTK_GRID(table), data->CY_flag, col, 0, 1, 1);
+		widget = make_fltgrpflag(NULL);
+		data->CY_flag = widget;
+		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
 
-	//col++;
-	//label = make_label_widget(_("_Type:"));
-	//gtk_grid_attach (GTK_GRID(table), label, col, 0, 1, 1);
-	col++;
-	data->CY_type = hbtk_combo_box_new_with_data(label, CYA_FLT_TYPE);
-	gtk_grid_attach (GTK_GRID(table), data->CY_type, col, 0, 1, 1);
+		widget = hbtk_combo_box_new_with_data(label, CYA_FLT_TYPE);
+		data->CY_type = widget;
+		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
 
-	//col++;
-	//label = make_label_widget(_("_Status:"));
-	//gtk_grid_attach (GTK_GRID(table), label, col, 0, 1, 1);
-	col++;
-	data->CY_status = hbtk_combo_box_new_with_data(label, CYA_FLT_STATUS);
-	gtk_grid_attach (GTK_GRID(table), data->CY_status, col, 0, 1, 1);
+		widget = hbtk_combo_box_new_with_data(label, CYA_FLT_STATUS);
+		data->CY_status = widget;
+		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+
+		//5.8 beta test
+		if( data->showall )
+		{
+			widget = create_popover_widget(GTK_WINDOW(data->window), data->filter);
+			data->PO_hubfilter = widget;
+			gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+		}
 
 
-	//5.8 beta test
-	if( data->showall )
-	{
-		col++;
-		widget = create_popover_widget(GTK_WINDOW(data->window), data->filter);
-		data->PO_hubfilter = widget;
-		gtk_grid_attach (GTK_GRID(table), widget, col, 0, 1, 1);
-	}
-
-	col++;
 	widget = make_image_button(ICONNAME_HB_FILTER, _("Edit filter"));
 	data->BT_filter = widget;
-	gtk_grid_attach (GTK_GRID(table), widget, col, 0, 1, 1);
+	gtk_box_pack_start (GTK_BOX (actionbox), widget, FALSE, FALSE, 0);
 
-	col++;
 	//widget = gtk_button_new_with_mnemonic (_("Reset _filters"));
 	//widget = gtk_button_new_with_mnemonic (_("_Reset"));
 	widget = make_image_button(ICONNAME_HB_CLEAR, _("Clear filter"));
 	data->BT_reset = widget;
-	gtk_grid_attach (GTK_GRID(table), widget, col, 0, 1, 1);
+	gtk_box_pack_start (GTK_BOX (actionbox), widget, FALSE, FALSE, 0);
 
 
-	col++;
 	widget = make_image_button(ICONNAME_HB_REFRESH, _("Refresh results"));
 	data->BT_refresh = widget;
-	gtk_grid_attach (GTK_GRID(table), widget, col, 0, 1, 1);
+	gtk_box_pack_start (GTK_BOX (actionbox), widget, FALSE, FALSE, 0);
 
-	col++;
 	widget = make_image_toggle_button(ICONNAME_HB_LIFEENERGY, _("Toggle Life Energy"));
 	data->BT_lifnrg = widget;
-	gtk_grid_attach (GTK_GRID(table), widget, col, 0, 1, 1);
+	gtk_box_pack_start (GTK_BOX (actionbox), widget, FALSE, FALSE, 0);
 
-	col++;
 	//TRANSLATORS: this is for Euro specific users, a toggle to display in 'Minor' currency
 	widget = gtk_check_button_new_with_mnemonic (_("Euro _minor"));
 	data->CM_minor = widget;
-	gtk_grid_attach (GTK_GRID(table), widget, col, 0, 1, 1);
+	gtk_box_pack_start (GTK_BOX (actionbox), widget, FALSE, FALSE, 0);
 
-	// account name (+ balance)
-	col++;
-	//space
-	label = gtk_label_new(NULL);
-	gtk_widget_set_hexpand (label, TRUE);
-	gtk_grid_attach (GTK_GRID(table), label, col, 0, 1, 1);
-
-	
 	//test menubutton
 	/*
 	widget = gtk_menu_button_new();
@@ -3338,13 +3334,13 @@ gint col;
 	gtk_grid_attach (GTK_GRID(table), widget, col, 0, 1, 1);
 	*/
 
-	col++;
 	//quick search
 	widget = make_search ();
 	data->ST_search = widget;
 	gtk_widget_set_size_request(widget, HB_MINWIDTH_SEARCH, -1);
 	gtk_widget_set_halign(widget, GTK_ALIGN_END);
-	gtk_grid_attach (GTK_GRID(table), widget, col, 0, 1, 1);
+	gtk_box_pack_start (GTK_BOX (actionbox), widget, FALSE, FALSE, 0);
+
 
 
 	/* grid line 2 */
@@ -3367,6 +3363,7 @@ gint col;
 	col++;
 	// text total/selection
 	label = make_label(NULL, 0.0, 0.5);
+	gtk_label_set_ellipsize(GTK_LABEL(label), PANGO_ELLIPSIZE_END);
 	//#1930395 text selectable for copy/paste 
 	gtk_label_set_selectable(GTK_LABEL(label), TRUE);
 	//gtk_widget_set_halign (label, GTK_ALIGN_START);

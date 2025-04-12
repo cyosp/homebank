@@ -60,6 +60,14 @@ enum
 };
 
 
+enum {
+	LST_TXN_ACC_REC = 1 << 0,	//detail/print
+	LST_TXN_ACC_CLR = 1 << 1,	//!print
+	LST_TXN_ACC_TOD = 1 << 2,	
+	LST_TXN_ACC_FUT = 1 << 3,
+};
+
+
 struct lst_accview_data
 {
 	GtkWidget	*treeview;

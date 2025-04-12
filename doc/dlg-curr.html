@@ -85,18 +85,22 @@
     </p>
     <p>Since 5.7.2: there is a log widget that track call and return of the API for debug purpose.</p>
 
-  <h3>Compatible APIs</h3>
+<h3>Default API</h3>
    <ul>
-    <li>&#x29c9; <a href="https://frankfurter.app" target="_blank">frankfurter.app</a> (this is the default)<br>
+    <li>&#x29c9; <a href="https://frankfurter.app" target="_blank">frankfurter.app</a><br>
     (no apikey): 30 currencies, Euro limited <a href="https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html" target="_blank">listed here</a><br>
     example call: <code>https://api.frankfurter.app/latest?base=EUR&symbols=USD,JPY,GBP</code>
     </li>
+  </ul>  
+
+<h3>Compatible APIs</h3>
+   <ul>
     <li>&#x29c9; <a href="https://fixer.io" target="_blank">fixer.io</a><br>
-    (apikey): 170 world currencies, including Bitcoin, Gold and Silver rates. <a href="https://data.fixer.io/api/symbols?%20access_key=API_KEY" target="_blank">listed here</a><br>
+    (apikey): 170 world currencies, including Bitcoin, Gold and Silver rates. <a href="http://data.fixer.io/api/symbols?access_key=API_KEY" target="_blank">listed here</a><br>
     example call: <code>http://data.fixer.io/api/latest?access_key=YOUR_ACCESS_KEY&base=EUR&symbols=USD,JPY,GBP</code>
     </li>
     <li>&#x29c9; <a href="https://exchangerate.host" target="_blank">exchangerate.host</a><br>
-    (apikey): 170 world currencies, including Bitcoin, Gold and Silver rates. <a href="https://api.exchangerate.host/symbols" target="_blank">listed here</a><br>
+    (apikey): 170 world currencies, including Bitcoin, Gold and Silver rates. <a href="http://api.exchangerate.host/symbols" target="_blank">listed here</a><br>
     example call: <code>http://api.exchangerate.host/list?access_key=YOUR_ACCESS_KEY&base=EUR&symbols=USD,JPY,GBP</code>
     </li>
   </ul>
@@ -105,7 +109,7 @@
   <code>
   - https://api.frankfurter.app/latest<br>
   - http://data.fixer.io/api/latest<br>
-  - http://api.exchangerate.host/list<br>
+  - http://api.exchangerate.host/live<br>
   </code>
   </p>
 

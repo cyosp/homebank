@@ -843,28 +843,28 @@ guint i, nbsplit;
 		lnk_txn = g_queue_peek_head_link(acc->txn_queue);
 		while (lnk_txn != NULL)
 		{
-		Transaction *txn = lnk_txn->data;
+		Transaction *txnitem = lnk_txn->data;
 
 			//#1875070
 			//if(txn->kcat == srckey)
-			if( category_move_match(txn->kcat, srckey, dosubcat) )
+			if( category_move_match(txnitem->kcat, srckey, dosubcat) )
 			{
-				txn->kcat = newkey;
-				txn->flags |= OF_CHANGED;
+				txnitem->kcat = newkey;
+				txnitem->flags |= OF_CHANGED;
 			}
 
 			// move split category #1340142
-			nbsplit = da_splits_length(txn->splits);
+			nbsplit = da_splits_length(txnitem->splits);
 			for(i=0;i<nbsplit;i++)
 			{
-			Split *split = da_splits_get(txn->splits, i);
+			Split *split = da_splits_get(txnitem->splits, i);
 
 				//#1875070
 				//if( split->kcat == srckey )
 				if( category_move_match(split->kcat, srckey, dosubcat) )
 				{
 					split->kcat = newkey;
-					txn->flags |= OF_CHANGED;
+					txnitem->flags |= OF_CHANGED;
 				}
 			}
 
@@ -879,14 +879,31 @@ guint i, nbsplit;
 	list = g_list_first(GLOBALS->arc_list);
 	while (list != NULL)
 	{
-	Archive *entry = list->data;
+	Archive *arcitem = list->data;
 
 		//#1875070
 		//if(entry->kcat == srckey)
-		if( category_move_match(entry->kcat, srckey, dosubcat) )
+		if( category_move_match(arcitem->kcat, srckey, dosubcat) )
 		{
-			entry->kcat = newkey;
+			arcitem->kcat = newkey;
+			arcitem->flags |= OF_CHANGED;
 		}
+
+		//#2081379 handle split as well
+		nbsplit = da_splits_length(arcitem->splits);
+		for(i=0;i<nbsplit;i++)
+		{
+		Split *split = da_splits_get(arcitem->splits, i);
+
+			//#1875070
+			//if( split->kcat == srckey )
+			if( category_move_match(split->kcat, srckey, dosubcat) )
+			{
+				split->kcat = newkey;
+				arcitem->flags |= OF_CHANGED;
+			}
+		}
+
 		list = g_list_next(list);
 	}
 
@@ -894,11 +911,11 @@ guint i, nbsplit;
 	lpay = list = g_hash_table_get_values(GLOBALS->h_pay);
 	while (list != NULL)
 	{
-	Payee *entry = list->data;
+	Payee *payitem = list->data;
 
-		if( category_move_match(entry->kcat, srckey, dosubcat) )
+		if( category_move_match(payitem->kcat, srckey, dosubcat) )
 		{
-			entry->kcat = newkey;
+			payitem->kcat = newkey;
 		}
 		list = g_list_next(list);
 	}
@@ -908,13 +925,13 @@ guint i, nbsplit;
 	lrul = list = g_hash_table_get_values(GLOBALS->h_rul);
 	while (list != NULL)
 	{
-	Assign *entry = list->data;
+	Assign *asgitem = list->data;
 
 		//#1875070
 		//if(entry->kcat == srckey)
-		if( category_move_match(entry->kcat, srckey, dosubcat) )
+		if( category_move_match(asgitem->kcat, srckey, dosubcat) )
 		{
-			entry->kcat = newkey;
+			asgitem->kcat = newkey;
 		}
 		list = g_list_next(list);
 	}

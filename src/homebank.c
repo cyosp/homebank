@@ -1110,15 +1110,32 @@ gint key;
 }
 
 
+//#2080864 handle version
 static gint
-homebank_app_commandline(GApplication *application, GApplicationCommandLine *cl, gpointer user_data)
+homebank_app_handle_local_options (GApplication *application,
+                                GVariantDict *options)
+{
+	if (g_variant_dict_contains (options, "version"))
+	{
+		g_print ("%s - Version %s\n", g_get_application_name (), VERSION);
+		return 0;
+	}
+
+
+	return -1;
+}
+
+
+static gint
+homebank_app_commandline(GApplication *application, GApplicationCommandLine *cmdline, gpointer user_data)
 {
 GVariantDict *options;
 gchar **remaining_args;
 
 	DB( g_print("\n[homebank] app commandline\n") );
 
-	options = g_application_command_line_get_options_dict (cl);
+
+	options = g_application_command_line_get_options_dict (cmdline);
 
 	/* Parse filenames */
 	if (g_variant_dict_lookup (options, G_OPTION_REMAINING, "^a&ay", &remaining_args))
@@ -1325,6 +1342,7 @@ int exit_code = EXIT_FAILURE;
 
 		g_signal_connect (app, "startup"		, G_CALLBACK (homebank_app_startup)		, NULL);
 		g_signal_connect (app, "command-line"	, G_CALLBACK (homebank_app_commandline)	, NULL);
+		g_signal_connect (app, "handle-local-options"	, G_CALLBACK (homebank_app_handle_local_options)	, NULL);
 		g_signal_connect (app, "activate"		, G_CALLBACK (homebank_app_activate)	, NULL);
 		g_signal_connect (app, "open"			, G_CALLBACK (homebank_app_open)		, NULL);
 		g_signal_connect (app, "shutdown"		, G_CALLBACK (homebank_app_shutdown)	, NULL);
