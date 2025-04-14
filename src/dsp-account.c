@@ -997,9 +997,6 @@ GtkWidget *combobox;
 	if( PREFS->date_future_nbdays > 0 )
 		filter_preset_daterange_add_futuregap(data->filter, PREFS->date_future_nbdays);
 
-	hub_ledger_collect_filtered_txn(data->LV_ope, TRUE);
-	hub_ledger_listview_populate(data->LV_ope);
-	
 	g_signal_handler_block(data->CY_range, data->handler_id[HID_RANGE]);
 	g_signal_handler_block(data->CY_type, data->handler_id[HID_TYPE]);
 	g_signal_handler_block(data->CY_status, data->handler_id[HID_STATUS]);
@@ -1030,6 +1027,9 @@ GtkWidget *combobox;
 		gtk_combo_box_set_active(GTK_COMBO_BOX(combobox), 0);		
 		g_signal_handlers_unblock_by_func (G_OBJECT (combobox), G_CALLBACK (beta_hub_ledger_cb_preset_change), NULL);
 	}
+
+	hub_ledger_collect_filtered_txn(data->LV_ope, TRUE);
+	hub_ledger_listview_populate(data->LV_ope);
 
 }
 
@@ -1096,8 +1096,9 @@ GtkTreeIter  iter;
 
 /* used to remove a intxfer child from a treeview */
 static void
-_list_txn_remove_by_value(GtkTreeModel *model, Transaction *txn)
+_list_txn_remove_by_value(GtkTreeView *treeview, Transaction *txn)
 {
+GtkTreeModel *model;
 GtkTreeIter iter;
 gboolean valid;
 
@@ -1106,6 +1107,7 @@ gboolean valid;
 
 	DB( g_print(" remove by value %p\n\n", txn) );
 
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(treeview));
 	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
 	while (valid)
 	{
@@ -1214,6 +1216,22 @@ gboolean saverecondate = FALSE;
 			}
 		}
 	}
+}
+
+
+static void
+hub_ledger_remove_single_transaction(GtkWindow *window, Transaction *txn)
+{
+struct hub_ledger_data *data;
+
+	if(txn == NULL)
+		return;
+
+	DB( g_print("\n[hub-ledger] remove single txn\n") );
+	
+	data = g_object_get_data(G_OBJECT(window), "inst_data");
+
+	_list_txn_remove_by_value(GTK_TREE_VIEW(data->LV_ope), txn);
 }
 
 
@@ -1452,27 +1470,6 @@ struct hub_ledger_data *data;
 }
 
 
-static gboolean 
-hub_ledger_getgeometry(GtkWidget *widget, GdkEventConfigure *event, gpointer user_data)
-{
-//struct hub_ledger_data *data = user_data;
-struct WinGeometry *wg;
-
-	//DB( g_print("\n[hub-ledger] get geometry\n") );
-
-	//store position and size
-	wg = &PREFS->acc_wg;
-	wg->s = gtk_window_is_maximized(GTK_WINDOW(widget));
-	if(!wg->s)
-	{
-		gtk_window_get_position(GTK_WINDOW(widget), &wg->l, &wg->t);
-		gtk_window_get_size(GTK_WINDOW(widget), &wg->w, &wg->h);
-	}
-	
-	//DB( g_print(" window: l=%d, t=%d, w=%d, h=%d s=%dd\n", wg->l, wg->t, wg->w, wg->h, wg->s) );
-
-	return FALSE;
-}
 
 
 static gboolean
@@ -1490,57 +1487,6 @@ struct hub_ledger_data *data;
 	return FALSE;
 }
 
-
-static gboolean
-hub_ledger_dispose(GtkWidget *widget, GdkEvent *event, gpointer user_data)
-{
-struct hub_ledger_data *data = user_data;
-
-	data = g_object_get_data(G_OBJECT(widget), "inst_data");
-
-	DB( g_print("\n[hub-ledger] -- delete-event\n") );
-
-	hub_ledger_getgeometry(data->window, NULL, data);
-
-	return FALSE;
-}
-
-
-static gboolean
-hub_ledger_destroy (GtkWidget *widget, gpointer user_data)
-{
-struct hub_ledger_data *data;
-
-	data = g_object_get_data(G_OBJECT(widget), "inst_data");
-
-
-	DB( g_print ("\n[hub-ledger] -- destroy event\n") );
-
-
-
-	//enable define windows
-	GLOBALS->define_off--;
-
-	/* free title and filter */
-	DB( g_print(" user_data=%p to be free\n", user_data) );
-	g_free(data->wintitle);
-
-	if(data->gpatxn != NULL)
-		g_ptr_array_free (data->gpatxn, TRUE);
-
-	g_queue_free_full(data->q_txn_clip, (GDestroyNotify)da_transaction_free);
-	da_flt_free(data->filter);
-
-	g_free(data);
-
-
-	//our global list has changed, so update the treeview
-	//TODO: find another way to signal
-	//do it on mainwindow focus??
-	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_REFRESHALL));
-
-	return FALSE;
-}
 
 
 static void
@@ -1628,6 +1574,9 @@ guint changes = GLOBALS->changes_count;
 		//#1873311 inherit+kepplastdate=OFF = today
 		if( PREFS->heritdate == FALSE ) 
 			data->cur_ope->date = GLOBALS->today;
+
+		//#2083127 don't keep grpflags
+		data->cur_ope->grpflg = 0;
 
 		//#1432204 inherit => status none
 		data->cur_ope->status = TXN_STATUS_NONE;
@@ -1871,14 +1820,21 @@ gint count, result;
 						{
 							if( data->showall )
 							{
-								_list_txn_remove_by_value(model, child);
+								_list_txn_remove_by_value(GTK_TREE_VIEW(data->LV_ope), child);
 								//#1716181 also remove from the ptr_array (quickfilter)				
 								g_ptr_array_remove(data->gpatxn, (gpointer)child);
 								data->total--;
 								GLOBALS->changes_count++;
 							}
-							//TODO: else
-							
+
+							//5.8.4 if open remove target
+							GtkWindow *accwin = homebank_app_find_window(rem_txn->kxferacc);
+							if(accwin != NULL)
+							{
+								hub_ledger_remove_single_transaction(accwin, child);
+								DB( g_print(" xfer call refresh %d\n", rem_txn->kxferacc));
+								hub_ledger_update(GTK_WIDGET(accwin), GINT_TO_POINTER(FLG_REG_BALANCE));
+							}
 						}
 					}
 
@@ -3122,6 +3078,92 @@ GtkWidget *toolbar, *button, *bbox, *hbox, *widget, *label;
 }
 
 
+static gboolean 
+hub_ledger_window_getgeometry(GtkWidget *widget, GdkEventConfigure *event, gpointer user_data)
+{
+//struct hub_ledger_data *data = user_data;
+struct WinGeometry *wg;
+
+	//DB( g_print("\n[hub-ledger] get geometry\n") );
+
+	//store position and size
+	wg = &PREFS->acc_wg;
+	wg->s = gtk_window_is_maximized(GTK_WINDOW(widget));
+	if(!wg->s)
+	{
+		gtk_window_get_position(GTK_WINDOW(widget), &wg->l, &wg->t);
+		gtk_window_get_size(GTK_WINDOW(widget), &wg->w, &wg->h);
+	}
+	
+	//DB( g_print(" window: l=%d, t=%d, w=%d, h=%d s=%dd\n", wg->l, wg->t, wg->w, wg->h, wg->s) );
+
+	return FALSE;
+}
+
+
+static gboolean
+hub_ledger_window_dispose(GtkWidget *widget, GdkEvent *event, gpointer user_data)
+{
+struct hub_ledger_data *data = user_data;
+struct WinGeometry *wg;
+
+	data = g_object_get_data(G_OBJECT(widget), "inst_data");
+
+	DB( g_print("\n[hub-ledger] -- delete-event\n") );
+
+	wg = &PREFS->acc_wg;
+	wg->s = gtk_window_is_maximized(GTK_WINDOW(widget));
+	//store columns
+	list_txn_get_columns(GTK_TREE_VIEW(data->LV_ope));
+
+	return FALSE;
+}
+
+
+static gboolean
+hub_ledger_window_destroy (GtkWidget *widget, gpointer user_data)
+{
+struct hub_ledger_data *data;
+
+	data = g_object_get_data(G_OBJECT(widget), "inst_data");
+
+
+	DB( g_print ("\n[hub-ledger] -- destroy event\n") );
+
+
+
+	//enable define windows
+	GLOBALS->define_off--;
+
+	//5.8.6 unmark
+	if( data->similar > 0 )
+	{
+		DB( g_print(" unmark similar\n") );
+		hub_ledger_action_duplicate_unmark(NULL, NULL, data);
+	}
+
+	/* free title and filter */
+	DB( g_print(" user_data=%p to be free\n", user_data) );
+	g_free(data->wintitle);
+
+	if(data->gpatxn != NULL)
+		g_ptr_array_free (data->gpatxn, TRUE);
+
+	g_queue_free_full(data->q_txn_clip, (GDestroyNotify)da_transaction_free);
+	da_flt_free(data->filter);
+
+	g_free(data);
+
+
+	//our global list has changed, so update the treeview
+	//TODO: find another way to signal
+	//do it on mainwindow focus??
+	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_TXNLIST+UF_REFRESHALL));
+
+	return FALSE;
+}
+
+
 /*
  * if accnum = 0 or acc is null : show all account 
  */
@@ -3214,9 +3256,9 @@ gint col;
 
 
 	/* connect signal */
-	g_signal_connect (window, "destroy", G_CALLBACK (hub_ledger_destroy), (gpointer)data);
-	g_signal_connect (window, "delete-event", G_CALLBACK (hub_ledger_dispose), (gpointer)data);
-	g_signal_connect (window, "configure-event",	G_CALLBACK (hub_ledger_getgeometry), (gpointer)data);
+	g_signal_connect (window, "destroy", G_CALLBACK (hub_ledger_window_destroy), (gpointer)data);
+	g_signal_connect (window, "delete-event", G_CALLBACK (hub_ledger_window_dispose), (gpointer)data);
+	g_signal_connect (window, "configure-event",	G_CALLBACK (hub_ledger_window_getgeometry), (gpointer)data);
 
 	g_signal_connect (window, "key-press-event", G_CALLBACK (hub_ledger_cb_on_key_press), (gpointer)data);
 
@@ -3231,26 +3273,30 @@ gint col;
 	//2 - info bar for duplicate
 	bar = gtk_info_bar_new_with_buttons (_("_Refresh"), HB_RESPONSE_REFRESH, NULL);
 	data->IB_duplicate = bar;
-	gtk_box_pack_start (GTK_BOX (mainvbox), bar, FALSE, FALSE, 0);
-
 	gtk_info_bar_set_message_type (GTK_INFO_BAR (bar), GTK_MESSAGE_WARNING);
 	gtk_info_bar_set_show_close_button (GTK_INFO_BAR (bar), TRUE);
-	label = gtk_label_new (NULL);
-	data->LB_duplicate = label;
-	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
-	gtk_label_set_xalign (GTK_LABEL (label), 0);
-	gtk_box_pack_start (GTK_BOX (gtk_info_bar_get_content_area (GTK_INFO_BAR (bar))), label, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (mainvbox), bar, FALSE, FALSE, 0);
 
-		widget = make_numeric(NULL, 0, HB_DATE_MAX_GAP);
+		hbox = gtk_info_bar_get_content_area (GTK_INFO_BAR (bar));
+
+		label = gtk_label_new (NULL);
+		data->LB_duplicate = label;
+		gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+		gtk_label_set_xalign (GTK_LABEL (label), 0);
+		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+		//5.8.6
+		label = make_label(_("Date _gap:"), 0, 0.5);
+		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+		widget = make_numeric(label, 0, HB_DATE_MAX_GAP);
 		data->NB_txn_daygap = widget;
-		gtk_box_pack_start (GTK_BOX (gtk_info_bar_get_content_area (GTK_INFO_BAR (bar))), widget, FALSE, FALSE, 0);
+		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
 
-	//3 - windows interior
+	//4 - windows interior
 	intbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, SPACING_SMALL);
 	hb_widget_set_margin(GTK_WIDGET(intbox), SPACING_SMALL);
 	gtk_box_pack_start (GTK_BOX (mainvbox), intbox, TRUE, TRUE, 0);
 
-	//3a - actionbox
+	//4a - actionbox
 	actionbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	//gtk_widget_set_hexpand(actionbox, TRUE);
 	gtk_box_pack_start (GTK_BOX (intbox), actionbox, FALSE, FALSE, 0);
@@ -3517,4 +3563,5 @@ gint col;
 
 	return window;
 }
+
 

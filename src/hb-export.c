@@ -413,7 +413,7 @@ gint text_width, text_height, line_height;
 	count = 0;
 	while (data->lines[i] != NULL)
 	{
-		//DB( g_print(" eval line %03d: '%s'\n", i, data->lines[i]) );
+		DB( g_print(" eval line %03d: '%s'\n", i, data->lines[i]) );
 
 		//skip empty lines
 		if( strlen(data->lines[i]) > 1 )
@@ -528,15 +528,21 @@ static void hb_print_listview_draw_line(PrintData *data, gchar *line, gint first
 {
 gchar **columns;
 gint text_width, text_height;
-gint j, x;
+gint nbcol, j, x;
 
 	columns = g_strsplit (line, "\t", 0);
+
+	//#xxxxxxxx restrict to real column
+	nbcol = g_strv_length(columns);
+	DB( g_print(" draw line col %d to col %d, real is %d\n", firstcol, lastcol, nbcol ));
+
+	lastcol = MIN(lastcol, nbcol);
+
 	x = 0;
-	
 	//for(j=0;j<data->num_columns;j++)
 	for(j=firstcol ; j<lastcol ; j++)
 	{
-		//DB( g_print(" +%03d:%03d '%s'\n", line, j, columns[j]) );
+		DB( g_print(" +%03d '%s'\n", j, columns[j]) );
 		if( columns[j] != NULL )
 		{		
 			//DB( g_print(" print r%d:c%d '%s'\n", i, j, columns[j]) );
@@ -550,7 +556,7 @@ gint j, x;
 			if( data->col_align[j] == 0 )
 			{
 				pango_layout_get_pixel_size (layout, &text_width, &text_height);
-				cairo_move_to(cr, x + data->col_width[j] - text_width, y);
+				cairo_move_to(cr, x + data->col_width[j] - text_width - HB_PRINT_SPACING, y);
 			}
 			else
 				cairo_move_to(cr, x, y);
@@ -658,6 +664,22 @@ double tmpval;
 	pango_layout_set_font_description (layout, desc);
 	hb_print_listview_draw_line(data, data->lines[0], firstcol, lastcol, y, cr, layout);
 
+	//helpdraw
+	#if HELPDRAW == 1
+	gint x = 0;
+	gchar **columns = g_strsplit (data->lines[0], "\t", 0);
+	for(gint j=firstcol ; j<lastcol ; j++)
+	{
+		//DB( g_print(" +%03d '%s'\n", j, columns[j]) );
+		if( columns[j] != NULL )
+		{		
+			hb_pdf_draw_help_rect(cr, 0xFF000000, x, y, data->col_width[j] - HB_PRINT_SPACING, height - (data->header_height + 9 + (2* HB_PRINT_SPACING)) );
+			x += data->col_width[j];
+		}
+	}
+	g_strfreev (columns);
+	#endif
+
 	y = data->header_height + HB_PRINT_SPACING;
 	pango_font_description_set_weight (desc, PANGO_WEIGHT_NORMAL);
 	pango_layout_set_font_description (layout, desc);
@@ -669,7 +691,7 @@ double tmpval;
 	if( line == 0 )	//skip title line
 		line++;
 
-	DB( g_print(" print lines from %d to %d\n", line, line+data->lines_per_page) );
+	DB( g_print(" print lines from %d to %d (max)\n", line, line+data->lines_per_page) );
 	DB( g_print(" print cols from %d\n", firstcol) );
 
 	for (i = 0; i < data->lines_per_page && line < data->num_lines; i++)

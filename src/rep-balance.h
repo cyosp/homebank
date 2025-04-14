@@ -52,9 +52,7 @@ enum {
 
 struct repbalance_data
 {
-	//DataTable	*trend;
-
-	GList		*ope_list;
+	GQueue		*txn_queue;
 	Filter		*filter;
 
 	gdouble		minimum;
@@ -62,7 +60,6 @@ struct repbalance_data
 	gboolean	detail;
 	guint32		accnum;
 
-	guint32		*tmp_acckeys;
 	gdouble		*tmp_income;
 	gdouble		*tmp_expense;
 	gdouble		firstbalance;
@@ -105,7 +102,8 @@ struct repbalance_data
 	GtkWidget	*GR_detail;
 	GtkWidget	*LV_detail;
 
-	gulong		handler_id[MAX_REPBALANCE_HID];
+	gulong		hid[MAX_REPBALANCE_HID];
+
 };
 
 

@@ -463,6 +463,7 @@ gboolean match = FALSE;
 	return match;
 }
 
+
 static gboolean misc_regex_match(gchar *text, gchar *searchtext, gboolean exact)
 {
 gboolean match = FALSE;
@@ -473,7 +474,9 @@ gboolean match = FALSE;
 	DB( g_print("-- match RE %s in %s\n", searchtext, text) );
 	if( searchtext != NULL )
 	{
-		match = g_regex_match_simple(searchtext, text, ((exact == TRUE)?0:G_REGEX_CASELESS) | G_REGEX_OPTIMIZE, G_REGEX_MATCH_NOTEMPTY );
+		match = g_regex_match_simple(searchtext, text, 
+			((exact == TRUE)?0:G_REGEX_CASELESS) | G_REGEX_OPTIMIZE,
+			G_REGEX_MATCH_NOTEMPTY );
 		if (match == TRUE) { DB( g_print("-- found pattern '%s'\n", searchtext) ); }
 	}
 	return match;
@@ -595,23 +598,35 @@ guint changes = 0;
 		//#1215521: added kacc == 0
 		if( (kacc == ope->kacc || kacc == 0) )
 		{
+		Transaction *child = NULL;
+
+			//#2092388 also sync child
+			if( ope->flags & OF_INTXFER )
+			{
+				child = transaction_xfer_child_strong_get(ope);
+			}
+
 			if( !(ope->flags & OF_SPLIT) )
 			{
 				l_match = l_tmp = transaction_auto_assign_eval_txn(l_rul, ope);
 				while( l_tmp != NULL )
 				{
 				Assign *rul = l_tmp->data;
-					
+
 					if( (ope->kpay == 0 && (rul->flags & ASGF_DOPAY)) || (rul->flags & ASGF_OVWPAY) )
 					{
 						if(ope->kpay != rul->kpay) { changed = TRUE; }
 						ope->kpay = rul->kpay;
+						if(child != NULL)
+							child->kpay = rul->kpay;
 					}
 
 					if( (ope->kcat == 0 && (rul->flags & ASGF_DOCAT)) || (rul->flags & ASGF_OVWCAT) )
 					{
 						if(ope->kcat != rul->kcat) { changed = TRUE; }
 						ope->kcat = rul->kcat;
+						if(child != NULL)
+							child->kcat = rul->kcat;
 					}
 
 					if( (ope->paymode == 0 && (rul->flags & ASGF_DOMOD)) || (rul->flags & ASGF_OVWMOD) )
@@ -623,15 +638,20 @@ guint changes = 0;
 							ope->paymode = rul->paymode;
 						}
 					}
-					l_tmp = g_list_next(l_tmp);
-					
+
 					if( (ope->tags == NULL && (rul->flags & ASGF_DOTAG)) || (rul->flags & ASGF_OVWTAG) )
 					{
-						 if(tags_equal(rul->tags, ope->tags) == FALSE) { changed = TRUE; }
+						if(tags_equal(rul->tags, ope->tags) == FALSE) { changed = TRUE; }
 						g_free(ope->tags);
 						ope->tags = tags_clone(rul->tags);
+						if(child != NULL)
+						{
+							g_free(child->tags);
+							child->tags = tags_clone(rul->tags);
+						}
 					}
 
+					l_tmp = g_list_next(l_tmp);
 				}
 				g_list_free(l_match);
 			}
@@ -666,6 +686,11 @@ guint changes = 0;
 			{
 				ope->flags |= OF_CHANGED;
 				changes++;
+				if( child != NULL )
+				{
+					child->flags |= OF_CHANGED;
+					changes++;
+				}
 			}
 		}
 next:

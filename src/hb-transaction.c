@@ -653,7 +653,7 @@ Account *acc;
 
 //#1708974 enable different date
 //#1987975 only suggest opposite sign amount txn
-static gboolean transaction_xfer_child_might(Transaction *stxn, Transaction *dtxn, gushort *matchrate)
+static gboolean transaction_xfer_child_might(Transaction *stxn, Transaction *dtxn, guchar *matchrate)
 {
 gboolean retval = FALSE;
 gint32 daygap = PREFS->xfer_daygap;
@@ -1345,6 +1345,7 @@ GList *lnk_txn;
 	Transaction *stxn = lnk_txn->data;
 
 		stxn->dspflags &= ~(TXN_DSPFLG_DUPSRC|TXN_DSPFLG_DUPDST);
+		stxn->dupgid = 0;
 		//stxn->marker = TXN_MARK_NONE;
 		lnk_txn = g_list_previous(lnk_txn);
 	}
@@ -1356,6 +1357,8 @@ gint transaction_similar_mark(Account *acc, guint32 daygap)
 GList *lnk_txn, *list2;
 gint nball = 0;
 gint nbdup = 0;
+gchar tmpgid = 1;
+
 
 	//warning the list must be sorted by date then amount
 	//ideally (easier to parse) we shoudl get a list sorted by amount, then date
@@ -1416,9 +1419,11 @@ gint nbdup = 0;
 				if( transaction_similar_match(stxn, dtxn, daygap) )
 				{
 					//stxn->marker = TXN_MARK_DUPSRC;
-					stxn->dspflags |= TXN_DSPFLG_DUPSRC;
 					//dtxn->marker = TXN_MARK_DUPDST;
+					stxn->dspflags |= TXN_DSPFLG_DUPSRC;
 					dtxn->dspflags |= TXN_DSPFLG_DUPDST;
+					stxn->dupgid = tmpgid;
+					dtxn->dupgid = tmpgid;
 					DB( g_print(" = dtxn marker=%d\n", dtxn->dspflags) );
 					nball++;
 				}
@@ -1435,8 +1440,10 @@ gint nbdup = 0;
 		DB( g_print(" = stxn marker=%d\n", stxn->dspflags) );
 		//if( stxn->marker == TXN_MARK_DUPSRC )
 		if( stxn->dspflags & TXN_DSPFLG_DUPSRC )
+		{
+			tmpgid++;
 			nbdup++;
-		
+		}
 		lnk_txn = g_list_previous(lnk_txn);
 	}
 

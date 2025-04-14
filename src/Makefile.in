@@ -125,9 +125,9 @@ am_homebank_OBJECTS = dsp-account.$(OBJEXT) dsp-mainwindow.$(OBJEXT) \
 	ui-category.$(OBJEXT) ui-currency.$(OBJEXT) \
 	ui-dialogs.$(OBJEXT) ui-filter.$(OBJEXT) \
 	ui-flt-widget.$(OBJEXT) ui-hbfile.$(OBJEXT) ui-group.$(OBJEXT) \
-	ui-payee.$(OBJEXT) ui-pref.$(OBJEXT) ui-split.$(OBJEXT) \
-	ui-tag.$(OBJEXT) ui-transaction.$(OBJEXT) \
-	ui-txn-multi.$(OBJEXT) ui-widgets-data.$(OBJEXT) \
+	ui-payee.$(OBJEXT) ui-pref.$(OBJEXT) ui-tag.$(OBJEXT) \
+	ui-transaction.$(OBJEXT) ui-txn-multi.$(OBJEXT) \
+	ui-txn-split.$(OBJEXT) ui-widgets-data.$(OBJEXT) \
 	ui-widgets.$(OBJEXT)
 homebank_OBJECTS = $(am_homebank_OBJECTS)
 am__DEPENDENCIES_1 =
@@ -178,9 +178,9 @@ am__depfiles_remade = ./$(DEPDIR)/dsp-account.Po \
 	./$(DEPDIR)/ui-dialogs.Po ./$(DEPDIR)/ui-filter.Po \
 	./$(DEPDIR)/ui-flt-widget.Po ./$(DEPDIR)/ui-group.Po \
 	./$(DEPDIR)/ui-hbfile.Po ./$(DEPDIR)/ui-payee.Po \
-	./$(DEPDIR)/ui-pref.Po ./$(DEPDIR)/ui-split.Po \
-	./$(DEPDIR)/ui-tag.Po ./$(DEPDIR)/ui-transaction.Po \
-	./$(DEPDIR)/ui-txn-multi.Po ./$(DEPDIR)/ui-widgets-data.Po \
+	./$(DEPDIR)/ui-pref.Po ./$(DEPDIR)/ui-tag.Po \
+	./$(DEPDIR)/ui-transaction.Po ./$(DEPDIR)/ui-txn-multi.Po \
+	./$(DEPDIR)/ui-txn-split.Po ./$(DEPDIR)/ui-widgets-data.Po \
 	./$(DEPDIR)/ui-widgets.Po
 am__mv = mv -f
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
@@ -480,14 +480,14 @@ homebank_SOURCES = \
 	ui-payee.h \
 	ui-pref.c \
 	ui-pref.h \
-	ui-split.c \
-	ui-split.h \
 	ui-tag.c \
 	ui-tag.h \
 	ui-transaction.c \
 	ui-transaction.h \
 	ui-txn-multi.c \
 	ui-txn-multi.h \
+	ui-txn-split.c \
+	ui-txn-split.h \
 	ui-widgets-data.c \
 	ui-widgets.c \
 	ui-widgets.h
@@ -649,10 +649,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ui-hbfile.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ui-payee.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ui-pref.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ui-split.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ui-tag.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ui-transaction.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ui-txn-multi.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ui-txn-split.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ui-widgets-data.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ui-widgets.Po@am__quote@ # am--include-marker
 
@@ -865,10 +865,10 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/ui-hbfile.Po
 	-rm -f ./$(DEPDIR)/ui-payee.Po
 	-rm -f ./$(DEPDIR)/ui-pref.Po
-	-rm -f ./$(DEPDIR)/ui-split.Po
 	-rm -f ./$(DEPDIR)/ui-tag.Po
 	-rm -f ./$(DEPDIR)/ui-transaction.Po
 	-rm -f ./$(DEPDIR)/ui-txn-multi.Po
+	-rm -f ./$(DEPDIR)/ui-txn-split.Po
 	-rm -f ./$(DEPDIR)/ui-widgets-data.Po
 	-rm -f ./$(DEPDIR)/ui-widgets.Po
 	-rm -f Makefile
@@ -979,10 +979,10 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/ui-hbfile.Po
 	-rm -f ./$(DEPDIR)/ui-payee.Po
 	-rm -f ./$(DEPDIR)/ui-pref.Po
-	-rm -f ./$(DEPDIR)/ui-split.Po
 	-rm -f ./$(DEPDIR)/ui-tag.Po
 	-rm -f ./$(DEPDIR)/ui-transaction.Po
 	-rm -f ./$(DEPDIR)/ui-txn-multi.Po
+	-rm -f ./$(DEPDIR)/ui-txn-split.Po
 	-rm -f ./$(DEPDIR)/ui-widgets-data.Po
 	-rm -f ./$(DEPDIR)/ui-widgets.Po
 	-rm -f Makefile

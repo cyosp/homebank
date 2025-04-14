@@ -26,7 +26,7 @@
 #include "ui-payee.h"
 #include "ui-category.h"
 #include "ui-account.h"
-#include "ui-split.h"
+#include "ui-txn-split.h"
 #include "ui-tag.h"
 
 

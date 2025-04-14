@@ -53,141 +53,17 @@ extern struct Preferences *PREFS;
 
 
 /* prototypes */
-static void reptime_update(GtkWidget *widget, gpointer user_data);
-static void reptime_compute(GtkWidget *widget, gpointer user_data);
-static void reptime_sensitive(GtkWidget *widget, gpointer user_data);
-static void reptime_update_daterange(GtkWidget *widget, gpointer user_data);
-static void reptime_filter_setup(struct reptime_data *data);
-
 static GtkWidget *lst_reptime_create(void);
 static GString *lst_reptime_to_string(GtkTreeView *treeview, gchar *title, gboolean clipboard);
 static void lst_reptime_set_cur(GtkTreeView *treeview, guint32 kcur);
-
-static void reptime_cb_acc_changed(GtkCellRendererToggle *cell, gchar *path_str, gpointer user_data);
-static void reptime_cb_cat_changed(GtkCellRendererToggle *cell, gchar *path_str, gpointer user_data);
-static void reptime_cb_pay_changed(GtkCellRendererToggle *cell, gchar *path_str, gpointer user_data);
-static void reptime_cb_tag_changed(GtkCellRendererToggle *cell, gchar *path_str, gpointer user_data);
-
-static gchar *reptime_compute_title(gint src, gint intvl);
 
 
 extern HbKvData CYA_REPORT_GRPBY_TREND[];
 extern HbKvData CYA_REPORT_INTVL[];
 
 
-/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
-
-
-static void reptime_action_viewlist(GtkWidget *toolbutton, gpointer user_data)
-{
-struct reptime_data *data = user_data;
-
-	data->charttype = CHART_TYPE_NONE;
-	gtk_notebook_set_current_page(GTK_NOTEBOOK(data->GR_result), 0);
-	reptime_sensitive(data->window, NULL);
-}
-
-
-static void reptime_action_viewline(GtkWidget *toolbutton, gpointer user_data)
-{
-struct reptime_data *data = user_data;
-
-	data->charttype = CHART_TYPE_LINE;
-	gtk_notebook_set_current_page(GTK_NOTEBOOK(data->GR_result), 1);
-	reptime_sensitive(data->window, NULL);
-	reptime_update(data->window, NULL);
-}
-
-
-static void reptime_action_viewcolumn(GtkWidget *toolbutton, gpointer user_data)
-{
-struct reptime_data *data = user_data;
-
-	data->charttype = CHART_TYPE_COL;
-	gtk_notebook_set_current_page(GTK_NOTEBOOK(data->GR_result), 1);
-	reptime_sensitive(data->window, NULL);
-	reptime_update(data->window, NULL);
-
-}
-
-
-static void reptime_action_print(GtkWidget *toolbutton, gpointer user_data)
-{
-struct reptime_data *data = user_data;
-gint tmpsrc, tmpintvl, page;
-gchar *coltitle, *title, *name;
-
-	tmpsrc  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_src));
-	tmpintvl  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_intvl));
-	page = gtk_notebook_get_current_page(GTK_NOTEBOOK(data->GR_result));
-
-	title = reptime_compute_title(tmpsrc, tmpintvl);
-
-	name = g_strdup_printf("hb-reptime_%s.csv", hbtk_get_label(CYA_REPORT_GRPBY_TREND, tmpsrc) );
-
-	if( page == 0 )
-	{
-	GString *node;
-
-		coltitle = hbtk_get_label(CYA_REPORT_INTVL, tmpintvl);
-		node = lst_reptime_to_string(GTK_TREE_VIEW(data->LV_report), coltitle, TRUE);
-
-		hb_print_listview(GTK_WINDOW(data->window), node->str, NULL, title, name, FALSE);
-
-		g_string_free(node, TRUE);
-	}
-	else
-	{
-		gtk_chart_print(GTK_CHART(data->RE_chart), GTK_WINDOW(data->window), PREFS->path_export, name);
-
-	}
-
-	g_free(name);
-}
-
-
-/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
-
-
-static void reptime_action_filter_reset(GtkWidget *widget, gpointer user_data)
-{
-struct reptime_data *data;
-
-	DB( g_print("\n[reptime] filter reset\n") );
-
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-
-	reptime_filter_setup(data);
-	reptime_compute(data->window, NULL);
-}
-
-
-
-
-//beta
-#if BETA_FILTER
-static void reptime_action_filter(GtkWidget *toolbutton, gpointer user_data)
-{
-struct reptime_data *data = user_data;
-
-	//debug
-	//create_deffilter_window(data->filter, TRUE);
-
-	if(ui_flt_manage_dialog_new(GTK_WINDOW(data->window), data->filter, TRUE, FALSE) != GTK_RESPONSE_REJECT)
-	{
-		reptime_compute(data->window, NULL);
-		//ui_repdtime_update_date_widget(data->window, NULL);
-		//ui_repdtime_update_daterange(data->window, NULL);
-
-		/*g_signal_handler_block(data->CY_range, data->handler_id[HID_REPDIST_RANGE]);
-		hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_range), FLT_RANGE_MISC_ALLDATE);
-		g_signal_handler_unblock(data->CY_range, data->handler_id[HID_REPDIST_RANGE]);
-		*/
-	}
-}
-#endif
-
 /* = = = = = = = = = = = = = = = = */
+
 
 static gchar *
 reptime_compute_title(gint src, gint intvl)
@@ -204,78 +80,33 @@ gchar *title;
 }
 
 
-static void
-reptime_date_change(GtkWidget *widget, gpointer user_data)
+static void reptime_sensitive(GtkWidget *widget, gpointer user_data)
 {
 struct reptime_data *data;
+gboolean visible, sensitive;
+gint page;
 
-	DB( g_print("\n[reptime] date change\n") );
+	DB( g_print("\n[rep-time] sensitive\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	data->filter->mindate = gtk_date_entry_get_date(GTK_DATE_ENTRY(data->PO_mindate));
-	data->filter->maxdate = gtk_date_entry_get_date(GTK_DATE_ENTRY(data->PO_maxdate));
+	page = gtk_notebook_get_current_page(GTK_NOTEBOOK(data->GR_result));
 
-	// set min/max date for both widget
-	//5.8 check for error
-		gtk_date_entry_set_error(GTK_DATE_ENTRY(data->PO_mindate), ( data->filter->mindate > data->filter->maxdate ) ? TRUE : FALSE);
-		gtk_date_entry_set_error(GTK_DATE_ENTRY(data->PO_maxdate), ( data->filter->maxdate < data->filter->mindate ) ? TRUE : FALSE);
+	visible = page == 0 ? TRUE : FALSE;
+	hb_widget_visible (data->BT_detail, visible);
+	hb_widget_visible (data->BT_export, visible);
 
-	g_signal_handler_block(data->CY_range, data->handler_id[HID_REPTIME_RANGE]);
-	hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_range), FLT_RANGE_MISC_CUSTOM);
-	g_signal_handler_unblock(data->CY_range, data->handler_id[HID_REPTIME_RANGE]);
+	visible = page == 0 ? FALSE : TRUE;
+	//5.7
+	//hb_widget_visible(data->BT_print, visible);
+	hb_widget_visible(data->LB_zoomx, visible);
+	hb_widget_visible(data->RG_zoomx, visible);
 
-	reptime_compute(widget, NULL);
-	reptime_update_daterange(widget, NULL);
+	page = gtk_tree_model_iter_n_children(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_detail)), NULL);
+	sensitive = ((page > 0) && data->detail) ? TRUE : FALSE;
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(g_action_map_lookup_action (G_ACTION_MAP (data->actions), "detclip")), sensitive);
+	g_simple_action_set_enabled(G_SIMPLE_ACTION(g_action_map_lookup_action (G_ACTION_MAP (data->actions), "detcsv")), sensitive);
 
-}
-
-
-static void reptime_update_quickdate(GtkWidget *widget, gpointer user_data)
-{
-struct reptime_data *data;
-
-	DB( g_print("\n[reptime] update quickdate\n") );
-
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-
-	g_signal_handler_block(data->PO_mindate, data->handler_id[HID_REPTIME_MINDATE]);
-	g_signal_handler_block(data->PO_maxdate, data->handler_id[HID_REPTIME_MAXDATE]);
-
-	gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_mindate), data->filter->mindate);
-	gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_maxdate), data->filter->maxdate);
-
-	g_signal_handler_unblock(data->PO_mindate, data->handler_id[HID_REPTIME_MINDATE]);
-	g_signal_handler_unblock(data->PO_maxdate, data->handler_id[HID_REPTIME_MAXDATE]);
-
-}
-
-
-static void reptime_range_change(GtkWidget *widget, gpointer user_data)
-{
-struct reptime_data *data;
-gint range;
-
-	DB( g_print("\n[reptime] range change\n") );
-
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-
-	range = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_range));
-
-	if(range != FLT_RANGE_MISC_CUSTOM)
-	{
-		filter_preset_daterange_set(data->filter, range, data->accnum);
-
-		//#2046032 set min/max date for both widget
-		//5.8 check for error
-		gtk_date_entry_set_error(GTK_DATE_ENTRY(data->PO_mindate), ( data->filter->mindate > data->filter->maxdate ) ? TRUE : FALSE);
-		gtk_date_entry_set_error(GTK_DATE_ENTRY(data->PO_maxdate), ( data->filter->maxdate < data->filter->mindate ) ? TRUE : FALSE);
-
-		reptime_update_quickdate(widget, NULL);
-
-		reptime_compute(widget, NULL);
-		reptime_update_daterange(widget, NULL);
-	}
 }
 
 
@@ -284,273 +115,13 @@ static void reptime_update_daterange(GtkWidget *widget, gpointer user_data)
 struct reptime_data *data;
 gchar *daterange;
 
-	DB( g_print("\n[reptime] update daterange\n") );
+	DB( g_print("\n[rep-time] update daterange\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
 	daterange = filter_daterange_text_get(data->filter);
 	gtk_label_set_markup(GTK_LABEL(data->TX_daterange), daterange);
 	g_free(daterange);
-}
-
-
-static void reptime_update(GtkWidget *widget, gpointer user_data)
-{
-struct reptime_data *data;
-GtkTreeModel *model;
-gint page;
-gint tmpsrc, tmpintvl;
-gboolean cumul;
-gchar *title;
-
-	DB( g_print("\n[reptime] update\n") );
-
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-
-
-	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_report));
-	//byamount = 0;
-	tmpsrc   = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_src));
-	tmpintvl = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_intvl));
-	cumul    = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_cumul));
-
-	// ensure not exp & inc for piechart
-	page = gtk_notebook_get_current_page(GTK_NOTEBOOK(data->GR_result));
-
-	DB( g_print(" page %d\n\n", page) );
-	//DB( g_print(" tmpintvl %d\n\n", tmpintvl) );
-
-	//column = LST_HUBREPTIME_POS;
-	//DB( g_print(" sort on column %d\n\n", column) );
-	//gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), column, GTK_SORT_DESCENDING);
-
-	gtk_chart_show_legend(GTK_CHART(data->RE_chart), FALSE, FALSE);
-	gtk_chart_show_xval(GTK_CHART(data->RE_chart), TRUE);
-
-	gtk_chart_show_average(GTK_CHART(data->RE_chart), data->average, cumul);
-
-	title = reptime_compute_title(tmpsrc, tmpintvl);
-	gtk_chart_set_datas_total(GTK_CHART(data->RE_chart), model, LST_HUBREPTIME_TOTAL, LST_HUBREPTIME_TOTAL, title, NULL);
-	g_free(title);
-
-	if(page == 1)
-	{
-		DB(	g_print(" change chart type to %d\n", data->charttype) );
-		gtk_chart_set_type (GTK_CHART(data->RE_chart), data->charttype);
-		gtk_chart_set_showmono(GTK_CHART(data->RE_chart), TRUE);
-	}
-	
-	//test 5.8
-	//as it is not the filter dialog, count
-	da_flt_count_item(data->filter);
-	gchar *txt = filter_text_summary_get(data->filter);
-	ui_label_set_integer(GTK_LABEL(data->TX_fltactive), data->filter->n_active);
-	gtk_widget_set_tooltip_text(data->TT_fltactive, txt);
-	g_free(txt);	
-}
-
-
-static void reptime_export_result_clipboard(GSimpleAction *action, GVariant *parameter, gpointer user_data)
-{
-struct reptime_data *data;
-GtkClipboard *clipboard;
-GString *node;
-gchar *coltitle;
-gint tmpintvl;
-
-	DB( g_print("\n[reptime] export result clipboard\n") );
-
-	data = user_data;
-	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-
-	tmpintvl  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_intvl));
-
-	coltitle = hbtk_get_label(CYA_REPORT_INTVL, tmpintvl);
-	node = lst_reptime_to_string(GTK_TREE_VIEW(data->LV_report), coltitle, TRUE);
-
-	clipboard = gtk_clipboard_get_default(gdk_display_get_default());
-	gtk_clipboard_set_text(clipboard, node->str, node->len);
-
-	g_string_free(node, TRUE);
-}
-
-
-static void reptime_export_result_csv(GSimpleAction *action, GVariant *parameter, gpointer user_data)
-{
-struct reptime_data *data;
-gchar *filename = NULL;
-GString *node;
-GIOChannel *io;
-gchar *name;
-gint tmpsrc;
-gchar *title;
-gint tmpintvl;
-
-	DB( g_print("\n[reptime] export result csv\n") );
-
-	data = user_data;
-	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-
-	tmpsrc  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_src));
-	name = g_strdup_printf("hb-reptime_%s.csv", hbtk_get_label(CYA_REPORT_GRPBY_TREND, tmpsrc) );
-
-	if( ui_file_chooser_csv(GTK_WINDOW(data->window), GTK_FILE_CHOOSER_ACTION_SAVE, &filename, name) == TRUE )
-	{
-		DB( g_print(" + filename is %s\n", filename) );
-		io = g_io_channel_new_file(filename, "w", NULL);
-		if(io != NULL)
-		{
-			tmpintvl  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_intvl));
-			title = hbtk_get_label(CYA_REPORT_INTVL, tmpintvl);
-
-			node = lst_reptime_to_string(GTK_TREE_VIEW(data->LV_report), title, FALSE);
-			g_io_channel_write_chars(io, node->str, -1, NULL, NULL);
-			g_io_channel_unref (io);
-			g_string_free(node, TRUE);
-		}
-		g_free( filename );
-	}
-	g_free(name);
-}
-
-
-static void reptime_export_detail_clipboard(GSimpleAction *action, GVariant *parameter, gpointer user_data)
-{
-struct reptime_data *data;
-GtkClipboard *clipboard;
-GString *node;
-guint flags;
-
-	DB( g_print("\n[reptime] export detail clipboard\n") );
-
-	data = user_data;
-	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-
-	flags = LST_TXN_EXP_CLR | LST_TXN_EXP_PMT | LST_TXN_EXP_CAT | LST_TXN_EXP_TAG;
-	node = list_txn_to_string(GTK_TREE_VIEW(data->LV_detail), TRUE, FALSE, FALSE, flags);
-
-	clipboard = gtk_clipboard_get_default(gdk_display_get_default());
-	gtk_clipboard_set_text(clipboard, node->str, node->len);
-
-	g_string_free(node, TRUE);
-}
-
-
-static void reptime_export_detail_csv(GSimpleAction *action, GVariant *parameter, gpointer user_data)
-{
-struct reptime_data *data;
-gchar *filepath = NULL;
-GString *node;
-GIOChannel *io;
-gchar *name;
-gint tmpsrc;
-gboolean hassplit, hasstatus;
-
-	DB( g_print("\n[reptime] export detail csv\n") );
-
-	data = user_data;
-	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-
-	tmpsrc  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_src));
-	name = g_strdup_printf("hb-reptime-detail_%s.csv", hbtk_get_label(CYA_REPORT_GRPBY_TREND, tmpsrc) );
-
-	filepath = g_build_filename(PREFS->path_export, name, NULL);
-
-	//#2019312
-	//if( ui_file_chooser_csv(GTK_WINDOW(data->window), GTK_FILE_CHOOSER_ACTION_SAVE, &filepath, name) == TRUE )
-	if( ui_dialog_export_csv(GTK_WINDOW(data->window), &filepath, &hassplit, &hasstatus, FALSE) == GTK_RESPONSE_ACCEPT )
-	{
-		DB( g_print(" + filename is %s\n", filepath) );
-
-		io = g_io_channel_new_file(filepath, "w", NULL);
-		if(io != NULL)
-		{
-		guint flags;
-
-			flags = LST_TXN_EXP_PMT | LST_TXN_EXP_CAT | LST_TXN_EXP_TAG;
-			if( hasstatus )
-				flags |= LST_TXN_EXP_CLR;
-			node = list_txn_to_string(GTK_TREE_VIEW(data->LV_detail), FALSE, hassplit, FALSE, flags);
-			g_io_channel_write_chars(io, node->str, -1, NULL, NULL);
-
-			g_io_channel_unref (io);
-			g_string_free(node, TRUE);
-		}
-	}
-
-	g_free( filepath );
-	g_free(name);
-}
-
-
-static void reptime_update_for(GtkWidget *widget, gpointer user_data)
-{
-struct reptime_data *data;
-gint tmpsrc, pageid;
-Filter *flt;
-
-	DB( g_print("\n[reptime] update for\n") );
-
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-
-	tmpsrc  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_src));
-	flt = data->filter;
-
-	DB( g_print("  src=%d\n", tmpsrc) );
-
-	//filter_reset(flt);
-
-	//inactive all filters
-	flt->option[FLT_GRP_CATEGORY] = 0;
-	flt->option[FLT_GRP_PAYEE] = 0;
-	flt->option[FLT_GRP_ACCOUNT] = 0;
-	flt->option[FLT_GRP_TAG] = 0;
-
-	switch(tmpsrc)
-	{
-		case REPORT_GRPBY_CATEGORY:
-			pageid = 1;
-			flt->option[FLT_GRP_CATEGORY] = 1;
-			da_flt_status_cat_set(flt, 0, TRUE);
-			break;
-		case REPORT_GRPBY_PAYEE:
-			pageid = 2;
-			flt->option[FLT_GRP_PAYEE] = 1;
-			da_flt_status_pay_set(flt, 0, TRUE);
-			break;
-		case REPORT_GRPBY_TAG:
-			pageid = 3;
-			flt->option[FLT_GRP_TAG] = 1;
-			//da_flt_status_tag_set(flt, 0, TRUE);
-			break;
-		default: //REPORT_GRPBY_ACCOUNT
-			pageid = 0;
-			flt->option[FLT_GRP_ACCOUNT] = 1;
-			//todo:
-			break;
-	}
-
-	gtk_notebook_set_current_page(GTK_NOTEBOOK(data->GR_itemtype), pageid);
-
-	//hb_widget_visible(data->CM_all, defvisible);
-	//hb_widget_visible(data->BT_filter, !monoflt);
-
-
-}
-
-
-
-static void reptime_for(GtkWidget *widget, gpointer user_data)
-{
-struct reptime_data *data;
-
-	DB( g_print("\n[reptime] for\n") );
-
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-
-	reptime_update_for(widget, data);
-
-	reptime_compute(widget, data);
 }
 
 
@@ -566,7 +137,7 @@ GtkTreeIter  iter, child;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	DB( g_print("\n[reptime] detail\n") );
+	DB( g_print("\n[rep-time] detail\n") );
 
 	//tmpsrc  = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_src));
 	tmpintvl = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_intvl));
@@ -636,39 +207,246 @@ GtkTreeIter  iter, child;
 }
 
 
-static gboolean
-reptime_cb_activate_link (GtkWidget *label, const gchar *uri, gpointer user_data)
+static void reptime_update(GtkWidget *widget, gpointer user_data)
 {
 struct reptime_data *data;
+GtkTreeModel *model;
+gint page;
+gint tmpsrc, tmpintvl;
+gboolean cumul;
+gchar *title;
+
+	DB( g_print("\n[rep-time] update\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_report));
+	//byamount = 0;
+	tmpsrc   = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_src));
+	tmpintvl = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_intvl));
+	cumul    = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_cumul));
+
+	// ensure not exp & inc for piechart
+	page = gtk_notebook_get_current_page(GTK_NOTEBOOK(data->GR_result));
+
+	DB( g_print(" page %d\n\n", page) );
+	//DB( g_print(" tmpintvl %d\n\n", tmpintvl) );
+
+	//column = LST_HUBREPTIME_POS;
+	//DB( g_print(" sort on column %d\n\n", column) );
+	//gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(model), column, GTK_SORT_DESCENDING);
+
+	gtk_chart_show_legend(GTK_CHART(data->RE_chart), FALSE, FALSE);
+	gtk_chart_show_xval(GTK_CHART(data->RE_chart), TRUE);
+
+	gtk_chart_show_average(GTK_CHART(data->RE_chart), data->average, cumul);
+
+	title = reptime_compute_title(tmpsrc, tmpintvl);
+	gtk_chart_set_datas_total(GTK_CHART(data->RE_chart), model, LST_HUBREPTIME_TOTAL, LST_HUBREPTIME_TOTAL, title, NULL);
+	g_free(title);
+
+	if(page == 1)
+	{
+		DB(	g_print(" change chart type to %d\n", data->charttype) );
+		gtk_chart_set_type (GTK_CHART(data->RE_chart), data->charttype);
+		gtk_chart_set_showmono(GTK_CHART(data->RE_chart), TRUE);
+	}
+	
+	//test 5.8
+	//as it is not the filter dialog, count
+	da_flt_count_item(data->filter);
+	gchar *txt = filter_text_summary_get(data->filter);
+	ui_label_set_integer(GTK_LABEL(data->TX_fltactive), data->filter->n_active);
+	gtk_widget_set_tooltip_text(data->TT_fltactive, txt);
+	g_free(txt);	
+}
+
+
+static void reptime_export_result_clipboard(GSimpleAction *action, GVariant *parameter, gpointer user_data)
+{
+struct reptime_data *data;
+GtkClipboard *clipboard;
+GString *node;
+gchar *coltitle;
+gint tmpintvl;
+
+	DB( g_print("\n[rep-time] export result clipboard\n") );
+
+	data = user_data;
+	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	tmpintvl  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_intvl));
+
+	coltitle = hbtk_get_label(CYA_REPORT_INTVL, tmpintvl);
+	node = lst_reptime_to_string(GTK_TREE_VIEW(data->LV_report), coltitle, TRUE);
+
+	clipboard = gtk_clipboard_get_default(gdk_display_get_default());
+	gtk_clipboard_set_text(clipboard, node->str, node->len);
+
+	g_string_free(node, TRUE);
+}
+
+
+static void reptime_export_result_csv(GSimpleAction *action, GVariant *parameter, gpointer user_data)
+{
+struct reptime_data *data;
+gchar *filename = NULL;
+GString *node;
+GIOChannel *io;
+gchar *name;
 gint tmpsrc;
+gchar *title;
+gint tmpintvl;
 
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(GTK_WIDGET(label), GTK_TYPE_WINDOW)), "inst_data");
+	DB( g_print("\n[rep-time] export result csv\n") );
 
-	tmpsrc = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_src));
+	data = user_data;
+	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	tmpsrc  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_src));
+	name = g_strdup_printf("hb-reptime_%s.csv", hbtk_get_label(CYA_REPORT_GRPBY_TREND, tmpsrc) );
+
+	if( ui_file_chooser_csv(GTK_WINDOW(data->window), GTK_FILE_CHOOSER_ACTION_SAVE, &filename, name) == TRUE )
+	{
+		DB( g_print(" + filename is %s\n", filename) );
+		io = g_io_channel_new_file(filename, "w", NULL);
+		if(io != NULL)
+		{
+			tmpintvl  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_intvl));
+			title = hbtk_get_label(CYA_REPORT_INTVL, tmpintvl);
+
+			node = lst_reptime_to_string(GTK_TREE_VIEW(data->LV_report), title, FALSE);
+			g_io_channel_write_chars(io, node->str, -1, NULL, NULL);
+			g_io_channel_unref (io);
+			g_string_free(node, TRUE);
+		}
+		g_free( filename );
+	}
+	g_free(name);
+}
+
+
+static void reptime_export_detail_clipboard(GSimpleAction *action, GVariant *parameter, gpointer user_data)
+{
+struct reptime_data *data;
+GtkClipboard *clipboard;
+GString *node;
+guint flags;
+
+	DB( g_print("\n[rep-time] export detail clipboard\n") );
+
+	data = user_data;
+	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	flags = LST_TXN_EXP_CLR | LST_TXN_EXP_PMT | LST_TXN_EXP_CAT | LST_TXN_EXP_TAG;
+	node = list_txn_to_string(GTK_TREE_VIEW(data->LV_detail), TRUE, FALSE, FALSE, flags);
+
+	clipboard = gtk_clipboard_get_default(gdk_display_get_default());
+	gtk_clipboard_set_text(clipboard, node->str, node->len);
+
+	g_string_free(node, TRUE);
+}
+
+
+static void reptime_export_detail_csv(GSimpleAction *action, GVariant *parameter, gpointer user_data)
+{
+struct reptime_data *data;
+gchar *filepath = NULL;
+GString *node;
+GIOChannel *io;
+gchar *name;
+gint tmpsrc;
+gboolean hassplit, hasstatus;
+
+	DB( g_print("\n[rep-time] export detail csv\n") );
+
+	data = user_data;
+	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	tmpsrc  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_src));
+	name = g_strdup_printf("hb-reptime-detail_%s.csv", hbtk_get_label(CYA_REPORT_GRPBY_TREND, tmpsrc) );
+
+	filepath = g_build_filename(PREFS->path_export, name, NULL);
+
+	//#2019312
+	//if( ui_file_chooser_csv(GTK_WINDOW(data->window), GTK_FILE_CHOOSER_ACTION_SAVE, &filepath, name) == TRUE )
+	if( ui_dialog_export_csv(GTK_WINDOW(data->window), &filepath, &hassplit, &hasstatus, FALSE) == GTK_RESPONSE_ACCEPT )
+	{
+		DB( g_print(" + filename is %s\n", filepath) );
+
+		io = g_io_channel_new_file(filepath, "w", NULL);
+		if(io != NULL)
+		{
+		guint flags;
+
+			flags = LST_TXN_EXP_PMT | LST_TXN_EXP_CAT | LST_TXN_EXP_TAG;
+			if( hasstatus )
+				flags |= LST_TXN_EXP_CLR;
+			node = list_txn_to_string(GTK_TREE_VIEW(data->LV_detail), FALSE, hassplit, FALSE, flags);
+			g_io_channel_write_chars(io, node->str, -1, NULL, NULL);
+
+			g_io_channel_unref (io);
+			g_string_free(node, TRUE);
+		}
+	}
+
+	g_free( filepath );
+	g_free(name);
+}
+
+
+static void reptime_update_for(GtkWidget *widget, gpointer user_data)
+{
+struct reptime_data *data;
+gint tmpsrc, pageid;
+Filter *flt;
+
+	DB( g_print("\n[rep-time] update for\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	tmpsrc  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_src));
+	flt = data->filter;
+
+	DB( g_print("  src=%d\n", tmpsrc) );
+
+	//filter_reset(flt);
+
+	//inactive all filters
+	flt->option[FLT_GRP_CATEGORY] = 0;
+	flt->option[FLT_GRP_PAYEE] = 0;
+	flt->option[FLT_GRP_ACCOUNT] = 0;
+	flt->option[FLT_GRP_TAG] = 0;
 
 	switch(tmpsrc)
 	{
-		case REPORT_GRPBY_ACCOUNT:
-			ui_acc_listview_quick_select(GTK_TREE_VIEW(data->LV_acc), uri);
-			reptime_cb_acc_changed(NULL, NULL, data);
-			break;
 		case REPORT_GRPBY_CATEGORY:
-			ui_cat_listview_quick_select(GTK_TREE_VIEW(data->LV_cat), uri);
-			reptime_cb_cat_changed(NULL, NULL, data);
+			pageid = 1;
+			flt->option[FLT_GRP_CATEGORY] = 1;
+			da_flt_status_cat_set(flt, 0, TRUE);
 			break;
 		case REPORT_GRPBY_PAYEE:
-			ui_pay_listview_quick_select(GTK_TREE_VIEW(data->LV_pay), uri);
-			reptime_cb_pay_changed(NULL, NULL, data);
+			pageid = 2;
+			flt->option[FLT_GRP_PAYEE] = 1;
+			da_flt_status_pay_set(flt, 0, TRUE);
 			break;
 		case REPORT_GRPBY_TAG:
-			ui_tag_listview_quick_select(GTK_TREE_VIEW(data->LV_tag), uri);
-			reptime_cb_tag_changed(NULL, NULL, data);
+			pageid = 3;
+			flt->option[FLT_GRP_TAG] = 1;
+			break;
+		default: //REPORT_GRPBY_ACCOUNT
+			pageid = 0;
+			flt->option[FLT_GRP_ACCOUNT] = 1;
 			break;
 	}
 
-	reptime_compute (GTK_WIDGET(data->window), NULL);
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(data->GR_itemtype), pageid);
 
-    return TRUE;
+	//hb_widget_visible(data->CM_all, defvisible);
+	//hb_widget_visible(data->BT_filter, !monoflt);
+
+
 }
 
 
@@ -686,7 +464,7 @@ GList *list;
 gint id;
 guint n_result, i;
 
-	DB( g_print("----------------\n[reptime] compute\n") );
+	DB( g_print("----------------\n[rep-time] compute\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -781,10 +559,15 @@ guint n_result, i;
 		for(i=0, id=0; i<n_result; i++)
 		{
 		gchar intvlname[64];
-		gdouble total = data->tmp_income[i] + data->tmp_expense[i];
+		gdouble total = data->tmp_expense[i] + data->tmp_income[i];
 		gdouble value;
 
-			if( !showempty && total == 0 )
+			//if( !showempty && total == 0 )
+			//#2091004 5.8.6 keep lines with exact 0
+			if( !showempty 
+			 && (hb_amount_compare(data->tmp_expense[i], 0.0) == 0)
+			 && (hb_amount_compare(data->tmp_income[i], 0.0) == 0)
+			 )
 				continue;
 
 			report_interval_snprint_name(intvlname, sizeof(intvlname)-1, tmpintvl, from, i);
@@ -869,34 +652,222 @@ guint n_result, i;
 }
 
 
-static void reptime_sensitive(GtkWidget *widget, gpointer user_data)
+//reset the filter
+static void reptime_filter_setup(struct reptime_data *data)
+{
+guint32 accnum;
+
+	DB( g_print("\n[rep-time] reset filter\n") );
+
+	filter_reset(data->filter);
+	filter_preset_daterange_set(data->filter, PREFS->date_range_rep, data->accnum);
+	/* 3.4 : make int transfer out of stats */
+	//TODO: for compatibility with < 5.3, keep this unset, but normally it should be set
+	//filter_preset_type_set(data->filter, FLT_TYPE_INTXFER, FLT_EXCLUDE);
+
+	//5.6 set default account
+	data->filter->option[FLT_GRP_ACCOUNT] = 1;
+	accnum = data->accnum;
+	if(!accnum)
+	{
+		accnum = da_acc_get_first_key();
+	}
+	DB( g_print(" accnum=%d\n", accnum) );
+
+	ui_acc_listview_set_active(GTK_TREE_VIEW(data->LV_acc), accnum);
+	ui_acc_listview_toggle_to_filter(GTK_TREE_VIEW(data->LV_acc), data->filter);
+}
+
+
+/* = = = = = = = = = = = = = = = = */
+
+
+static void reptime_for(GtkWidget *widget, gpointer user_data)
 {
 struct reptime_data *data;
-gboolean visible, sensitive;
-gint page;
 
-	DB( g_print("\n[reptime] sensitive\n") );
+	DB( g_print("\n[rep-time] for\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	page = gtk_notebook_get_current_page(GTK_NOTEBOOK(data->GR_result));
+	reptime_update_for(widget, data);
 
-	visible = page == 0 ? TRUE : FALSE;
-	hb_widget_visible (data->BT_detail, visible);
-	hb_widget_visible (data->BT_export, visible);
+	reptime_compute(widget, data);
+}
 
-	visible = page == 0 ? FALSE : TRUE;
-	//5.7
-	//hb_widget_visible(data->BT_print, visible);
-	hb_widget_visible(data->LB_zoomx, visible);
-	hb_widget_visible(data->RG_zoomx, visible);
 
-	page = gtk_tree_model_iter_n_children(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_detail)), NULL);
-	sensitive = ((page > 0) && data->detail) ? TRUE : FALSE;
-	g_simple_action_set_enabled(G_SIMPLE_ACTION(g_action_map_lookup_action (G_ACTION_MAP (data->actions), "detclip")), sensitive);
-	g_simple_action_set_enabled(G_SIMPLE_ACTION(g_action_map_lookup_action (G_ACTION_MAP (data->actions), "detcsv")), sensitive);
+static void reptime_action_filter_reset(GtkWidget *widget, gpointer user_data)
+{
+struct reptime_data *data;
+
+	DB( g_print("\n[rep-time] filter reset\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	//TODO: to review: clean selection
+	ui_acc_listview_quick_select(GTK_TREE_VIEW(data->LV_acc), "non");
+	ui_cat_listview_quick_select(GTK_TREE_VIEW(data->LV_cat), "non");
+	ui_pay_listview_quick_select(GTK_TREE_VIEW(data->LV_pay), "non");
+	ui_tag_listview_quick_select(GTK_TREE_VIEW(data->LV_tag), "non");
+
+	reptime_filter_setup(data);
+
+	g_signal_handler_block(data->CY_range, data->hid[HID_REPTIME_RANGE]);
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_range), PREFS->date_range_rep);
+	g_signal_handler_unblock(data->CY_range, data->hid[HID_REPTIME_RANGE]);
+
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_src), REPORT_GRPBY_ACCOUNT);
+
+	reptime_compute(data->window, NULL);
+}
+
+
+static void
+reptime_date_change(GtkWidget *widget, gpointer user_data)
+{
+struct reptime_data *data;
+
+	DB( g_print("\n[rep-time] date change\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	data->filter->mindate = gtk_date_entry_get_date(GTK_DATE_ENTRY(data->PO_mindate));
+	data->filter->maxdate = gtk_date_entry_get_date(GTK_DATE_ENTRY(data->PO_maxdate));
+
+	// set min/max date for both widget
+	//5.8 check for error
+		gtk_date_entry_set_error(GTK_DATE_ENTRY(data->PO_mindate), ( data->filter->mindate > data->filter->maxdate ) ? TRUE : FALSE);
+		gtk_date_entry_set_error(GTK_DATE_ENTRY(data->PO_maxdate), ( data->filter->maxdate < data->filter->mindate ) ? TRUE : FALSE);
+
+	g_signal_handler_block(data->CY_range, data->hid[HID_REPTIME_RANGE]);
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_range), FLT_RANGE_MISC_CUSTOM);
+	g_signal_handler_unblock(data->CY_range, data->hid[HID_REPTIME_RANGE]);
+
+	reptime_compute(widget, NULL);
+	reptime_update_daterange(widget, NULL);
 
 }
+
+
+static void reptime_update_quickdate(GtkWidget *widget, gpointer user_data)
+{
+struct reptime_data *data;
+
+	DB( g_print("\n[rep-time] update quickdate\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	g_signal_handler_block(data->PO_mindate, data->hid[HID_REPTIME_MINDATE]);
+	g_signal_handler_block(data->PO_maxdate, data->hid[HID_REPTIME_MAXDATE]);
+
+	gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_mindate), data->filter->mindate);
+	gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_maxdate), data->filter->maxdate);
+
+	g_signal_handler_unblock(data->PO_mindate, data->hid[HID_REPTIME_MINDATE]);
+	g_signal_handler_unblock(data->PO_maxdate, data->hid[HID_REPTIME_MAXDATE]);
+
+}
+
+
+static void reptime_range_change(GtkWidget *widget, gpointer user_data)
+{
+struct reptime_data *data;
+gint range;
+
+	DB( g_print("\n[rep-time] range change\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	range = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_range));
+
+	if(range != FLT_RANGE_MISC_CUSTOM)
+	{
+		filter_preset_daterange_set(data->filter, range, data->accnum);
+	}
+
+	//#2046032 set min/max date for both widget
+	//5.8 check for error
+	gtk_date_entry_set_error(GTK_DATE_ENTRY(data->PO_mindate), ( data->filter->mindate > data->filter->maxdate ) ? TRUE : FALSE);
+	gtk_date_entry_set_error(GTK_DATE_ENTRY(data->PO_maxdate), ( data->filter->maxdate < data->filter->mindate ) ? TRUE : FALSE);
+
+	reptime_update_quickdate(widget, NULL);
+
+	reptime_compute(widget, NULL);
+	reptime_update_daterange(widget, NULL);
+
+}
+
+
+/* = = = = = = = = = = = = = = = = */
+
+
+static void reptime_action_viewlist(GtkWidget *toolbutton, gpointer user_data)
+{
+struct reptime_data *data = user_data;
+
+	data->charttype = CHART_TYPE_NONE;
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(data->GR_result), 0);
+	reptime_sensitive(data->window, NULL);
+}
+
+
+static void reptime_action_viewline(GtkWidget *toolbutton, gpointer user_data)
+{
+struct reptime_data *data = user_data;
+
+	data->charttype = CHART_TYPE_LINE;
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(data->GR_result), 1);
+	reptime_sensitive(data->window, NULL);
+	reptime_update(data->window, NULL);
+}
+
+
+static void reptime_action_viewcolumn(GtkWidget *toolbutton, gpointer user_data)
+{
+struct reptime_data *data = user_data;
+
+	data->charttype = CHART_TYPE_COL;
+	gtk_notebook_set_current_page(GTK_NOTEBOOK(data->GR_result), 1);
+	reptime_sensitive(data->window, NULL);
+	reptime_update(data->window, NULL);
+
+}
+
+
+static void reptime_action_print(GtkWidget *toolbutton, gpointer user_data)
+{
+struct reptime_data *data = user_data;
+gint tmpsrc, tmpintvl, page;
+gchar *coltitle, *title, *name;
+
+	tmpsrc  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_src));
+	tmpintvl  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_intvl));
+	page = gtk_notebook_get_current_page(GTK_NOTEBOOK(data->GR_result));
+
+	title = reptime_compute_title(tmpsrc, tmpintvl);
+
+	name = g_strdup_printf("hb-reptime_%s.csv", hbtk_get_label(CYA_REPORT_GRPBY_TREND, tmpsrc) );
+
+	if( page == 0 )
+	{
+	GString *node;
+
+		coltitle = hbtk_get_label(CYA_REPORT_INTVL, tmpintvl);
+		node = lst_reptime_to_string(GTK_TREE_VIEW(data->LV_report), coltitle, TRUE);
+
+		hb_print_listview(GTK_WINDOW(data->window), node->str, NULL, title, name, FALSE);
+
+		g_string_free(node, TRUE);
+	}
+	else
+	{
+		gtk_chart_print(GTK_CHART(data->RE_chart), GTK_WINDOW(data->window), PREFS->path_export, name);
+
+	}
+
+	g_free(name);
+}
+
 
 
 static void
@@ -904,7 +875,7 @@ reptime_cb_acc_changed(GtkCellRendererToggle *cell, gchar *path_str, gpointer us
 {
 struct reptime_data *data = user_data;
 
-	DB( g_print ("\n[reptime] acc list changed\n") );
+	DB( g_print ("\n[rep-time] acc list changed\n") );
 
 	ui_acc_listview_toggle_to_filter(GTK_TREE_VIEW(data->LV_acc), data->filter);
 	reptime_compute(GTK_WIDGET(data->LV_acc), NULL);
@@ -916,7 +887,7 @@ reptime_cb_cat_changed(GtkCellRendererToggle *cell, gchar *path_str, gpointer us
 {
 struct reptime_data *data = user_data;
 
-	DB( g_print ("\n[reptime] cat list changed\n") );
+	DB( g_print ("\n[rep-time] cat list changed\n") );
 
 	ui_cat_listview_toggle_to_filter(GTK_TREE_VIEW(data->LV_cat), data->filter);
 	reptime_compute(GTK_WIDGET(data->LV_cat), NULL);
@@ -928,7 +899,7 @@ reptime_cb_pay_changed(GtkCellRendererToggle *cell, gchar *path_str, gpointer us
 {
 struct reptime_data *data = user_data;
 
-	DB( g_print ("\n[reptime] pay list changed\n") );
+	DB( g_print ("\n[rep-time] pay list changed\n") );
 
 	ui_pay_listview_toggle_to_filter(GTK_TREE_VIEW(data->LV_pay), data->filter);
 	reptime_compute(GTK_WIDGET(data->LV_pay), NULL);
@@ -940,10 +911,46 @@ reptime_cb_tag_changed(GtkCellRendererToggle *cell, gchar *path_str, gpointer us
 {
 struct reptime_data *data = user_data;
 
-	DB( g_print ("\n[reptime] tag list changed\n") );
+	DB( g_print ("\n[rep-time] tag list changed\n") );
 
 	ui_tag_listview_toggle_to_filter(GTK_TREE_VIEW(data->LV_tag), data->filter);
 	reptime_compute(GTK_WIDGET(data->LV_tag), NULL);
+}
+
+
+static gboolean
+reptime_cb_activate_link (GtkWidget *label, const gchar *uri, gpointer user_data)
+{
+struct reptime_data *data;
+gint tmpsrc;
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(GTK_WIDGET(label), GTK_TYPE_WINDOW)), "inst_data");
+
+	tmpsrc = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_src));
+
+	switch(tmpsrc)
+	{
+		case REPORT_GRPBY_ACCOUNT:
+			ui_acc_listview_quick_select(GTK_TREE_VIEW(data->LV_acc), uri);
+			reptime_cb_acc_changed(NULL, NULL, data);
+			break;
+		case REPORT_GRPBY_CATEGORY:
+			ui_cat_listview_quick_select(GTK_TREE_VIEW(data->LV_cat), uri);
+			reptime_cb_cat_changed(NULL, NULL, data);
+			break;
+		case REPORT_GRPBY_PAYEE:
+			ui_pay_listview_quick_select(GTK_TREE_VIEW(data->LV_pay), uri);
+			reptime_cb_pay_changed(NULL, NULL, data);
+			break;
+		case REPORT_GRPBY_TAG:
+			ui_tag_listview_quick_select(GTK_TREE_VIEW(data->LV_tag), uri);
+			reptime_cb_tag_changed(NULL, NULL, data);
+			break;
+	}
+
+	reptime_compute (GTK_WIDGET(data->window), NULL);
+
+    return TRUE;
 }
 
 
@@ -958,7 +965,7 @@ gboolean result;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(GTK_WIDGET(treeview), GTK_TYPE_WINDOW)), "inst_data");
 
-	DB( g_print ("\n[reptime] A detail row has been double-clicked!\n") );
+	DB( g_print ("\n[rep-time] A detail row has been double-clicked!\n") );
 
 	active_txn = list_txn_get_active_transaction(GTK_TREE_VIEW(data->LV_detail));
 	if(active_txn)
@@ -1046,19 +1053,19 @@ struct reptime_data *data;
 
 	data->detail ^= 1;
 
-	DB( g_print("\n[reptime] toggledetail to %d\n", data->detail) );
+	DB( g_print("\n[rep-time] toggledetail to %d\n", data->detail) );
 
 	reptime_update_detail(widget, user_data);
 	reptime_sensitive(widget, NULL);
 }
 
 
-static void reptime_zoomx_callback(GtkWidget *widget, gpointer user_data)
+static void reptime_cb_zoomx_changed(GtkWidget *widget, gpointer user_data)
 {
 struct reptime_data *data;
 gdouble value;
 
-	DB( g_print("\n[reptime] zoomx\n") );
+	DB( g_print("\n[rep-time] zoomx\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -1075,7 +1082,7 @@ static void reptime_toggle_minor(GtkWidget *widget, gpointer user_data)
 {
 struct reptime_data *data;
 
-	DB( g_print("\n[reptime] toggle\n") );
+	DB( g_print("\n[rep-time] toggle\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -1095,7 +1102,7 @@ GtkTreeModel *model;
 GtkTreeIter iter;
 guint key = -1;
 
-	DB( g_print("\n[reptime] selection\n") );
+	DB( g_print("\n[rep-time] selection\n") );
 
 	if (gtk_tree_selection_get_selected(treeselection, &model, &iter))
 	{
@@ -1108,6 +1115,9 @@ guint key = -1;
 	reptime_detail(GTK_WIDGET(gtk_tree_selection_get_tree_view (treeselection)), GINT_TO_POINTER(key));
 	reptime_sensitive(GTK_WIDGET(gtk_tree_selection_get_tree_view (treeselection)), NULL);
 }
+
+
+/* = = = = = = = = = = = = = = = = */
 
 
 static const GActionEntry win_actions[] = {
@@ -1180,11 +1190,11 @@ GtkWidget *toolbar, *button;
 	g_menu_append (section, _("_Detail to CSV")      , "win.detcsv");
 	g_object_unref (section);
 
-	GActionGroup *group = (GActionGroup*)g_simple_action_group_new ();
-	data->actions = group;
-	g_action_map_add_action_entries (G_ACTION_MAP (group), win_actions, G_N_ELEMENTS (win_actions), data);
+	GActionGroup *actiongroup = (GActionGroup*)g_simple_action_group_new ();
+	data->actions = actiongroup;
+	g_action_map_add_action_entries (G_ACTION_MAP (actiongroup), win_actions, G_N_ELEMENTS (win_actions), data);
 
-	gtk_widget_insert_action_group (button, "win", G_ACTION_GROUP(group));
+	gtk_widget_insert_action_group (button, "win", G_ACTION_GROUP(actiongroup));
 	gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (button), G_MENU_MODEL (menu));
 
 
@@ -1195,35 +1205,11 @@ GtkWidget *toolbar, *button;
 }
 
 
-//reset the filter
-static void reptime_filter_setup(struct reptime_data *data)
+static void reptime_window_setup(struct reptime_data *data)
 {
-	DB( g_print("\n[reptime] reset filter\n") );
-
-	filter_reset(data->filter);
-	filter_preset_daterange_set(data->filter, PREFS->date_range_rep, data->accnum);
-	/* 3.4 : make int transfer out of stats */
-	//TODO: for compatibility with < 5.3, keep this unset, but normally it should be set
-	//filter_preset_type_set(data->filter, FLT_TYPE_INTXFER, FLT_EXCLUDE);
-
-	//g_signal_handler_block(data->PO_mindate, data->handler_id[HID_REPTIME_MINDATE]);
-	//g_signal_handler_block(data->PO_maxdate, data->handler_id[HID_REPTIME_MAXDATE]);
-
-	gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_mindate), data->filter->mindate);
-	gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_maxdate), data->filter->maxdate);
-
-	//g_signal_handler_unblock(data->PO_mindate, data->handler_id[HID_REPTIME_MINDATE]);
-	//g_signal_handler_unblock(data->PO_maxdate, data->handler_id[HID_REPTIME_MAXDATE]);
-}
-
-
-static void reptime_window_setup(struct reptime_data *data, guint32 accnum)
-{
-	DB( g_print("\n[reptime] window setup\n") );
+	DB( g_print("\n[rep-time] window setup\n") );
 
 	DB( g_print(" init data\n") );
-
-	reptime_filter_setup(data);
 
 	DB( g_print(" populate\n") );
 	ui_acc_listview_populate(data->LV_acc, ACC_LST_INSERT_REPORT, NULL);
@@ -1231,77 +1217,64 @@ static void reptime_window_setup(struct reptime_data *data, guint32 accnum)
 	ui_pay_listview_populate(data->LV_pay, NULL, TRUE);
 	ui_tag_listview_populate(data->LV_tag, 0);
 
+	reptime_filter_setup(data);
+	reptime_update_for(data->window, data);
+
 	DB( g_print(" set widgets default\n") );
 	//src is account
 	hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_intvl), REPORT_INTVL_MONTH);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_minor), GLOBALS->minor);
-	hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_range), PREFS->date_range_rep);
-
-	//5.6 set default account
-	if(!accnum)
-	{
-		accnum = da_acc_get_first_key();
-	}
-	ui_acc_listview_set_active(GTK_TREE_VIEW(data->LV_acc), accnum);
-	da_flt_status_acc_set(data->filter, accnum, TRUE);
+	
 
 	g_object_set_data(G_OBJECT(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_report))), "minor", (gpointer)data->CM_minor);
 	g_object_set_data(G_OBJECT(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_detail))), "minor", (gpointer)data->CM_minor);
 
 	gtk_chart_set_smallfont (GTK_CHART(data->RE_chart), PREFS->rep_smallfont);
 
-	reptime_update_for(data->window, data);
-
-
 	DB( g_print(" connect widgets signals\n") );
 
+	//display signals
+	data->hid[HID_REPTIME_VIEW] = g_signal_connect (data->CY_intvl, "changed", G_CALLBACK (reptime_compute), (gpointer)data);
 	g_signal_connect (data->CM_cumul, "toggled", G_CALLBACK (reptime_compute), NULL);
-	g_signal_connect (data->CM_minor, "toggled", G_CALLBACK (reptime_toggle_minor), NULL);
-    data->handler_id[HID_REPTIME_MINDATE] = g_signal_connect (data->PO_mindate, "changed", G_CALLBACK (reptime_date_change), (gpointer)data);
-    data->handler_id[HID_REPTIME_MAXDATE] = g_signal_connect (data->PO_maxdate, "changed", G_CALLBACK (reptime_date_change), (gpointer)data);
-	data->handler_id[HID_REPTIME_RANGE] = g_signal_connect (data->CY_range, "changed", G_CALLBACK (reptime_range_change), NULL);
-	g_signal_connect (data->CY_src, "changed", G_CALLBACK (reptime_for), (gpointer)data);
-	data->handler_id[HID_REPTIME_VIEW] = g_signal_connect (data->CY_intvl, "changed", G_CALLBACK (reptime_compute), (gpointer)data);
 	g_signal_connect (data->CM_showempty, "toggled", G_CALLBACK (reptime_compute), NULL);
+	g_signal_connect (data->CM_minor, "toggled", G_CALLBACK (reptime_toggle_minor), NULL);
+	g_signal_connect (data->RG_zoomx, "value-changed", G_CALLBACK (reptime_cb_zoomx_changed), NULL);
 
-	g_signal_connect (data->RG_zoomx, "value-changed", G_CALLBACK (reptime_zoomx_callback), NULL);
-
-	g_signal_connect (G_OBJECT (data->BT_list), "clicked", G_CALLBACK (reptime_action_viewlist), (gpointer)data);
-	g_signal_connect (G_OBJECT (data->BT_line), "clicked", G_CALLBACK (reptime_action_viewline), (gpointer)data);
-	g_signal_connect (G_OBJECT (data->BT_column), "clicked", G_CALLBACK (reptime_action_viewcolumn), (gpointer)data);
-	g_signal_connect (G_OBJECT (data->BT_detail), "clicked", G_CALLBACK (reptime_toggle_detail), (gpointer)data);
-
-	g_signal_connect (G_OBJECT (data->BT_refresh), "clicked", G_CALLBACK (reptime_compute), (gpointer)data);
-	g_signal_connect (G_OBJECT (data->BT_print), "clicked", G_CALLBACK (reptime_action_print), (gpointer)data);
-	//export is a menu
-
+	//filter signals
 	g_signal_connect (data->BT_reset , "clicked", G_CALLBACK (reptime_action_filter_reset), NULL);
-
+    data->hid[HID_REPTIME_MINDATE] = g_signal_connect (data->PO_mindate, "changed", G_CALLBACK (reptime_date_change), (gpointer)data);
+    data->hid[HID_REPTIME_MAXDATE] = g_signal_connect (data->PO_maxdate, "changed", G_CALLBACK (reptime_date_change), (gpointer)data);
+	data->hid[HID_REPTIME_RANGE] = g_signal_connect (data->CY_range, "changed", G_CALLBACK (reptime_range_change), NULL);
 
 	//item filter
+	g_signal_connect (data->CY_src, "changed", G_CALLBACK (reptime_for), (gpointer)data);
 	g_signal_connect (data->BT_all, "activate-link", G_CALLBACK (reptime_cb_activate_link), NULL);
 	g_signal_connect (data->BT_non, "activate-link", G_CALLBACK (reptime_cb_activate_link), NULL);
 	g_signal_connect (data->BT_inv, "activate-link", G_CALLBACK (reptime_cb_activate_link), NULL);
 	
-	
 	GtkCellRendererToggle *renderer;
-
 	renderer = g_object_get_data(G_OBJECT(data->LV_acc), "togrdr_data");
 	g_signal_connect_after (G_OBJECT(renderer), "toggled", G_CALLBACK (reptime_cb_acc_changed), (gpointer)data);
-
 	renderer = g_object_get_data(G_OBJECT(data->LV_cat), "togrdr_data");
 	g_signal_connect_after (G_OBJECT(renderer), "toggled", G_CALLBACK (reptime_cb_cat_changed), (gpointer)data);
-	
 	renderer = g_object_get_data(G_OBJECT(data->LV_pay), "togrdr_data");
 	g_signal_connect_after (G_OBJECT(renderer), "toggled", G_CALLBACK (reptime_cb_pay_changed), (gpointer)data);
-
 	renderer = g_object_get_data(G_OBJECT(data->LV_tag), "togrdr_data");
 	g_signal_connect_after (G_OBJECT(renderer), "toggled", G_CALLBACK (reptime_cb_tag_changed), (gpointer)data);
 
+	//toolbar signals
+	g_signal_connect (G_OBJECT (data->BT_list), "clicked", G_CALLBACK (reptime_action_viewlist), (gpointer)data);
+	g_signal_connect (G_OBJECT (data->BT_line), "clicked", G_CALLBACK (reptime_action_viewline), (gpointer)data);
+	g_signal_connect (G_OBJECT (data->BT_column), "clicked", G_CALLBACK (reptime_action_viewcolumn), (gpointer)data);
+	g_signal_connect (G_OBJECT (data->BT_detail), "clicked", G_CALLBACK (reptime_toggle_detail), (gpointer)data);
+	g_signal_connect (G_OBJECT (data->BT_refresh), "clicked", G_CALLBACK (reptime_compute), (gpointer)data);
+	//export is a menu
+	g_signal_connect (G_OBJECT (data->BT_print), "clicked", G_CALLBACK (reptime_action_print), (gpointer)data);
 
+	//treeview signals
 	g_signal_connect (gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_report)), "changed", G_CALLBACK (reptime_selection), NULL);
-
 	g_signal_connect (GTK_TREE_VIEW(data->LV_detail), "row-activated", G_CALLBACK (reptime_detail_onRowActivated), NULL);
+
 }
 
 
@@ -1314,12 +1287,13 @@ struct reptime_data *data;
 	if( data->mapped_done == TRUE )
 		return FALSE;
 
-	DB( g_print("\n[reptime] window mapped\n") );
+	DB( g_print("\n[rep-time] window mapped\n") );
 
 	//setup, init and show window
-	reptime_window_setup(data, data->accnum);
-	reptime_compute(data->window, NULL);
-	reptime_update_daterange(data->window, NULL);
+	reptime_window_setup(data);
+
+	//trigger update
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_range), PREFS->date_range_rep);
 
 	data->mapped_done = TRUE;
 
@@ -1332,7 +1306,7 @@ static gboolean reptime_window_dispose(GtkWidget *widget, GdkEvent *event, gpoin
 struct reptime_data *data = user_data;
 struct WinGeometry *wg;
 
-	DB( g_print("\n[reptime] window dispose\n") );
+	DB( g_print("\n[rep-time] window dispose\n") );
 
 	if(data->txn_queue != NULL)
 		g_queue_free (data->txn_queue);
@@ -1362,7 +1336,7 @@ struct WinGeometry *wg;
 //allocate our object/memory
 static void reptime_window_acquire(struct reptime_data *data)
 {
-	DB( g_print("\n[reptime] window acquire\n") );
+	DB( g_print("\n[rep-time] window acquire\n") );
 
 	data->txn_queue = g_queue_new ();
 	data->filter = da_flt_malloc();
@@ -1379,7 +1353,7 @@ GtkWidget *window, *mainbox, *hbox, *vbox, *fbox, *bbox, *notebook, *treeview, *
 GtkWidget *label, *widget, *table;
 gint row;
 
-	DB( g_print("\n[reptime] window new\n") );
+	DB( g_print("\n[rep-time] window new\n") );
 
 	data = g_malloc0(sizeof(struct reptime_data));
 	if(!data) return NULL;
@@ -1471,12 +1445,13 @@ gint row;
 		gtk_widget_set_margin_start(label, SPACING_MEDIUM);
 		gtk_box_pack_start (GTK_BOX (fbox), label, FALSE, FALSE, 0);
 		label = make_label(NULL, 0.0, 0.5);
+		gtk_widget_set_margin_start(label, SPACING_SMALL);
 		data->TX_fltactive = label;
 		gtk_box_pack_start (GTK_BOX (fbox), label, FALSE, FALSE, 0);
 		widget = gtk_image_new_from_icon_name (ICONNAME_INFO, GTK_ICON_SIZE_BUTTON);
 		data->TT_fltactive = fbox;
 		gtk_box_pack_start (GTK_BOX (fbox), widget, FALSE, FALSE, 0);
-		
+
 		//test button
 		bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 		gtk_style_context_add_class (gtk_widget_get_style_context (bbox), GTK_STYLE_CLASS_LINKED);
@@ -1668,18 +1643,17 @@ gint row;
 
 	gtk_widget_show_all (window);
 
-	//minor ?
+	//hide start widget
+	hb_widget_visible(data->LB_zoomx, FALSE);
+	hb_widget_visible(data->RG_zoomx, FALSE);
 	hb_widget_visible(data->CM_minor, PREFS->euro_active);
-	reptime_sensitive(data->window, NULL);
-	reptime_update_detail(data->window, NULL);
+	hb_widget_visible(data->GR_detail, data->detail);
 
 	return window;
 }
 
 
-/*
-** ============================================================================
-*/
+/* = = = = = = = = = = = = = = = = */
 
 
 static GString *lst_reptime_to_string(GtkTreeView *treeview, gchar *title, gboolean clipboard)
@@ -1730,21 +1704,21 @@ static void lst_reptime_cell_data_function_amount (GtkTreeViewColumn *col,
                            GtkTreeIter       *iter,
                            gpointer           user_data)
 {
-gdouble  value;
-gchar *color;
+gdouble value;
 gchar buf[G_ASCII_DTOSTR_BUF_SIZE];
-guint32 kcur = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(gtk_tree_view_column_get_tree_view(col)), "kcur_data"));
+gint colid = GPOINTER_TO_INT(user_data);
 
-	gtk_tree_model_get(model, iter, GPOINTER_TO_INT(user_data), &value, -1);
+	gtk_tree_model_get(model, iter, colid, &value, -1);
 
-	if( value )
+	//#2091004 we have exact 0.0, do we force display ?
+	if( (hb_amount_compare(value, 0.0) != 0) || (colid == LST_HUBREPTIME_TOTAL) )
 	{
+	guint32 kcur = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(gtk_tree_view_column_get_tree_view(col)), "kcur_data"));
+
 		hb_strfmon(buf, G_ASCII_DTOSTR_BUF_SIZE-1, value, kcur, GLOBALS->minor);
 
-		color = get_normal_color_amount(value);
-
 		g_object_set(renderer,
-			"foreground",  color,
+			"foreground",  get_normal_color_amount(value),
 			"text", buf,
 			NULL);
 	}

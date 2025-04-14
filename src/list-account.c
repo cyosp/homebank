@@ -63,8 +63,18 @@ gchar buf[G_ASCII_DTOSTR_BUF_SIZE];
 	if( type == DSPACC_TYPE_HEADER )
 	{
 	PnlAccGrp *g = p;
-		text = g->name;	
-		g_string_append_printf(node, "%s\n", text);
+		text = g->name;
+		//g_string_append_printf(node, "%s\t\t\t\t\n", text);
+		g_string_append_printf(node, "%s", text);
+		if( flags & LST_TXN_ACC_REC )
+			g_string_append_c(node, sep);
+		if( flags & LST_TXN_ACC_CLR )
+			g_string_append_c(node, sep);
+		if( flags & LST_TXN_ACC_TOD )
+			g_string_append_c(node, sep);
+		if( flags & LST_TXN_ACC_FUT )
+			g_string_append_c(node, sep);
+		g_string_append_c(node, '\n');
 	}
 	else
 	{

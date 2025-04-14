@@ -825,12 +825,29 @@ GtkWidget *dialog;
 		{
 			if(result == 2)
 			{
-				DB( g_print(" + should quick save %s\n", GLOBALS->xhb_filepath) );
-				//todo: should migrate this
-				//#1720377 also backup 
-				homebank_file_ensure_xhb(NULL);
-				homebank_backup_current_file();
-				homebank_save_xml(GLOBALS->xhb_filepath);
+				//#2090668 save new file as
+				if( GLOBALS->hbfile_is_new == TRUE )
+				{
+				gchar *filename = NULL;
+
+					if(ui_file_chooser_xhb(GTK_FILE_CHOOSER_ACTION_SAVE, &filename, FALSE) == TRUE)
+					{
+						DB( g_print(" + should save as '%s'\n", filename) );
+						homebank_file_ensure_xhb(filename);
+						homebank_backup_current_file();
+						homebank_save_xml(GLOBALS->xhb_filepath);
+						GLOBALS->hbfile_is_new = FALSE;
+					}
+				}
+				else
+				{
+					DB( g_print(" + should quick save %s\n", GLOBALS->xhb_filepath) );
+					//todo: should migrate this
+					//#1720377 also backup 
+					homebank_file_ensure_xhb(NULL);
+					homebank_backup_current_file();
+					homebank_save_xml(GLOBALS->xhb_filepath);
+				}
 			}
 		}
 

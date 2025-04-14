@@ -137,14 +137,14 @@ homebank_SOURCES =  \
 	ui-payee.h \
 	ui-pref.c \
 	ui-pref.h \
-	ui-split.c \
-	ui-split.h \
 	ui-tag.c \
 	ui-tag.h \
 	ui-transaction.c \
 	ui-transaction.h \
 	ui-txn-multi.c \
 	ui-txn-multi.h \
+	ui-txn-split.c \
+	ui-txn-split.h \
 	ui-widgets-data.c \
 	ui-widgets.c \
 	ui-widgets.h

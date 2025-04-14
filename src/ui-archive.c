@@ -24,7 +24,7 @@
 #include "ui-account.h"
 #include "ui-category.h"
 #include "ui-payee.h"
-#include "ui-split.h"
+#include "ui-txn-split.h"
 #include "ui-tag.h"
 
 #include "list-scheduled.h"

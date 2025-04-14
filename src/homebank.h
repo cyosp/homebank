@@ -81,13 +81,13 @@
 
 #define HOMEBANK_MAJOR	5
 #define HOMEBANK_MINOR	8
-#define HOMEBANK_MICRO	5
+#define HOMEBANK_MICRO	6
 
-#define HB_VERSION		"5.8.5"
+#define HB_VERSION		"5.8.6"
 #define HB_VERSION_NUM	(HOMEBANK_MAJOR*10000) + (HOMEBANK_MINOR*100) + HOMEBANK_MICRO
 
 #define FILE_VERSION		1.5
-#define PREF_VERSION		585
+#define PREF_VERSION		586
 
 #if HB_UNSTABLE == FALSE
 	#define	PROGNAME		"HomeBank"
@@ -150,7 +150,8 @@ enum
 	UF_SENSITIVE 	= 1 << 1,	//2
 	UF_VISUAL   	= 1 << 2,	//4
 	UF_REFRESHALL   = 1 << 3,	//8
-//			= 1 << 4	//16
+	UF_TXNLIST		= 1 << 4,	//16
+	//				= 1 << 5
 };
 
 

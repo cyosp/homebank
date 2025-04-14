@@ -2877,7 +2877,6 @@ GtkWidget *vbox, *hbox, *bbox;
 GtkWidget *search_entry;
 GtkWidget *scrollwin, *treeview;
 GtkWidget *tbar;
-
 GtkTreeModel *model, *filter;
 gint response;
 gint w, h, dw, dh;

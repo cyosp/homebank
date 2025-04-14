@@ -1887,8 +1887,9 @@ GtkTreeIter iter;
 		cb_subcat = gtk_check_button_new_with_mnemonic(_("Include _subcategories"));
 		gtk_box_pack_start (GTK_BOX (mainvbox), cb_subcat, FALSE, FALSE, 0);
 
+		//#2079801 warn budget
 		secondtext = g_strdup_printf (
-			_("_Delete the category '%s'"), srccat->name);
+			_("_Delete the category '%s' (and any budget)"), srccat->name);
 		togglebutton = gtk_check_button_new_with_mnemonic(secondtext);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(togglebutton), TRUE);
 		g_free(secondtext);
@@ -1957,6 +1958,7 @@ GtkTreeIter iter;
 
 					ui_cat_listview_remove_selected(GTK_TREE_VIEW(data->LV_cat));
 					da_cat_delete(srccat->key);
+					//#2079801 later delete budget
 				}
 
 

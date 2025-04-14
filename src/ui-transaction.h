@@ -20,7 +20,7 @@
 #ifndef __HB_TRANSACTION_GTK_H__
 #define __HB_TRANSACTION_GTK_H__
 
-#include "ui-split.h"
+#include "ui-txn-split.h"
 
 
 /* official GTK_RESPONSE are negative */

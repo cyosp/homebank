@@ -705,12 +705,9 @@ lst_rep_time_cell_data_func_amount (GtkTreeViewColumn *col,
                            gpointer           user_data)
 {
 DataRow *dr;
-gchar *color;
 gchar buf[G_ASCII_DTOSTR_BUF_SIZE];
 gint colid = GPOINTER_TO_INT(user_data);
-gint weight = PANGO_WEIGHT_NORMAL;
 gint pos;
-
 
 	gtk_tree_model_get(model, iter, 
 		LST_REPORT2_POS, &pos,
@@ -719,42 +716,53 @@ gint pos;
 	
 	if( dr != NULL )
 	{
-	gdouble value;
+	gdouble exp, inc, value;
+	gboolean dodisplay = FALSE;
+	gint weight = PANGO_WEIGHT_NORMAL;
 
-		switch( colid )
+		if( colid==LST_REP_COLID_AVERAGE || colid==LST_REP_COLID_TOTAL)
 		{
-			case LST_REP_COLID_AVERAGE:
-				value = (dr->rowexp + dr->rowinc) / dr->nbcols;
-				break;
-			case LST_REP_COLID_TOTAL:
-				value = (dr->rowexp + dr->rowinc);
-				break;
-			default:
-				value = dr->colexp[colid]+dr->colinc[colid];
-				break;
+			exp = dr->rowexp;
+			inc = dr->rowinc;
+		}
+		else
+		{
+			exp = dr->colexp[colid];
+			inc = dr->colinc[colid];
 		}
 
-		if( value )
+		value = exp + inc;
+		if( hb_amount_compare(value, 0.0) != 0 )
 		{
-			hb_strfmon(buf, G_ASCII_DTOSTR_BUF_SIZE-1, value, GLOBALS->kcur, GLOBALS->minor);
-			color = get_normal_color_amount(value);
-
+			dodisplay = TRUE;
+			if(colid==LST_REP_COLID_AVERAGE)
+				value /= dr->nbcols;
+		}
+		else 
+		{
+			//#2091004 we have exact 0.0, do we force display ?
 			if( pos == LST_REPORT_POS_TOTAL )
 			{
 				weight = PANGO_WEIGHT_BOLD;
+				if( hb_amount_compare(exp, 0.0) != 0 ) // test exp is enough
+					dodisplay = TRUE;
 			}
+		}
 
+		if( dodisplay )
+		{
+			hb_strfmon(buf, G_ASCII_DTOSTR_BUF_SIZE-1, value, GLOBALS->kcur, GLOBALS->minor);
 			g_object_set(renderer,
-				"foreground",  color,
+				"foreground", get_normal_color_amount(value),
 				"weight", weight,
 				"text", buf,
 				NULL);
 			return;
 		}
+
 	}
 
 	g_object_set(renderer, "text", "", NULL);
-	
 }
 
 
