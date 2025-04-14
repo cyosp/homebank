@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -25,6 +25,7 @@
 #include "gtk-chart.h"
 #include "list-report.h"
 
+#include "ui-widgets.h"
 
 /****************************************************************************/
 /* Debug macros                                                             */
@@ -284,7 +285,7 @@ guint i, n_inserted, flags;
 			DB( g_printf(" eval %d: %d '%s' %.2f\n", i, reskey, dr->label, dr->rowexp + dr->rowinc ) );
 
 			//#2024940 test on exp/inc individually
-			if( hb_amount_equal(dr->rowexp, 0.0) && hb_amount_equal(dr->rowinc, 0.0))
+			if( (hb_amount_cmp(dr->rowexp, 0.0)==0) && (hb_amount_cmp(dr->rowinc, 0.0)==0) )
 			{
 				DB( g_printf("  >skip: no data %.2f %2f\n", dr->rowexp, dr->rowinc) );
 				continue;
@@ -498,32 +499,32 @@ GtkWidget *label, *widget, *image;
 
 	/* chart + listview */
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start (GTK_BOX (hub), hbox, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (hub), hbox);
 
 	widget = gtk_chart_new(CHART_TYPE_STACK);
 	data->RE_hubtim_chart = widget;
 	gtk_chart_set_minor_prefs(GTK_CHART(widget), PREFS->euro_value, PREFS->minor_cur.symbol);
 	gtk_chart_set_currency(GTK_CHART(widget), GLOBALS->kcur);
 	gtk_chart_show_legend(GTK_CHART(widget), TRUE, FALSE);
-	gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (hbox), widget);
 
 	//list toolbar
 	tbar = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
-	gtk_box_pack_start (GTK_BOX (hub), tbar, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (hub), tbar);
 
 	label = make_label_group(_("Time chart"));
 	data->LB_hubtim = label;
-	gtk_box_pack_start (GTK_BOX (tbar), label, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (tbar), label);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_end (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
+	gtk_box_append (GTK_BOX (tbar), bbox);
 
 		widget = gtk_menu_button_new();
-		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (bbox), widget);
 		gtk_menu_button_set_direction (GTK_MENU_BUTTON(widget), GTK_ARROW_UP);
 		gtk_widget_set_halign (widget, GTK_ALIGN_END);
-		image = gtk_image_new_from_icon_name (ICONNAME_EMBLEM_SYSTEM, GTK_ICON_SIZE_MENU);
+		image = hbtk_image_new_from_icon_name_16 (ICONNAME_EMBLEM_SYSTEM);
 		g_object_set (widget, "image", image,  NULL);
 
 	//gmenu test (see test folder into gtk)
@@ -561,7 +562,7 @@ GMenu *menu, *section;
 
 
 	data->CY_hubtim_range = make_daterange(NULL, DATE_RANGE_FLAG_CUSTOM_HIDDEN);
-	gtk_box_pack_end (GTK_BOX (tbar), data->CY_hubtim_range, FALSE, FALSE, 0);
+	gtk_box_append (GTK_BOX (tbar), data->CY_hubtim_range);
 
 
 	//hbtk_radio_button_connect (GTK_CONTAINER(data->RA_type), "toggled", G_CALLBACK (ui_hub_reptime_populate), NULL);

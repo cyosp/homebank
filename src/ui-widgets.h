@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -60,16 +60,26 @@ void gtk_overlay_set_child (GtkOverlay* overlay, GtkWidget* child);
 void gtk_scrolled_window_set_child (GtkScrolledWindow* scrolled_window, GtkWidget* child);
 void gtk_revealer_set_child (GtkRevealer* revealer, GtkWidget* child);
 void gtk_expander_set_child (GtkExpander* expander, GtkWidget* child);
+void gtk_box_prepend (GtkBox* box, GtkWidget* child);
+void gtk_box_append (GtkBox* box, GtkWidget* child);
+void gtk_box_prependfe (GtkBox* box, GtkWidget* child);
 
 void gtk_window_destroy (GtkWindow* window);
 #endif
 
+GtkWidget *hbtk_image_new_from_icon_name_16(const gchar *icon_name);
+GtkWidget *hbtk_image_new_from_icon_name_24(const gchar *icon_name);
+GtkWidget *hbtk_image_new_from_icon_name_32(const gchar *icon_name);
+
+
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
+void hbtk_box_prepend (GtkBox* box, GtkWidget* child);
 
 GtkWidget *make_label(gchar *str, gfloat xalign, gfloat yalign);
 GtkWidget *make_clicklabel(gchar *id, gchar *str);
 GtkWidget *make_label_group(gchar *str);
+GtkWidget *make_label_left(char *str);
 GtkWidget *make_label_widget(gchar *str);
 GtkWidget *make_text(gfloat xalign);
 GtkWidget *make_search(void);
@@ -83,6 +93,12 @@ GtkWidget *hbtk_toolbar_add_toolbutton(GtkToolbar *toolbar, gchar *icon_name, gc
 GtkWidget *make_image_button(gchar *icon_name, gchar *tooltip_text);
 GtkWidget *make_image_toggle_button(gchar *icon_name, gchar *tooltip_text);
 GtkWidget *make_image_radio_button(gchar *icon_name, gchar *tooltip_text);
+
+GtkWidget *make_tb(void);
+GtkWidget *make_tb_separator(void);
+GtkWidget *make_tb_image_button(gchar *icon_name, gchar *tooltip_text);
+GtkWidget *make_tb_image_toggle_button(gchar *icon_name, gchar *tooltip_text);
+GtkWidget *make_tb_image_radio_button(gchar *icon_name, gchar *tooltip_text);
 
 GtkWidget *make_memo_entry(GtkWidget *label);
 GtkWidget *make_string_maxlength(GtkWidget *label, guint max_length);
@@ -135,12 +151,13 @@ void gimp_label_set_attributes (GtkLabel *label, ...);
 
 void hb_window_run_pending(void);
 
+
 void hb_widget_set_margins(GtkWidget *widget, gint top, gint right, gint bottom, gint left);
 void hb_widget_set_margin(GtkWidget *widget, gint margin);
 void hb_widget_visible(GtkWidget *widget, gboolean visible);
 void hbtk_entry_tag_name_append(GtkEntry *entry, gchar *tagname);
 void hbtk_entry_set_text(GtkEntry *entry, gchar *text);
-void hbtk_entry_replace_text(GtkEntry *entry, gchar **storage);
+gboolean hbtk_entry_replace_text(GtkEntry *entry, gchar **storage);
 
 /*
 guint make_popaccount_populate(GtkComboBox *combobox, GList *srclist);

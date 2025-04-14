@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -20,7 +20,9 @@
 #ifndef __HB_CATEGORY_H__
 #define __HB_CATEGORY_H__
 
-typedef struct _category		Category;
+
+#include "hb-types.h"
+
 
 struct _category
 {
@@ -77,6 +79,7 @@ void da_cat_anonymize(Category *item);
 GList *category_glist_sorted(gint column);
 
 gboolean category_key_budget_active(guint32 key);
+gboolean category_key_unbudgeted(guint32 key);
 guint32 category_report_id(guint32 key, gboolean subcat);
 
 gint category_delete_unused(void);

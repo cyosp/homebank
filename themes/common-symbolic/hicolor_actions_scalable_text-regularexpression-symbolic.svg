@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="16"
+   height="16"
+   version="1.1"
+   id="svg8"
+   sodipodi:docname="hicolor_actions_scalable_text-regularexpression-symbolic.svg"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title1154">Text Regular Expression</title>
+  <metadata
+     id="metadata14">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Maxime DOYEN</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:source>https://www.gethomebank.org</dc:source>
+        <dc:title>Text Regular Expression</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs12" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1003"
+     id="namedview10"
+     showgrid="true"
+     inkscape:zoom="29.5"
+     inkscape:cx="0.62711864"
+     inkscape:cy="5.7288136"
+     inkscape:window-x="1440"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg8"
+     inkscape:pagecheckerboard="0"
+     inkscape:showpageshadow="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid827" />
+  </sodipodi:namedview>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-weight:normal;font-size:12.5px;line-height:25px;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     x="9.2881355"
+     y="25.355932"
+     id="text825" />
+  <g
+     id="g16"
+     transform="matrix(0.0175,0,0,0.0175,-0.4,16.435)">
+    <path
+       d="M 197,-199 Q 141,-256 110.5,-329 80,-402 80,-482 q 0,-80 30,-153 30,-73 87,-130 l 57,57 q -46,45 -70,103.5 -24,58.5 -24,122.5 0,64 24.5,122.5 Q 209,-301 254,-256 Z m 183,-41 q -25,0 -42.5,-17.5 Q 320,-275 320,-300 q 0,-25 17.5,-42.5 17.5,-17.5 42.5,-17.5 25,0 42.5,17.5 17.5,17.5 17.5,42.5 0,25 -17.5,42.5 Q 405,-240 380,-240 Z m 139,-200 v -71 l -61,36 -40,-70 61,-35 -61,-35 40,-70 61,36 v -71 h 80 v 71 l 61,-36 40,70 -61,35 61,35 -40,70 -61,-36 v 71 z m 244,241 -57,-57 q 46,-45 70,-103.5 24,-58.5 24,-122.5 0,-64 -24.5,-122.5 Q 751,-663 706,-708 l 57,-57 q 56,57 86.5,130 30.5,73 30.5,153 0,80 -30,153 -30,73 -87,130 z"
+       id="path2"
+       style="fill:#bebebe" />
+  </g>
+</svg>

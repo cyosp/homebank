@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -36,6 +36,7 @@ struct repstats_data
 	DataTable	*trend;
 	gint		trendrows;
 	gint		trendcols;
+	gint		sel_colid;
 
 	GQueue		*txn_queue;
 	Filter		*filter;
@@ -108,7 +109,7 @@ struct repstats_data
 	GtkWidget	*GR_detail;
 	GtkWidget	*LV_detail;
 
-	gulong		handler_id[MAX_REPDIST_HID];
+	gulong		hid[MAX_REPDIST_HID];
 };
 
 

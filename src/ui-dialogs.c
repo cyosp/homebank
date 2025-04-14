@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -19,10 +19,11 @@
 
 #include "homebank.h"
 
+#include "hb-xml.h"
+
+#include "ui-widgets.h"
 #include "ui-dialogs.h"
 #include "list-operation.h"
-
-#include "hb-currency.h"
 #include "ui-currency.h"
 
 
@@ -68,11 +69,11 @@ gchar *retval = NULL;
 
 	mainvbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	hb_widget_set_margin(GTK_WIDGET(mainvbox), SPACING_LARGE);
-	gtk_box_pack_start (GTK_BOX (content), mainvbox, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (content), mainvbox);
 
 	getwidget = gtk_entry_new();
 	gtk_entry_set_width_chars(GTK_ENTRY(getwidget), 24);
-	gtk_box_pack_start (GTK_BOX (mainvbox), getwidget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (mainvbox), getwidget);
 	gtk_widget_show_all(mainvbox);
 
 	if(origname != NULL)
@@ -258,13 +259,13 @@ gint row, count, count2;
 
 	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	hb_widget_set_margin(GTK_WIDGET(box), SPACING_LARGE);
-	gtk_box_pack_start (GTK_BOX (content_area), box, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (content_area), box);
 
 	// group :: file title
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_box_pack_start (GTK_BOX (box), group_grid, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (box), group_grid);
 
 	row = 1;
 	label = make_label_widget(_("Account"));
@@ -313,13 +314,13 @@ gint row, count, count2;
 
 
 	widget = gtk_separator_new(	GTK_ORIENTATION_VERTICAL);
-	gtk_box_pack_start (GTK_BOX (box), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (box), widget);
 
 	// group :: file title
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_box_pack_start (GTK_BOX (box), group_grid, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (box), group_grid);
 
 	row = 1;
 	label = make_label_widget(_("Payee"));
@@ -455,7 +456,7 @@ gint crow, row;
 	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
 	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
 	hb_widget_set_margin(GTK_WIDGET(content_grid), SPACING_MEDIUM);
-	gtk_box_pack_start (GTK_BOX (content_area), content_grid, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (content_area), content_grid);
 
 	crow = 0;
 	// group :: file title
@@ -911,7 +912,7 @@ gint crow, row;
 	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
 	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
 	hb_widget_set_margin(GTK_WIDGET(content_grid), SPACING_MEDIUM);
-	gtk_box_pack_start (GTK_BOX (content_area), content_grid, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (content_area), content_grid);
 
 	crow = 0;
 	// group :: file title
@@ -949,7 +950,7 @@ gint crow, row;
 
 	//warning text
 	row++;
-	widget = gtk_image_new_from_icon_name (ICONNAME_WARNING, GTK_ICON_SIZE_DIALOG);
+	widget = hbtk_image_new_from_icon_name_32 (ICONNAME_WARNING);
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
 	gtk_widget_set_margin_top (widget, SPACING_MEDIUM);
 	data->IM_warn = widget;
@@ -1039,7 +1040,7 @@ gint crow, row;
 	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
 	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
 	hb_widget_set_margin(GTK_WIDGET(content_grid), SPACING_MEDIUM);
-	gtk_box_pack_start (GTK_BOX (content_area), content_grid, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (content_area), content_grid);
 
 	crow = 0;
 	// group :: file title
@@ -1049,14 +1050,6 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
 
 	row = 0;
-	/*
-	widget = gtk_image_new_from_icon_name (ICONNAME_WARNING, GTK_ICON_SIZE_DIALOG);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 0, row, 1, 1);
-	label = gtk_label_new("This feature is still in development state,\n(maybe not stable) so use it at your own risk!");
-	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-	*/
-
-	row++;
 	label = make_label_widget(_("Folder:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
 	BT_folder = gtk_file_chooser_button_new (_("Pick a Folder"), GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
@@ -1071,7 +1064,7 @@ gint crow, row;
 
 	row++;
 	row++;
-	widget = gtk_image_new_from_icon_name (ICONNAME_INFO, GTK_ICON_SIZE_DIALOG);
+	widget = hbtk_image_new_from_icon_name_32 (ICONNAME_HB_QUICKTIPS);
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 0, row, 1, 1);
 	//                       123456789012345678901234567890123456789012345678901234567890
 	label = gtk_label_new(_("With HomeBank, printing is oriented towards an eco-responsible\n" \
@@ -1224,17 +1217,17 @@ gint nbmatch;
 	content = gtk_dialog_get_content_area(GTK_DIALOG (dialog));
 
 	mainvbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, SPACING_SMALL);
-	gtk_box_pack_start (GTK_BOX (content), mainvbox, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (content), mainvbox);
 	hb_widget_set_margin(GTK_WIDGET(mainvbox), SPACING_LARGE);
 
 	label = make_label_group(_("Source transfer"));
-	gtk_box_pack_start (GTK_BOX (mainvbox), label, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (mainvbox), label);
 
 	// source listview
 	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 //	gtk_widget_set_size_request(sw, -1, HB_MINWIDTH_LIST/2);
 	gtk_widget_set_margin_left(scrollwin, SPACING_MEDIUM);
-	gtk_box_pack_start (GTK_BOX (mainvbox), scrollwin, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (mainvbox), scrollwin);
 
 	data->srctreeview = create_list_transaction(LIST_TXN_TYPE_XFERSOURCE, lst_xfer_columns);
 	gtk_tree_selection_set_mode(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->srctreeview)), GTK_SELECTION_NONE);
@@ -1244,7 +1237,7 @@ gint nbmatch;
 	// target listview
 	label = make_label_group(_("Target association suggested"));
 	gtk_widget_set_margin_top(label, SPACING_LARGE);
-	gtk_box_pack_start (GTK_BOX (mainvbox), label, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (mainvbox), label);
 
 	label = make_label(_(
 		"HomeBank has found some transaction that may be " \
@@ -1255,12 +1248,12 @@ gint nbmatch;
 	/*gimp_label_set_attributes (GTK_LABEL (label),
                              PANGO_ATTR_SCALE,  PANGO_SCALE_SMALL,
                              -1);*/
-	gtk_box_pack_start (GTK_BOX (mainvbox), label, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (mainvbox), label);
 
 	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_widget_set_size_request(scrollwin, -1, HB_MINWIDTH_LIST*1.5);
 	gtk_widget_set_margin_left(scrollwin, SPACING_MEDIUM);
-	gtk_box_pack_start (GTK_BOX (mainvbox), scrollwin, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (mainvbox), scrollwin);
 
 	data->treeview = create_list_transaction(LIST_TXN_TYPE_XFERTARGET, lst_xfer_columns);
 	gtk_tree_selection_set_mode(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->treeview)), GTK_SELECTION_SINGLE);

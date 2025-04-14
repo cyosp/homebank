@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -20,7 +20,7 @@
 #ifndef __HB_PAYEE_H__
 #define __HB_PAYEE_H__
 
-typedef struct _payee		Payee;
+#include "hb-types.h"
 
 struct _payee
 {

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -24,6 +24,8 @@
 #include <gtk/gtk.h>
 
 #include "homebank.h"
+#include "ui-widgets.h"
+
 #include "gtk-chart-colors.h"
 #include "gtk-chart-progress.h"
 
@@ -404,7 +406,8 @@ gboolean valid = FALSE;
 			item.rawrate = item.spent / item.budget;
 		}
 
-		item.warn = item.result < 0.0 ? TRUE : FALSE;
+		//#2099843 strict compare 0.0
+		item.warn = (hb_amount_cmp(item.result, 0.0) < 0) ? TRUE : FALSE;
 
 		item.rate = CLAMP(item.rawrate, 0, 1.0);
 
@@ -1625,7 +1628,7 @@ HbtkDrawProgContext *context = &chart->context;
 
 	frame = gtk_frame_new(NULL);
     gtk_frame_set_shadow_type (GTK_FRAME(frame), GTK_SHADOW_ETCHED_IN);
-    gtk_box_pack_start (GTK_BOX (widget), frame, TRUE, TRUE, 0);
+    hbtk_box_prepend (GTK_BOX (widget), frame);
 
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_frame_set_child(GTK_FRAME(frame), hbox);
@@ -1640,7 +1643,7 @@ HbtkDrawProgContext *context = &chart->context;
 	gtk_widget_show(chart->drawarea);
 
 	gtk_overlay_set_child (GTK_OVERLAY(overlay), chart->drawarea);
-	gtk_box_pack_start (GTK_BOX (hbox), overlay, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (hbox), overlay);
 
 
 	label = gtk_label_new(NULL);
@@ -1658,7 +1661,7 @@ HbtkDrawProgContext *context = &chart->context;
 	/* scrollbar */
     chart->adjustment = GTK_ADJUSTMENT(gtk_adjustment_new (0.0, 0.0, 1.0, 1.0, 1.0, 1.0));
     chart->scrollbar = gtk_scrollbar_new (GTK_ORIENTATION_VERTICAL,GTK_ADJUSTMENT (chart->adjustment));
-    gtk_box_pack_start (GTK_BOX (hbox), chart->scrollbar, FALSE, TRUE, 0);
+    gtk_box_append (GTK_BOX (hbox), chart->scrollbar);
 
 
 	g_signal_connect( G_OBJECT(chart->drawarea), "configure-event", G_CALLBACK (drawarea_configure_event_callback), chart);

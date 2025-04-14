@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -102,6 +102,10 @@ enum
 	FLT_RANGE_NEXT_QUARTER,
 	FLT_RANGE_NEXT_YEAR,
 
+	FLT_RANGE_TODATE_YEAR = 80,
+	FLT_RANGE_TODATE_MONTH,
+	FLT_RANGE_TODATE_ALL,
+
 	FLT_RANGE_MAX
 };
 
@@ -128,6 +132,8 @@ enum
 	FLT_STATUS_UNRECONCILED = 5,
 	// 6 separator
 	FLT_STATUS_UNCATEGORIZED = 7,
+	//5.9
+	FLT_STATUS_UNAPPROVED = 8,
 };
 
 
@@ -141,8 +147,6 @@ enum
 	FLT_QSEARCH_AMOUNT   = 1<<5
 };
 
-
-typedef struct _filter	Filter;
 
 struct _filter
 {

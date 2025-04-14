@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 16 16"
+   version="1.1"
+   id="svg13"
+   sodipodi:docname="hicolor_status_scalable_hb-item-clear-symbolic.svg"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   width="16"
+   height="16"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title1049">Item Cleared</title>
+  <metadata
+     id="metadata17">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Item Cleared</dc:title>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Maxime DOYEN</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:source>https://www.gethomebank.org</dc:source>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1003"
+     id="namedview15"
+     showgrid="true"
+     inkscape:zoom="29.017022"
+     inkscape:cx="9.8390524"
+     inkscape:cy="7.7540693"
+     inkscape:window-x="1440"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg13"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:showpageshadow="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid818" />
+  </sodipodi:namedview>
+  <defs
+     id="defs4">
+    <style
+       id="style2">
+.cls-1 { 
+    fill:#bebebe;
+}
+</style>
+  </defs>
+  <path
+     d="M 4.5,9.05 Q 4.9375,9.05 5.24375,8.74375 5.55,8.4375 5.55,8 5.55,7.5625 5.24375,7.25625 4.9375,6.95 4.5,6.95 4.0625,6.95 3.75625,7.25625 3.45,7.5625 3.45,8 3.45,8.4375 3.75625,8.74375 4.0625,9.05 4.5,9.05 Z m 3.5000002,0 q 0.4375,0 0.74375,-0.30625 Q 9.0500002,8.4375 9.0500002,8 q 0,-0.4375 -0.30625,-0.74375 Q 8.4375002,6.95 8.0000002,6.95 q -0.4375,0 -0.74375,0.30625 Q 6.9500002,7.5625 6.9500002,8 q 0,0.4375 0.30625,0.74375 0.30625,0.30625 0.74375,0.30625 z m 3.5000008,0 q 0.4375,0 0.74375,-0.30625 Q 12.550001,8.4375 12.550001,8 q 0,-0.4375 -0.30625,-0.74375 Q 11.937501,6.95 11.500001,6.95 q -0.4375,0 -0.74375,0.30625 Q 10.450001,7.5625 10.450001,8 q 0,0.4375 0.30625,0.74375 Q 11.062501,9.05 11.500001,9.05 Z M 8.0000002,15 Q 6.5475,15 5.27,14.44875 3.9925,13.8975 3.0475,12.9525 2.1025,12.0075 1.55125,10.73 1,9.4525 1,8 1,6.5475 1.55125,5.27 2.1025,3.9925 3.0475,3.0475 3.9925,2.1025 5.27,1.55125 6.5475,1 8.0000002,1 q 1.4525,0 2.7300008,0.55125 1.2775,0.55125 2.2225,1.49625 0.945,0.945 1.49625,2.2225 0.55125,1.2775 0.55125,2.73 0,1.4525 -0.55125,2.73 -0.55125,1.2775 -1.49625,2.2225 -0.945,0.945 -2.2225,1.49625 Q 9.4525002,15 8.0000002,15 Z m 0,-1.4 q 2.3450008,0 3.9725008,-1.6275 1.6275,-1.6275 1.6275,-3.9725 0,-2.345 -1.6275,-3.9725 Q 10.345001,2.4 8.0000002,2.4 5.655,2.4 4.0275,4.0275 2.4,5.655 2.4,8 2.4,10.345 4.0275,11.9725 5.655,13.6 8.0000002,13.6 Z m 0,-5.6 z"
+     id="path2"
+     style="stroke-width:0.025;fill:#bebebe" />
+</svg>

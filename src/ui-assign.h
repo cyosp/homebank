@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal rulounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -27,6 +27,7 @@ enum {
 	LST_DEFASG_SORT_PAYEE,
 	LST_DEFASG_SORT_CATEGORY,
 	LST_DEFASG_SORT_PAYMENT,
+	LST_DEFASG_SORT_TAGS,
 	LST_DEFASG_SORT_NOTES
 };
 
@@ -55,17 +56,16 @@ struct ui_asg_dialog_data
 	GtkWidget	*CM_re;
 	GtkWidget	*CM_amount, *LB_amount, *ST_amount;
 
-	GtkWidget   *GR_assignment;
-	GtkWidget	*RA_pay;
+	GtkWidget	*CM_pay, *CM_payovw;
 	GtkWidget   *LB_pay, *PO_pay;
 
-	GtkWidget	*RA_cat;
+	GtkWidget	*CM_cat, *CM_catovw;
 	GtkWidget   *LB_cat, *PO_cat;
 
-	GtkWidget	*RA_mod;
+	GtkWidget	*CM_mod, *CM_modovw;
 	GtkWidget   *LB_mod, *NU_mod;
 
-	GtkWidget   *RA_tags;
+	GtkWidget	*CM_tags, *CM_tagsovw;
 	GtkWidget	*LB_tags, *ST_tags, *CY_tags;
 
 	GtkWidget   *GR_misc;

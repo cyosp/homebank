@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -67,9 +67,12 @@ struct lst_sch_data
 };
 
 
+gchar *ui_arc_listview_get_freq_label(gint index);
+
 void ui_arc_listview_widget_columns_order_load(GtkTreeView *treeview);
 void ui_arc_listview_widget_columns_order_save(GtkTreeView *treeview);
 
+GString *lst_sch_widget_to_string(GtkTreeView *treeview, ToStringMode mode);
 
 GtkWidget *lst_sch_widget_new(gint listtype);
 GtkWidget *ui_arc_listview_widget_new(void);

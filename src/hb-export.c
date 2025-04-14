@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -542,7 +542,7 @@ gint nbcol, j, x;
 	//for(j=0;j<data->num_columns;j++)
 	for(j=firstcol ; j<lastcol ; j++)
 	{
-		DB( g_print(" +%03d '%s'\n", j, columns[j]) );
+		//DB( g_print(" +%03d '%s'\n", j, columns[j]) );
 		if( columns[j] != NULL )
 		{		
 			//DB( g_print(" print r%d:c%d '%s'\n", i, j, columns[j]) );

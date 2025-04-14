@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   id="svg7384"
+   height="16"
+   width="16"
+   version="1.1"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="hicolor_actions_scalable_hb-account-symbolic.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title1051">Account</title>
+  <defs
+     id="defs14">
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect5497"
+       is_visible="true"
+       lpeversion="1"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false" />
+    <inkscape:path-effect
+       effect="bspline"
+       id="path-effect5493"
+       is_visible="true"
+       lpeversion="1"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false" />
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1003"
+     id="namedview12"
+     showgrid="true"
+     inkscape:zoom="45.254834"
+     inkscape:cx="9.6011843"
+     inkscape:cy="6.2534756"
+     inkscape:window-x="1440"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg7384"
+     showguides="false"
+     inkscape:guide-bbox="true"
+     inkscape:snap-global="false"
+     inkscape:pagecheckerboard="0"
+     inkscape:showpageshadow="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3261"
+       originx="0"
+       originy="0"
+       spacingx="1"
+       spacingy="1" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata90">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Maxime DOYEN</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:source>https://www.gethomebank.org</dc:source>
+        <dc:title>Account</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <path
+     id="rect3876"
+     style="color:#000000;fill:#bebebe;stroke-linecap:round;stroke-linejoin:round;-inkscape-stroke:none"
+     d="M 1.5,1 C 1.2238686,1.0000265 1.0000265,1.2238686 1,1.5 V 14 c 2.65e-5,0.276131 0.2238686,0.499973 0.5,0.5 h 3.8817191 c 0.079035,0.160136 0.1064274,0.369093 0.2803903,0.47266 1.5385065,0.0036 3.3692625,-0.0023 4.6221996,3.4e-4 0.171822,-0.05689 0.130305,-0.369999 0.317691,-0.473 H 14.5 c 0.276131,-2.7e-5 0.499973,-0.223869 0.5,-0.5 V 1.5 C 14.999973,1.2238686 14.776131,1.0000265 14.5,1 h -4 C 10.40557,1.00379 10.314147,1.034266 10.236328,1.087891 9.810094,0.96089963 9.3544614,1.043134 8.9140625,1.015625 L 6.0097656,1 C 5.9152969,1.0107848 5.8373405,1.0402121 5.7695312,1.0820312 5.6894067,1.0294196 5.595849,1.0009455 5.5,1 Z M 2,2 H 4.859375 L 4.515625,3.3789062 C 4.5034041,3.426065 4.4981401,3.4747565 4.5,3.5234375 l 0.00391,0.068359 c -0.016848,0.3482187 0.043288,0.703295 0.041016,1.0527343 l 0.15625,3.2949219 0.1445312,3.1718753 C 4.6292659,10.736352 4.2234317,10.482422 3.7617188,10.482422 c -0.6873945,0 -1.25,0.562606 -1.25,1.25 -1e-7,0.687394 0.5626055,1.25 1.25,1.25 0.5014286,0 0.936084,-0.299716 1.1347656,-0.728516 L 4.9765625,13.5 H 2 Z m 9.140625,0 H 14 v 11.5 h -2.972656 c 0.02954,-0.66271 0.05973,-0.825568 0.08984,-1.488281 0.119481,0.565108 0.623381,0.992187 1.222656,0.992187 0.687394,0 1.25,-0.562605 1.25,-1.25 -1e-6,-0.687393 -0.562607,-1.25 -1.25,-1.25 -0.559972,0 -1.037652,0.372786 -1.195313,0.882813 0.08032,-1.7616303 0.159644,-3.5235305 0.238281,-5.2851565 L 11.5,3.5234375 c 7.95e-4,-0.016266 7.95e-4,-0.032562 0,-0.048828 2.22e-4,-0.0052 -2.22e-4,-0.010427 0,-0.015625 -0.0011,-0.00402 -0.0028,-0.00967 -0.0039,-0.013672 -0.0024,-0.022374 -0.0063,-0.04456 -0.01172,-0.066406 z M 6.3125,2.0058594 c 1.1283216,0.00588 2.2564441,0.0117 3.3847656,0.017578 L 10.289062,3.1835938 C 9.3416726,3.5733338 8.3127023,4.1422817 7.2617188,3.8203125 6.7218781,3.6702681 6.2187819,3.4160248 5.7148438,3.1757812 Z m 4.158203,2.1542968 -0.449219,9.8339848 c -1.3455295,-0.0078 -2.6915787,-0.01561 -4.037109,-0.02344 L 5.7675781,9.390625 5.5332031,4.2519531 c 1.0540382,0.5274986 2.2926555,0.9019933 3.453125,0.5019531 0.511163,-0.1534372 0.995947,-0.3812003 1.4843749,-0.59375 z M 6.6328125,6.0214844 6.9804688,9.0175781 h 2.21875 L 9.6328125,6.0214844 Z M 7.953125,10.976562 c -0.6596314,0 -1.2499995,0.436071 -1.25,1.044922 -5e-7,0.608854 0.590368,1.044922 1.25,1.044922 0.659632,0 1.2500005,-0.436068 1.25,-1.044922 -5e-7,-0.608851 -0.5903686,-1.044922 -1.25,-1.044922 z m -4.2304688,0.0059 c 0.012864,-6.43e-4 0.026026,0 0.039063,0 0.417175,0 0.7499999,0.332825 0.75,0.75 0,0.417174 -0.332825,0.75 -0.75,0.75 -0.4171752,0 -0.7500001,-0.332826 -0.75,-0.75 0,-0.404138 0.3121413,-0.730084 0.710937,-0.75 z m 8.5781248,0.02148 c 0.01286,-6.42e-4 0.02603,0 0.03906,0 0.417174,0 0.749999,0.332827 0.75,0.75 0,0.417175 -0.332826,0.75 -0.75,0.75 -0.417176,0 -0.75,-0.332825 -0.75,-0.75 0,-0.404137 0.312142,-0.730083 0.710937,-0.75 z m -4.347656,0.472656 c 0.4449376,0 0.7499998,0.276176 0.75,0.544922 2e-7,0.268748 -0.305062,0.544922 -0.75,0.544922 -0.444938,0 -0.7500002,-0.276174 -0.75,-0.544922 2e-7,-0.268746 0.3050624,-0.544922 0.75,-0.544922 z"
+     sodipodi:nodetypes="cccccccccccccccccccccccccccssscccccccccsssccccccccccccccccccccccccccsssssssssssssssssssssss" />
+</svg>

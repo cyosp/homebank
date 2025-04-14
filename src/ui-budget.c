@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -20,10 +20,14 @@
 
 #include "homebank.h"
 
+#include "ui-dialogs.h"
+#include "ui-widgets.h"
+
 #include "hbtk-switcher.h"
 
 #include "ui-category.h"
 #include "ui-budget.h"
+
 
 extern gchar *CYA_CAT_TYPE[];
 
@@ -86,10 +90,10 @@ gchar *iconname = NULL;
 
 	//5.3 added
 	if( item->flags & GF_FORCED )
-		iconname = ICONNAME_HB_OPE_FORCED;
+		iconname = ICONNAME_HB_ITEM_FORCED;
 	else
 		if( item->flags & GF_BUDGET )
-			iconname = ICONNAME_HB_OPE_BUDGET;
+			iconname = ICONNAME_HB_ITEM_BUDGET;
 
 	g_object_set(renderer, "icon-name", iconname, NULL);
 }
@@ -1176,7 +1180,7 @@ gint crow, row;
 
 	hpaned = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
 	hb_widget_set_margin(GTK_WIDGET(hpaned), SPACING_LARGE);
-	gtk_box_pack_start (GTK_BOX (content_area), hpaned, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (content_area), hpaned);
 
 	/* left area */
 	//list
@@ -1186,20 +1190,20 @@ gint crow, row;
 
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_set_margin_bottom(hbox, SPACING_MEDIUM);
-	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (vbox), hbox);
 
 	widget = hbtk_switcher_new (GTK_ORIENTATION_HORIZONTAL);
 	hbtk_switcher_setup(HBTK_SWITCHER(widget), CYA_CAT_TYPE, TRUE);
 	data->RA_type = widget;
 	gtk_widget_set_halign (widget, GTK_ALIGN_CENTER);
-	gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (hbox), widget);
 
 	//menubutton
 	widget = gtk_menu_button_new();
-	image = gtk_image_new_from_icon_name (ICONNAME_HB_BUTTON_MENU, GTK_ICON_SIZE_MENU);
+	image = hbtk_image_new_from_icon_name_16 (ICONNAME_HB_BUTTON_MENU);
 	g_object_set (widget, "image", image,  NULL);
 	gtk_widget_set_halign (widget, GTK_ALIGN_END);
-	gtk_box_pack_end(GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	gtk_box_append(GTK_BOX (hbox), widget);
 
 	GMenu *menu = g_menu_new ();
 	GMenu *section = g_menu_new ();
@@ -1223,23 +1227,23 @@ gint crow, row;
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
 	gtk_widget_set_hexpand (scrollwin, TRUE);
 	gtk_widget_set_vexpand (scrollwin, TRUE);
-	gtk_box_pack_start (GTK_BOX(vbox), scrollwin, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX(vbox), scrollwin);
 
 	//list toolbar
 	tbar = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
-	gtk_box_pack_start (GTK_BOX (vbox), tbar, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (vbox), tbar);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_end (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
+	gtk_box_append (GTK_BOX (tbar), bbox);
 	
 		widget = make_image_button(ICONNAME_HB_BUTTON_EXPAND, _("Expand all"));
 		data->BT_expand = widget;
-		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (bbox), widget);
 
 		widget = make_image_button(ICONNAME_HB_BUTTON_COLLAPSE, _("Collapse all"));
 		data->BT_collapse = widget;
-		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (bbox), widget);
 
 	
 	/* right area */

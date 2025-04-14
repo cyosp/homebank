@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -20,6 +20,8 @@
 
 #include "homebank.h"
 
+#include "ui-dialogs.h"
+#include "ui-widgets.h"
 #include "ui-filter.h"
 #include "ui-flt-widget.h"
 
@@ -514,48 +516,17 @@ GtkWidget *prtbox;
 	g_signal_connect (prtbox, "destroy", G_CALLBACK (ui_flt_popover_hub_destroy), (gpointer)data);
 
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start (GTK_BOX (prtbox), hbox, FALSE, FALSE, 0);
-
-	//label = make_label_widget(_("Preset:"));
-	//gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (prtbox), hbox);
 
 	widget = hbtk_kvcombobox_new();
 	data->combobox = widget;
-	gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (hbox), widget);
 
 	widget = ui_flt_dialog_create_menubutton(data);
 	data->menubutton = widget;
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
-
-
-	/*hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
-	gtk_widget_set_halign(hbox, GTK_ALIGN_END);
-	gtk_box_pack_start (GTK_BOX (prtbox), hbox, FALSE, FALSE, 0);
-
-		//save as / rename / delete
-		widget = make_clicklabel("1", _("Save as"));
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
-		widget = make_clicklabel("2", _("Rename"));
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
-		widget = make_clicklabel("3", _("Delete"));
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
-		//widget = make_clicklabel("4", _("Save"));
-		widget = gtk_button_new_with_label(_("Save"));
-		data->BT_sav = widget;
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
-	*/
+	gtk_box_prepend (GTK_BOX (hbox), widget);
 
 	ui_flt_manage_header_sensitive(prtbox, data);
-
-	//g_signal_connect (data->BT_sav, "clicked" , G_CALLBACK (ui_flt_manage_header_action_sav), (gpointer)data);
-/*	g_signal_connect (data->MI_sav, "activate", G_CALLBACK (ui_flt_manage_header_action_sav), (gpointer)data);
-
-	g_signal_connect (data->MI_new, "activate", G_CALLBACK (ui_flt_manage_header_action_new), (gpointer)data);
-	g_signal_connect (data->MI_ren, "activate", G_CALLBACK (ui_flt_manage_header_action_ren), (gpointer)data);
-	g_signal_connect (data->MI_del, "activate", G_CALLBACK (ui_flt_manage_header_action_del), (gpointer)data);	
-*/
-	//TODO: combobox
-//	g_signal_connect_after(data->combobox, "changed", G_CALLBACK (ui_flt_manage_header_change), (gpointer)data);	
 
 	return prtbox;
 }

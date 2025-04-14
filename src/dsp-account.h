@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -63,10 +63,10 @@ struct hub_ledger_data
 	GtkWidget	*window;
 	GActionGroup *actions;
 
-	GtkWidget	*IB_duplicate;
-	GtkWidget	*LB_duplicate;
-	GtkWidget	*NB_txn_daygap;
-	
+	GtkWidget	*IB_accnotif, *LB_accnotif, *BT_info_showpending;
+	GtkWidget	*IB_duplicate, *LB_duplicate, *NB_txn_daygap;
+	GtkWidget	*IB_chkcatsign, *LB_chkcatsign;
+
 	GtkWidget	*TB_bar;
 	GtkWidget   *BT_add, *BT_herit, *BT_edit;
 	GtkWidget   *BT_clear, *BT_reconcile;
@@ -112,7 +112,8 @@ struct hub_ledger_data
 	gboolean	do_sort;
 	
 	/* status counters */
-	gint		hidden, total, similar;
+	guint		nb_pending;
+	gint		hidden, total, similar, chkcatsign;
 	gdouble		totalsum;
 
 	Filter		*filter;

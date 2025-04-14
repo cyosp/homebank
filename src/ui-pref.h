@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -23,7 +23,8 @@
 
 struct defpref_data
 {
-	// common
+
+//-- common
 	GtkWidget	*dialog;
 
 	GtkWidget	*LV_page;
@@ -32,122 +33,68 @@ struct defpref_data
 	GtkWidget	*image;
 	GtkWidget   *BT_clear;
 
-	// general
+//-- general
 	GtkWidget	*CM_show_splash;
 	GtkWidget	*CM_load_last;
 	GtkWidget	*CM_append_scheduled;
 	GtkWidget   *CM_do_update_currency;
-	GtkWidget	*ST_path_hbfile, *BT_path_hbfile;
-	GtkWidget	*ST_path_hbbak, *BT_path_hbbak;
-	GtkWidget   *CM_bak_is_automatic;
-	GtkWidget	*GR_bak_freq;
-	GtkWidget   *LB_bak_max_num_copies, *NB_bak_max_num_copies;
-	//GtkWidget	*CY_daterange_wal;
-	GtkWidget	*ST_maxspenditems;
-	GtkWidget   *NB_fiscyearday;
-	GtkWidget   *CY_fiscyearmonth;
 
-
-
-	GtkWidget	*CY_language;
+//-- interface
+	GtkWidget	*CM_custom_colors;
+	GtkWidget	*CM_custom_bg_future;
+	GtkWidget	*CY_gridlines;
+	GtkWidget	*CM_rep_smallfont;
 	GtkWidget	*CY_toolbar;
-	GtkWidget	*CM_gtk_override;
-	GtkWidget	*LB_gtk_fontsize, *NB_gtk_fontsize;
+
 	GtkWidget	*CM_gtk_darktheme;
 	GtkWidget	*CY_icontheme;
+	GtkWidget	*CM_iconsymbolic;
+	GtkWidget	*CM_gtk_override;
+	GtkWidget	*LB_gtk_fontsize, *NB_gtk_fontsize;
 
-	GtkWidget	*LB_colors, *CY_colors;
-
-	GtkWidget   *GR_colors;
-	GtkWidget	*CM_custom_colors;
-	GtkWidget	*LB_exp_color, *CP_exp_color;
+	GtkWidget	*CY_color_scheme;
+	GtkWidget   *DA_colors;
+	GtkWidget	*CM_use_palette;
+	GtkWidget	*CP_exp_color;
 	GtkWidget	*CP_inc_color;
 	GtkWidget	*CP_warn_color;
-	//GtkWidget	*CM_ruleshint;
-	GtkWidget	*CY_gridlines;
+	GtkWidget	*CP_fut_bg_color;
 
-	//GtkWidget	*LV_opecolumns;
-	//GtkWidget	*BT_go_up;
-	//GtkWidget	*BT_go_down;
+//-- locale
+	GtkWidget	*CY_language;
+	GtkWidget	*LB_date, *ST_datefmt;
+	GtkWidget   *NB_fiscyearday;
+	GtkWidget   *CY_fiscyearmonth;
+	GtkWidget	*CM_unitismile;
+	GtkWidget	*CM_unitisgal;
 
-	
-	GtkWidget	*CM_runwizard;
-
-	GtkWidget	*ST_path_import, *BT_path_import;
-	GtkWidget	*ST_path_export, *BT_path_export;
-
-	GtkWidget	*CM_herit_date;
-	GtkWidget	*CM_show_confirm;
-	GtkWidget	*CM_show_template;
+//-- transactions
+	GtkWidget	*CY_daterange_txn;
+	GtkWidget   *ST_datefuture_nbdays;
 	GtkWidget	*CM_hide_reconciled;
 	GtkWidget	*CM_show_remind;
 	GtkWidget	*CM_show_void;
 	GtkWidget	*CM_include_remind;
 	GtkWidget	*CM_lock_reconciled;
+	GtkWidget	*CM_safe_pend_recon;
+	GtkWidget	*CM_safe_pend_past;
+	GtkWidget	*ST_safe_pend_past_days;
+
+	GtkWidget	*CM_herit_date;
+	GtkWidget	*CM_herit_grpflg;
 	GtkWidget	*CM_memoacp;
 	GtkWidget	*ST_memoacp_days;
-	
+	GtkWidget	*CM_show_confirm;
+	GtkWidget	*CM_show_template;
+
 	GtkWidget	*CM_xfer_showdialog;
 	GtkWidget	*ST_xfer_daygap;
 	GtkWidget	*CM_xfer_syncdate;
 	GtkWidget	*CM_xfer_syncstat;
-
-	GtkWidget	*ST_datefmt;
-	GtkWidget	*LB_date;
-
-	GtkWidget	*CM_unitismile;
-	GtkWidget	*CM_unitisgal;
-
-	GtkWidget	*CY_daterange_txn;
-	GtkWidget   *ST_datefuture_nbdays;
-	GtkWidget	*CY_daterange_rep;
-
 	//5.8 paymode
 	GtkWidget	*LV_paymode;
 
-	/* currencies */
-	GtkWidget	*LB_default;
-	GtkWidget	*BT_default; 
-	
-	GtkWidget	*CM_euro_enable;
-	GtkWidget	*GRP_configuration;
-	GtkWidget	*GRP_format;
-	 
-	GtkWidget	*LB_euro_preset, *CY_euro_preset;
-	GtkWidget	*ST_euro_country;
-	GtkWidget	*LB_euro_src;
-	GtkWidget	*NB_euro_value;
-	GtkWidget	*LB_euro_dst;
-
-	GtkWidget	*ST_euro_symbol;
-	GtkWidget	*CM_euro_isprefix;
-	GtkWidget	*ST_euro_decimalchar;	
-	GtkWidget	*ST_euro_groupingchar;	
-	GtkWidget	*NB_euro_fracdigits;
-	GtkWidget	*LB_numbereuro;
-
-	//GtkWidget	*ST_euro_symbol;
-	//GtkWidget	*NB_euro_nbdec;
-	//GtkWidget	*CM_euro_thsep;
-
-	GtkWidget	*CM_stat_byamount;
-	GtkWidget	*CM_stat_showdetail;
-	GtkWidget	*CM_stat_showrate;
-	GtkWidget	*CM_stat_incxfer;
-
-	GtkWidget	*CM_budg_showdetail;
-
-	//forecast
-	GtkWidget	*CM_forecast;
-	GtkWidget	*LB_forecast_nbmonth;
-	GtkWidget	*ST_forecast_nbmonth;
-
-	GtkWidget	*CY_color_scheme;
-	GtkWidget   *DA_colors;
-	GtkWidget	*CM_rep_smallfont;
-
-	GtkWidget	*CM_chartlegend;
-
+//-- import/export
 	GtkWidget	*CY_dtex_datefmt;
 	GtkWidget	*CY_dtex_ofxname;
 	GtkWidget	*CY_dtex_ofxmemo;
@@ -155,13 +102,56 @@ struct defpref_data
 	GtkWidget	*CM_dtex_qifswap;
 	GtkWidget	*CM_dtex_ucfirst;
 	GtkWidget	*CY_dtex_csvsep;
-	 
-	gint		country;
 
-	//advanced
+//-- report
+	//GtkWidget	*CY_daterange_wal;
+	GtkWidget	*ST_maxspenditems;
+	GtkWidget	*CY_daterange_rep;
+	GtkWidget	*CM_stat_byamount;
+	GtkWidget	*CM_stat_showdetail;
+	GtkWidget	*CM_stat_showrate;
+	GtkWidget	*CM_stat_incxfer;
+	GtkWidget	*CM_budg_showdetail;
+	GtkWidget	*CM_budg_unexclsub;
+
+//-- forecast
+	GtkWidget	*CM_forecast;
+	GtkWidget	*LB_forecast_nbmonth;
+	GtkWidget	*ST_forecast_nbmonth;
+
+//-- backup
+	GtkWidget   *CM_bak_is_automatic;
+	GtkWidget	*GR_bak_freq;
+	GtkWidget   *LB_bak_max_num_copies, *NB_bak_max_num_copies;
+
+//-- folders
+	GtkWidget	*ST_path_hbfile, *BT_path_hbfile;
+	GtkWidget	*ST_path_hbbak, *BT_path_hbbak;
+	GtkWidget	*ST_path_import, *BT_path_import;
+	GtkWidget	*ST_path_export, *BT_path_export;
+	//GtkWidget	*ST_path_attach, *BT_path_attach;
+
+//-- euro
+	gint		country;
+	GtkWidget	*CM_euro_enable;
+	GtkWidget	*LB_euro_preset, *CY_euro_preset;
+	GtkWidget	*GRP_configuration;
+	GtkWidget	*ST_euro_country;
+	GtkWidget	*LB_euro_src;
+	GtkWidget	*NB_euro_value;
+	GtkWidget	*LB_euro_dst;
+
+	GtkWidget	*GRP_format;
+	GtkWidget	*LB_numbereuro;
+	GtkWidget	*ST_euro_symbol;
+	GtkWidget	*CM_euro_isprefix;
+	GtkWidget	*ST_euro_decimalchar;	
+	GtkWidget	*NB_euro_fracdigits;
+	GtkWidget	*ST_euro_groupingchar;	
+
+	//-- advanced
 	GtkWidget	*ST_adv_apirate_url;
 	GtkWidget	*ST_adv_apirate_key;
-
 };
 
 
@@ -170,7 +160,20 @@ enum {
 	PRF_PATH_BACKUP,
 	PRF_PATH_IMPORT,
 	PRF_PATH_EXPORT,
+	PRF_PATH_ATTACH,
 };
+
+
+struct pref_list_datas {
+	gshort		level;
+	gshort		key;
+	const gchar	*iconname;
+	const gchar	*label;
+};
+
+
+/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
 
 void free_pref_icons(void);
 void load_pref_icons(void);

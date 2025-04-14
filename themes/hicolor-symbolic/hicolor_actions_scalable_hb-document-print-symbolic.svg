@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   viewBox="0 0 16 16"
+   version="1.1"
+   id="svg4"
+   sodipodi:docname="hicolor_actions_scalable_hb-document-print-symbolic.svg"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs8" />
+  <sodipodi:namedview
+     id="namedview6"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="true"
+     inkscape:snap-global="false"
+     inkscape:zoom="37.750055"
+     inkscape:cx="8.6092589"
+     inkscape:cy="8.3708486"
+     inkscape:window-width="1920"
+     inkscape:window-height="1044"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg4">
+    <inkscape:grid
+       type="xygrid"
+       id="grid10" />
+  </sodipodi:namedview>
+  <path
+     d="m 11.56,4.6400002 v -2.64 H 4.4400003 v 2.64 H 3.2399999 V 0.8 H 12.76 v 3.8400002 z m -10.3599995,1.2 H 14.799999 3.2399999 Z M 13.18,7.7400003 q 0.24,0 0.420001,-0.1800001 0.179998,-0.1799999 0.179998,-0.42 0,-0.24 -0.179998,-0.4199999 Q 13.42,6.5400002 13.18,6.5400002 q -0.24,0 -0.42,0.1800001 -0.18,0.1799999 -0.18,0.4199999 0,0.2400001 0.18,0.42 0.18,0.1800001 0.42,0.1800001 z M 11.56,14 V 10.16 H 4.4400003 V 14 Z m 1.2,1.2 H 3.2399999 V 11.68 H 0 V 6.7600003 q 0,-0.9000001 0.61000038,-1.5100001 0.60999922,-0.61 1.51000012,-0.61 H 13.88 q 0.899999,0 1.509999,0.61 Q 16,5.8600002 16,6.7600003 V 11.68 h -3.24 z m 2.039999,-4.72 V 6.7600003 q 0,-0.4 -0.26,-0.66 Q 14.279999,5.8400002 13.88,5.8400002 H 2.1200005 q -0.4000009,0 -0.6600011,0.2600001 -0.2599989,0.26 -0.2599989,0.66 V 10.48 H 3.2399999 V 8.9600002 H 12.76 V 10.48 Z"
+     id="path92"
+     style="stroke-width:0.4;fill:#bebebe" />
+</svg>

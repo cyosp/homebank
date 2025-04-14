@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -479,7 +479,7 @@ GList *lrul, *list;
 			if(txn->kpay == key1)
 			{
 				txn->kpay = key2;
-				txn->flags |= OF_CHANGED;
+				txn->dspflags |= FLAG_TMP_EDITED;
 			}
 			lnk_txn = g_list_next(lnk_txn);
 		}

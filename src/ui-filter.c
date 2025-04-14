@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -20,6 +20,7 @@
 
 #include "homebank.h"
 
+#include "ui-widgets.h"
 #include "ui-filter.h"
 #include "ui-account.h"
 #include "ui-payee.h"
@@ -886,19 +887,19 @@ GtkWidget *treebox, *label;
 
 		label = make_label (_("Select:"), 0, 0.5);
 		gimp_label_set_attributes (GTK_LABEL (label), PANGO_ATTR_SCALE, PANGO_SCALE_SMALL, -1);
-		gtk_box_pack_start (GTK_BOX (treebox), label, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (treebox), label);
 
 		label = make_clicklabel("all", _("All"));
 		data->bt_all = label;
-		gtk_box_pack_start (GTK_BOX (treebox), label, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (treebox), label);
 		
 		label = make_clicklabel("non", _("None"));
 		data->bt_non = label;
-		gtk_box_pack_start (GTK_BOX (treebox), label, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (treebox), label);
 
 		label = make_clicklabel("inv", _("Invert"));
 		data->bt_inv = label;
-		gtk_box_pack_start (GTK_BOX (treebox), label, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (treebox), label);
 
 	return treebox;
 }
@@ -912,18 +913,12 @@ GtkWidget *vbox, *treebox, *scrollwin;
 	data->gr_criteria = vbox;
 
 	treebox = ui_flt_page_widget_toolbar(data);
-	gtk_box_pack_start (GTK_BOX (vbox), treebox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (vbox), treebox);
 
  	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	//gtk_widget_set_size_request (scrollwin, HB_MINWIDTH_LIST, HB_MINHEIGHT_LIST);
-	gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (vbox), scrollwin);
 	gtk_tree_view_set_grid_lines(GTK_TREE_VIEW(treeview), GTK_TREE_VIEW_GRID_LINES_NONE);
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
-
-
-	//list toolbar
-	//tbar = ui_flt_page_widget_toolbar(data);
-	//gtk_box_pack_start (GTK_BOX (vbox), tbar, FALSE, FALSE, 0);
 
 	return vbox;
 }
@@ -939,11 +934,11 @@ GtkWidget *treeview;
 
 	//header
 	grid = ui_flt_page_misc_header(_("Account"), FLT_GRP_ACCOUNT, data);
-	gtk_box_pack_start (GTK_BOX (part), grid, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (part), grid);
 
 	treeview = ui_acc_listview_new(TRUE);
 	grid = ui_flt_page_list_generic(_("Account"), treeview, &tmp);
-	gtk_box_pack_start (GTK_BOX (part), grid, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (part), grid);
 
 	//data->SW_enabled[FLT_GRP_ACCOUNT] = tmp.sw_enabled;
 	data->GR_page[FLT_GRP_ACCOUNT] = tmp.gr_criteria;
@@ -968,12 +963,12 @@ GtkWidget *treeview;
 
 	//header
 	grid = ui_flt_page_misc_header(_("Category"), FLT_GRP_CATEGORY, data);
-	gtk_box_pack_start (GTK_BOX (part), grid, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (part), grid);
 
 
 	treeview = ui_cat_listview_new(TRUE, FALSE);
 	grid = ui_flt_page_list_generic(_("Category"), treeview, &tmp);
-	gtk_box_pack_start (GTK_BOX (part), grid, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (part), grid);
 
 	//data->SW_enabled[FLT_GRP_CATEGORY] = tmp.sw_enabled;
 	data->GR_page[FLT_GRP_CATEGORY] = tmp.gr_criteria;
@@ -987,18 +982,18 @@ GtkWidget *treeview;
 	// expand/colapse
 	tbar = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
-	gtk_box_pack_start (GTK_BOX (grid), tbar, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (grid), tbar);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_end (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
+	gtk_box_append (GTK_BOX (tbar), bbox);
 
 		widget = make_image_button(ICONNAME_HB_BUTTON_EXPAND, _("Expand all"));
 		data->BT_expand = widget;
-		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (bbox), widget);
 
 		widget = make_image_button(ICONNAME_HB_BUTTON_COLLAPSE, _("Collapse all"));
 		data->BT_collapse = widget;
-		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (bbox), widget);
 
 	g_signal_connect (G_OBJECT (data->BT_expand), "clicked", G_CALLBACK (ui_flt_hub_category_expand_all), NULL);
 	g_signal_connect (G_OBJECT (data->BT_collapse), "clicked", G_CALLBACK (ui_flt_hub_category_collapse_all), NULL);
@@ -1017,12 +1012,12 @@ GtkWidget *treeview;
 
 	//header
 	grid = ui_flt_page_misc_header(_("Payee"), FLT_GRP_PAYEE, data);
-	gtk_box_pack_start (GTK_BOX (part), grid, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (part), grid);
 
 
 	treeview = ui_pay_listview_new(TRUE, FALSE);
 	grid = ui_flt_page_list_generic(_("Payee"), treeview, &tmp);
-	gtk_box_pack_start (GTK_BOX (part), grid, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (part), grid);
 
 	//data->SW_enabled[FLT_GRP_PAYEE] = tmp.sw_enabled;
 	data->GR_page[FLT_GRP_PAYEE] = tmp.gr_criteria;
@@ -1047,11 +1042,11 @@ GtkWidget *treeview;
 
 	//header
 	grid = ui_flt_page_misc_header(_("Tag"), FLT_GRP_TAG, data);
-	gtk_box_pack_start (GTK_BOX (part), grid, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (part), grid);
 
 	treeview = ui_tag_listview_new(TRUE, FALSE);
 	grid = ui_flt_page_list_generic(_("Tag"), treeview, &tmp);
-	gtk_box_pack_start (GTK_BOX (part), grid, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (part), grid);
 
 	//data->SW_enabled[FLT_GRP_TAG] = tmp.sw_enabled;
 	data->GR_page[FLT_GRP_TAG] = tmp.gr_criteria;
@@ -1075,7 +1070,7 @@ gint row;
 
 	//header
 	grid = ui_flt_page_misc_header(_("Date"), FLT_GRP_DATE, data);
-	gtk_box_pack_start (GTK_BOX (part), grid, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (part), grid);
 
 
 	// criteria
@@ -1083,7 +1078,7 @@ gint row;
 	gtk_grid_set_row_spacing (GTK_GRID (grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (grid), SPACING_MEDIUM);
 	data->GR_page[FLT_GRP_DATE] = grid;
-	gtk_box_pack_start (GTK_BOX (part), grid, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (part), grid);
 
 	row = 0;
 	label = make_label_widget(_("_Range:"));
@@ -1124,14 +1119,14 @@ gint row;
 
 	// header
 	grid = ui_flt_page_misc_header(_("Amount"), FLT_GRP_AMOUNT, data);
-	gtk_box_pack_start (GTK_BOX (part), grid, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (part), grid);
 
 	// criteria
     grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (grid), SPACING_MEDIUM);
 	data->GR_page[FLT_GRP_AMOUNT] = grid;
-	gtk_box_pack_start (GTK_BOX (part), grid, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (part), grid);
 
 	row = 0;
 	label = make_label_widget(_("_From:"));
@@ -1152,15 +1147,15 @@ gint row;
 	//gtk_widget_set_hexpand (hbox, TRUE);
 	gtk_grid_attach (GTK_GRID (grid), hbox, 1, row, 2, 1);
 
-		widget = gtk_image_new_from_icon_name (ICONNAME_INFO, GTK_ICON_SIZE_BUTTON);
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+		widget = hbtk_image_new_from_icon_name_16 (ICONNAME_HB_QUICKTIPS);
+		gtk_box_prepend (GTK_BOX (hbox), widget);
 		label = make_label_widget(_("Input From -30 To -15 to filter on expense"));
-		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (hbox), label);
 
 
 	// header
 	grid = ui_flt_page_misc_header(_("Text"), FLT_GRP_TEXT, data);
-	gtk_box_pack_start (GTK_BOX (part), grid, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (part), grid);
 
 
 	// criteria
@@ -1168,7 +1163,7 @@ gint row;
 	gtk_grid_set_row_spacing (GTK_GRID (grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (grid), SPACING_MEDIUM);
 	data->GR_page[FLT_GRP_TEXT] = grid;
-	gtk_box_pack_start (GTK_BOX (part), grid, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (part), grid);
 	
 	row = 0;
 	label = make_label_widget(_("_Memo:"));
@@ -1204,23 +1199,22 @@ gint i, row;
 
 	// header
 	grid = ui_flt_page_misc_header(_("Payment"), FLT_GRP_PAYMODE, data);
-	gtk_box_pack_start (GTK_BOX (part), grid, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (part), grid);
 
 
 	vbox2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	data->GR_page[FLT_GRP_PAYMODE] = vbox2;
-	gtk_box_pack_start (GTK_BOX (part), vbox2, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (part), vbox2);
 
 	tbar = ui_flt_page_widget_toolbar(&tmp);
-	gtk_box_pack_start (GTK_BOX (vbox2), tbar, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (vbox2), tbar);
 
 	GtkWidget *frame = gtk_frame_new(NULL);
-	gtk_box_pack_start (GTK_BOX (vbox2), frame, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (vbox2), frame);
 
 	grid = gtk_grid_new ();
 	//gtk_grid_set_row_spacing (GTK_GRID (grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (grid), SPACING_SMALL);
-	//gtk_box_pack_start (GTK_BOX (vbox2), grid, FALSE, FALSE, 0);
 	gtk_frame_set_child(GTK_FRAME(frame), grid);
 	
 	hb_widget_set_margin(grid, 4);
@@ -1236,7 +1230,7 @@ gint i, row;
 
 		row = i;
 
-		image = gtk_image_new_from_icon_name( tmpkv->iconname, GTK_ICON_SIZE_MENU);
+		image = hbtk_image_new_from_icon_name_16( tmpkv->iconname);
 		gtk_grid_attach (GTK_GRID (grid), image, 0, row, 1, 1);
 
 		widget = gtk_check_button_new_with_mnemonic(_(tmpkv->name));
@@ -1264,7 +1258,7 @@ gint row;
 
 	//header
 	grid = ui_flt_page_misc_header(_("Type"), FLT_GRP_TYPE, data);
-	gtk_box_pack_start (GTK_BOX (part), grid, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (part), grid);
 
 
 	// criteria
@@ -1272,7 +1266,7 @@ gint row;
 	gtk_grid_set_row_spacing (GTK_GRID (grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (grid), SPACING_MEDIUM);
 	data->GR_page[FLT_GRP_TYPE] = grid;
-	gtk_box_pack_start (GTK_BOX (part), grid, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (part), grid);
 
 	row = 0;
 	widget = gtk_toggle_button_new_with_label(_("Expense"));
@@ -1307,7 +1301,7 @@ gint row;
 
 	// header
 	grid = ui_flt_page_misc_header(_("Status"), FLT_GRP_STATUS, data);
-	gtk_box_pack_start (GTK_BOX (part), grid, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (part), grid);
 
 
 	// criteria
@@ -1315,7 +1309,7 @@ gint row;
 	gtk_grid_set_row_spacing (GTK_GRID (grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (grid), SPACING_MEDIUM);
 	data->GR_page[FLT_GRP_STATUS] = grid;
-	gtk_box_pack_start (GTK_BOX (part), grid, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (part), grid);
 
 	row = 0;;
 	widget = gtk_toggle_button_new_with_label(_("None"));
@@ -1395,11 +1389,11 @@ gint w, h, dw, dh;
 	content = gtk_dialog_get_content_area(GTK_DIALOG (dialog));
 
 	mainbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start (GTK_BOX (content), mainbox, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (content), mainbox);
 
 	sidebar = gtk_stack_sidebar_new ();
 	gtk_widget_set_margin_bottom(sidebar, SPACING_LARGE);
-    gtk_box_pack_start (GTK_BOX (mainbox), sidebar, FALSE, FALSE, 0);
+    gtk_box_prepend (GTK_BOX (mainbox), sidebar);
 
 
 	stack = gtk_stack_new ();
@@ -1410,16 +1404,7 @@ gint w, h, dw, dh;
 
 
 	data->stack = stack;
-    gtk_box_pack_start (GTK_BOX (mainbox), stack, TRUE, TRUE, 0);
-
-
-	//common (date + status + amount)
-/*	label = gtk_label_new(_("General"));
-	page = ui_flt_page_general(&data);
-	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, label);
-*/
-
-	//old: date/status/payments/amounts/texts/Cat/Payee
+    hbtk_box_prepend (GTK_BOX (mainbox), stack);
 
 	//TODO: needs to keep this until we enable from/to into ledger
 	page = ui_flt_page_date(data);
@@ -1457,33 +1442,33 @@ gint w, h, dw, dh;
 	widget = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
 	gtk_widget_set_margin_top(widget, SPACING_LARGE);
 	gtk_widget_set_margin_bottom(widget, SPACING_LARGE);
-	gtk_box_pack_start (GTK_BOX (mainbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (mainbox), widget);
 
 	// force display
 	grid = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 	data->GR_force = grid;
 	hb_widget_set_margin(grid, SPACING_LARGE);
 	gtk_widget_set_valign(grid, GTK_ALIGN_END);
-	gtk_box_pack_start (GTK_BOX (mainbox), grid, FALSE, TRUE, 0);
+	gtk_box_prepend (GTK_BOX (mainbox), grid);
 
 	label = make_label_group(_("Always show"));
-	gtk_box_pack_start (GTK_BOX (grid), label, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (grid), label);
 
 	widget = gtk_check_button_new_with_mnemonic (_("Remind"));
 	data->CM_forceremind = widget;
-	gtk_box_pack_start (GTK_BOX (grid), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (grid), widget);
 
 	widget = gtk_check_button_new_with_mnemonic (_("Void"));
 	data->CM_forcevoid = widget;
-	gtk_box_pack_start (GTK_BOX (grid), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (grid), widget);
 
 	widget = gtk_check_button_new_with_mnemonic (_("Added"));
 	data->CM_forceadd = widget;
-	gtk_box_pack_start (GTK_BOX (grid), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (grid), widget);
 
 	widget = gtk_check_button_new_with_mnemonic (_("Edited"));
 	data->CM_forcechg = widget;
-	gtk_box_pack_start (GTK_BOX (grid), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (grid), widget);
 
 	
 	//setup, init and show window

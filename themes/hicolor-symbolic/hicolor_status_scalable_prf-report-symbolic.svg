@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   id="svg7384"
+   height="16"
+   width="16"
+   version="1.1"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   sodipodi:docname="hicolor_status_scalable_prf-report-symbolic.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs9" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1043"
+     id="namedview7"
+     showgrid="true"
+     inkscape:zoom="45.254834"
+     inkscape:cx="6.4302523"
+     inkscape:cy="8.4079416"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg7384"
+     inkscape:snap-global="false"
+     inkscape:pagecheckerboard="0">
+    <inkscape:grid
+       type="xygrid"
+       id="grid814"
+       empspacing="2" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata90">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Gnome Symbolic Icon Theme</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <title
+     id="title9167">Gnome Symbolic Icon Theme</title>
+  <path
+     d="M 4.1111115,11.888889 H 5.6666671 V 8 H 4.1111115 Z m 6.2222215,0 h 1.555556 V 4.1111111 h -1.555556 z m -3.1111104,0 H 8.7777778 V 9.5555556 H 7.2222226 Z M 7.2222226,8 H 8.7777778 V 6.4444444 H 7.2222226 Z m -4.666667,7 Q 1.9138889,15 1.4569444,14.543056 1,14.086111 1,13.444444 V 2.5555556 Q 1,1.9138889 1.4569444,1.4569444 1.9138889,1 2.5555556,1 H 13.444444 Q 14.086111,1 14.543056,1.4569444 15,1.9138889 15,2.5555556 V 13.444444 q 0,0.641667 -0.456944,1.098612 Q 14.086111,15 13.444444,15 Z m 0,-1.555556 H 13.444444 V 2.5555556 H 2.5555556 Z m 0,-10.8888884 V 13.444444 Z"
+     id="path2"
+     style="fill:#bebebe;stroke-width:0.0194444;" />
+</svg>

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -19,6 +19,10 @@
 
 
 #include "homebank.h"
+
+#include "ui-dialogs.h"
+#include "ui-widgets.h"
+#include "hbtk-switcher.h"
 
 #include "hb-pref-data.h"
 #include "ui-pref.h"
@@ -45,19 +49,28 @@ extern struct Preferences *PREFS;
 
 
 enum {
+	LST_PREF_UID,
 	LST_PREF_ICONNAME,
-	LST_PREF_NAME,
-	LST_PREF_PAGE,
+	LST_PREF_LABEL,
+	LST_PREF_PAGENUM,
+
 	LST_PREF_MAX
 };
 
 
+//TODO: this is not used
+//could be to save last page during session
 enum
 {
 	PREF_GENERAL,
 	PREF_INTERFACE,
+		PREF_THEMING,
+		PREF_COLOR,
 	PREF_LOCALE,	//old DISPLAY
 	PREF_TXN,		//old COLUMNS
+		PREF_TXN_DIALOG,
+		PREF_TXN_TRANSFER,
+		PREF_PAYMODE,
 	PREF_IMPORT,
 	PREF_REPORT,
 	PREF_FORECAST,
@@ -65,33 +78,38 @@ enum
 	PREF_FOLDERS,
 	PREF_EURO,
 	PREF_ADVANCED,
-	PREF_PAYMODE,
+
 	PREF_MAX
 };
 
 
-HbKivData CYA_PREF_GROUP[PREF_MAX+1] = 
+struct pref_list_datas CYA_PREF_GROUP[PREF_MAX+1] = 
 {
-	{ PREF_GENERAL  ,	"prf-general"  ,	N_("General") },
-	{ PREF_INTERFACE,	"prf-interface",	N_("Interface") },
-	{ PREF_LOCALE   ,	"prf-locale"   ,	N_("Locale") },
-	{ PREF_TXN      ,	"prf-columns"  ,	N_("Transactions") },
-	{ PREF_PAYMODE  ,	"prf-payment"  ,	N_("Payment") },
-	{ PREF_IMPORT   ,	"prf-import"   ,	N_("Import/Export") },
-	{ PREF_REPORT   ,	"prf-report"   ,	N_("Report") },
-	{ PREF_FORECAST ,	"prf-forecast" ,	N_("Forecast") },
-	{ PREF_BACKUP   ,	"prf-backup"   ,	N_("Backup") },
-	{ PREF_FOLDERS  ,	"prf-folder"   ,	N_("Folders") },
-	{ PREF_EURO     ,	"prf-euro"     ,	N_("Euro minor") },
-	{ PREF_ADVANCED ,	"prf-advanced" ,	N_("Advanced") },
+//	  level, identifier			 iconname			   label
+	{ 1, PREF_GENERAL		,	"prf-general"  ,			N_("General") },
+	{ 1, PREF_INTERFACE		,	"prf-interface",			N_("Interface") },
+		{ 2, PREF_INTERFACE	,	"prf-interface-theme",		N_("Theming") },
+		{ 2, PREF_INTERFACE	,	"prf-interface-color",		N_("Color") },
+	{ 1, PREF_LOCALE		,	"prf-locale",				N_("Locale") },
+	{ 1, PREF_TXN			,	"prf-transaction",			N_("Transactions") },
+		{ 2, PREF_TXN_DIALOG,	"prf-transaction-dialog"  ,	N_("Dialog") },
+		{ 2, PREF_TXN_TRANSFER,	"prf-transaction-transfer",	N_("Transfer") },
+		{ 2, PREF_PAYMODE	,	"prf-transaction-payment",	N_("Payment") },
+	{ 1, PREF_IMPORT		,	"prf-import"   ,			N_("Import/Export") },
+	{ 1, PREF_REPORT		,	"prf-report"   ,			N_("Report") },
+	{ 1, PREF_FORECAST		,	"prf-forecast" ,			N_("Forecast") },
+	{ 1, PREF_BACKUP		,	"prf-backup"   ,			N_("Backup") },
+	{ 1, PREF_FOLDERS		,	"prf-folder"   ,			N_("Folders") },
+	{ 1, PREF_EURO			,	"prf-euro"     ,			N_("Euro minor") },
+	{ 1, PREF_ADVANCED		,	"prf-advanced" ,			N_("Advanced") },
 
-	{ 0, NULL , NULL }
+	{ 0, 0, NULL , NULL }
 };
+
 
 
 extern HbKvData CYA_TOOLBAR_STYLE[];
 extern HbKvData CYA_GRID_LINES[];
-extern HbKvData CYA_TANGO_COLORS[];
 extern HbKvData CYA_IMPORT_DATEORDER[];
 extern HbKvData CYA_IMPORT_OFXNAME[];
 extern HbKvData CYA_IMPORT_OFXMEMO[];
@@ -542,21 +560,45 @@ gint active;
 }
 
 
-static void defpref_colortoggle(GtkWidget *widget, gpointer user_data)
+static void defpref_colorschemetoggle(GtkWidget *widget, gpointer user_data)
 {
 struct defpref_data *data;
 gboolean sensitive;
 
-	DB( g_print("\n[ui-pref] color toggle\n") );
+	DB( g_print("\n[ui-pref] color scheme toggle\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	sensitive = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_custom_colors));
+	if( gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_use_palette)) == TRUE )
+	{
+	GtkColorScheme scheme;
+	GdkRGBA rgba;
+	gint index;
 
-	gtk_widget_set_sensitive(data->LB_colors	 , sensitive);
-	gtk_widget_set_sensitive(data->CY_colors	 , sensitive);
-	gtk_widget_set_sensitive(data->LB_exp_color	 , sensitive);
-	gtk_widget_set_sensitive(data->GR_colors	 , sensitive);
+		index = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_color_scheme));
+
+		colorscheme_init(&scheme, index);
+
+		colorsheme_col8_to_rgba(&scheme.colors[scheme.cs_orange], &rgba);
+		gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(data->CP_exp_color), &rgba);
+
+		colorsheme_col8_to_rgba(&scheme.colors[scheme.cs_green], &rgba);
+		gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(data->CP_inc_color), &rgba);
+
+		colorsheme_col8_to_rgba(&scheme.colors[scheme.cs_red], &rgba);
+		gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(data->CP_warn_color), &rgba);
+
+		colorsheme_col8_to_rgba(&scheme.colors[scheme.cs_blue], &rgba);
+		gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(data->CP_fut_bg_color), &rgba);
+	}
+
+	sensitive = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_use_palette));
+
+	gtk_widget_set_sensitive(data->CP_exp_color, sensitive);
+	gtk_widget_set_sensitive(data->CP_inc_color, sensitive);
+	gtk_widget_set_sensitive(data->CP_warn_color, sensitive);
+	gtk_widget_set_sensitive(data->CP_fut_bg_color, sensitive);
+
 }
 
 
@@ -605,88 +647,17 @@ gboolean sensitive;
 }
 
 
-/*
-** set preset colors for amount display
-*/
-static void defpref_colorpreset(GtkWidget *widget, gpointer user_data)
-{
-struct defpref_data *data;
-GdkRGBA rgba;
-gint preset;
-gchar *expcol, *inccol, *wrncol;
-
-	DB( g_print("\n[ui-pref] color preset\n") );
-
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-
-	preset = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_colors));
-
-	switch( preset)
-	{
-		case 1:		//light
-			expcol = LIGHT_EXP_COLOR;
-			inccol = LIGHT_INC_COLOR;
-			wrncol = LIGHT_WARN_COLOR;
-			break;
-
-		case 2:		//medium
-			expcol = MEDIUM_EXP_COLOR;
-			inccol = MEDIUM_INC_COLOR;
-			wrncol = MEDIUM_WARN_COLOR;
-			break;
-
-		case 3:	//dark
-		default:
-			expcol = DEFAULT_EXP_COLOR;
-			inccol = DEFAULT_INC_COLOR;
-			wrncol = DEFAULT_WARN_COLOR;
-			break;
-	}
-
-
-	gdk_rgba_parse(&rgba, expcol);
-	gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(data->CP_exp_color), &rgba);
-
-	gdk_rgba_parse(&rgba, inccol);
-	gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(data->CP_inc_color), &rgba);
-
-	gdk_rgba_parse(&rgba, wrncol);
-	gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(data->CP_warn_color), &rgba);
-
-
-}
-
-
 static void defpref_color_scheme_changed(GtkWidget *widget, gpointer user_data)
 {
 struct defpref_data *data;
 
-	DB( g_print("\n[ui-pref] color scheme chnaged\n") );
+	DB( g_print("\n[ui-pref] color scheme changed\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
 	gtk_widget_queue_draw (data->DA_colors);
-	
+	defpref_colorschemetoggle(widget, user_data);
 }
-
-
-
-
-/*
-static void setGdkColor_from_RGB(GdkColor *color, guint32 value)
-{
-guint	tmp;
-
-	tmp = value >> 16;
-	color->red   = tmp | tmp<<8;
-
-	tmp = value >> 8 & 0xFF;
-	color->green = tmp | tmp<<8;
-
-	tmp = value & 0xFF;
-	color->blue  = tmp | tmp<<8;
-}
-*/
 
 
 /*
@@ -729,16 +700,23 @@ GdkRGBA rgba;
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_gtk_darktheme), PREFS->gtk_darktheme);
 
 	gtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_icontheme), PREFS->icontheme);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_iconsymbolic), PREFS->icon_symbolic);
 
 	//gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_image_size), PREFS->image_size);
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_custom_colors), PREFS->custom_colors);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_custom_bg_future), PREFS->custom_colors);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_use_palette), PREFS->color_use_palette);
+
 	gdk_rgba_parse(&rgba, PREFS->color_exp);
 	gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(data->CP_exp_color), &rgba);
 	gdk_rgba_parse(&rgba, PREFS->color_inc);
 	gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(data->CP_inc_color), &rgba);
 	gdk_rgba_parse(&rgba, PREFS->color_warn);
 	gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(data->CP_warn_color), &rgba);
+	gdk_rgba_parse(&rgba, PREFS->color_bg_future);
+	gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(data->CP_fut_bg_color), &rgba);
+
 
 	//gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_ruleshint), PREFS->rules_hint);
 	hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_gridlines), PREFS->grid_lines);
@@ -750,9 +728,13 @@ GdkRGBA rgba;
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_show_remind), PREFS->showremind);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_show_void), PREFS->showvoid);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_include_remind), PREFS->includeremind);
-	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_lock_reconciled), PREFS->lockreconciled);
-	
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_lock_reconciled), PREFS->safe_lock_recon);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_safe_pend_recon), PREFS->safe_pend_recon);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_safe_pend_past), PREFS->safe_pend_past);
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_safe_pend_past_days), PREFS->safe_pend_past_days);
+
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_herit_date), PREFS->heritdate);
+
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_show_confirm), PREFS->txn_showconfirm);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_show_template), PREFS->txn_showtemplate);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_memoacp), PREFS->txn_memoacp);
@@ -791,6 +773,7 @@ GdkRGBA rgba;
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_stat_incxfer), PREFS->stat_includexfer);
 	
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_budg_showdetail), PREFS->budg_showdetail);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_budg_unexclsub), PREFS->budg_unexclsub);
 
 	//forecast
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_forecast), PREFS->rep_forcast);
@@ -880,8 +863,12 @@ const gchar *datfmt;
 		g_free(PREFS->icontheme);
 		PREFS->icontheme = g_strdup(active_id);
 	}
+	PREFS->icon_symbolic = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_iconsymbolic));
 
 	PREFS->custom_colors = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_custom_colors));
+	PREFS->custom_bg_future = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_custom_bg_future));
+	PREFS->color_use_palette = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_use_palette));
+
 	gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(data->CP_exp_color), &rgba);
 	g_free(PREFS->color_exp);
 	PREFS->color_exp = gdk_rgba_to_hex(&rgba);
@@ -891,6 +878,11 @@ const gchar *datfmt;
 	gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(data->CP_warn_color), &rgba);
 	g_free(PREFS->color_warn);
 	PREFS->color_warn = gdk_rgba_to_hex(&rgba);
+	
+	gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(data->CP_fut_bg_color), &rgba);
+	g_free(PREFS->color_bg_future);
+	PREFS->color_bg_future = gdk_rgba_to_hex(&rgba);
+
 	//PREFS->rules_hint = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_ruleshint));
 	PREFS->grid_lines = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_gridlines));
 	//list_txn_colpref_get(GTK_TREE_VIEW(data->LV_opecolumns), PREFS->lst_ope_columns);
@@ -902,8 +894,13 @@ const gchar *datfmt;
 	PREFS->showremind = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_show_remind));
 	PREFS->showvoid = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_show_void));
 	PREFS->includeremind = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_include_remind));
-	PREFS->lockreconciled = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_lock_reconciled));
+	PREFS->safe_lock_recon = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_lock_reconciled));
+	PREFS->safe_pend_recon = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_safe_pend_recon));
+	PREFS->safe_pend_past = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_safe_pend_past));
+	PREFS->safe_pend_past_days = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_safe_pend_past_days));
+
 	PREFS->heritdate = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_herit_date));
+
 	PREFS->txn_showconfirm = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_show_confirm));
 	PREFS->txn_showtemplate = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_show_template));
 	PREFS->txn_memoacp = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_memoacp));
@@ -945,6 +942,7 @@ const gchar *datfmt;
 	PREFS->stat_showdetail = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_stat_showdetail));
 	PREFS->stat_includexfer = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_stat_incxfer));
 	PREFS->budg_showdetail = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_budg_showdetail));
+	PREFS->budg_unexclsub = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_budg_unexclsub));
 
 	//forecast
 	PREFS->rep_forcast = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_forecast));
@@ -977,7 +975,7 @@ const gchar *datfmt;
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
-static GtkWidget *defpref_page_payment (struct defpref_data *data)
+static GtkWidget *defpref_page_txn_payment (struct defpref_data *data)
 {
 GtkWidget *content_grid, *group_grid, *label, *widget, *scrollwin;
 gint crow, row;
@@ -991,13 +989,13 @@ gint crow, row;
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
 
 	label = make_label_group(_("Payment shows & chooses"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
 
 	row = 1;
-	label = make_label_widget(_("Use drag & drop to reorder"));
+	label = make_label_left(_("Use drag & drop to reorder"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 2, 1);
 
 	row++;
@@ -1029,13 +1027,13 @@ gint crow, row;
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
 
 	label = make_label_group(_("Currency API"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
 
 	row = 1;
-	label = make_label_widget(_("Url:"));
+	label = make_label_left(_("Url:"));
 	//----------------------------------------- l, r, t, b
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = make_string(label);
@@ -1044,7 +1042,7 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
 	row++;
-	label = make_label_widget(_("Key:"));
+	label = make_label_left(_("Key:"));
 	//----------------------------------------- l, r, t, b
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = make_string(label);
@@ -1072,13 +1070,13 @@ gint crow, row;
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
 	
 	label = make_label_group(_("General options"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
 	
 	row = 1;
-	label = make_label_widget(_("Date order:"));
+	label = make_label_left(_("Date order:"));
 	//----------------------------------------- l, r, t, b
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = hbtk_combo_box_new_with_data(label, CYA_IMPORT_DATEORDER);
@@ -1092,16 +1090,17 @@ gint crow, row;
 	
 
 	// group :: OFX/QFX options
+	crow++;
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
 	
 	label = make_label_group(_("OFX/QFX options"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
 	
 	row = 1;
-	label = make_label_widget(_("OFX _Name:"));
+	label = make_label_left(_("OFX _Name:"));
 	//----------------------------------------- l, r, t, b
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = hbtk_combo_box_new_with_data(label, CYA_IMPORT_OFXNAME);
@@ -1109,7 +1108,7 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
 	row++;
-	label = make_label_widget(_("OFX _Memo:"));
+	label = make_label_left(_("OFX _Memo:"));
 	//----------------------------------------- l, r, t, b
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = hbtk_combo_box_new_with_data(label, CYA_IMPORT_OFXMEMO);
@@ -1117,10 +1116,11 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
 	// group :: QIF options
+	crow++;
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
 	
 	label = make_label_group(_("QIF options"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
@@ -1134,20 +1134,21 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
 	// group :: other options
+	crow++;
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
 	
 	label = make_label_group(_("CSV options"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
 
 	row = 1;
-	label = make_label(_("(transaction import only)"), 0.0, 0.5);
+	label = make_label_left(_("(transaction import only)"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 2, 1);
 
 	row++;
-	label = make_label_widget(_("Separator:"));
+	label = make_label_left(_("Separator:"));
 	//----------------------------------------- l, r, t, b
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = hbtk_combo_box_new_with_data(label, CYA_IMPORT_CSVSEPARATOR);
@@ -1201,59 +1202,58 @@ gint crow, row;
 	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
 
 	crow = 0;
-	// group :: Initial filter
+	// group :: Main window reports
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
+	
+	label = make_label_group(_("Main window reports"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
+
+	row = 1;
+/* removed 5.7
+	label = make_label_left(_("_Range:"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
+	widget = make_daterange(label, DATE_RANGE_CUSTOM_HIDDEN);
+	data->CY_daterange_wal = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+*/
+
+//	row++;
+	label = make_label_left(_("Max _items:"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
+	widget = make_numeric(label, 5, 20);
+	data->ST_maxspenditems = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+
+
+
+	// group :: Initial filter
+	crow++;
+    group_grid = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
+	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
 	
 	label = make_label_group(_("Initial filter"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
 	
 	row = 1;
-	label = make_label_widget(_("_Range:"));
+	label = make_label_left(_("_Range:"));
 	//----------------------------------------- l, r, t, b
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = make_daterange(label, DATE_RANGE_FLAG_CUSTOM_HIDDEN);
 	data->CY_daterange_rep = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
-	// group ::Charts options
-    group_grid = gtk_grid_new ();
-	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
-	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
-	
-	label = make_label_group(_("Charts options"));
-	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
-	
-	row = 1;
-	label = make_label_widget(_("Color scheme:"));
-	//----------------------------------------- l, r, t, b
-	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-	widget = hbtk_combo_box_new_with_array(label, chart_colors);
-	data->CY_color_scheme = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-
-	row++;
-	widget = gtk_drawing_area_new ();
-	data->DA_colors = widget;
-	gtk_widget_set_size_request (widget, (1+cube_dim)*16, (1+cube_dim)*2);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-
-	g_signal_connect (data->DA_colors, "draw", G_CALLBACK (draw_callback), data);
-
-	row++;
-	widget = gtk_check_button_new_with_mnemonic (_("Smaller legend _font"));
-	data->CM_rep_smallfont = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
-
 
 	// group :: Statistics options
+	crow++;
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
 	
 	label = make_label_group(_("Statistics options"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
@@ -1279,10 +1279,11 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
 
 	// group :: Budget options
+	crow++;
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
 	
 	label = make_label_group(_("Budget options"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
@@ -1290,6 +1291,11 @@ gint crow, row;
 	row = 1;
 	widget = gtk_check_button_new_with_mnemonic (_("Show _details"));
 	data->CM_budg_showdetail = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
+
+	row++;
+	widget = gtk_check_button_new_with_mnemonic (_("Exclude subcategories from unbudgeted line"));
+	data->CM_budg_unexclsub = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
 
 	return content_grid;
@@ -1327,7 +1333,7 @@ gint crow, row;
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
 
 	label = make_label_group(_("Forecast"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
@@ -1338,7 +1344,7 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
 	
 	row++;
-	label = make_label(_("Month number:"), 0, 0.5);
+	label = make_label_left(_("Month number:"));
 	data->LB_forecast_nbmonth = label;
 	//----------------------------------------- l, r, t, b
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
@@ -1365,7 +1371,7 @@ gint crow, row;
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
 	
 	label = make_label_group(_("General"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 4, 1);
@@ -1376,7 +1382,7 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
 
 	row++;
-	label = make_label_widget(_("_Preset:"));
+	label = make_label_left(_("_Preset:"));
 	data->LB_euro_preset =label;
 	//----------------------------------------- l, r, t, b
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
@@ -1386,43 +1392,45 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
 	// group :: Configuration
+	crow++;
     group_grid = gtk_grid_new ();
 	data->GRP_configuration = group_grid;
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
 	
 	label = make_label_group(_("Configuration"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 4, 1);
 
 	row=1;
-	widget = make_label(NULL, 0.0, 0.5);
+	widget = make_label_left(NULL);
 	data->ST_euro_country = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
 
 	row++;
-	label = make_label_widget("1 EUR _=");
+	label = make_label_left("1 EUR _=");
 	data->LB_euro_src = label;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = make_exchange_rate(label);
 	data->NB_euro_value = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-	label = make_label_widget(NULL);
+	label = make_label_left(NULL);
 	data->LB_euro_dst = label;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 3, row, 1, 1);
 
 	// group :: Numbers format
+	crow++;
     group_grid = gtk_grid_new ();
 	data->GRP_format = group_grid;
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
 	
 	label = make_label_group(_("Format"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 4, 1);
 
 	row = 1;
-	widget = make_label(NULL, 0, 0.0);
+	widget = make_label_left(NULL);
 	data->LB_numbereuro = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
 
@@ -1436,7 +1444,7 @@ gint crow, row;
 	gtk_expander_set_child(GTK_EXPANDER(expander), group_grid);
 	
 	row = 0;
-	label = make_label_widget(_("_Symbol:"));
+	label = make_label_left(_("_Symbol:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = make_string_maxlength(label, 3);
 	data->ST_euro_symbol = widget;
@@ -1448,21 +1456,21 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
 	row++;
-	label = make_label_widget(_("_Decimal char:"));
+	label = make_label_left(_("_Decimal char:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = make_string_maxlength(label, 1);
 	data->ST_euro_decimalchar = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
 	row++;
-	label = make_label_widget(_("_Frac digits:"));
+	label = make_label_left(_("_Frac digits:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = make_numeric(label, 0.0, 6.0);
 	data->NB_euro_fracdigits = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
 	row++;
-	label = make_label_widget(_("_Grouping char:"));
+	label = make_label_left(_("_Grouping char:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = make_string_maxlength(label, 1);
 	data->ST_euro_groupingchar = widget;
@@ -1472,7 +1480,7 @@ gint crow, row;
 }
 
 
-static GtkWidget *defpref_page_display (struct defpref_data *data)
+static GtkWidget *defpref_page_locale (struct defpref_data *data)
 {
 GtkWidget *content_grid, *group_grid, *label, *widget, *expander, *hbox;
 gint crow, row;
@@ -1486,13 +1494,13 @@ gint crow, row;
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
 	
 	label = make_label_group(_("User interface"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
 
 	row = 1;
-	label = make_label(_("_Language:"), 0, 0.5);
+	label = make_label_left(_("_Language:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = ui_language_combobox_new(label);
 	data->CY_language = widget;
@@ -1500,14 +1508,14 @@ gint crow, row;
 
 	row++;
 	row++;
-	label = make_label(_("_Date display:"), 0, 0.5);
+	label = make_label_left(_("Date display:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-	widget = make_label(NULL, 0, 0.5);
+	widget = make_label_left(NULL);
 	data->LB_date = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
 	row++;
-	expander = gtk_expander_new_with_mnemonic(_("_Customize"));
+	expander = gtk_expander_new_with_mnemonic(_("C_ustomize"));
 	gtk_grid_attach (GTK_GRID (group_grid), expander, 2, row, 1, 1);
 
     group_grid = gtk_grid_new ();
@@ -1516,14 +1524,14 @@ gint crow, row;
 	gtk_expander_set_child (GTK_EXPANDER(expander), group_grid);
 
 	row++;
-	label = make_label_widget(_("_Format:"));
+	label = make_label_left(_("_Format:"));
 	//----------------------------------------- l, r, t, b
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = make_string(label);
 	data->ST_datefmt = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
-	widget = gtk_image_new_from_icon_name (ICONNAME_INFO, GTK_ICON_SIZE_BUTTON);
+	widget = hbtk_image_new_from_icon_name_16 (ICONNAME_HB_QUICKTIPS);
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 3, row, 1, 1);
 
 	
@@ -1545,43 +1553,45 @@ gint crow, row;
 );
 
 	row++;
-	widget = make_label(NULL, 0.0, 0.5);
-	gtk_label_set_markup (GTK_LABEL(widget), "<small><a href=\"http://man7.org/linux/man-pages/man3/strftime.3.html\">online reference</a></small>");
+	widget = make_label_left(NULL);
+	gtk_label_set_markup (GTK_LABEL(widget), "<small><a href=\"https://man7.org/linux/man-pages/man3/strftime.3.html\">online reference</a></small>");
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
 
 
 
 	// group :: Fiscal year
+	crow++;
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
 
 	label = make_label_group(_("Fiscal year"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
 
 	row = 1;
 	//TRANSLATORS: (fiscal year) starts on
-	label = make_label_widget(_("Starts _on:"));
+	label = make_label_left(_("Starts _on:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
 	gtk_grid_attach (GTK_GRID (group_grid), hbox, 2, row, 1, 1);
 	widget = make_numeric (label, 1, 28);
 	data->NB_fiscyearday = widget;
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (hbox), widget);
 	widget = hbtk_combo_box_new_with_data (NULL, CYA_MONTHS);
 	data->CY_fiscyearmonth = widget;
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (hbox), widget);
 
 
 
 	// group :: Measurement units
+	crow++;
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
 	
 	label = make_label_group(_("Measurement units"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
@@ -1600,7 +1610,7 @@ gint crow, row;
 }
 
 
-static GtkWidget *defpref_page_transactions (struct defpref_data *data)
+static GtkWidget *defpref_page_txn (struct defpref_data *data)
 {
 GtkWidget *content_grid, *group_grid, *label, *widget;
 gint crow, row;
@@ -1614,39 +1624,12 @@ gint crow, row;
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
 	
-	//label = make_label_group(_("Transaction window"));
-	label = make_label_group(_("Transaction list"));
+	label = make_label_group(_("General"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
 
 	row = 1;
-	label = make_label(_("_Range:"), 0, 0.5);
-	//----------------------------------------- l, r, t, b
-	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-	widget = make_daterange(label, DATE_RANGE_FLAG_CUSTOM_HIDDEN);
-	data->CY_daterange_txn = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-
-	row++;
-	label = make_label(_("_Show future:"), 0, 0.5);
-	//----------------------------------------- l, r, t, b
-	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-	widget = make_numeric(NULL, 0, 366);
-	
-	data->ST_datefuture_nbdays = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-
-	//TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days in advance the current date
-	label = make_label(_("days ahead"), 0, 0.5);
-	gtk_grid_attach (GTK_GRID (group_grid), label, 3, row, 1, 1);
-
-	row++;
-	widget = gtk_check_button_new_with_mnemonic (_("Hide reconciled"));
-	data->CM_hide_reconciled = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
-
-	row++;
 	widget = gtk_check_button_new_with_mnemonic (_("Always show remind"));
 	data->CM_show_remind = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
@@ -1661,17 +1644,95 @@ gint crow, row;
 	data->CM_include_remind = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
 
+	crow++;
+	// group :: safety
+    group_grid = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
+	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
+	
+	label = make_label_group(_("Safety"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
+
 	row++;
 	widget = gtk_check_button_new_with_mnemonic (_("Lock reconciled for any changes"));
 	data->CM_lock_reconciled = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
 
+	row++;
+	widget = gtk_check_button_new_with_mnemonic (_("Approve additions before last reconciliation"));
+	data->CM_safe_pend_recon = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
 
-	// group :: txn dialog
+	row++;
+	widget = gtk_check_button_new_with_mnemonic (_("Approve additions"));
+	data->CM_safe_pend_past = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+
+	widget = make_numeric(NULL, 0, 366);
+	data->ST_safe_pend_past_days = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+
+	//TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days as pending
+	label = make_label_left(_("days before today's date"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 3, row, 1, 1);
+
+
+	crow++;
+	// group :: txn list
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
+	
+	label = make_label_group(_("Ledger window"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
+
+	row = 1;
+	label = make_label_left(_("_Range:"));
+	//----------------------------------------- l, r, t, b
+	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
+	widget = make_daterange(label, DATE_RANGE_FLAG_CUSTOM_HIDDEN);
+	data->CY_daterange_txn = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+
+	row++;
+	label = make_label_left(_("_Show future:"));
+	//----------------------------------------- l, r, t, b
+	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
+
+	widget = make_numeric(NULL, 0, 366);
+	data->ST_datefuture_nbdays = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+
+	//TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days in advance the current date
+	label = make_label_left(_("days ahead"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 3, row, 1, 1);
+
+	row++;
+	widget = gtk_check_button_new_with_mnemonic (_("Hide reconciled"));
+	data->CM_hide_reconciled = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
+
+	return content_grid;
+}
+
+static GtkWidget *defpref_page_txn_dialog (struct defpref_data *data)
+{
+GtkWidget *content_grid, *group_grid, *label, *widget;
+gint crow, row;
+
+	content_grid = gtk_grid_new();
+	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
+	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
+
+
+	// group :: txn dialog
+	crow = 0;
+    group_grid = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
+	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
 	
 	label = make_label_group(_("Transaction dialog"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
@@ -1688,7 +1749,7 @@ gint crow, row;
 	widget = make_numeric(NULL, 0, 1460);
 	data->ST_memoacp_days = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-	label = make_label(_("rolling days"), 0, 0.5);
+	label = make_label_left(_("rolling days"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 3, row, 1, 1);
 
 	row++;
@@ -1702,36 +1763,62 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
 
 
+	return content_grid;
+}
+
+
+
+static GtkWidget *defpref_page_txn_transfer (struct defpref_data *data)
+{
+GtkWidget *content_grid, *group_grid, *label, *widget;
+gint crow, row;
+
+	content_grid = gtk_grid_new();
+	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
+	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
+
 	// group :: transfer
+	crow = 0;
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
 	
-	label = make_label_group(_("Transfer behavior"));
+	label = make_label_group(_("Behavior"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
 
 	row = 1;
-	widget = gtk_check_button_new_with_mnemonic (_("Show action for target creation dialog for Add"));
+	widget = gtk_check_button_new_with_mnemonic (_("When adding, always show selection _action for target dialog"));
+	//widget = gtk_check_button_new_with_mnemonic (_("Always prompt"));
 	data->CM_xfer_showdialog = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
 
 	row++;
-	label = make_label(_("Transfer target date tolerance:"), 0, 0.5);
+	label = make_label_left(_("Date _gap to find a target:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = make_numeric(NULL, 2, 7);
 	data->ST_xfer_daygap = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-	label = make_label(_("days"), 0, 0.5);
+	label = make_label_left(_("days"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 3, row, 1, 1);
 
-	row++;
-	widget = gtk_check_button_new_with_mnemonic (_("Sync Date"));
+	// group :: transfer
+	crow++;
+    group_grid = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
+	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
+	
+	label = make_label_group(_("Synchronize"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
+
+	row = 1;
+	widget = gtk_check_button_new_with_mnemonic (_("_Date"));
 	data->CM_xfer_syncdate = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
 
 	row++;
-	widget = gtk_check_button_new_with_mnemonic (_("Sync Status"));
+	widget = gtk_check_button_new_with_mnemonic (_("_Status"));
 	data->CM_xfer_syncstat = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
 
@@ -1745,28 +1832,217 @@ gint crow, row;
 /* test */
 static void defpref_icons_changed_cb(GtkWidget *widget, gpointer user_data)
 {
-//struct defpref_data *data;
+struct defpref_data *data;
 const gchar *active_id;
 gboolean symbolic;
 	
-	DB( g_print("\n[ui-pref] color preset\n") );
+	DB( g_print("\n[ui-pref] cb icon changed\n") );
 
-	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	active_id = gtk_combo_box_get_active_id(GTK_COMBO_BOX(widget));
-	symbolic = ( !strcmp(active_id, "symbolic") ) ? TRUE : FALSE;
+	active_id = gtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_icontheme));
+	symbolic = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_iconsymbolic));
 
-	homebank_pref_icon_symbolic(symbolic);
+	DB( g_print(" name: %s, sym:%d\n", active_id, symbolic ) );
 
 	//gtk_settings_set_string_property (gtk_settings_get_default (), "gtk-icon-theme-name", active_id, "gtkrc:0");
 	g_object_set(gtk_settings_get_default (), "gtk-icon-theme-name", active_id, NULL);
+
+	homebank_pref_icon_symbolic(symbolic);
+
+
 }
 /* end test */
 
 
-static GtkWidget *defpref_page_interface (struct defpref_data *data)
+static GtkWidget *defpref_page_intf_theming (struct defpref_data *data)
 {
-GtkWidget *content_grid, *group_grid, *hbox, *label, *widget;
+GtkWidget *content_grid, *group_grid, *label, *widget;
+gint crow, row;
+
+	content_grid = gtk_grid_new();
+	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
+	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
+
+	crow =0;
+	// group :: Theming
+    group_grid = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
+	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
+
+	label = make_label_group(_("Theme"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
+
+	row=1;
+#ifdef G_OS_UNIX
+	label = make_label_left(_("Dark mode:"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
+
+	gchar *txt = _("System has no preference");
+	if( GLOBALS->color_scheme == PREFER_DARK )
+		txt = _("System prefer dark");
+	else
+	if( GLOBALS->color_scheme == PREFER_LIGHT )
+		txt = _("System prefer light");
+	label = make_label_left(txt);
+	gtk_grid_attach (GTK_GRID (group_grid), label, 2, row, 1, 1);
+
+	row++;
+ #endif
+
+	widget = gtk_check_button_new_with_mnemonic (_("Use _dark mode if available"));
+	data->CM_gtk_darktheme = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
+
+
+	// group :: Icons
+	crow++;
+    group_grid = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
+	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
+	
+	label = make_label_group(_("Icons"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
+
+	row=1;
+	label = make_label_left(_("_Icon theme:"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
+	widget = hbtk_combo_box_new (label);
+
+	//future
+	gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(widget), "Default",	"Default");
+	gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(widget), "hicolor",	"Legacy");
+
+	data->CY_icontheme = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+
+	row++;
+	widget = gtk_check_button_new_with_mnemonic (_("Use _symbolic icons if available"));
+	data->CM_iconsymbolic = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
+
+
+
+	// group :: GTK override
+	crow++;
+    group_grid = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
+	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
+	
+	label = make_label_group(_("Gtk settings"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
+
+	row = 1;
+	widget = gtk_check_button_new_with_mnemonic (_("Ov_erride"));
+	data->CM_gtk_override = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
+	
+	row++;	
+	label = make_label_left(_("_Font size:"));
+	data->LB_gtk_fontsize = label;
+	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
+	widget = make_numeric(label, 8, 16);
+	data->NB_gtk_fontsize = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+
+
+	return content_grid;
+}
+
+
+static GtkWidget *defpref_page_intf_color (struct defpref_data *data)
+{
+GtkWidget *content_grid, *group_grid, *label, *widget;
+gint crow, row;
+
+	content_grid = gtk_grid_new();
+	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
+	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
+
+	crow = 0;
+	// group :: Theming
+    group_grid = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
+	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
+
+	row = 1;
+	label = make_label_group(_("Chart"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
+
+	row++;
+	label = make_label_left(_("_Palette:"));
+	//----------------------------------------- l, r, t, b
+	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
+	widget = hbtk_combo_box_new_with_array(label, chart_colors);
+	data->CY_color_scheme = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+
+	row++;
+	widget = gtk_drawing_area_new ();
+	data->DA_colors = widget;
+	gtk_widget_set_size_request (widget, (1+cube_dim)*16, (1+cube_dim)*2);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 3, 1);
+
+	g_signal_connect (data->DA_colors, "draw", G_CALLBACK (draw_callback), data);
+
+	// group :: Others
+	crow++;
+    group_grid = gtk_grid_new ();
+	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
+	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
+	
+	label = make_label_group(_("Others"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
+
+	row = 1;
+	widget = gtk_check_button_new_with_mnemonic (_("_Use colors from the chart palette"));
+	data->CM_use_palette = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
+
+	row++;
+	widget = gtk_color_button_new ();
+	data->CP_exp_color = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+	label = make_label_left(_("_Expense"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 2, row, 1, 1);
+	gtk_label_set_mnemonic_widget (GTK_LABEL(label), widget);
+
+	row++;
+	widget = gtk_color_button_new ();
+	data->CP_inc_color = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+	label = make_label_left(_("_Income"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 2, row, 1, 1);
+	gtk_label_set_mnemonic_widget (GTK_LABEL(label), widget);
+
+	row++;
+	widget = gtk_color_button_new ();
+	data->CP_warn_color = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+	label = make_label_left(_("_Warning"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 2, row, 1, 1);
+	gtk_label_set_mnemonic_widget (GTK_LABEL(label), widget);
+
+	row++;
+	widget = gtk_color_button_new ();
+	data->CP_fut_bg_color = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
+	label = make_label_left(_("Background _future"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 2, row, 1, 1);
+	gtk_label_set_mnemonic_widget (GTK_LABEL(label), widget);
+
+	return content_grid;
+}
+
+
+static GtkWidget *defpref_page_intf (struct defpref_data *data)
+{
+GtkWidget *content_grid, *group_grid, *label, *widget;
 gint crow, row;
 
 	content_grid = gtk_grid_new();
@@ -1778,123 +2054,65 @@ gint crow, row;
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
 	
 	label = make_label_group(_("General"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
 
 	row = 1;
-	label = make_label(_("_Toolbar:"), 0, 0.5);
-	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-	widget = hbtk_combo_box_new_with_data(label, CYA_TOOLBAR_STYLE);
-	data->CY_toolbar = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+	widget = gtk_check_button_new_with_mnemonic (_("Color the _amounts"));
+	data->CM_custom_colors = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
+
+	row++;
+	widget = gtk_check_button_new_with_mnemonic (_("Color the _background of future transactions"));
+	data->CM_custom_bg_future = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
 
 	row++;
 	//widget = gtk_check_button_new_with_mnemonic (_("Enable rows in alternating colors"));
 	//data->CM_ruleshint = widget;
-	label = make_label(_("_Grid line:"), 0, 0.5);
+	label = make_label_left(_("_Grid line:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = hbtk_combo_box_new_with_data(label, CYA_GRID_LINES);
 	data->CY_gridlines = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
-	/*todo: test */
-	row++;
-	label = make_label(_("_Icon theme:"), 0, 0.5);
-	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-	widget = gtk_combo_box_text_new ();
-	
-	gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(widget), "hicolor", "Legacy");
-	//gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(widget), "Color"  , "Color");
-	//gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(widget), "symbolic"  , "Symbolic");
-	//gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(widget), "papirus", "papirus");
-	//gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(widget), "gtk2", "gtk2");
-	//gtk_combo_box_text_append(GTK_COMBO_BOX_TEXT(widget), "line", "line");
 
-	data->CY_icontheme = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-	g_signal_connect (widget, "changed", G_CALLBACK (defpref_icons_changed_cb), NULL);
-
-	/*todo: end test */
-
-	// group :: GTK override
+	// group ::Charts options
+	crow++;
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
 	
-	label = make_label_group(_("Gtk settings"));
+	label = make_label_group(_("Charts options"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
-
-	row = 1;
-	widget = gtk_check_button_new_with_mnemonic (_("Override"));
-	data->CM_gtk_override = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
 	
-	row++;	
-	label = make_label(_("Font _size:"), 0, 0.5);
-	data->LB_gtk_fontsize = label;
-	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-	widget = make_numeric(label, 8, 16);
-	data->NB_gtk_fontsize = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-
-	row++;
-	widget = gtk_check_button_new_with_mnemonic (_("Dark theme"));
-	data->CM_gtk_darktheme = widget;
+	row = 1;
+	widget = gtk_check_button_new_with_mnemonic (_("Smaller legend _font"));
+	data->CM_rep_smallfont = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
 
 
-	// group :: Amount colors
+
+	// group :: Deprecated
+	crow += 5;
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
 	
-	label = make_label_group(_("Amount colors"));
+	label = make_label_group("Deprecated");
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
 
 	row = 1;
-	widget = gtk_check_button_new_with_mnemonic (_("Uses custom colors"));
-	data->CM_custom_colors = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
-
-	row++;
-	label = make_label(_("_Preset:"), 0, 0.5);
-	data->LB_colors = label;
-	//----------------------------------------- l, r, t, b
+	label = make_label_left(_("_Toolbar:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-	widget = hbtk_combo_box_new_with_data(label, CYA_TANGO_COLORS);
-	data->CY_colors = widget;
+	widget = hbtk_combo_box_new_with_data(label, CYA_TOOLBAR_STYLE);
+	data->CY_toolbar = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
-	row++;
-	label = make_label(_("_Expense:"), 0, 0.5);
-	data->LB_exp_color = label;
-	//----------------------------------------- l, r, t, b
-	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
-	data->GR_colors = hbox;
-	gtk_grid_attach (GTK_GRID (group_grid), hbox, 2, row, 1, 1);
-	
-	widget = gtk_color_button_new ();
-	data->CP_exp_color = widget;
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
-	
-	label = make_label_widget(_("_Income:"));
-	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
-
-	widget = gtk_color_button_new ();
-	data->CP_inc_color = widget;
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
-
-	label = make_label_widget(_("_Warning:"));
-	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
-
-	widget = gtk_color_button_new ();
-	data->CP_warn_color = widget;
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
 
 	return content_grid;
 }
@@ -1914,7 +2132,7 @@ gint crow, row;
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
 	
 	label = make_label_group(_("Backup"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
@@ -1925,7 +2143,7 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
 
 	row++;
-	label = make_label_widget(_("_Number of backups to keep:"));
+	label = make_label_left(_("_Number of backups to keep:"));
 	data->LB_bak_max_num_copies = label;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = make_numeric (label, 1, 99);
@@ -1938,10 +2156,10 @@ gint crow, row;
 	//gtk_widget_set_hexpand (hbox, TRUE);
 	gtk_grid_attach (GTK_GRID (group_grid), hbox, 1, row, 2, 1);
 
-		widget = gtk_image_new_from_icon_name (ICONNAME_INFO, GTK_ICON_SIZE_BUTTON);
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
-		label = make_label_widget(_("Backup frequency is once a day"));
-		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+		widget = hbtk_image_new_from_icon_name_16 (ICONNAME_HB_QUICKTIPS);
+		gtk_box_prepend (GTK_BOX (hbox), widget);
+		label = make_label_left(_("Backup frequency is once a day"));
+		gtk_box_prepend (GTK_BOX (hbox), label);
 
 
 	return content_grid;
@@ -1962,13 +2180,13 @@ gint crow, row;
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
 	
 	label = make_label_group(_("HomeBank files"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
 
 	row = 1;
-	label = make_label_widget(_("_Wallets:"));
+	label = make_label_left(_("_Wallets:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
@@ -1978,15 +2196,15 @@ gint crow, row;
 	widget = make_string(label);
 	data->ST_path_hbfile = widget;
 	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(widget)), GTK_STYLE_CLASS_LINKED);
-	gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (hbox), widget);
 
 	//widget = gtk_button_new_with_label("...");
 	widget = gtk_button_new_from_icon_name(ICONNAME_FOLDER, GTK_ICON_SIZE_BUTTON);
 	data->BT_path_hbfile = widget;
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (hbox), widget);
 
 	row++;
-	label = make_label_widget(_("_Backups:"));
+	label = make_label_left(_("_Backups:"));
 	//----------------------------------------- l, r, t, b
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 
@@ -1997,25 +2215,26 @@ gint crow, row;
 	widget = make_string(label);
 	data->ST_path_hbbak = widget;
 	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(widget)), GTK_STYLE_CLASS_LINKED);
-	gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (hbox), widget);
 
 	//widget = gtk_button_new_with_label("...");
 	widget = gtk_button_new_from_icon_name(ICONNAME_FOLDER, GTK_ICON_SIZE_BUTTON);
 	data->BT_path_hbbak = widget;
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (hbox), widget);
 
 	
 	// group :: Files folder
+	crow++;
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
 	
 	label = make_label_group(_("Exchange files"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
 	
 	row = 1;
-	label = make_label_widget(_("_Import:"));
+	label = make_label_left(_("_Import:"));
 	//----------------------------------------- l, r, t, b
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 
@@ -2026,15 +2245,15 @@ gint crow, row;
 	widget = make_string(label);
 	data->ST_path_import = widget;
 	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(widget)), GTK_STYLE_CLASS_LINKED);
-	gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (hbox), widget);
 
 	//widget = gtk_button_new_with_label("...");
 	widget = gtk_button_new_from_icon_name(ICONNAME_FOLDER, GTK_ICON_SIZE_BUTTON);
 	data->BT_path_import = widget;
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (hbox), widget);
 
 	row++;
-	label = make_label_widget(_("_Export:"));
+	label = make_label_left(_("_Export:"));
 	//----------------------------------------- l, r, t, b
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 
@@ -2045,12 +2264,12 @@ gint crow, row;
 	widget = make_string(label);
 	data->ST_path_export = widget;
 	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(widget)), GTK_STYLE_CLASS_LINKED);
-	gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (hbox), widget);
 
 	//widget = gtk_button_new_with_label("...");
 	widget = gtk_button_new_from_icon_name(ICONNAME_FOLDER, GTK_ICON_SIZE_BUTTON);
 	data->BT_path_export = widget;
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (hbox), widget);
 
 
 
@@ -2072,7 +2291,7 @@ gint crow, row;
     group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
+	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
 	
 	label = make_label_group(_("Program start"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
@@ -2098,31 +2317,6 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 2, 1);
 
 
-	// group :: Main window reports
-    group_grid = gtk_grid_new ();
-	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
-	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
-	
-	label = make_label_group(_("Main window reports"));
-	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
-
-	row = 1;
-/* removed 5.7
-	label = make_label(_("_Range:"), 0, 0.5);
-	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-	widget = make_daterange(label, DATE_RANGE_CUSTOM_HIDDEN);
-	data->CY_daterange_wal = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-*/
-
-//	row++;
-	label = make_label(_("Max _items:"), 0, 0.5);
-	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
-	widget = make_numeric(label, 5, 20);
-	data->ST_maxspenditems = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
-
 	return content_grid;
 }
 
@@ -2134,9 +2328,8 @@ GtkWidget *notebook;
 GtkTreeView *treeview;
 GtkTreeModel *model;
 GtkTreeIter iter;
-
-GValue        val = { 0, };
-gint page;
+GValue val = { 0, };
+gint page_num;
 
 	DB( g_print("\n[ui-pref] selection\n") );
 
@@ -2146,14 +2339,13 @@ gint page;
 		treeview = gtk_tree_selection_get_tree_view(treeselection);
 		data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(GTK_WIDGET(treeview), GTK_TYPE_WINDOW)), "inst_data");
 
-
-		gtk_tree_model_get_value(model, &iter, LST_PREF_PAGE, &val);
-		page = g_value_get_int (&val);
-		DB( g_print(" - active is %d\n", page) );
+		gtk_tree_model_get_value(model, &iter, LST_PREF_PAGENUM, &val);
+		page_num = g_value_get_int (&val);
+		DB( g_print(" pagenum: %d\n", page_num) );
 		g_value_unset (&val);
 
 
-		gtk_tree_model_get_value(model, &iter, LST_PREF_NAME, &val);
+		gtk_tree_model_get_value(model, &iter, LST_PREF_LABEL, &val);
 		gtk_label_set_text (GTK_LABEL (data->label), g_value_get_string (&val));
 		g_value_unset (&val);
 
@@ -2162,41 +2354,12 @@ gint page;
 		gtk_image_set_from_icon_name(GTK_IMAGE (data->image), g_value_get_string (&val), GTK_ICON_SIZE_DIALOG);
 		g_value_unset (&val);
 
-
-
-		gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), page);
+		gtk_notebook_set_current_page(GTK_NOTEBOOK(notebook), page_num);
 
 		//defpref_change_page(GTK_WIDGET(gtk_tree_selection_get_tree_view(treeselection)), GINT_TO_POINTER(page));
 	}
 
 }
-
-
-/*
-** set the notebook active page from treeview
-*/
-/*void defpref_change_page(GtkWidget *widget, gpointer user_data)
-{
-struct defpref_data *data;
-gint page = GPOINTER_TO_INT(user_data);
-GtkTreeModel *model;
-
-
-	DB( g_print("\n[ui-pref] page\n") );
-
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-
-	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_page));
-
-
-
-
-
-
-
-	gtk_notebook_set_current_page(GTK_NOTEBOOK(data->GR_page), page);
-}
-*/
 
 
 /*
@@ -2253,20 +2416,20 @@ GtkWidget *hbox, *vbox, *scrollwin, *widget, *notebook, *page, *image, *label;
 
 	content = gtk_dialog_get_content_area(GTK_DIALOG (window));			// return a vbox
 	mainvbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, SPACING_MEDIUM);
-	gtk_box_pack_start (GTK_BOX (content), mainvbox, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (content), mainvbox);
 
 	hb_widget_set_margin(GTK_WIDGET(mainvbox), SPACING_MEDIUM);
 
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
-	gtk_box_pack_start (GTK_BOX (mainvbox), hbox, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (mainvbox), hbox);
 
 	//left part
 	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, SPACING_SMALL);
-	gtk_box_pack_start (GTK_BOX (hbox), vbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (hbox), vbox);
 	
 	//list
 	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-    gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
+    hbtk_box_prepend (GTK_BOX (vbox), scrollwin);
 	widget = pref_list_create();
 	data->LV_page = widget;
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), widget);
@@ -2274,13 +2437,13 @@ GtkWidget *hbox, *vbox, *scrollwin, *widget, *notebook, *page, *image, *label;
 
 	//right part : notebook
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, SPACING_MEDIUM);
-	gtk_box_pack_start (GTK_BOX (hbox), vbox, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (hbox), vbox);
 	gtk_widget_show (vbox);
 
 	//header
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_set_name(hbox, "hbprfhead");
-	gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (vbox), hbox);
 	gtk_widget_show (hbox);
 
 	GtkStyleContext *context = gtk_widget_get_style_context (hbox);
@@ -2305,13 +2468,13 @@ GtkWidget *hbox, *vbox, *scrollwin, *widget, *notebook, *page, *image, *label;
                              PANGO_ATTR_WEIGHT, PANGO_WEIGHT_BOLD,
                              -1);
 
-	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (hbox), label);
 	gtk_widget_show (label);
 	data->label = label;
 
 	image = gtk_image_new ();
 	hb_widget_set_margins(GTK_WIDGET(image), SPACING_SMALL, SPACING_SMALL, SPACING_SMALL, 0);
-	gtk_box_pack_end (GTK_BOX (hbox), image, FALSE, FALSE, 0);
+	gtk_box_append (GTK_BOX (hbox), image);
 	gtk_widget_show (image);
 	data->image = image;
 
@@ -2321,7 +2484,7 @@ GtkWidget *hbox, *vbox, *scrollwin, *widget, *notebook, *page, *image, *label;
 	gtk_widget_show(notebook);
 	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(notebook), FALSE);
 	gtk_notebook_set_show_border(GTK_NOTEBOOK(notebook), FALSE);
-    gtk_box_pack_start (GTK_BOX (vbox), notebook, TRUE, TRUE, 0);
+    hbtk_box_prepend (GTK_BOX (vbox), notebook);
 
 
 	//general
@@ -2329,24 +2492,39 @@ GtkWidget *hbox, *vbox, *scrollwin, *widget, *notebook, *page, *image, *label;
 	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, NULL);
 
 	//interface
-	page = defpref_page_interface(data);
+	page = defpref_page_intf(data);
 	scrollwin = make_scrolled_window_ns(GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), page);
 	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), scrollwin, NULL);
 
+		//theming
+		page = defpref_page_intf_theming(data);
+		gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, NULL);
+
+		//color
+		page = defpref_page_intf_color(data);
+		gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, NULL);
+
+
 	//locale
-	page = defpref_page_display(data);
+	page = defpref_page_locale(data);
 	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, NULL);
 
 	//transaction
-	page = defpref_page_transactions(data);
-	scrollwin = make_scrolled_window_ns(GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
-	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), page);
-	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), scrollwin, NULL);
-
-	//5.8 temporary
-	page = defpref_page_payment(data);
+	page = defpref_page_txn(data);
 	gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, NULL);
+
+		//dialog
+		page = defpref_page_txn_dialog(data);
+		gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, NULL);
+
+		//transfer
+		page = defpref_page_txn_transfer(data);
+		gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, NULL);
+
+		//5.8 temporary
+		page = defpref_page_txn_payment(data);
+		gtk_notebook_append_page (GTK_NOTEBOOK (notebook), page, NULL);
 
 	//import
 	page = defpref_page_import(data);
@@ -2387,6 +2565,11 @@ GtkWidget *hbox, *vbox, *scrollwin, *widget, *notebook, *page, *image, *label;
 	//connect all our signals
 	g_signal_connect (window, "destroy", G_CALLBACK (gtk_widget_destroyed), &window);
 
+
+	g_signal_connect (data->CY_icontheme, "changed", G_CALLBACK (defpref_icons_changed_cb), NULL);
+	g_signal_connect (data->CM_iconsymbolic, "toggled", G_CALLBACK (defpref_icons_changed_cb), NULL);
+
+
 	g_signal_connect (data->CM_gtk_override, "toggled", G_CALLBACK (defpref_gtkoverridetoggle), NULL);
 
 	g_signal_connect (data->CM_bak_is_automatic, "toggled", G_CALLBACK (defpref_backuptoggle), NULL);
@@ -2399,11 +2582,10 @@ GtkWidget *hbox, *vbox, *scrollwin, *widget, *notebook, *page, *image, *label;
 	g_signal_connect (data->BT_path_import, "pressed", G_CALLBACK (defpref_pathselect), GINT_TO_POINTER(PRF_PATH_IMPORT));
 	g_signal_connect (data->BT_path_export, "pressed", G_CALLBACK (defpref_pathselect), GINT_TO_POINTER(PRF_PATH_EXPORT));
 
-	g_signal_connect (data->CM_custom_colors, "toggled", G_CALLBACK (defpref_colortoggle), NULL);
-    g_signal_connect (data->CY_colors, "changed", G_CALLBACK (defpref_colorpreset), NULL);
+	g_signal_connect (data->CM_use_palette, "toggled", G_CALLBACK (defpref_colorschemetoggle), NULL);
+	//g_signal_connect (data->CM_custom_colors, "toggled", G_CALLBACK (defpref_colortoggle), NULL);
 
 
-	
 	g_signal_connect (gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_page)), "changed", G_CALLBACK (defpref_selection), notebook);
 
 	g_signal_connect (data->CM_euro_enable, "toggled", G_CALLBACK (defpref_eurotoggle), NULL);
@@ -2439,23 +2621,37 @@ GtkWidget *hbox, *vbox, *scrollwin, *widget, *notebook, *page, *image, *label;
 	defpref_gtkoverridetoggle(window, NULL);
 	defpref_memotoggle(window, NULL);
 	defpref_backuptoggle (window, NULL);
-	defpref_colortoggle(window, NULL);
+	//defpref_colortoggle(window, NULL);
 	defpref_eurotoggle(window, NULL);
 	defpref_cb_forecast_activate(window, NULL);
 
 	gtk_window_resize(GTK_WINDOW(window), 640, 256);
 
-
-	//select first row
-	GtkTreePath *path = gtk_tree_path_new_first ();
-
-	gtk_tree_selection_select_path (gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_page)), path);
-
-
-
-	gtk_tree_path_free(path);
-
 	gtk_widget_show_all (window);
+
+
+
+	//gtk_tree_selection_unselect_all(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_page)));
+	//select last page
+	DB( g_print(" select %d:%d\n", PREFS->lastlvl1, PREFS->lastlvl2) );
+	if( PREFS->lastlvl1 > 0 )
+	{
+		GtkTreePath *path = gtk_tree_path_new_from_indices(PREFS->lastlvl1, PREFS->lastlvl2, -1);
+		gtk_tree_selection_select_path (gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_page)), path);
+		gtk_tree_path_free(path);
+	}
+	else
+	{
+		//select first row
+		DB( g_print(" select first\n") );
+		GtkTreePath *path = gtk_tree_path_new_first ();
+		gtk_tree_selection_select_path (gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_page)), path);
+		gtk_tree_path_free(path);
+	}
+	
+	//defpref_selection(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_page)), NULL);
+
+
 
 	gint result;
 	gchar *old_lang, *old_path_hbbak;
@@ -2505,6 +2701,32 @@ GtkWidget *hbox, *vbox, *scrollwin, *widget, *notebook, *page, *image, *label;
 				break;
 		}
 	
+		//store last page selection
+		{
+		GtkTreeModel *model;
+		GtkTreeIter iter;
+		gint depth;
+
+			if (gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_page)), &model, &iter))
+			{
+				//store last page
+				GtkTreePath *path = gtk_tree_model_get_path(model, &iter);
+				gint *indices = gtk_tree_path_get_indices_with_depth(path, &depth);
+				if( indices != NULL )
+				{
+					PREFS->lastlvl1 = indices[0];
+					if(depth > 1)
+						PREFS->lastlvl2 = indices[1];
+					else
+						PREFS->lastlvl2 = 0;
+				}
+				DB( g_print(" stored: %d:%d\n", PREFS->lastlvl1, PREFS->lastlvl2) );
+				gtk_tree_path_free(path);
+
+
+			}
+		}
+
 
 	// cleanup and destroy
 	//defhbfile_cleanup(data, result);
@@ -2520,28 +2742,29 @@ GtkWidget *hbox, *vbox, *scrollwin, *widget, *notebook, *page, *image, *label;
 
 static GtkWidget *pref_list_create(void)
 {
-GtkListStore *store;
-GtkWidget *view;
+GtkTreeStore *store;
+GtkWidget *treeview;
 GtkCellRenderer    *renderer;
 GtkTreeViewColumn  *column;
 GtkTreeIter    iter;
-HbKivData *tmp;
+struct pref_list_datas *tmp;
 gint i;
 
 	/* create list store */
-	store = gtk_list_store_new(
+	store = gtk_tree_store_new(
 	  	LST_PREF_MAX,
-		G_TYPE_STRING,
-		G_TYPE_STRING,
-		G_TYPE_INT
+		G_TYPE_INT,		//unique id
+		G_TYPE_STRING,	//icon
+		G_TYPE_STRING,	//label
+		G_TYPE_INT		//pagenum
 		);
 
 	//treeview
-	view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
+	treeview = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
 	g_object_unref(store);
 
-	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW (view), FALSE);
-	gtk_tree_selection_set_mode(gtk_tree_view_get_selection(GTK_TREE_VIEW(view)), GTK_SELECTION_SINGLE);
+	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW (treeview), FALSE);
+	gtk_tree_selection_set_mode(gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview)), GTK_SELECTION_SINGLE);
 
 	/* column 1: icon */
 	column = gtk_tree_view_column_new();
@@ -2552,26 +2775,43 @@ gint i;
 
 	renderer = gtk_cell_renderer_text_new ();
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	gtk_tree_view_column_set_attributes(column, renderer, "text", LST_PREF_NAME, NULL);
+	gtk_tree_view_column_set_attributes(column, renderer, "text", LST_PREF_LABEL, NULL);
 
-	gtk_tree_view_append_column (GTK_TREE_VIEW(view), column);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
 	//populate our combobox model
 	for(i=0;i<PREF_MAX;i++)
 	{
 		tmp = &CYA_PREF_GROUP[i];
-		if( tmp->name == NULL )
+		if( tmp->label == NULL )
 			break;
 
-		gtk_list_store_insert_with_values(store, &iter, -1,
-		    LST_PREF_ICONNAME, tmp->iconname,
-			LST_PREF_NAME    , _(tmp->name),
-			LST_PREF_PAGE    , i,
-			-1);
+		if( tmp->level == 1 )
+		{
+			gtk_tree_store_insert_with_values(store, &iter, NULL, -1,
+				LST_PREF_UID		, tmp->key,
+				LST_PREF_ICONNAME	, tmp->iconname,
+				LST_PREF_LABEL    	, _(tmp->label),
+				LST_PREF_PAGENUM	, i,
+				-1);
+		}
+		else
+		{
+			gtk_tree_store_insert_with_values(store, NULL, &iter, -1,
+				LST_PREF_UID		, tmp->key,
+				LST_PREF_ICONNAME	, tmp->iconname,
+				LST_PREF_LABEL    	, _(tmp->label),
+				LST_PREF_PAGENUM	, i,
+				-1);
+
+		}
 	}
 
-	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(view), FALSE);
+	gtk_tree_view_set_enable_search(GTK_TREE_VIEW(treeview), FALSE);
 
-	return(view);
+	gtk_tree_view_expand_all(GTK_TREE_VIEW(treeview));
+
+	return(treeview);
 }
+
 

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   id="svg7384"
+   height="16"
+   width="16"
+   version="1.1"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="hicolor_actions_scalable_hb-rep-vehicle-symbolic.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title1155">Report Vehicle</title>
+  <defs
+     id="defs12" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1003"
+     id="namedview10"
+     showgrid="true"
+     inkscape:zoom="33.125"
+     inkscape:cx="-0.43773585"
+     inkscape:cy="8.3924528"
+     inkscape:window-x="1440"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg7384"
+     inkscape:pagecheckerboard="0"
+     inkscape:showpageshadow="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid4485" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata90">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Maxime DOYEN</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:source>https://www.gethomebank.org</dc:source>
+        <dc:title>Report Vehicle</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="g3207"
+     style="fill:#bebebe;fill-opacity:1;stroke:none;stroke-width:1.06667"
+     transform="matrix(1.0714289,0,0,1.0714289,-1.1428599,-1.1428599)">
+    <g
+       id="g6"
+       transform="matrix(0.01428571,0,0,0.01428571,0.914288,0.914288)"
+       style="fill:#bebebe;fill-opacity:1;stroke:none;stroke-width:1.06667">
+      <path
+         id="path8"
+         d="m 533.33333,10.666667 c -288.64,0 -522.666663,234.026663 -522.666663,522.666663 C 10.666667,821.97333 244.69333,1056 533.33333,1056 821.97333,1056 1056,821.97333 1056,533.33333 1056,244.69333 821.97333,10.666667 533.33333,10.666667 Z m 0,95.689933 c 170.13334,0 348.78019,144.5234 402.96679,296.31007 H 130.31988 C 184.50655,250.88 363.2,106.3566 533.33333,106.3566 Z m 0,492.3634 c -36.05333,0 -65.38666,-29.22667 -65.38666,-65.38667 0,-36.16 29.22666,-65.38666 65.38666,-65.38666 36.16,0 65.38667,29.22666 65.38667,65.38666 0,36.16 -29.33333,65.38667 -65.38667,65.38667 z M 106.30987,533.33333 c 319.6901,0 361.21013,107.33343 361.21013,427.37353 -184.85333,-31.68 -361.21013,-233.77353 -361.21013,-427.37353 z m 492.8368,420.37353 c 0,-313.0401 36.85336,-420.37353 354.16346,-420.37353 0,193.6 -169.31013,388.69353 -354.16346,420.37353 z"
+         inkscape:connector-curvature="0"
+         style="fill:#bebebe;fill-opacity:1;stroke:none;stroke-width:1.13778"
+         sodipodi:nodetypes="ssssssccsssssscccccc" />
+    </g>
+  </g>
+</svg>

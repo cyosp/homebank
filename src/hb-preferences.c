@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -123,6 +123,7 @@ void homebank_pref_free(void)
 	g_free(PREFS->color_exp);
 	g_free(PREFS->color_inc);
 	g_free(PREFS->color_warn);
+	g_free(PREFS->color_bg_future);
 
 	g_free(PREFS->path_hbfile);
 	g_free(PREFS->path_import);
@@ -289,6 +290,7 @@ gint i;
 	PREFS->bak_max_num_copies = 5;
 
 	PREFS->heritdate = FALSE;
+
 	PREFS->txn_showconfirm = FALSE;
 	PREFS->txn_showtemplate = FALSE;
 	PREFS->hidereconciled = FALSE;
@@ -297,7 +299,11 @@ gint i;
 	PREFS->showvoid = FALSE;
 	PREFS->includeremind = FALSE;
 	//#1980562
-	PREFS->lockreconciled = TRUE;
+	PREFS->safe_lock_recon = TRUE;
+	PREFS->safe_pend_recon = TRUE;
+	PREFS->safe_pend_past  = TRUE;
+	PREFS->safe_pend_past_days = 90;
+
 	//#1673048
 	PREFS->txn_memoacp = TRUE;
 	PREFS->txn_memoacp_days = 365;
@@ -329,12 +335,15 @@ gint i;
 	PREFS->gtk_override = FALSE;
 	PREFS->gtk_fontsize = 10;
 
-	PREFS->icontheme = g_strdup("legacy");
-	
+	PREFS->icontheme = g_strdup("Default");
+
 	PREFS->custom_colors = TRUE;
+	PREFS->custom_bg_future = TRUE;
+	PREFS->color_use_palette = TRUE;
 	PREFS->color_exp  = g_strdup(DEFAULT_EXP_COLOR);
 	PREFS->color_inc  = g_strdup(DEFAULT_INC_COLOR);
 	PREFS->color_warn = g_strdup(DEFAULT_WARN_COLOR);
+	PREFS->color_bg_future = g_strdup(DEFAULT_FUTURE_BG_COLOR);
 
 	/* fiscal year */
 	PREFS->fisc_year_day = 1;
@@ -348,8 +357,6 @@ gint i;
 	PREFS->wal_totchart = TRUE;	
 	PREFS->wal_timchart = TRUE;
 	PREFS->wal_upcoming = TRUE;
-	PREFS->wal_vpaned = 600/2;
-	PREFS->wal_hpaned = 1024/2;
 
 	PREFS->pnl_acc_col_acc_width = -1;
 	PREFS->pnl_acc_show_by = DSPACC_GROUP_BY_TYPE;
@@ -444,7 +451,10 @@ gint i;
 	PREFS->stat_showdetail  = FALSE;
 	PREFS->stat_showrate    = FALSE;
 	PREFS->stat_includexfer = FALSE;
+
 	PREFS->budg_showdetail  = FALSE;
+	PREFS->budg_unexclsub   = FALSE;
+
 	PREFS->report_color_scheme = CHART_COLMAP_HOMEBANK;
 
 	//PREFS->chart_legend = FALSE;
@@ -690,30 +700,27 @@ void homebank_pref_icon_symbolic(gboolean active)
 void homebank_pref_apply_scheme(void)
 {
 GtkSettings *settings = gtk_settings_get_default();
-gboolean dark = (GLOBALS->color_scheme == PREFER_DARK);
 
 	DB( g_print("\n[preferences] pref apply scheme\n") );
 
 	DB( g_print(" scheme : %d\n", GLOBALS->color_scheme) );
 	DB( g_print(" appdark: %d\n", PREFS->gtk_darktheme) );
 
-	// system or app choice
-	if( GLOBALS->color_scheme == DEFAULT )
-	{
- 		//we set from the user preferences
-		g_object_set(settings, "gtk-application-prefer-dark-theme", PREFS->gtk_darktheme, NULL);
-	}
+	GLOBALS->theme_is_dark = FALSE;
+
+	if( (GLOBALS->color_scheme == DEFAULT) && PREFS->gtk_darktheme )
+		GLOBALS->theme_is_dark = TRUE;
 	else
-	{
-		g_object_set(settings, "gtk-application-prefer-dark-theme", dark, NULL);
-	}
+	if( GLOBALS->color_scheme == PREFER_DARK )
+		GLOBALS->theme_is_dark = TRUE;
+
+	g_object_set(settings, "gtk-application-prefer-dark-theme", GLOBALS->theme_is_dark, NULL);
 }
 
 
 void homebank_pref_apply(void)
 {
 GtkSettings *settings = gtk_settings_get_default();
-gboolean symbolic;
 
 	DB( g_print("\n[preferences] pref apply\n") );
 
@@ -743,13 +750,10 @@ gboolean symbolic;
 
 	homebank_pref_apply_scheme();
 
-	//beta
-	symbolic = ( !strcmp(PREFS->icontheme, "symbolic") ) ? TRUE : FALSE;
-
 	//gtk_settings_set_string_property (gtk_settings_get_default (), "gtk-icon-theme-name", PREFS->icontheme, "gtkrc:0");
 	g_object_set(gtk_settings_get_default (), "gtk-icon-theme-name", PREFS->icontheme, NULL);
 
-	homebank_pref_icon_symbolic(symbolic);
+	homebank_pref_icon_symbolic(PREFS->icon_symbolic);
 
 }
 
@@ -813,6 +817,7 @@ GError *error = NULL;
 
 				//beta
 				homebank_pref_get_string(keyfile, group, "IconTheme", &PREFS->icontheme);
+				homebank_pref_get_boolean(keyfile, group, "IconSymbolic", &PREFS->icon_symbolic);
 
 				if(version <= 2)	// retrieve old settings
 				{
@@ -833,10 +838,13 @@ GError *error = NULL;
 				else
 				{
 					homebank_pref_get_boolean(keyfile, group, "CustomColors", &PREFS->custom_colors);
+					homebank_pref_get_boolean(keyfile, group, "CustomBgFuture", &PREFS->custom_bg_future);
+					homebank_pref_get_boolean(keyfile, group, "ColorUsePalette", &PREFS->color_use_palette);
 
 					homebank_pref_get_string(keyfile, group, "ColorExp" , &PREFS->color_exp);
 					homebank_pref_get_string(keyfile, group, "ColorInc" , &PREFS->color_inc);
 					homebank_pref_get_string(keyfile, group, "ColorWarn", &PREFS->color_warn);
+					homebank_pref_get_string(keyfile, group, "ColorBgFuture", &PREFS->color_bg_future);
 
 					if( version <= 500 )
 					{
@@ -880,13 +888,17 @@ GError *error = NULL;
 				homebank_pref_get_short  (keyfile, group, "BakMaxNumCopies", &PREFS->bak_max_num_copies);
 
 				homebank_pref_get_boolean(keyfile, group, "HeritDate", &PREFS->heritdate);
+
 				homebank_pref_get_boolean(keyfile, group, "ShowConfirm", &PREFS->txn_showconfirm);
 				homebank_pref_get_boolean(keyfile, group, "ShowTemplate", &PREFS->txn_showtemplate);
 				homebank_pref_get_boolean(keyfile, group, "HideReconciled", &PREFS->hidereconciled);
 				homebank_pref_get_boolean(keyfile, group, "ShowRemind", &PREFS->showremind);
 				homebank_pref_get_boolean(keyfile, group, "ShowVoid", &PREFS->showvoid);
 				homebank_pref_get_boolean(keyfile, group, "IncludeRemind", &PREFS->includeremind);
-				homebank_pref_get_boolean(keyfile, group, "LockReconciled", &PREFS->lockreconciled);
+				homebank_pref_get_boolean(keyfile, group, "LockReconciled", &PREFS->safe_lock_recon);
+				homebank_pref_get_boolean(keyfile, group, "SafePendRecon", &PREFS->safe_pend_recon);
+				homebank_pref_get_boolean(keyfile, group, "SafePendPast", &PREFS->safe_pend_past);
+				homebank_pref_get_short  (keyfile, group, "SafePendPastDays", &PREFS->safe_pend_past_days);
 				homebank_pref_get_boolean(keyfile, group, "TxnMemoAcp", &PREFS->txn_memoacp);
 				homebank_pref_get_short  (keyfile, group, "TxnMemoAcpDays", &PREFS->txn_memoacp_days);
 				
@@ -1212,6 +1224,7 @@ GError *error = NULL;
 				homebank_pref_get_boolean(keyfile, group, "StatRate", &PREFS->stat_showrate);
 				homebank_pref_get_boolean(keyfile, group, "StatIncXfer", &PREFS->stat_includexfer);
 				homebank_pref_get_boolean(keyfile, group, "BudgDetail", &PREFS->budg_showdetail);
+				homebank_pref_get_boolean(keyfile, group, "BudgUnExclSub", &PREFS->budg_unexclsub);
 				homebank_pref_get_integer(keyfile, group, "ColorScheme", &PREFS->report_color_scheme);
 				homebank_pref_get_boolean(keyfile, group, "SmallFont", &PREFS->rep_smallfont);
 				homebank_pref_get_integer(keyfile, group, "MaxSpendItems", &PREFS->rep_maxspenditems);
@@ -1319,11 +1332,15 @@ GError *error = NULL;
 		g_key_file_set_boolean (keyfile, group, "GtkDarkTheme", PREFS->gtk_darktheme);
 
 		g_key_file_set_string (keyfile, group, "IconTheme", PREFS->icontheme);
+		g_key_file_set_boolean (keyfile, group, "IconSymbolic", PREFS->icon_symbolic);
 
 		g_key_file_set_boolean (keyfile, group, "CustomColors", PREFS->custom_colors);
+		g_key_file_set_boolean (keyfile, group, "CustomBgFuture", PREFS->custom_bg_future);
+		g_key_file_set_boolean (keyfile, group, "ColorUsePalette", PREFS->color_use_palette);
 		g_key_file_set_string (keyfile, group, "ColorExp" , PREFS->color_exp);
 		g_key_file_set_string (keyfile, group, "ColorInc" , PREFS->color_inc);
 		g_key_file_set_string (keyfile, group, "ColorWarn", PREFS->color_warn);
+		g_key_file_set_string (keyfile, group, "ColorBgFuture", PREFS->color_bg_future);
 
 		g_key_file_set_integer (keyfile, group, "GridLines", PREFS->grid_lines);
 
@@ -1343,13 +1360,18 @@ GError *error = NULL;
 		g_key_file_set_boolean (keyfile, group, "UpdateCurrency", PREFS->do_update_currency);
 
 		g_key_file_set_boolean (keyfile, group, "HeritDate", PREFS->heritdate);
+
 		g_key_file_set_boolean (keyfile, group, "ShowConfirm", PREFS->txn_showconfirm);
 		g_key_file_set_boolean (keyfile, group, "ShowTemplate", PREFS->txn_showtemplate);
 		g_key_file_set_boolean (keyfile, group, "HideReconciled", PREFS->hidereconciled);
 		g_key_file_set_boolean (keyfile, group, "ShowRemind", PREFS->showremind);
 		g_key_file_set_boolean (keyfile, group, "ShowVoid", PREFS->showvoid);
 		g_key_file_set_boolean (keyfile, group, "IncludeRemind", PREFS->includeremind);
-		g_key_file_set_boolean (keyfile, group, "LockReconciled", PREFS->lockreconciled);
+		g_key_file_set_boolean (keyfile, group, "LockReconciled", PREFS->safe_lock_recon);
+		g_key_file_set_boolean (keyfile, group, "SafePendRecon", PREFS->safe_pend_recon);
+		g_key_file_set_boolean (keyfile, group, "SafePendPast", PREFS->safe_pend_past);
+		g_key_file_set_integer (keyfile, group, "SafePendPastDays" , PREFS->safe_pend_past_days);
+
 		g_key_file_set_boolean (keyfile, group, "TxnMemoAcp", PREFS->txn_memoacp);
 		g_key_file_set_integer (keyfile, group, "TxnMemoAcpDays" , PREFS->txn_memoacp_days);
 		
@@ -1481,6 +1503,7 @@ GError *error = NULL;
 		g_key_file_set_boolean (keyfile, group, "StatRate"     , PREFS->stat_showrate);
 		g_key_file_set_boolean (keyfile, group, "StatIncXfer"  , PREFS->stat_includexfer);
 		g_key_file_set_boolean (keyfile, group, "BudgDetail"   , PREFS->budg_showdetail);
+		g_key_file_set_boolean (keyfile, group, "BudgUnExclSub", PREFS->budg_unexclsub);
 		g_key_file_set_integer (keyfile, group, "ColorScheme"  , PREFS->report_color_scheme);
 		g_key_file_set_boolean (keyfile, group, "SmallFont"    , PREFS->rep_smallfont);
 		g_key_file_set_integer (keyfile, group, "MaxSpendItems", PREFS->rep_maxspenditems);

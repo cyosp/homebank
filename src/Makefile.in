@@ -110,7 +110,8 @@ am_homebank_OBJECTS = dsp-account.$(OBJEXT) dsp-mainwindow.$(OBJEXT) \
 	hb-import-csv.$(OBJEXT) hb-misc.$(OBJEXT) hb-payee.$(OBJEXT) \
 	hb-group.$(OBJEXT) hb-preferences.$(OBJEXT) \
 	hb-pref-data.$(OBJEXT) hb-report.$(OBJEXT) hb-tag.$(OBJEXT) \
-	hb-split.$(OBJEXT) hb-transaction.$(OBJEXT) hb-xml.$(OBJEXT) \
+	hb-split.$(OBJEXT) hbtk-decimalentry.$(OBJEXT) \
+	hb-transaction.$(OBJEXT) hb-xml.$(OBJEXT) \
 	hbtk-switcher.$(OBJEXT) homebank.$(OBJEXT) \
 	hub-account.$(OBJEXT) hub-reptime.$(OBJEXT) \
 	hub-reptotal.$(OBJEXT) hub-scheduled.$(OBJEXT) \
@@ -162,17 +163,18 @@ am__depfiles_remade = ./$(DEPDIR)/dsp-account.Po \
 	./$(DEPDIR)/hb-preferences.Po ./$(DEPDIR)/hb-report.Po \
 	./$(DEPDIR)/hb-split.Po ./$(DEPDIR)/hb-tag.Po \
 	./$(DEPDIR)/hb-transaction.Po ./$(DEPDIR)/hb-xml.Po \
-	./$(DEPDIR)/hbtk-switcher.Po ./$(DEPDIR)/homebank.Po \
-	./$(DEPDIR)/hub-account.Po ./$(DEPDIR)/hub-reptime.Po \
-	./$(DEPDIR)/hub-reptotal.Po ./$(DEPDIR)/hub-scheduled.Po \
-	./$(DEPDIR)/hub-transaction.Po ./$(DEPDIR)/language.Po \
-	./$(DEPDIR)/list-account.Po ./$(DEPDIR)/list-operation.Po \
-	./$(DEPDIR)/list-report.Po ./$(DEPDIR)/list-scheduled.Po \
-	./$(DEPDIR)/rep-balance.Po ./$(DEPDIR)/rep-budget.Po \
-	./$(DEPDIR)/rep-stats.Po ./$(DEPDIR)/rep-time.Po \
-	./$(DEPDIR)/rep-vehicle.Po ./$(DEPDIR)/ui-account.Po \
-	./$(DEPDIR)/ui-archive.Po ./$(DEPDIR)/ui-assign.Po \
-	./$(DEPDIR)/ui-assist-import.Po ./$(DEPDIR)/ui-assist-start.Po \
+	./$(DEPDIR)/hbtk-decimalentry.Po ./$(DEPDIR)/hbtk-switcher.Po \
+	./$(DEPDIR)/homebank.Po ./$(DEPDIR)/hub-account.Po \
+	./$(DEPDIR)/hub-reptime.Po ./$(DEPDIR)/hub-reptotal.Po \
+	./$(DEPDIR)/hub-scheduled.Po ./$(DEPDIR)/hub-transaction.Po \
+	./$(DEPDIR)/language.Po ./$(DEPDIR)/list-account.Po \
+	./$(DEPDIR)/list-operation.Po ./$(DEPDIR)/list-report.Po \
+	./$(DEPDIR)/list-scheduled.Po ./$(DEPDIR)/rep-balance.Po \
+	./$(DEPDIR)/rep-budget.Po ./$(DEPDIR)/rep-stats.Po \
+	./$(DEPDIR)/rep-time.Po ./$(DEPDIR)/rep-vehicle.Po \
+	./$(DEPDIR)/ui-account.Po ./$(DEPDIR)/ui-archive.Po \
+	./$(DEPDIR)/ui-assign.Po ./$(DEPDIR)/ui-assist-import.Po \
+	./$(DEPDIR)/ui-assist-start.Po \
 	./$(DEPDIR)/ui-budget-tabview.Po ./$(DEPDIR)/ui-budget.Po \
 	./$(DEPDIR)/ui-category.Po ./$(DEPDIR)/ui-currency.Po \
 	./$(DEPDIR)/ui-dialogs.Po ./$(DEPDIR)/ui-filter.Po \
@@ -360,6 +362,7 @@ homebank_SOURCES = \
 	dsp-mainwindow.c \
 	dsp-mainwindow.h \
 	enums.h \
+	hb-types.h \
 	gtk-chart.c \
 	gtk-chart.h \
 	gtk-chart-colors.c \
@@ -407,6 +410,8 @@ homebank_SOURCES = \
 	hb-tag.h \
 	hb-split.c \
 	hb-split.h \
+	hbtk-decimalentry.c \
+	hbtk-decimalentry.h \
 	hb-transaction.c \
 	hb-transaction.h \
 	hb-xml.c \
@@ -613,6 +618,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hb-tag.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hb-transaction.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hb-xml.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hbtk-decimalentry.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hbtk-switcher.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/homebank.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hub-account.Po@am__quote@ # am--include-marker
@@ -828,6 +834,7 @@ distclean: distclean-am
 	-rm -f ./$(DEPDIR)/hb-tag.Po
 	-rm -f ./$(DEPDIR)/hb-transaction.Po
 	-rm -f ./$(DEPDIR)/hb-xml.Po
+	-rm -f ./$(DEPDIR)/hbtk-decimalentry.Po
 	-rm -f ./$(DEPDIR)/hbtk-switcher.Po
 	-rm -f ./$(DEPDIR)/homebank.Po
 	-rm -f ./$(DEPDIR)/hub-account.Po
@@ -941,6 +948,7 @@ maintainer-clean: maintainer-clean-am
 	-rm -f ./$(DEPDIR)/hb-tag.Po
 	-rm -f ./$(DEPDIR)/hb-transaction.Po
 	-rm -f ./$(DEPDIR)/hb-xml.Po
+	-rm -f ./$(DEPDIR)/hbtk-decimalentry.Po
 	-rm -f ./$(DEPDIR)/hbtk-switcher.Po
 	-rm -f ./$(DEPDIR)/homebank.Po
 	-rm -f ./$(DEPDIR)/hub-account.Po

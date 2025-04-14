@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -150,6 +150,17 @@ void da_splits_append(GPtrArray *splits, Split *item)
 }
 
 
+Split *da_split_duplicate(Split *src)
+{
+Split *new = da_split_malloc ();
+
+	new->kcat = src->kcat;
+	new->memo = g_strdup(src->memo);		
+	new->amount = src->amount;
+	return new;
+}
+
+
 Split *da_splits_get(GPtrArray *splits, guint index)
 {
 	return g_ptr_array_index(splits, index);
@@ -175,11 +186,7 @@ guint i;
 	Split *src, *new;
 	
 		src = g_ptr_array_index(src_splits, i);
-		new = da_split_malloc ();
-
-		new->kcat = src->kcat;
-		new->memo = g_strdup(src->memo);		
-		new->amount = src->amount;
+		new = da_split_duplicate(src);
 		da_splits_append (new_splits, new);
 	}	
 	return new_splits;

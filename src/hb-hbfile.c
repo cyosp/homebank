@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -232,13 +232,10 @@ GQueue *txn_queue;
 				break;
 				
 			//#1886123 include remind based on user prefs
-			if( (txn->status == TXN_STATUS_REMIND) && (PREFS->includeremind == FALSE) )
+			if( !transaction_is_balanceable(txn) )
 				goto prev_txn;
 
-			if( !(txn->status == TXN_STATUS_VOID) 
-				&& (txn->date >= minjulian) 
-				&& (txn->date <= maxjulian)
-			  )
+			if( (txn->date >= minjulian) && (txn->date <= maxjulian) )
 			{
 				g_queue_push_head (txn_queue, txn);
 			}

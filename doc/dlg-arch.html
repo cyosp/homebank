@@ -23,6 +23,7 @@
   <div class="row">
   <div class="gfx">
     <img class="gtkshot right" src="images/dlg-template1.png">
+    <img class="gtkshot right" src="images/dlg-template2.png">
   </div>
   <div class="rounded content">
     <h2>Using Scheduled/Template transactions dialog</h2>
@@ -35,46 +36,7 @@
     scheduled transaction are marked with a calendar icon: <img src="images/hb-ope-auto.png">.
     </p>
 
-    <h3><img src="images/3.png" width="15" height="15"> Scheduled insertion</h3>
-    <table class="widgetinfo">
-      <tr>
-        <th>Activate</th>
-        <td>set this template to be scheduled</td>
-      </tr>
-      <tr>
-        <th>Next date</th>
-        <td>specify the date of the next insertion, when you first edit you should set it manually, then it is updated automatically. You can of course adjust it later if needed.</td>
-      </tr>
-      <tr>
-        <th>Every</th>
-        <td>
-          set the insertion interval to every xx:
-          <ul>
-            <li>Day</li>
-            <li>Week</li>
-            <li>Month</li>
-            <li>Year</li>
-          </ul>
-        </td>
-      </tr>
-      <tr>
-        <th>Week-end</th>
-        <td>
-          define how to manage the post date when it occurs on a weekend:
-          <ul>
-            <li>Possible : don't care</li>
-            <li>Before : move to first day before</li>
-            <li>After : move to first day after</li>
-          </ul>
-        </td>
-      </tr>
-      <tr>
-        <th>Stop after xx posts</th>
-        <td>limit the insertion to a finished count</td>
-      </tr>
-    </table>
-
-    <h3><img src="images/4.png" width="15" height="15"> Buttons</h3>
+    <h3><img src="images/3.png" width="15" height="15"> Buttons</h3>
     <table class="widgetinfo">
       <tr>
         <th>Add</th>
@@ -93,6 +55,82 @@
         <td>display the scheduling option popover of the active template.</td>
       </tr>
     </table>
+
+    <h3><img src="images/4.png" width="15" height="15"> Scheduled popup</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Activate</th>
+        <td>set this template to be scheduled</td>
+      </tr>
+      <tr>
+        <th>Next date</th>
+        <td>specify the date of the next insertion, when you first edit you should set it manually, then it is updated automatically. You can of course adjust it later if needed.</td>
+      </tr>
+    </table>
+
+    <p><b>Recurrence pattern</b></p>
+    <table class="widgetinfo">
+      <tr>
+        <th><i>Interval</i></th>
+        <td>
+          <ul>
+            <li>Daily</li>
+            <li>Weekly</li>
+            <li>Monthly</li>
+            <li>Yearly</li>
+          </ul>
+        </td>
+      </tr>
+
+      <tr>
+        <th>The &lt; specific&gt; day <img src="images/new12.png" alt="new"></th>
+        <td>
+
+          <table class="ghost">
+            <tr>
+              <td>
+                The
+                <ul>    
+                  <li>First</li>
+                  <li>Second</li>
+                  <li>Third</li>
+                  <li>Fourth</li>
+                  <li>Last</li>
+                </ul>
+              </td>
+              <td>
+                weekday
+                <ul>
+                  <li>Day</li>
+                  <li>Monday</li>
+                  <li>Tuesday</li>
+                  <li>...</li>
+                  <li>Sunday</li>
+                </ul>
+              </td>
+            </tr>
+          </table>
+
+        </td>
+      </tr>
+
+      <tr>
+        <th>Week-end</th>
+        <td>
+          define how to manage the post date when it occurs on a weekend:
+          <ul>
+            <li>Possible : don't care</li>
+            <li>Before : move to first day before</li>
+            <li>After : move to first day after</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>Stop after xx posts</th>
+        <td>limit the insertion to a finished count</td>
+      </tr>
+    </table>
+
 
   </div>
 </body>

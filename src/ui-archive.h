@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -41,16 +41,17 @@ struct ui_arc_manage_data
 	GtkWidget	*BT_typsch, *BT_typtpl;
 	GtkWidget	*ST_search;
 	GtkWidget	*LV_arc;
-	GtkWidget	*BT_add, *BT_rem, *BT_edit;
+	GtkWidget	*BT_add, *BT_rem, *BT_edit, *BT_dup, *BT_schedule;
 
-	GtkWidget	*MB_schedule, *PO_schedule;
-	
-	GtkWidget	*CM_auto;
+	//recurrent popover
+	GtkWidget	*PO_recurrent, *GR_recurrent;
+	GtkWidget	*SW_recurrent;
+	GtkWidget	*RA_rec_freq;
 	GtkWidget	*LB_next, *PO_next;
-	GtkWidget	*LB_every, *NB_every;
+	GtkWidget	*IM_wrnwe;
+	GtkWidget	*LB_rec_every, *NB_rec_every, *LB_rec_every2;
+	GtkWidget	*CM_relative, *LB_relative, *CY_ordinal, *CY_weekday;
 	GtkWidget   *LB_weekend, *CY_weekend;
-	GtkWidget	*CY_unit;
-
 	GtkWidget	*EX_options;
 	GtkWidget	*CM_limit;
 	GtkWidget	*NB_limit;

@@ -14,12 +14,21 @@
     <h1>Preferences dialog</h1>
     <p>The preferences dialog can be accessed from the main window menu, as Edit-Preferences. It lets you customize many aspects of the way HomeBank works.<br>
     The following sections detail the settings that you can customize, and what they affect.</p>
+    <img class="gtkshot left" src="images/dlg-prefs0.png">
     <ul class="toc">
       <li><a href="#tab1">General</a></li>
       <li><a href="#tab2">Interface</a></li>
+      <ul>
+        <li><a href="#tab2a">Theming</a></li>
+        <li><a href="#tab2b">Color</a></li>
+      </ul>
       <li><a href="#tab3">Locale</a></li>
       <li><a href="#tab4">Transactions</a></li>
-      <li><a href="#tab5">Payment</a> <img src="images/new12.png"></li>
+      <ul>
+        <li><a href="#tab4a">Dialog</a></li>
+        <li><a href="#tab4b">Transfer</a></li>
+        <li><a href="#tab4c">Payment</a></li>
+      </ul>
       <li><a href="#tab6">Import/Export</a></li>
       <li><a href="#tab7">Report</a></li>
       <li><a href="#tabF">Forecast</a></li>
@@ -35,7 +44,7 @@
     <img class="gtkshot right" src="images/dlg-prefs1.png">
   </div>
   <div class="rounded content">
-    <h2><a id="tab1" name="tab1"></a>General</h2>
+    <h2 id="tab1">General</h2>
     <h3>Program start</h3>
     <table class="widgetinfo">
       <tr>
@@ -55,29 +64,28 @@
         <td>trigger a on-line update for currencies exchange rate start</td>
       </tr>
     </table>
-    <h3>Main window reports</h3>
-    <table class="widgetinfo">
-      <tr>
-        <th>Max items</th>
-        <td>default number of slice for the pie chart of the main window reports</td>
-      </tr>
-    </table>
+
     <!-- separator -->
     <div class="clear"></div>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
 </div>
+
 <div class="row">
   <div class="gfx">
     <img class="gtkshot right" src="images/dlg-prefs2.png">
   </div>
   <div class="rounded content">
-    <h2><a id="tab2" name="tab2"></a>Interface</h2>
+    <h2 id="tab2">Interface</h2>
     <h3>General</h3>
     <table class="widgetinfo">
       <tr>
-        <th>Tool-bar</th>
-        <td>tool-bar style to be used</td>
+        <th>Color the amounts</th>
+        <td>specify if amounts should be displayed with colors below</td>
+      </tr>
+      <tr>
+        <th>Color the background of future transaction <img src="images/new12.png" alt="new"></th>
+        <td>specify if future transaction renders with a color background</td>
       </tr>
       <tr>
         <th>Grid line</th>
@@ -91,50 +99,130 @@
           </ul>
         </td>
       </tr>
-      <tr>
-        <th>Icon theme</th>
-        <td>default icon theme, to be enriched in the future</td>
+    </table>
+
+   <h3>Charts options</h3>
+    <table class="widgetinfo">
+       <tr>
+        <th>Smaller legend font</th>
+        <td>set the font for scale and legend to be smaller</td>
       </tr>
     </table>
 
-    <h3>Gtk settings</h3>
+    <h3>Deprecated</h3>
     <table class="widgetinfo">
       <tr>
-        <th>Override font size</th>
-        <td>Enable and define the font size for GTK</td>
+        <th>Tool-bar</th>
+        <td>tool-bar style to be used</td>
+      </tr>
+    </table>
+
+    <!-- separator -->
+    <div class="clear"></div>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="gfx">
+    <img class="gtkshot right" src="images/dlg-prefs2a.png">
+  </div>
+  <div class="rounded content">
+    <h2 id="tab2a">Theming</h2>
+
+    <h3>Theme</h3>
+    <p>On GNU/Linux OS, HomeBank will follow the dark scheme preference if available</p>
+    <table class="widgetinfo">
+      <tr>
+        <th>Dark mode</th>
+        <td>GNU/Linux only<br>
+        will indicate the system preference: no preference, prefer dark, prefer light</td>
       </tr>
       <tr>
-        <th>Dark theme</th>
-        <td>On GNU/Linux OS, HomeBank will follow the dark scheme preference if available, and
-        this option will be used ONLY if it is set to DEFAULT mode which is light, to enable force to dark mode.<br>
+        <th>Use dark mode if available</th>
+        <td>GNU/Linux: use dark mode when system has no preference, this will not work otherwise<br><br>
         For other OS this enable to switch to theme dark mode, if available.</td>
       </tr>
     </table>
 
-    <h3>Amount colors</h3>
+    <h3>Icons</h3>
     <table class="widgetinfo">
       <tr>
-        <th>Uses custom colors</th>
+        <th>Icon theme <img src="images/new12.png" alt="new"></th>
+        <td>default icon theme, to be enriched in the future</td>
+      </tr>
+      <tr>
+        <th>Use symbolic icons if available <img src="images/new12.png" alt="new"></th>
+        <td>as it describe, will use symbolic icons if available</td>
+    </table>
+
+    <h3>GTK settings</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Override</th>
+        <td>Enable to override the font size</td>
+      </tr>
+      <tr>
+        <th>Font size</th>
+        <td>Define the font size</td>
+      </tr>
+    </table>
+
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="gfx">
+    <img class="gtkshot right" src="images/dlg-prefs2b.png">
+  </div>
+  <div class="rounded content">
+    <h2 id="tab2b">Color</h2>
+      
+      <h3>Chart</h3>
+      <table class="widgetinfo">
+      <tr>
+        <th>Palette</th>
+        <td>
+          Set the default color scheme to be applied for charts
+          <ul>
+            <li>HomeBank</li>
+            <li>Money</li>
+            <li>SAP</li>
+            <li>Quicken</li>
+            <li>Office 2010</li>
+            <li>Office 2013</li>
+            <li>Analytics</li>
+            <li>YNAB</li>
+          </ul>
+        </td>
+      </tr>
+    </table>
+
+   <h3>Others</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Uses colors from the chart palette <img src="images/new12.png" alt="new"></th>
         <td>specify if amounts should be displayed with colors below</td>
       </tr>
       <tr>
-        <th>Preset</th>
-        <td>contains some Tango color preset to fast set the amount colors</td>
-      </tr>
-      <tr>
         <th>Expense</th>
-        <td>color used for expense</td>
+        <td>color to uses for expense</td>
       </tr>
       <tr>
         <th>Income</th>
-        <td>color used for incomes</td>
+        <td>color to uses for income</td>
       </tr>
       <tr>
         <th>Warning</th>
-        <td>color used for amount in warning (overdrawn)</td>
+        <td>color to uses for amount in warning (overdrawn)</td>
       </tr>
-    </table><!-- separator -->
-    <div class="clear"></div>
+      <tr>
+        <th>Background future <img src="images/new12.png" alt="new"></th>
+        <td>color to uses for background future transaction</td>
+      </tr>
+    </table>
+
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
 </div>
@@ -144,7 +232,7 @@
     <img class="gtkshot right" src="images/dlg-prefs3.png">
   </div>
   <div class="rounded content">
-    <h2><a id="tab3" name="tab3"></a>Locale</h2>
+    <h2 id="tab3">Locale</h2>
 
     <h3>User interface</h3>
     <table class="widgetinfo">
@@ -180,7 +268,9 @@
         <th>Use gallon for fuel</th>
         <td>use the gallon labels and abbreviation for the vehicle cost</td>
       </tr>
-    </table><!-- separator -->
+    </table>
+
+    <!-- separator -->
     <div class="clear"></div>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
@@ -191,25 +281,10 @@
     <img class="gtkshot right" src="images/dlg-prefs4.png">
   </div>
   <div class="rounded content">
-    <h2><a id="tab4" name="tab4"></a>Transactions</h2>
-    <h3>Transaction list</h3>
+    <h2 id="tab4">Transactions</h2>
+
+    <h3>General</h3>
     <table class="widgetinfo">
-      <tr>
-        <th>Range</th>
-        <td>Set the default range to be used for account window</td>
-      </tr>
-      <tr>
-        <th>Show future [xx] days ahead</th>
-        <td>set the number of days to force show future transaction<br>
-        Please note the addition is only effective when the range is:<br>
-		THISMONTH, THISQUARTER, THISYEAR<br>
-		LAST30DAYS, LAST60DAYS, LAST90DAYS, LAST12MONTHS
-        </td>
-      </tr>
-      <tr>
-        <th>Hide reconciled</th>
-        <td>set the filter for account window not to default show reconciled transactions</td>
-      </tr>
       <tr>
         <th>Always show remind</th>
         <td>set the remind transaction to always be display (ignore filters)</td>
@@ -222,12 +297,58 @@
         <th>Include remind into balance and report</th>
         <td>set the remind transaction amount to be computed into the balance, ignored otherwise</td>
       </tr>
-       <tr>
+   </table>
+
+    <h3>Safety</h3>
+    <table class="widgetinfo">
+     <tr>
         <th>Lock reconciled for any changes</th>
         <td>set the default value for the lock reconciled for any change of the main window</td>
-      </tr>   </table>
+      </tr>
+     <tr>
+        <th>Approve additions before last reconciliation <img src="images/new12.png" alt="new"></th>
+        <td>set pending status for transaciton you input before last reconciled date of an account</td>
+      </tr>
+     <tr>
+        <th>Approve addition before XX days before today's date <img src="images/new12.png" alt="new"></th>
+        <td>set pending status for transaction you input past XX days</td>
+      </tr>
+   </table>
 
-    <h3>Transaction dialog</h3>
+    <h3>Ledger window</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Range</th>
+        <td>Set the default range to be used for account window</td>
+      </tr>
+      <tr>
+        <th>Show future [xx] days ahead</th>
+        <td>set the number of days to force show future transaction<br>
+        Please note the addition is only effective when the range is:<br>
+    THISMONTH, THISQUARTER, THISYEAR<br>
+    LAST30DAYS, LAST60DAYS, LAST90DAYS, LAST12MONTHS
+        </td>
+      </tr>
+      <tr>
+        <th>Hide reconciled</th>
+        <td>set the filter for account window not to default show reconciled transactions</td>
+      </tr>
+    </table>
+
+    <!-- separator -->
+    <div class="clear"></div>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+</div>
+
+
+<div class="row">
+  <div class="gfx">
+    <img class="gtkshot right" src="images/dlg-prefs4a.png">
+  </div>
+  <div class="rounded content">
+    <h2 id="tabB">Dialog</h2>
+    <h3>Transaction dialogue</h3>
     <table class="widgetinfo">
       <tr>
         <th>Keep the last date when multiple add</th>
@@ -244,29 +365,52 @@
       </tr>
       <tr>
         <th>Show confirmation text for 5s</th>
-        <td>Will show 5s added confirmation text into the transaction dialog</td>
+        <td>Will show 5 seconds added confirmation text into the transaction dialog</td>
       </tr>
       <tr>
-        <th><img src="images/new12.png"> Show template list when edit</th>
+        <th>Show template list when edit</th>
         <td>this will show the template dropdown list when you edit a transaction</td>
       </tr>
     </table>
 
-    <h3>Transfer behavior</h3>
+    <!-- separator -->
+    <div class="clear"></div>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="gfx">
+    <img class="gtkshot right" src="images/dlg-prefs4b.png">
+  </div>
+  <div class="rounded content">
+    <h2 id="tabB">Transfer</h2>
+
+    <h3>Behavior</h3>
     <table class="widgetinfo">
       <tr>
-        <th><img src="images/new12.png"> Show action for target creation dialog for Add</th>
+        <th>When adding, always show selection action for target dialog</th>
         <td>this will force to show target dialog when you add a transfer</td>
       </tr>
       <tr>
-        <th>Transfer target date tolerance [xx] days</th>
+        <th>Date gapto find a target: [xx] days</th>
         <td>Define the number of +/- days to search for a target transaction for transfer</td>
       </tr>
+    </table>
+
+
+    <h3>Synchronize</h3>
+    <table class="widgetinfo">
       <tr>
-        <th><img src="images/new12.png"> Sync transfer status</th>
-        <td>this will force to sync the status of the transfer src and dst when you change it</td>
+        <th>Date <img src="images/new12.png" alt="new"></th>
+        <td>this will force to sync the date of the transfer source and destination when you change it</td>
+      </tr>
+      <tr>
+        <th>Status</th>
+        <td>this will force to sync the status of the transfer source and destination when you change it</td>
       </tr>
     </table>
+
 
 
     <!-- separator -->
@@ -277,10 +421,10 @@
 
 <div class="row">
   <div class="gfx">
-    <img class="gtkshot right" src="images/dlg-prefs5.png">
+    <img class="gtkshot right" src="images/dlg-prefs4c.png">
   </div>
   <div class="rounded content">
-    <h2><a id="tab5" name="tab5"></a>Payment <img src="images/new24.png"></h2>
+    <h2 id="tab4c">Payment</h2>
     <h3>Payment shows & chooses</h3>
 
     <p>This list enables you to select what payment mode to show/hide and in which order !</p>
@@ -297,7 +441,7 @@
     <img class="gtkshot right" src="images/dlg-prefs6.png">
   </div>
   <div class="rounded content">
-    <h2><a id="tab6" name="tab6"></a>Import/Export</h2>
+    <h2 id="tab6">Import/Export</h2>
     <h3>General options</h3>
     <table class="widgetinfo">
       <tr>
@@ -365,12 +509,21 @@
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
 </div>
+
 <div class="row">
   <div class="gfx">
     <img class="gtkshot right" src="images/dlg-prefs7.png">
   </div>
   <div class="rounded content">
-    <h2><a id="tab7" name="tab7"></a>Report</h2>
+    <h2 id="tab7">Report</h2>
+    <h3>Main window reports</h3>
+    <table class="widgetinfo">
+      <tr>
+        <th>Max items</th>
+        <td>default number of slice for the pie chart of the main window reports</td>
+      </tr>
+    </table>
+
     <h3>Initial filter</h3>
     <table class="widgetinfo">
       <tr>
@@ -378,29 +531,8 @@
         <td>Set the default range to be used for account window</td>
       </tr>
     </table>
-    <h3>Charts options</h3>
-    <table class="widgetinfo">
-      <tr>
-        <th>Color scheme</th>
-        <td>
-          Set the default color scheme to be applied for charts
-          <ul>
-            <li>HomeBank</li>
-            <li>Money</li>
-            <li>SAP</li>
-            <li>Quicken</li>
-            <li>Office 2010</li>
-            <li>Office 2013</li>
-            <li>Analytics</li>
-            <li>YNAB</li>
-          </ul>
-        </td>
-      </tr>
-      <tr>
-        <td>Smaller legend font</td>
-        <td>set the font for scale and legend to be smaller</td>
-      </tr>
-    </table>
+
+
     <h3>Statistics options</h3>
     <table class="widgetinfo">
       <tr>
@@ -417,7 +549,7 @@
       </tr>
       <tr>
         <th>Include transfer</th>
-        <td>set the internal transfer to be included into te computing of the report</td>
+        <td>set the internal transfer to be included into the computing of the report</td>
       </tr>
     </table>
     <h3>Budget options</h3>
@@ -426,7 +558,13 @@
         <th>Show details</th>
         <td>set the detail toggle on the budget window to default be checked</td>
       </tr>
-    </table><!-- separator -->
+      <tr>
+        <th>Exclude subcategories... <img src="images/new12.png" alt="new"></th>
+        <td>option not to consider subcategories with no budget as unbudgeted if parent category has budget</td>
+      </tr>
+    </table>
+
+    <!-- separator -->
     <div class="clear"></div>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
@@ -435,10 +573,10 @@
 
 <div class="row">
   <div class="gfx">
-    <img class="gtkshot right" src="images/dlg-prefsF.png">
+    <img class="gtkshot right" src="images/dlg-prefs8.png">
   </div>
   <div class="rounded content">
-    <h2><a id="tabF" name="tabF"></a>Forecast <img src="images/new24.png"></h2>
+    <h2 id="tabF">Forecast</h2>
     <h3>Forecast</h3>
     <table class="widgetinfo">
       <tr>
@@ -462,10 +600,10 @@
 
 <div class="row">
   <div class="gfx">
-    <img class="gtkshot right" src="images/dlg-prefs8.png">
+    <img class="gtkshot right" src="images/dlg-prefs9.png">
   </div>
   <div class="rounded content">
-    <h2><a id="tab8" name="tab8"></a>Backup</h2>
+    <h2 id="tab8">Backup</h2>
     <h3>Backup</h3>
     <table class="widgetinfo">
       <tr>
@@ -488,10 +626,10 @@
 
 <div class="row">
   <div class="gfx">
-    <img class="gtkshot right" src="images/dlg-prefs9.png">
+    <img class="gtkshot right" src="images/dlg-prefsA.png">
   </div>
   <div class="rounded content">
-    <h2><a id="tab9" name="tab9"></a>Folders</h2>
+    <h2 id="tab9">Folders</h2>
     <p class="warning"><img src="images/d-warn.png">&nbsp;When you change those folders, HomeBank will not move nor copy files, including any current opened file.</p>
     <p>These folders are the location that the file selector will use as a default when it opens.<br>
     If you want to change the location of your files, change it to the filesystem first, then change it here.</p>
@@ -518,7 +656,8 @@
         <td>default folder to save files to export</td>
       </tr>
     </table>
-<!-- separator -->
+
+    <!-- separator -->
     <div class="clear"></div>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
@@ -527,10 +666,10 @@
 
 <div class="row">
   <div class="gfx">
-    <img class="gtkshot right" src="images/dlg-prefsA.png">
+    <img class="gtkshot right" src="images/dlg-prefsB.png">
   </div>
   <div class="rounded content">
-    <h2><a id="tabA" name="tabA"></a>Euro minor</h2>
+    <h2 id="tabA">Euro minor</h2>
     <h3>General</h3>
     <table class="widgetinfo">
       <tr>
@@ -538,16 +677,13 @@
         <td>enable Euro minor currency support in HomeBank.<br>
         see <a href="use-tipsandtricks.html#eurominor">minor currency</a> for more details.</td>
       </tr>
-    </table>
-    <h3>Currency</h3>
-    <p>A remind of the country is displayed</p>
-    <table class="widgetinfo">
       <tr>
-        <th>Fill from</th>
+        <th>Preset</th>
         <td>preselect of parameters for this tab</td>
       </tr>
     </table>
-    <h3>Exchange rate</h3>
+    <h3>Configuration</h3>
+    <p>A remind of the country is displayed</p>
     <table class="widgetinfo">
       <tr>
         <th>1 XXX =</th>
@@ -578,16 +714,19 @@
         <td>Character to be used as grouping separator</td>
       </tr>
     </table>
+
+    <!-- separator -->
+    <div class="clear"></div>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
 </div>
 
 <div class="row">
   <div class="gfx">
-    <img class="gtkshot right" src="images/dlg-prefsB.png">
+    <img class="gtkshot right" src="images/dlg-prefsC.png">
   </div>
   <div class="rounded content">
-    <h2><a id="tabB" name="tabB"></a>Advanced</h2>
+    <h2 id="tabB">Advanced</h2>
     <h3>Currency API</h3>
     <table class="widgetinfo">
       <tr>
@@ -601,6 +740,8 @@
       </tr>
     </table>
 
+    <!-- separator -->
+    <div class="clear"></div>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
 </div>

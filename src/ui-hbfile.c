@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -20,10 +20,12 @@
 
 #include "homebank.h"
 
+#include "ui-widgets.h"
 #include "hbtk-switcher.h"
 
 #include "ui-hbfile.h"
 #include "ui-category.h"
+
 
 /****************************************************************************/
 /* Debug macros                                                             */
@@ -57,7 +59,7 @@ static void defhbfile_cb_update_maxpostdate(GtkWidget *widget, gpointer user_dat
 struct defhbfile_data *data;
 gint smode, weekday, nbdays, nbmonths;
 guint32 maxpostdate;
-gchar buffer[256];
+gchar buffer[256], *newtext;
 GDate *date;
 
 	DB( g_print("\n[ui-hbfile] update maxpostdate\n") );
@@ -80,9 +82,11 @@ GDate *date;
 	date = g_date_new_julian (maxpostdate);
 	g_date_strftime (buffer, 256-1, PREFS->date_format, date);
 
-	gtk_label_set_text(GTK_LABEL(data->LB_maxpostdate), buffer);
-
+	//#2102726 
+	newtext = g_strdup_printf(_("Maximum post date is %s (included)"), buffer);
+	gtk_label_set_text(GTK_LABEL(data->LB_maxpostdate), newtext);
 	g_date_free(date);
+	g_free(newtext);
 }
 
 
@@ -264,7 +268,7 @@ gint crow, row;
 	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
 	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
 	hb_widget_set_margin(GTK_WIDGET(content_grid), SPACING_LARGE);
-	gtk_box_pack_start (GTK_BOX (content_area), content_grid, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (content_area), content_grid);
 
 	crow = 0;
 	// group :: General
@@ -286,7 +290,7 @@ gint crow, row;
 
 
 	// group :: Scheduled transactions
-    group_grid = gtk_grid_new ();
+	group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
 	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow++, 1, 1);
@@ -295,7 +299,14 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 3, 1);
 
 	row = 1;
-	label = make_label_widget(_("Automatic post:"));
+	//message of post date
+	label = make_label(NULL, 0.0, 0.5);
+	data->LB_maxpostdate = label;
+	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(label)), GTK_STYLE_CLASS_DIM_LABEL);
+	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 2, 1);
+
+	row++;
+	label = make_label_widget(_("Mode:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = hbtk_switcher_new (GTK_ORIENTATION_HORIZONTAL);
 	hbtk_switcher_setup(HBTK_SWITCHER(widget), CYA_TXN_POSTMODE, TRUE);
@@ -310,17 +321,17 @@ gint crow, row;
 
 		widget = make_numeric(NULL, 1, 28);
 		data->NU_weekday = widget;
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (hbox), widget);
 
 		label = make_label(_("of each"), 0.0, 0.5);
-		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (hbox), label);
 
 		widget = make_numeric(NULL, 1, 12);
 		data->NU_nbmonths = widget;
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (hbox), widget);
 
 		label = make_label(_("month"), 0.0, 0.5);
-		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (hbox), label);
 
 	//in advance group
 	row++;
@@ -330,18 +341,11 @@ gint crow, row;
 
 		widget = make_numeric(NULL, 1, 366);
 		data->NU_nbdays = widget;
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (hbox), widget);
 
 		//TRANSLATORS: there is a spinner on the left of this label, and so you have 0....x days in advance the current date
 		label = make_label(_("days"), 0.0, 0.5);
-		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
-
-	//simulated date
-	row++;
-	label = make_label(NULL, 0.0, 0.5);
-	data->LB_maxpostdate = label;
-	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(label)), GTK_STYLE_CLASS_DIM_LABEL);
-	gtk_grid_attach (GTK_GRID (group_grid), label, 2, row, 1, 1);
+		gtk_box_prepend (GTK_BOX (hbox), label);
 
 
 	// group :: life energy

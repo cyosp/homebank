@@ -1,5 +1,70 @@
 
 
+2025-04-10  Maxime Doyen
+
+ Made 5.9 release
+
+ * new   : new svg default iconset
+ * new   : new symbolic svg iconset
+ * new   : budget tabview: added import/export menu
+ * new   : budget tabview: added clearall menu
+ * new   : reinforced error handling when loading a .xhb file
+ * new   : preference: amount color can be herited from chart palette
+ * new   : added a ledger tool to mark category sign with amount don't match
+ * change: xhb data file format (v1.6)
+ * change: internal data/display flag separation
+ * change: icon name rework
+ * change: simplified ledger icon status column (reconciled merged with lock)
+ * change: manage account icons was moved to a left column for consistency
+ * change: the preference pages have been organized on 2 levels
+ * change: the last used preferences page is remembered during the session
+ * change: relayout of edit assignment dialog
+ * wish  : #2101100 budget report option to exclude subcat from unbudgeted line
+ * wish  : #2089475 inherit while managing scheduled transactions
+ * wish  : #2083175 balance report to propose an option to include/exclude transfer
+ * wish  : #2079857 budget report option to restrict <= today
+ * wish  : #2073032 statistic time report detail to focus on row or cell (specific month)
+ * wish  : #2070444 possibility to print/export scheduled transactions
+ * wish  : #2068845 duplicate a transaction split line
+ * wish  : #2068663 include split transaction memos in completion
+ * wish  : #2067399 Schedule Transaction for the nth weekday of a Month
+ * wish  : #2066993 scheduled payment on last day of month
+ * wish  : #2066110 refactor EUR feature for future euro adopters
+ * wish  : #2065633 option to keep internal transfer date sync
+ * wish  : #2065355 making “remind” status independent of “reconciled” status
+ * wish  : #2064958 "Period to date" date range
+ * wish  : #2061227 a feature to prevent add/import prior last reconciled date
+ * wish  : #2052314 option of background color for future transactions
+ * wish  : #2042038 assignment more visible search option (case and regex)
+ * wish  : #2042037 manage assignment list search option icons (case and regex)
+ * wish  : #1938412 inline calculation in txn/split amount field
+ * wish  : #1875100 option to import in pending status and approve later
+ * wish  : #1756407 remove -|+ of amount widget + empty if focus
+ * bugfix: post scheduled from main window do not enable save
+ * bugfix: #2106307 broken link in the Preferences Dialog 
+ * bugfix: #2106027 delete then show usage make a crash in tags manage
+ * bugfix: #2105387 no changes in manage accounts faulty count changes
+ * bugfix: #2104162 Wrong balance values in Balance Report after changing the interval
+ * bugfix: #2102726 Unexpected dates from 'Next payout' automatic posting
+ * bugfix: #2101050 transaction sign change with a transfer between accounts
+ * bugfix: #2100875 payment filter revert to mobile phone after reopen saved file
+ * bugfix: #2100731 budget report time list print result label are incorrect
+ * bugfix: #2100489 windows: date problem if you change the short format in regional settings
+ * bugfix: #2099918 scheduled with week-end before/after gap post date is incorrect
+ * bugfix: #2099843 budget chart wrong color when spend = budget
+ * bugfix: #2098359 portable version truncate recently-used.xbel
+
+
+2025-04-04  Maxime Doyen
+
+ Made 5.9-rc2 release
+
+
+2025-01-26  Maxime Doyen
+
+ Made 5.9-rc release
+
+
 2024-12-26  Maxime Doyen
 
  Made 5.8.6 release
@@ -95,6 +160,7 @@
 
  * new   : statistics report: category sign is now also displayed
  * new   : added a tooltip to display active filter in all report windows
+ * change: xhb data file format (v1.5)
  * change: migrating to GTK4 preparation (GdkEvent struct)
  * change: migrating to GTK4 preparation (GtkApplication, GtkApplicationWindow)
  * change: migrating to GTK4 preparation (GtkMenu*, GtkToolbar) for ledger

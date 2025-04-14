@@ -1,4 +1,4 @@
 ## Process this file with automake to produce Makefile.in
 
-SUBDIRS = hicolor #line gtk2
+SUBDIRS = common-symbolic Default hicolor hicolor-symbolic
 

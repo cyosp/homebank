@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -70,7 +70,7 @@ GType		hbtk_switcher_get_type(void) G_GNUC_CONST;
 
 GtkWidget *hbtk_switcher_new (GtkOrientation orientation);
 void hbtk_switcher_setup (HbtkSwitcher *switcher, gchar **items, gboolean buttonstyle);
-void hbtk_switcher_setup_with_data (HbtkSwitcher *switcher, HbKivData *kivdata, gboolean buttonstyle);
+void hbtk_switcher_setup_with_data (HbtkSwitcher *switcher, GtkWidget *label, HbKivData *kivdata, gboolean buttonstyle);
 gint hbtk_switcher_get_active (HbtkSwitcher *switcher);
 void hbtk_switcher_set_active (HbtkSwitcher *switcher, gint active);
 void hbtk_switcher_set_nth_sensitive (HbtkSwitcher *switcher, gint nth, gboolean sensitive);

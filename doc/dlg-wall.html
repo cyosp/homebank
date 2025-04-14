@@ -36,23 +36,38 @@
     <h3><img src="images/2.png" width="15" height="15"> Scheduled transactions</h3>
     <table class="widgetinfo">
       <tr>
-        <th>Automatic post</th>
+        <th>Mode</th>
         <td>
-          <p><b>Due Date</b><br>
-              post is done on exact date, so if next occurrence is today, the txn will be added</p>
-          <p><b>Next Payout</b><br>
-              post is done on xx of each yy month</p>
-          <p><b>In Advance</b><br>
-            post is done xx days in advance to the today's date (limit of insertion) when HomeBank insert automated transactions.<br>Example: you specify 30 days here, HomeBank will insert automated transactions that should occur till today + 30 days.</p>  
+          the maximum post date (MPD) can be set with various option:<br><br>
+          <ul>
+            <li><b>Due Date</b><br>
+                trigger on due date<br>
+                <i>Ex: today is Apr, 18<br>
+                MPD = today<br>
+              &gt; pending with next date [* | today], will be added</i>
+            </li>
+            <li><b>Next Payout</b><br>
+                trigger is every XX of each YY month (when you receive your Payout)<br>
+                <i>Ex: set 10 of each 1 month, today is Apr, 10<br>
+                MPD = 9 of each month<br>
+              &gt; pending with next date [10-ThisMonth | 9-NextMonth] will be added</i>
+            </li>
+            <li><b>In Advance</b><br>
+              trigger is XX days in advance<br>
+              <i>Ex: set 10 in advance, today is Apr, 18<br>
+                &gt; pending with next date [* | Apr, 28], will be added
+              </i>
+            </li>
+          </ul>  
         </td>
       </tr>
 
     </table>
 
-    <h3><img src="images/3.png" width="15" height="15"> Life Energy <img src="images/new24.png"></h3>
+    <h3><img src="images/3.png" width="15" height="15"> Life Energy</h3>
     <table class="widgetinfo">
       <tr>
-        <th><img src="images/new12.png"> Earn by hour</th>
+        <th>Earn by hour</th>
         <td>
           the amount estimate you ear by hour. This is to evaluate the hours you spent to buy things, see <a href="00-lexicon.html#lifeenergy">life energy</a> for more info.</td>
       </tr>

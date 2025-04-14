@@ -1,5 +1,5 @@
 /*	HomeBank -- Free, easy, personal accounting for everyone.
- *	Copyright (C) 1995-2024 Maxime DOYEN
+ *	Copyright (C) 1995-2025 Maxime DOYEN
  *
  *	This file is part of HomeBank.
  *
@@ -23,6 +23,7 @@
 #include "dsp-mainwindow.h"
 #include "hub-account.h"
 #include "ui-currency.h"
+#include "ui-widgets.h"
 
 
 #define MYDEBUG 0
@@ -56,18 +57,20 @@ GtkWidget *mainbox, *label;
 	label = make_label(
 	      _("This assistant will help you setup a minimum configuration\n" \
 	        "for a new HomeBank file."), 0, 0);
-	gtk_box_pack_start (GTK_BOX (mainbox), label, FALSE, FALSE, SPACING_SMALL);
+	gtk_box_prepend (GTK_BOX (mainbox), label);
+	//SPACING_SMALL
 
 	label = make_label(
 	      _("All the elements you setup here can be changed later if required."), 0, 0);
-	gtk_box_pack_start (GTK_BOX (mainbox), label, FALSE, FALSE, SPACING_SMALL);
+	gtk_box_prepend (GTK_BOX (mainbox), label);
+	//SPACING_SMALL
 
 	
 	label = make_label(
 	    _("No changes will be made until you click \"Apply\"\n" \
 	      "at the end of this assistant."), 0., 0.0);
-	gtk_box_pack_start (GTK_BOX (mainbox), label, FALSE, FALSE, SPACING_SMALL);
-
+	gtk_box_prepend (GTK_BOX (mainbox), label);
+	//SPACING_SMALL
 
 	gtk_widget_show_all (mainbox);
 
@@ -136,18 +139,18 @@ GtkWidget *mainbox, *hbox, *label, *widget;
 	label = make_label(_("HomeBank will display a title for the main window,\n" \
 	                     "it can be a free label or your name."), 0, 0.5);
 	gtk_widget_set_margin_bottom(label, SPACING_LARGE);
-	gtk_box_pack_start (GTK_BOX (mainbox), label, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (mainbox), label);
 
 	
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	//gtk_widget_set_halign(hbox, GTK_ALIGN_CENTER);
-	gtk_box_pack_start (GTK_BOX (mainbox), hbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (mainbox), hbox);
 	
 	label = make_label_widget(_("_Title:"));
-	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (hbox), label);
 	widget = make_string(label);
 	data->ST_owner = widget;
-	gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (hbox), widget);
 
 	//TODO: later we will let the user choose to use: 
 	//budget
@@ -264,28 +267,28 @@ GtkWidget *scrollwin;
 	label = make_label(_("HomeBank support multiple currencies. The base currency is\n" \
 	                     "the default for new accounts and reports."), 0, 0.5);
 	gtk_widget_set_margin_bottom(label, SPACING_LARGE);
-	gtk_box_pack_start (GTK_BOX (mainbox), label, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (mainbox), label);
 	
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
-	gtk_box_pack_start (GTK_BOX (mainbox), hbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (mainbox), hbox);
 
 	label = make_label_widget(_("Base:"));
-	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (hbox), label);
 	widget = make_label (NULL, 0, 0.5);
 	data->LB_cur_base = widget;
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (hbox), widget);
 	widget = gtk_button_new_with_mnemonic (_("_Change"));
 	data->BT_cur_change = widget;
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (hbox), widget);
 
 
 	widget = gtk_check_button_new_with_mnemonic (_("Setup additional currencies"));
 	data->CM_cur_add = widget;
 	gtk_widget_set_margin_top(widget, SPACING_LARGE);
-	gtk_box_pack_start (GTK_BOX (mainbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (mainbox), widget);
 
 	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_box_pack_start (GTK_BOX (mainbox), scrollwin, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (mainbox), scrollwin);
 	gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scrollwin), 0.75*HB_MINHEIGHT_LIST);
 	widget = make_label(NULL, 0.0, 0.0);
 	data->LB_cur_others = widget;
@@ -294,7 +297,7 @@ GtkWidget *scrollwin;
 	widget = gtk_button_new_with_mnemonic (_("_Add"));
 	gtk_widget_set_halign(widget, GTK_ALIGN_START);
 	data->BT_cur_add = widget;
-	gtk_box_pack_start (GTK_BOX (mainbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (mainbox), widget);
 
 	gtk_widget_set_sensitive(data->LB_cur_others, FALSE);
 	gtk_widget_set_sensitive(data->BT_cur_add, FALSE);
@@ -412,37 +415,37 @@ GtkWidget *scrollwin;
 	label = make_label(_("HomeBank can prefill the categories for your language\n" \
 	                     "if a CSV file is available and provided by the community."), 0, 0.5);
 	gtk_widget_set_margin_bottom(label, SPACING_LARGE);
-	gtk_box_pack_start (GTK_BOX (mainbox), label, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (mainbox), label);
 	
 	widget = gtk_check_button_new_with_mnemonic (_("Setup categories for my language"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), TRUE);
 	//gtk_widget_set_margin_bottom(widget, SPACING_LARGE);
 	data->CM_load = widget;
-	gtk_box_pack_start (GTK_BOX (mainbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (mainbox), widget);
 
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	data->GR_file = hbox;
-	gtk_box_pack_start (GTK_BOX (mainbox), hbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (mainbox), hbox);
 
 	label = make_label_widget(_("Preset file:"));
-	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (hbox), label);
 	
-	widget = gtk_image_new_from_icon_name(ICONNAME_HB_FILE_VALID, GTK_ICON_SIZE_LARGE_TOOLBAR);
+	widget = hbtk_image_new_from_icon_name_24(ICONNAME_HB_FILE_VALID);
 	data->ok_image = widget;
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (hbox), widget);
 
-	widget = gtk_image_new_from_icon_name(ICONNAME_HB_FILE_INVALID, GTK_ICON_SIZE_LARGE_TOOLBAR);
+	widget = hbtk_image_new_from_icon_name_24(ICONNAME_HB_FILE_INVALID);
 	data->ko_image = widget;
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (hbox), widget);
 
 	widget = make_label(NULL, 0.0, 0.5);
 	data->TX_file = widget;
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (hbox), widget);
 
 
 	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
 	gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scrollwin), 0.75*HB_MINHEIGHT_LIST);
-	gtk_box_pack_start (GTK_BOX (mainbox), scrollwin, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (mainbox), scrollwin);
 	widget = make_label(NULL, 0.0, 0.5);
 	data->TX_preview = widget;
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), widget);
@@ -508,19 +511,19 @@ GtkWidget *mainbox, *group_grid, *label, *widget;
 	label = make_label(_("HomeBank enables to import your accounts from downloaded\n" \
 	                     "financial institution files, or you can create your account manually."), 0, 0.5);
 	gtk_widget_set_margin_bottom(label, SPACING_LARGE);
-	gtk_box_pack_start (GTK_BOX (mainbox), label, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (mainbox), label);
 	
 	widget = gtk_check_button_new_with_mnemonic (_("Create my first account"));
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(widget), TRUE);
 	//gtk_widget_set_margin_bottom(widget, SPACING_LARGE);
 	data->CM_acc_add = widget;
-	gtk_box_pack_start (GTK_BOX (mainbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (mainbox), widget);
 
     group_grid = gtk_grid_new ();
 	data->GR_acc = group_grid;
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_box_pack_start (GTK_BOX (mainbox), group_grid, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (mainbox), group_grid);
 	
 	label = make_label_widget(_("_Name:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, 0, 1, 1);

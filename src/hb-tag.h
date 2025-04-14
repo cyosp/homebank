@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -21,7 +21,7 @@
 #define __HB_TAG_H__
 
 
-typedef struct _tag		Tag;
+#include "hb-types.h"
 
 struct _tag
 {

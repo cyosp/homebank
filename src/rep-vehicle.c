@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -29,6 +29,8 @@
 #include "dsp-mainwindow.h"
 #include "ui-category.h"
 
+#include "ui-dialogs.h"
+#include "ui-widgets.h"
 
 /****************************************************************************/
 /* Debug macros                                                             */
@@ -968,7 +970,7 @@ gint row, col;
 	//control part
 	table = gtk_grid_new ();
 	gtk_widget_set_hexpand (GTK_WIDGET(table), FALSE);
-    gtk_box_pack_start (GTK_BOX (mainbox), table, FALSE, FALSE, 0);
+    gtk_box_prepend (GTK_BOX (mainbox), table);
 
 	gtk_grid_set_row_spacing (GTK_GRID (table), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (table), SPACING_MEDIUM);
@@ -1031,17 +1033,17 @@ gint row, col;
 	//part: info + report
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_set_margin_start (vbox, SPACING_SMALL);
-    gtk_box_pack_start (GTK_BOX (mainbox), vbox, TRUE, TRUE, 0);
+    hbtk_box_prepend (GTK_BOX (mainbox), vbox);
 
 	widget = repvehicle_toolbar_create(data);
 	data->TB_bar = widget;
-	gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (vbox), widget);
 	
 
 	// total
 	table = gtk_grid_new ();
 	gtk_widget_set_hexpand (GTK_WIDGET(table), FALSE);
-    gtk_box_pack_start (GTK_BOX (vbox), table, FALSE, FALSE, 0);
+    gtk_box_prepend (GTK_BOX (vbox), table);
 
 	hb_widget_set_margin(GTK_WIDGET(table), SPACING_SMALL);
 	gtk_grid_set_row_spacing (GTK_GRID (table), SPACING_SMALL);
@@ -1099,7 +1101,7 @@ gint row, col;
 	treeview = list_vehicle_create();
 	data->LV_report = treeview;
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
-    gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
+    hbtk_box_prepend (GTK_BOX (vbox), scrollwin);
 
 
 	// connect dialog signals

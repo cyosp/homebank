@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -753,6 +753,7 @@ GList *lnk_txn;
 	{
 	Account *acc = lnk_acc->data;
 	
+		acc->nb_pending = 0;
 		/* set initial amount */
 		acc->bal_clear = acc->initial;
 		acc->bal_recon = acc->initial;
@@ -775,9 +776,19 @@ GList *lnk_txn;
 			{
 				da_transaction_insert_memos(txn);
 			}
+
+			//5.9 add flags
+			if( txn->flags & (OF_ISPAST | OF_ISIMPORT) )
+			{
+				acc->nb_pending++;
+			}
+
 			lnk_txn = g_list_next(lnk_txn);
 		}
-		
+
+		if( acc->nb_pending > 0 )
+			acc->flags |= AF_HASNOTICE;
+
 		lnk_acc = g_list_next(lnk_acc);
 	}
 	g_list_free(lst_acc);
@@ -791,8 +802,9 @@ void account_convert_euro(Account *acc)
 {
 GList *lnk_txn;
 
-	//TODO: should ignore already EUR account...
-	
+	//5.9: ignore already EUR account
+	if( currency_is_euro(acc->kcur) == TRUE )
+		return;
 
 	lnk_txn = g_queue_peek_head_link(acc->txn_queue);
 	while (lnk_txn != NULL)
@@ -810,6 +822,6 @@ GList *lnk_txn;
 //	acc->warning = hb_amount_to_euro(acc->warning);
 	acc->minimum = hb_amount_to_euro(acc->minimum);
 	acc->maximum = hb_amount_to_euro(acc->maximum);
-}
 
+}
 

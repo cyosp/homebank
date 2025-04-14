@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -28,14 +28,19 @@ enum {
 	HB_AMT_SIGN_INC
 };
 
+//date min/max bound
+typedef enum {
+	HB_DATE_BOUND_FIRST,
+	HB_DATE_BOUND_LAST,
+} HbDateBound;
+
 
 double hb_amount_round(const double x, unsigned int n);
 gdouble hb_amount_base(gdouble value, guint32 kcur);
 gdouble hb_amount_convert(gdouble value, guint32 skcur, guint32 dkcur);
 gdouble hb_amount_to_euro(gdouble amount);
 gboolean hb_amount_type_match(gdouble amount, gint type);
-gboolean hb_amount_equal(gdouble val1, gdouble val2);
-gint hb_amount_compare(gdouble val1, gdouble val2);
+gint hb_amount_cmp(gdouble val1, gdouble val2);
 gboolean hb_amount_between(gdouble val, gdouble min, gdouble max);
 gint hb_amount_forced_sign(const gchar *text);
 
@@ -89,6 +94,7 @@ gchar *hb_strdup_nobrackets (const gchar *str);
 
 gchar *hb_sprint_date(gchar *outstr, guint32 julian);
 
+guint32 hb_date_get_jbound(guint32 jdate, HbDateBound bound);
 guint32 hb_date_get_julian(gchar *string, gint datefmt);
 
 gboolean hb_string_isdate(gchar *str);

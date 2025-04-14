@@ -11,65 +11,91 @@
     HomeBank User manual
   </div>
   <div class="title">
-    <h1>What's New in HomeBank 5.8</h1>
-    <p>To review the complete list of changes, please use the <i>Help > Release Notes</i> menu from HomeBank program.<br>
+    <h1>What's New in HomeBank 5.9</h1>
+    <p>For each release the <b>complete list of changes</b> can be found into the ChangeLog file. <br>
+    To read the ChangeLog, you can use the <i>Help > Release Notes</i> menu from HomeBank program.</p>
+
+    <p>This page only focuses on some of the changes.<br>
     Older <i>what's new in X.Y</i> can be read into <a href="00-previously.html" target="mainFrame">previously on HomeBank...</a></p>
   </div>
 
-    <!--<b>New features in v5.8</b>
+  <b>New features in v5.9</b>
     <ul class="toc">
-      <li><a href="#58favfilter">Favorite saved filters</a></li>
-      <li><a href="#58flags"></a>Colour flags</li>
-      <li><a href="#58lifhrg">Life energy</a></li>
-      <li><a href="#58custpay">Payment re-order & hide</a></li>
-      <li><a href="#5858tipfilter">Tooltip of active filters</a></li>
-    </ul>-->
+      <!-- <li><a href="#59xxx">yyy</a></li> -->
+      <li><a href="#59amtcalc">Basic inline calculation in amount txn/split dialog</a></li>
+      <li><a href="#59iconset">2 new icon sets</a></li>
+      <li><a href="#59newsched">New scheduling options</a></li>
+      <li><a href="#59pendtxn">New pending status transaction</a></li>
+      <li><a href="#59asgrework">Re-layout of assignment dialog</a></li>
+    </ul>
 
  <!--<div class="rounded content">
-    <h3><a id="58xxxx" name="58xxxx"></a>Cash Flow Forecast</h3>
-    <img class="gtkshot left" src="images/58xxxxx.png">
-    
+    <h3><a id="59xxxx" name="59xxxx">xxxx</a></h3>
+    <img class="gtkshot left" src="images/59xxxxx.png">
+
     <p class="top clear"><a href="#top">↑ Back to Top</a></p>
   </div>-->
 
-  <div class="rounded content">
-    <h3><a id="58favfilter" name="58favfilter"></a>Favorite saved filters</h3>
-    <img class="gtkshot left" src="images/58favfilters.png">
-    <p>From the statistic report and the show all transaction window, you can now manage a list of favorite filters, saved for each of your wallet.
-    This will ease the grouping you want to show those reports. Read the <a href="use-favfilters.html">favorite filter usage</a> for more details.</p>
+
+ <div class="rounded content">
+    <h3><a id="59amtcalc" name="59amtcalc">Basic inline calculation in amount txn/split dialog</a></h3>
+    <img class="gtkshot left" src="images/59inlinecalc.png">
+    <p>This version introduce a basic <a href="00-lexicon.html#inlinecalc">inline calculation</a> for amount in  the transaction dialog and the split dialog.
+    <p>Also this changes enables to empty the amount field when there is 0.00, to ease new input.</p>
+
     <p class="top clear"><a href="#top">↑ Back to Top</a></p>
   </div>
 
-  <div class="rounded content">
-    <h3><a id="58tipfilter" name="58tipfilter"></a>Tooltip of active filters</h3>
-    <img class="gtkshot left" src="images/58tipfilters.png">
-    <p>In several report windows: statistics, trend time and balance, there is now a tooltip that shows the active filters, as sometimes there are implicit filters you cannot control, and this will help you understand what the results are composed of.<br>
-    The whole area between Filter and the filter button will show the tooltip if you put the mouse pointer over it.</p>
+ <div class="rounded content">
+    <h3><a id="59iconset" name="59iconset">2 new icon sets</a></h3>
+    <p>This is something I work in shadow since many months now, legacy png only icons deserved a refresh. I also like to draw in my spare time, so most icons are complete creation, using Inkscape.</p>
+    <p>This 5.9 introduce 2 new icon sets:<br>
+    - 1 colorful in <b>SVG</b>, named Default<br>
+    - 1 <b>symbolic</b>, mostly inspired by material design ion style
+    </p>
+    <img class="gtkshot" src="images/59newicons.png">
+    <p>The new colorful svg set will be the default.<br>
+    Go to the preferences to change it, or toggle the symbolic, or revert back to the legacy set.
+    </p>
+
     <p class="top clear"><a href="#top">↑ Back to Top</a></p>
   </div>
 
-  <div class="rounded content">
-    <h3><a id="58flags" name="58flags"></a>Color flags</h3>
-    <img class="gtkshot left" src="images/58flags.png">
-    <p>There is now 6 color flags you can assign to transaction, colors are Red, Orange, Yellow, Green, Blue and Purple.
-    The assign can only be done from the ledger window using the context menu or some shortcuts CTRL+x.
-    There is also a new quick-filter to easily filter on flags.</p>
+
+
+ <div class="rounded content">
+    <h3><a id="59newsched" name="59newsched">New scheduling options</a></h3>
+    <img class="gtkshot left" src="images/59sched.png">
+    <p>The scheduling function was improved to enable recurrence like <b>'Last Monday', 'First Friday'</b>, and so on.<br>
+    The design was also changed so that we are close to what you can observe in other tools.</p>
+
     <p class="top clear"><a href="#top">↑ Back to Top</a></p>
   </div>
 
-  <div class="rounded content">
-    <h3><a id="58lifhrg" name="58lifhrg"></a>Life energy</h3>
-    <img class="gtkshot left" src="images/58lifeenergy.png">
-    <p>Life energy is a measurement of your expense by hours of work, based on you estimate earning by hour. This is an alternative and interesting way to consider your spending.<br>
-    After you have filled your estimate 'earn by hour' into <a href="dlg-wall.html">Properties dialog</a>, you will be able to toggle on/off an additional (..h..m) beside the Expense into the ledger window, there is a toggle toolbar button on the top.</p>
+ <div class="rounded content">
+    <h3><a id="59pendtxn" name="59pendtxn">New pending status transaction</a></h3>
+    <p>A new <a href="00-lexicon.html#pending">pending status</a> was created for this new version.<br>
+    This will ease having a specific workflow when you import some new transactions, but also enables to mark added transaction manually that could break your balance, 
+    because they are inserted in the past, and so needs a review before being part of the flow.
+
     <p class="top clear"><a href="#top">↑ Back to Top</a></p>
   </div>
 
-  <div class="rounded content">
-    <h3><a id="58custpay" name="58custpay"></a>Payment re-order & hide</h3>
-    <p>A new preference is available for you to re-order the payment method and hide the ones you don't use.</p>
+
+
+ <div class="rounded content">
+    <h3><a id="59asgrework" name="59asgrework">Re-layout of assignment dialog</a></h3>
+    <p>Several changes were made to the <a href="dlg-assi.html">assignment dialog</a> to improve usage and readability:</p>
+    <ul>
+      <li>re-layout</li>
+      <li>listview: added icon for 'case sensitive' and 'regex'</li>
+      <li>listview: added tags column</li>
+    </ul>
+
     <p class="top clear"><a href="#top">↑ Back to Top</a></p>
   </div>
+
+
 
 
 </body>

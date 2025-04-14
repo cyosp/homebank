@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -141,7 +141,6 @@ guint ui_acc_listview_toggle_to_filter(GtkTreeView *treeview, Filter *filter);
 void ui_acc_listview_quick_select(GtkTreeView *treeview, const gchar *uri);
 
 
-guint ui_acc_listview_fill_keys(GtkTreeView *treeview, guint32 *keys, guint32 *kcur);
 void ui_acc_listview_set_active(GtkTreeView *treeview, guint32 key);
 void ui_acc_listview_add(GtkTreeView *treeview, Account *item);
 guint32 ui_acc_listview_get_selected_key(GtkTreeView *treeview);

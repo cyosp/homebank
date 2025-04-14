@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   id="svg7384"
+   height="16"
+   width="16"
+   version="1.1"
+   sodipodi:docname="hicolor_actions_scalable_hb-ope-multiedit-symbolic.svg"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title1153">Txn MultiEdit</title>
+  <defs
+     id="defs9" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1003"
+     id="namedview7"
+     showgrid="true"
+     inkscape:zoom="41.7193"
+     inkscape:cx="7.490538"
+     inkscape:cy="7.6223714"
+     inkscape:window-x="1440"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg7384"
+     inkscape:snap-global="false"
+     inkscape:pagecheckerboard="0"
+     inkscape:showpageshadow="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid825" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata90">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Maxime DOYEN</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:source>https://www.gethomebank.org</dc:source>
+        <dc:title>Txn MultiEdit</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <path
+     id="path2-6"
+     style="fill:#bebebe;stroke-width:0.0156294"
+     d="m 1.25,15.305627 c -0.34374996,0 -0.63802019,-0.122465 -0.88281293,-0.367394 C 0.12239535,14.693303 0,14.398867 0,14.054923 V 5.3 h 1.25 v 8.754923 H 10 v 1.250704 z M 3.4,13.299999 c -0.385,0 -0.7145833,-0.137083 -0.9887499,-0.411249 C 2.1370834,12.614583 2,12.285 2,11.9 V 2.1000001 C 2,1.715 2.1370834,1.3854167 2.4112501,1.1112501 2.6854167,0.8370834 3.015,0.7 3.4,0.7 h 9.8 c 0.385,0 0.714584,0.1370834 0.988751,0.4112501 0.274165,0.2741666 0.411248,0.6037499 0.411248,0.98875 v 4.69 C 14.378333,6.685 14.150833,6.5945834 13.9175,6.5187501 13.684167,6.4429167 13.445,6.3875 13.2,6.3525001 v -4.2525 H 3.4 V 11.9 h 4.235 c 0.035,0.256666 0.090417,0.501666 0.1662499,0.734999 0.075833,0.233334 0.1662498,0.455001 0.27125,0.665 z M 3.4,11.2 v 0.7 -9.7999999 4.2525 -0.0525 z m 1.3999999,-0.700001 h 2.8525 c 0.035,-0.244999 0.090417,-0.484166 0.16625,-0.717499 0.075833,-0.233333 0.1604165,-0.460833 0.25375,-0.6824999 h -3.2725 z m 0,-2.7999989 H 9.0699998 C 9.4433331,7.3500002 9.8604165,7.0583335 10.32125,6.8250001 10.782083,6.5916667 11.275,6.4341667 11.8,6.3525001 v -0.0525 H 4.7999999 Z m 0,-2.8 H 11.799999 V 3.5 H 4.7999999 Z M 12.5,7.7 C 11.531667,7.7 10.705939,8.0409374 10.023438,8.7234375 9.3409375,9.405937 9,10.231667 9,11.2 9,12.168333 9.3409375,12.994062 10.023438,13.676562 10.705939,14.359062 11.531667,14.7 12.5,14.7 c 0.968332,0 1.794062,-0.340938 2.476561,-1.023438 C 15.659063,12.994062 16,12.168333 16,11.2 16,10.231667 15.659063,9.405937 14.976561,8.7234375 14.294062,8.0409374 13.468332,7.7 12.5,7.7 Z m 1.164061,1.4003906 c 0.06999,0 0.137501,0.012813 0.203127,0.039063 0.06562,0.02625 0.125235,0.064687 0.177733,0.1171875 l 0.361328,0.3691409 c 0.0525,0.04813 0.09117,0.1043 0.115234,0.169921 0.02406,0.06562 0.03516,0.133125 0.03516,0.203125 0,0.06562 -0.01112,0.129924 -0.03516,0.19336 -0.02406,0.06344 -0.06273,0.121327 -0.115234,0.173828 l -2.933594,2.933593 h -1.115233 v -1.115234 l 2.939453,-2.9335938 c 0.04813,-0.048124 0.104526,-0.085077 0.167969,-0.1113281 0.06344,-0.02625 0.129219,-0.039063 0.199217,-0.039063 z m 0,0.5253904 0.367189,0.367188 z m -0.740233,0.734375 -2.041015,2.046875 v 0.367188 H 11.25 l 2.046875,-2.041016 -0.189453,-0.189453 z"
+     sodipodi:nodetypes="ssscccccsssssssssscscccccscsccccccccscccccscccccccccsssssssssssccssccccccsscccccccccc" />
+</svg>

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -19,6 +19,8 @@
 
 #ifndef __HB_IMPORT_H__
 #define __HB_IMPORT_H__
+
+#include "hb-split.h"
 
 typedef struct _generic_file	GenFile;
 
@@ -155,6 +157,7 @@ struct _ImportContext
 	gboolean	opt_ucfirst;
 	gboolean	opt_togamount;
 
+	gboolean	set_pending;
 	gboolean	do_auto_payee;
 	gboolean	do_auto_assign;
 	

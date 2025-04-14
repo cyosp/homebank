@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.71])
-AC_INIT([homebank],[5.8.6.1 ⑂ CYOSP])
+AC_INIT([homebank],[5.9])
 #AC_INIT([homebank],[x.x-rc])
 
 AC_CONFIG_HEADERS(config.h)
@@ -109,7 +109,10 @@ images/Makefile
 mime/Makefile
 pixmaps/Makefile
 themes/Makefile
+themes/common-symbolic/Makefile
+themes/Default/Makefile
 themes/hicolor/Makefile
+themes/hicolor-symbolic/Makefile
 po/Makefile.in
 doc/Makefile
 doc/images/Makefile

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -34,6 +34,8 @@
 #include "ui-transaction.h"
 #include "ui-tag.h"
 
+#include "ui-dialogs.h"
+#include "ui-widgets.h"
 
 /****************************************************************************/
 /* Debug macros                                                             */
@@ -450,6 +452,60 @@ Filter *flt;
 }
 
 
+//reset the filter
+static void reptime_filter_setup(struct reptime_data *data)
+{
+guint32 accnum;
+
+	DB( g_print("\n[rep-time] reset filter\n") );
+
+	filter_reset(data->filter);
+	filter_preset_daterange_set(data->filter, PREFS->date_range_rep, data->accnum);
+	/* 3.4 : make int transfer out of stats */
+	//TODO: for compatibility with < 5.3, keep this unset, but normally it should be set
+	//filter_preset_type_set(data->filter, FLT_TYPE_INTXFER, FLT_EXCLUDE);
+
+	//5.6 set default account
+	data->filter->option[FLT_GRP_ACCOUNT] = 1;
+	accnum = data->accnum;
+	if(!accnum)
+	{
+		accnum = da_acc_get_first_key();
+	}
+	DB( g_print(" accnum=%d\n", accnum) );
+
+	ui_acc_listview_set_active(GTK_TREE_VIEW(data->LV_acc), accnum);
+	ui_acc_listview_toggle_to_filter(GTK_TREE_VIEW(data->LV_acc), data->filter);
+}
+
+
+//beta
+#if BETA_FILTER
+static void reptime_action_filter(GtkWidget *toolbutton, gpointer user_data)
+{
+struct reptime_data *data = user_data;
+
+	//debug
+	//create_deffilter_window(data->filter, TRUE);
+
+	if(ui_flt_manage_dialog_new(GTK_WINDOW(data->window), data->filter, TRUE, FALSE) != GTK_RESPONSE_REJECT)
+	{
+		reptime_compute(data->window, NULL);
+		//ui_repdtime_update_date_widget(data->window, NULL);
+		//ui_repdtime_update_daterange(data->window, NULL);
+
+		/*g_signal_handler_block(data->CY_range, data->handler_id[HID_REPDIST_RANGE]);
+		hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_range), FLT_RANGE_MISC_ALLDATE);
+		g_signal_handler_unblock(data->CY_range, data->handler_id[HID_REPDIST_RANGE]);
+		*/
+	}
+}
+#endif
+
+/* = = = = = = = = = = = = = = = = */
+
+
+
 static void reptime_compute(GtkWidget *widget, gpointer user_data)
 {
 struct reptime_data *data;
@@ -565,8 +621,8 @@ guint n_result, i;
 			//if( !showempty && total == 0 )
 			//#2091004 5.8.6 keep lines with exact 0
 			if( !showempty 
-			 && (hb_amount_compare(data->tmp_expense[i], 0.0) == 0)
-			 && (hb_amount_compare(data->tmp_income[i], 0.0) == 0)
+			 && (hb_amount_cmp(data->tmp_expense[i], 0.0) == 0)
+			 && (hb_amount_cmp(data->tmp_income[i], 0.0) == 0)
 			 )
 				continue;
 
@@ -652,31 +708,6 @@ guint n_result, i;
 }
 
 
-//reset the filter
-static void reptime_filter_setup(struct reptime_data *data)
-{
-guint32 accnum;
-
-	DB( g_print("\n[rep-time] reset filter\n") );
-
-	filter_reset(data->filter);
-	filter_preset_daterange_set(data->filter, PREFS->date_range_rep, data->accnum);
-	/* 3.4 : make int transfer out of stats */
-	//TODO: for compatibility with < 5.3, keep this unset, but normally it should be set
-	//filter_preset_type_set(data->filter, FLT_TYPE_INTXFER, FLT_EXCLUDE);
-
-	//5.6 set default account
-	data->filter->option[FLT_GRP_ACCOUNT] = 1;
-	accnum = data->accnum;
-	if(!accnum)
-	{
-		accnum = da_acc_get_first_key();
-	}
-	DB( g_print(" accnum=%d\n", accnum) );
-
-	ui_acc_listview_set_active(GTK_TREE_VIEW(data->LV_acc), accnum);
-	ui_acc_listview_toggle_to_filter(GTK_TREE_VIEW(data->LV_acc), data->filter);
-}
 
 
 /* = = = = = = = = = = = = = = = = */
@@ -780,6 +811,7 @@ gint range;
 
 	range = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_range));
 
+	//should never happen
 	if(range != FLT_RANGE_MISC_CUSTOM)
 	{
 		filter_preset_daterange_set(data->filter, range, data->accnum);
@@ -799,6 +831,30 @@ gint range;
 
 
 /* = = = = = = = = = = = = = = = = */
+
+
+//beta
+#if PRIV_FILTER
+static void reptime_action_filter(GtkWidget *toolbutton, gpointer user_data)
+{
+struct reptime_data *data = user_data;
+
+	//debug
+	//create_deffilter_window(data->filter, TRUE);
+
+	if(ui_flt_manage_dialog_new(GTK_WINDOW(data->window), data->filter, TRUE, FALSE) != GTK_RESPONSE_REJECT)
+	{
+		reptime_compute(data->window, NULL);
+		//ui_repdtime_update_date_widget(data->window, NULL);
+		//ui_repdtime_update_daterange(data->window, NULL);
+
+		/*g_signal_handler_block(data->CY_range, data->hid[HID_REPDIST_RANGE]);
+		hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_range), FLT_RANGE_MISC_ALLDATE);
+		g_signal_handler_unblock(data->CY_range, data->hid[HID_REPDIST_RANGE]);
+		*/
+	}
+}
+#endif
 
 
 static void reptime_action_viewlist(GtkWidget *toolbutton, gpointer user_data)
@@ -867,7 +923,6 @@ gchar *coltitle, *title, *name;
 
 	g_free(name);
 }
-
 
 
 static void
@@ -973,7 +1028,7 @@ gboolean result;
 	Transaction *old_txn, *new_txn;
 
 		//#1909749 skip reconciled if lock is ON
-		if( PREFS->lockreconciled == TRUE && active_txn->status == TXN_STATUS_RECONCILED )
+		if( PREFS->safe_lock_recon == TRUE && active_txn->status == TXN_STATUS_RECONCILED )
 			return;
 
 		old_txn = da_transaction_clone (active_txn);
@@ -1018,7 +1073,7 @@ struct reptime_data *data;
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
 	//#2018039
-	list_txn_set_lockreconciled(GTK_TREE_VIEW(data->LV_detail), PREFS->lockreconciled);
+	list_txn_set_lockreconciled(GTK_TREE_VIEW(data->LV_detail), PREFS->safe_lock_recon);
 
 	if(data->detail)
 	{
@@ -1171,7 +1226,7 @@ GtkWidget *toolbar, *button;
 	button = gtk_menu_button_new();
 	data->BT_export = button;
 	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(button)), GTK_STYLE_CLASS_FLAT);
-	GtkWidget *image = gtk_image_new_from_icon_name (ICONNAME_HB_FILE_EXPORT, GTK_ICON_SIZE_LARGE_TOOLBAR);
+	GtkWidget *image = hbtk_image_new_from_icon_name_24 (ICONNAME_HB_FILE_EXPORT);
 	g_object_set (button, "image", image, NULL);
 	GtkToolItem *toolitem = gtk_tool_item_new();
 	gtk_container_add (GTK_CONTAINER(toolitem), button);
@@ -1205,6 +1260,7 @@ GtkWidget *toolbar, *button;
 }
 
 
+
 static void reptime_window_setup(struct reptime_data *data)
 {
 	DB( g_print("\n[rep-time] window setup\n") );
@@ -1235,6 +1291,7 @@ static void reptime_window_setup(struct reptime_data *data)
 
 	//display signals
 	data->hid[HID_REPTIME_VIEW] = g_signal_connect (data->CY_intvl, "changed", G_CALLBACK (reptime_compute), (gpointer)data);
+
 	g_signal_connect (data->CM_cumul, "toggled", G_CALLBACK (reptime_compute), NULL);
 	g_signal_connect (data->CM_showempty, "toggled", G_CALLBACK (reptime_compute), NULL);
 	g_signal_connect (data->CM_minor, "toggled", G_CALLBACK (reptime_toggle_minor), NULL);
@@ -1385,7 +1442,7 @@ gint row;
 	//control part
 	table = gtk_grid_new ();
 	gtk_widget_set_hexpand (GTK_WIDGET(table), FALSE);
-	gtk_box_pack_start (GTK_BOX (mainbox), table, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (mainbox), table);
 
 	gtk_grid_set_row_spacing (GTK_GRID (table), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (table), SPACING_MEDIUM);
@@ -1438,27 +1495,27 @@ gint row;
 
 		label = make_label_group(_("Filter"));
 		//gtk_grid_attach (GTK_GRID (table), label, 0, row, 3, 1);
-		gtk_box_pack_start (GTK_BOX (fbox), label, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (fbox), label);
 
 		// active
 		label = make_label_widget(_("Active:"));
 		gtk_widget_set_margin_start(label, SPACING_MEDIUM);
-		gtk_box_pack_start (GTK_BOX (fbox), label, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (fbox), label);
 		label = make_label(NULL, 0.0, 0.5);
 		gtk_widget_set_margin_start(label, SPACING_SMALL);
 		data->TX_fltactive = label;
-		gtk_box_pack_start (GTK_BOX (fbox), label, FALSE, FALSE, 0);
-		widget = gtk_image_new_from_icon_name (ICONNAME_INFO, GTK_ICON_SIZE_BUTTON);
+		gtk_box_prepend (GTK_BOX (fbox), label);
+		widget = hbtk_image_new_from_icon_name_16 (ICONNAME_HB_QUICKTIPS);
 		data->TT_fltactive = fbox;
-		gtk_box_pack_start (GTK_BOX (fbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (fbox), widget);
 
 		//test button
 		bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 		gtk_style_context_add_class (gtk_widget_get_style_context (bbox), GTK_STYLE_CLASS_LINKED);
-		gtk_box_pack_end (GTK_BOX (fbox), bbox, FALSE, FALSE, 0);
+		gtk_box_append (GTK_BOX (fbox), bbox);
 		widget = make_image_button(ICONNAME_HB_CLEAR, _("Clear filter"));
 		data->BT_reset = widget;
-		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (bbox), widget);
 
 	row++;
 	//label = make_label_group(_("Date filter"));
@@ -1501,19 +1558,19 @@ gint row;
 
 		label = make_label (_("Select:"), 0, 0.5);
 		gimp_label_set_attributes (GTK_LABEL (label), PANGO_ATTR_SCALE, PANGO_SCALE_SMALL, -1);
-		gtk_box_pack_start (GTK_BOX (treebox), label, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (treebox), label);
 
 		label = make_clicklabel("all", _("All"));
 		data->BT_all = label;
-		gtk_box_pack_start (GTK_BOX (treebox), label, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (treebox), label);
 		
 		label = make_clicklabel("non", _("None"));
 		data->BT_non = label;
-		gtk_box_pack_start (GTK_BOX (treebox), label, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (treebox), label);
 
 		label = make_clicklabel("inv", _("Invert"));
 		data->BT_inv = label;
-		gtk_box_pack_start (GTK_BOX (treebox), label, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (treebox), label);
 
 	row++;
 	notebook = gtk_notebook_new();
@@ -1566,26 +1623,26 @@ gint row;
 	//part: info + report
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_set_margin_start (vbox, SPACING_SMALL);
-    gtk_box_pack_start (GTK_BOX (mainbox), vbox, TRUE, TRUE, 0);
+    hbtk_box_prepend (GTK_BOX (mainbox), vbox);
 
 	//toolbar
 	widget = reptime_toolbar_create(data);
 	data->TB_bar = widget;
-	gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (vbox), widget);
 
 	//infos
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
 	hb_widget_set_margin(GTK_WIDGET(hbox), SPACING_SMALL);
-    gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+    gtk_box_prepend (GTK_BOX (vbox), hbox);
 
 	widget = make_label(NULL, 0.5, 0.5);
 	gimp_label_set_attributes (GTK_LABEL (widget), PANGO_ATTR_SCALE,  PANGO_SCALE_SMALL, -1);
 	data->TX_daterange = widget;
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (hbox), widget);
 
 	label = gtk_label_new(NULL);
 	data->TX_info = label;
-	gtk_box_pack_end (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_box_append (GTK_BOX (hbox), label);
 
 
 	/* report area */
@@ -1595,7 +1652,7 @@ gint row;
 	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(notebook), FALSE);
 	gtk_notebook_set_show_border(GTK_NOTEBOOK(notebook), FALSE);
 
-    gtk_box_pack_start (GTK_BOX (vbox), notebook, TRUE, TRUE, 0);
+    hbtk_box_prepend (GTK_BOX (vbox), notebook);
 
 	//page: list
 	vpaned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
@@ -1711,7 +1768,7 @@ gint colid = GPOINTER_TO_INT(user_data);
 	gtk_tree_model_get(model, iter, colid, &value, -1);
 
 	//#2091004 we have exact 0.0, do we force display ?
-	if( (hb_amount_compare(value, 0.0) != 0) || (colid == LST_HUBREPTIME_TOTAL) )
+	if( (hb_amount_cmp(value, 0.0) != 0) || (colid == LST_HUBREPTIME_TOTAL) )
 	{
 	guint32 kcur = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(gtk_tree_view_column_get_tree_view(col)), "kcur_data"));
 

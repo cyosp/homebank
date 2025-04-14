@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   id="svg7384"
+   height="16"
+   width="16"
+   version="1.1"
+   sodipodi:docname="hicolor_status_scalable_hb-pm-mobphone-symbolic.svg"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs12" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="995"
+     id="namedview10"
+     showgrid="false"
+     inkscape:zoom="29.5"
+     inkscape:cx="9.4067797"
+     inkscape:cy="6.7288136"
+     inkscape:window-x="0"
+     inkscape:window-y="1080"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg7384"
+     inkscape:pagecheckerboard="0" />
+  <metadata
+     id="metadata90">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>HomeBank Symbolic Icon Theme</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <title
+     id="title9167">HomeBank Symbolic Icon Theme</title>
+  <path
+     d="M 6.6363636,13.818182 H 9.545455 V 13.090909 H 6.6363636 Z M 4.4545455,16 q -0.6,0 -1.0272728,-0.427273 Q 3,15.145455 3,14.545455 V 1.4545454 Q 3,0.8545455 3.4272727,0.4272727 3.8545455,0 4.4545455,0 h 7.2727275 q 0.6,0 1.027272,0.4272727 0.427273,0.4272728 0.427273,1.0272727 V 14.545455 q 0,0.6 -0.427273,1.027272 Q 12.327273,16 11.727273,16 Z m 0,-3.636363 v 2.181818 h 7.2727275 v -2.181818 z m 0,-1.454546 H 11.727273 V 3.6363636 H 4.4545455 Z m 0,-8.7272729 H 11.727273 V 1.4545454 H 4.4545455 Z m 0,10.1818189 v 2.181818 z m 0,-10.1818189 V 1.4545454 Z"
+     id="path61"
+     style="fill:#bebebe;stroke-width:0.0181818" />
+</svg>

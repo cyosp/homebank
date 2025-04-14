@@ -52,17 +52,19 @@
         <a href="#txnexpense">expense</a> <i>{txn type}</i><br>
         <a href="#pmfifee">fi fee</a> <i>{payment}</i><br>
         <a href="#institution">financial institution</a><br>
-        <a href="#txnflags">Flags</a> <img src="images/new12.png"><br>
+        <a href="#txnflags">Flags</a><br>
         <a href="#forecast">forecast (cashflow)</a><br>
         <a href="#txnincome">income</a> <i>{txn type}</i><br>
+        <a href="#inlinecalc">inline calculation</a> <img src="images/new12.png" alt="new"><br>
         <a href="#atliability">liability</a> <i>{account type}</i><br>
-        <a href="#lifeenergy">Life energy</a> <img src="images/new12.png"><br>
-        <a href="#pmmobphone">mobile phone</a> <i>{payment}</i> <img src="images/new12.png"><br>
+        <a href="#lifeenergy">Life energy</a><br>
+        <a href="#pmmobphone">mobile phone</a> <i>{payment}</i><br>
         <a href="#paynumber">Number</a><br>
         </td>
         <td><!--P-S-->
         <a href="#payee">Payee</a><br>
         <a href="#payment" class="lex">{payment}</a><br>
+        <a href="#pending">Pending</a> <img src="images/new12.png" alt="new"><br>
         <a href="#txnreconciled">reconciled</a> <i>{txn status}</i><br>
         <a href="#txnremind">remind</a> <i>{txn status}</i><br>
         <a href="#atsavings">savings</a> <i>{account type}</i><br>
@@ -84,53 +86,53 @@
     </table>
   </div>
   <div class="rounded content">
-    <h2><a id="wallet" name="wallet"></a>Wallet</h2>
+    <h2 id="wallet">Wallet</h2>
     <p>Wallet is the 1st level of data. It represent a HomeBank file (.xhb)<br>
     Managing the few wallet properties is done in the <a href="dlg-wall.html">Properties dialog</a>.</p>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
   <div class="rounded content">
-    <h2><a id="account" name="account"></a>Account</h2>
+    <h2 id="account">Account</h2>
     <p>Account is the 2nd level of the data. An account is a division of the wallet, that will contains your financial transactions.<br>
     Managing the accounts is done in the <a href="dlg-acco.html">Accounts dialog</a>.</p>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
 
   <div class="rounded content">
-    <h2><a id="acctype" name="acctype"></a>Account type</h2>
+    <h2 id="acctype">Account type</h2>
     <p>Account type is a simple classification for account, only to group account display into the main windows 'Your accounts' area.
     As so there is no specific behavior beneath them.<br>Most of those type comes from QIF and OFX specification, the usage definition from various sources.</p>
-    <h3><a id="atbank" name="atbank"></a>Bank</h3>
+    <h3 id="atbank">Bank</h3>
     <p>Used as a general account held by a bank or any financial institution.</p>
-    <h3><a id="atcash" name="atcash"></a>Cash</h3>
+    <h3 id="atcash">Cash</h3>
     <p>Used to track the spending of cash you withdraw from a bank account (or credit card,
 in the case of a cash advance). Whenever you take cash out of an account (e.g. an ATM
 withdrawal), transfer the money to your newly created cash account. Then, whenever
 you spend the cash on something, create a withdrawal in the cash account for the appropriate amount.</p>
-    <h3><a id="atasset" name="atasset"></a>Asset</h3>
+    <h3 id="atasset">Asset</h3>
     <p>Used to track the value of property you own or money that is owed to you. For example,
 if you own a vehicle, an asset account can help you track appreciation and depreciation
 on that property. When using an asset account, record the base value of the asset as a
 deposit into the account, then enter gains or earnings as positive transactions and losses
 as negative transactions.</p>
-    <h3><a id="atccard" name="atccard"></a>Credit card</h3>
+    <h3 id="atccard">Credit card</h3>
     <p>Used to track charges and payments made against a credit account. Charges made to the account should be entered
 as negative transactions; payments should be positive (either deposits or transfers from
 other accounts). The balance of a credit card account should almost always be negative or zero - a positive balance would indicate a credit on the account due to over-payment.</p>
-    <h3><a id="atliability" name="atliability"></a>Liability</h3>
+    <h3 id="atliability">Liability</h3>
     <p>Used to track debt or money owed for which you do not make regular payments. When
 using a liability account, record the initial amount owed as a withdrawal from the account, 
 then enter any payments made against the debt as deposits or transfers into the
 account.</p>
-    <h3><a id="atchecking" name="atchecking"></a>Checking</h3>
+    <h3 id="atchecking">Checking</h3>
     <p>Used to track deposits and withdrawals from a typical bank checking account.</p>
-    <h3><a id="atsavings" name="atsavings"></a>Savings</h3>
+    <h3 id="atsavings">Savings</h3>
     <p>Used to track deposits and withdrawals from a typical bank savings account.</p>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
 
   <div class="rounded content">
-    <h2><a id="transaction" name="transaction"></a>Transaction</h2>
+    <h2 id="transaction">Transaction</h2>
     <p>Transaction is the last level of data. A transaction is a financial transaction, attached to its own account.</p>
     <p>In addition to the usual fields you can find in most accounting application, HomeBank offers the following:</p>
     <ul>
@@ -145,44 +147,50 @@ account.</p>
   </div>
 
   <div class="rounded content">
-    <h2><a id="txntype" name="txntype"></a>Type of transaction</h2>
-    <h3><a id="txnexpense" name="txnexpense"></a>Expense</h3>
+    <h2 id="txntype">Type of transaction</h2>
+    <h3 id="txnexpense">Expense</h3>
     <p>An expense is an amount with a negative sign, also called a debit.</p>
 
-    <h3><a id="txnincome" name="txnincome"></a>Income</h3>
+    <h3 id="txnincome">Income</h3>
     <p>An income is an amount with a positive sign, also called a credit.</p>
 
-    <h3><a id="txntransfer" name="txntransfer"></a>Transfer</h3>
+    <h3 id="txntransfer">Transfer</h3>
     <p>A transfer (more precisely internal transfer) is a money movement between <u>2 of your accounts</u>, in one or several Financial institution, as so, like you emit and receive the money there is no payee.<br>
     <p>This is a special transfer for HomeBank, as it will link the source and destination transaction for further changes of most data to be synced.<br>
     In exception of the Status and Date (and Amount the opposite sign), all the fields will be synced, whatever you make some changes from src or dst account.<br>
     The reason is that the money may arrive on the dst account a few days later, and when you reconcile you will do account separately.<br>
     Since v5.7 there is a preference to sync also the status by default.</p>
     <p>When you change the type of a transaction to this one, HomeBank may propose some potential target transaction for you to select within <a href="dlg-xfer.html">this dialog</a>.</p>
-    <p> <i class="warning"><img src="images/d-warn.png"/>&nbsp;transfer have some usage limitation:</i>
+    <p> <i class="warning"><img src="images/d-warn.png" alt="warning">&nbsp;transfer have some usage limitation:</i></p>
       <ul>
         <li>split by category is not allowed</li>
         <li>import with CSV is not possible</li>
         <li>use with multiple selection edition is not possible</li>
-        </ul>
-    </p>
+      </ul>
 
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
 
   <div class="rounded content">
-    <h2><a id="txnstatus" name="txnstatus"></a>Status of transaction</h2>
-    <h3><a id="txncleared" name="txncleared"></a><img src="images/hb-ope-cleared.png"> Cleared</h3>
+    <h2 id="inlinecalc">Inline calculation <img src="images/new24.png" alt="new"></h2>
+    <p>When input amount in transaction or split dialog, you can do some basic inline calculations. There is no usual priority of operand +-*/ here, the calculation is done from left to right.<br>
+    For example, if you input '3+2*6', result will be 30 (3+2=5, 5*6=30), and not 15 like it would be in a calculator.</p>
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+  <div class="rounded content">
+    <h2 id="txnstatus">Status of transaction</h2>
+    <h3 id="txncleared"><img src="images/hb-ope-cleared.png"> Cleared</h3>
     <p>a transaction is cleared when the bank has recorded it,<br>
     those transaction are not taken into account in the bank balance.</p>
-    <h3><a id="txnreconciled" name="txnreconciled"></a><img src="images/hb-ope-reconciled.png"> Reconciled</h3>
+    <h3 id="txnreconciled"><img src="images/hb-ope-reconciled.png"> Reconciled</h3>
     <p>a transaction is checked when you have controlled it with your bank statement,<br>
     those transaction are part of the bank balance.</p>
-    <h3><a id="txnremind" name="txnremind"></a><img src="images/hb-ope-remind.png"> Remind</h3>
+    <h3 id="txnremind"><img src="images/hb-ope-remind.png"> Remind</h3>
     <p>Remind is a special status for the transaction. Its usage is <a href="use-lend-refund.html">described here</a>.<br>
     The purpose is to keep the transaction into the list for later uses to remind you about a bill to pay, a bill to be paid for, or money you lent or wait refund on.<br>
     Remind transaction are excluded from any computing: balance, reports, etc. except if you change some <a href="dlg-pref.html#tab4">preference</a>.</p>
-    <h3><a id="txnvoid" name="txnvoid"></a><img src="images/hb-ope-void.png"> Void</h3>
+    <h3 id="txnvoid"><img src="images/hb-ope-void.png"> Void</h3>
     <p>Void is a special status to set transaction to be ignored everywhere.<br>
       The visibility can be controlled from <a href="dlg-pref.html#tab4">preference</a> or <a href="dlg-filt.html#tab3">filter</a>.</p>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
@@ -190,28 +198,28 @@ account.</p>
 
 
   <div class="rounded content">
-    <h2><a id="txnflags" name="txnflags"></a>Flags of transaction <img src="images/new24.png"></h2>
+    <h2 id="txnflags">Flags of transaction <img src="images/new24.png" alt="new"></h2>
     <p>There is now 6 color flags you can assign to transaction, colors are Red, Orange, Yellow, Green, Blue and Purple. The assign can only be done from the ledger window using the context menu or some shortcuts CTRL+x. There is also a new quick filter to easily filter on flags.</p>
     <p>Flags can be used for several purpose: action reminder, money lent to friend, etc.</p>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
 
   <div class="rounded content">
-    <h2><a id="institution" name="institution"></a>Financial institution</h2>
+    <h2 id="institution">Financial institution</h2>
     <p>A financial institution can be a bank or a credit card company or any other institution.</p>
     <p>&lt;no institution&gt; will be displayed when the item has no institution set.</p>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
 
   <div class="rounded content">
-    <h2><a id="forecast" name="forecast"></a>Forecast (cashflow)</h2> 
+    <h2 id="forecast">Forecast (cashflow)</h2> 
     <p>A forecast of cash flow is available for some report. It is based on the scheduled transaction. In the graph it will display with future style, so with a shaded color and dashed lines. The forecast will only display when there is a date junction within the date range you selected: if we are in July and you select first quarter (which end on march) it will not display. If you select this month, this year, it will.</p>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
 
 
   <div class="rounded content">
-    <h2><a id="lifeenergy" name="lifeenergy"></a>Life Energy <img src="images/new24.png"></h2> 
+    <h2 id="lifeenergy">Life Energy <img src="images/new24.png" alt="new"></h2> 
     <p>Life energy is a measurement of your expense by hours of work, based on your estimate earning by hour. This is an alternative and interesting way to consider your spending.<br>
     After you have filled your estimate 'earn by hour' into <a href="dlg-wall.html">Properties dialog</a>, you will be able to toggle on/off an additional (..h..m) beside the Expense into the ledger window, there is a toggle toolbar button on the top.
     </p>
@@ -219,53 +227,53 @@ account.</p>
   </div>
 
   <div class="rounded content">
-    <h2><a id="currency" name="currency"></a>Currency</h2>
-    <p>A currency is a money that is used in a particular country at a particular time, or it can be a crypto currency as well, or even something that do not exists at all.</p>
+    <h2 id="currency">Currency</h2>
+    <p>A currency is a money that is used in a particular country at a particular time, or it can be a cryptocurrency as well, or even something that do not exists at all.</p>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
 
   <div class="rounded content">
-    <h2><a id="payment" name="payment"></a>Payment Mode</h2>
+    <h2 id="payment">Payment Mode</h2>
     <p>This field is a dual field for payment and <b>works together</b> with the <a href="#paynumber">number</a> field.</p> 
-    <h3><a id="pmnone" name="pmnone"></a><img src="images/pm-none.png"> (none)</h3>
+    <h3 id="pmnone"><img src="images/pm-none.png"> (none)</h3>
     <p>When payment do not applied or is unknown.</p>
-    <h3><a id="pmccard" name="pmccard"></a><img src="images/pm-ccard.png"> credit card</h3>
+    <h3 id="pmccard"><img src="images/pm-ccard.png"> credit card</h3>
     <p>A credit card is a payment card issued to users (cardholders) as a method of payment. It allows the card-holder to pay for goods and services based on the holder's promise to pay for them. The issuer of the card (usually a bank) creates a revolving account and grants a line of credit to the card-holder, from which the card-holder can borrow money for payment to a merchant or as a cash advance.</p>
-    <h3><a id="pmcheck" name="pmcheck"></a><img src="images/pm-check.png"> check</h3>
+    <h3 id="pmcheck"><img src="images/pm-check.png"> check</h3>
     <p>A check (or cheque in English) is a document that orders a bank to pay a specific amount of money from a person's account to the person in whose name the cheque has been issued.</p>
-    <h3><a id="pmcash" name="pmcash"></a><img src="images/pm-cash.png"> cash</h3>
+    <h3 id="pmcash"><img src="images/pm-cash.png"> cash</h3>
     <p>Cash refers to money in the physical form of currency, such as banknotes and coins.</p>
-    <h3><a id="pmxfer" name="pmxfer"></a><img src="images/pm-transfer.png"> bank transfer</h3>
+    <h3 id="pmxfer"><img src="images/pm-transfer.png"> bank transfer</h3>
     <p>A bank transfer is a method of electronic funds transfer from one person or entity to another. It can be made from one bank account from or to a bank account <u>you don't own</u>.<br>
-     <h3><a id="pmdcard" name="pmdcard"></a><img src="images/pm-dcard.png"> debit card</h3>
+     <h3 id="pmdcard"><img src="images/pm-dcard.png"> debit card</h3>
     <p>A debit card (also known as a bank card or check card) is a plastic payment card that provides the card-holder electronic access to their bank account(s) at a financial institution. Some cards may bear a stored value with which a payment is made, while most relay a message to the card-holder's bank to withdraw funds from a payer's designated bank account.</p>
-    <h3><a id="pmstandingorder" name="pmstandingorder"></a><img src="images/pm-standingorder.png"> standing order</h3>
+    <h3 id="pmstandingorder"><img src="images/pm-standingorder.png"> standing order</h3>
     <p>A standing order (or a standing instruction) is an instruction a bank account holder ("the payer") gives to his or her bank to pay a set amount at regular intervals to another ("the payee's") account. The instruction is sometimes known as a banker's order.</p>
-    <h3><a id="pmepayment" name="pmepayment"></a><img src="images/pm-epayment.png"> electronic payment</h3>
+    <h3 id="pmepayment"><img src="images/pm-epayment.png"> electronic payment</h3>
     <p>Electronic payment is a feature of on-line, mobile and telephone banking, similar in its effect to a giro, allowing a customer of a financial institution to transfer money from their transaction or credit card account to a creditor or vendor such as a public utility, department store or an individual to be credited against a specific account.</p>
-    <h3><a id="pmdeposit" name="pmdeposit"></a><img src="images/pm-deposit.png"> deposit</h3>
+    <h3 id="pmdeposit"><img src="images/pm-deposit.png"> deposit</h3>
     <p>A deposit is money placed with some other entity. It is a credit for the party who placed it, and it may be taken back (withdrawn), transferred to some other party, or used for a purchase. It is often used with respect to banks, where deposits are usually their main source of funding.</p>
-    <h3><a id="pmfifee" name="pmfifee"></a><img src="images/pm-fifee.png"> financial institution fee</h3>
+    <h3 id="pmfifee"><img src="images/pm-fifee.png"> financial institution fee</h3>
     <p>Bank fees are assessed to customers for various services and as penalties. There are unauthorized overdraft fees, ATM usage fees, and fees for having an account balance under a required amount.</p>
-    <h3><a id="pmdirectdebit" name="pmdirectdebit"></a><img src="images/pm-directdebit.png"> direct debit</h3>
+    <h3 id="pmdirectdebit"><img src="images/pm-directdebit.png"> direct debit</h3>
     <p>A direct debit or direct withdrawal is a financial transaction in which one person withdraws funds from another person's bank account. Formally, the person who directly draws the funds ("the payee") instructs his or her bank to collect (i.e., debit) an amount directly from another ("the payer's") bank account designated by the payer and pay those funds into a bank account designated by the payee.</p>
-    <h3><a id="pmmobphone" name="pmmobphone"></a><img src="images/pm-mobphone.png"> Mobile Phone</h3>
+    <h3 id="pmmobphone"><img src="images/pm-mobphone.png"> Mobile Phone</h3>
     <p>A mobile phone payment can be done in many ways, pay apps, nfc, etc.</p>    
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
   <div class="rounded content">
-    <h2><a id="paynumber" name="paynumber"></a>Number</h2>
+    <h2 id="paynumber">Number</h2>
     <p>Initially designed for cheque number, but can keep real or value date, card id, txn id, number, person, etc.<br>this field is automatically filled for cheque numbers, when you select payment = cheque.<br>This is not a memo, not an additional memo field, and it is not designed for such usage.</p>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
   <div class="rounded content">
-    <h2><a id="split" name="split"></a>Split</h2>
+    <h2 id="split">Split</h2>
     <p>Split is the ability to cut out the amount of a transaction to multiple categories.</p>
     <p>Managing split is done in the <a href="dlg-spli.html">Split dialog</a> from the <a href="dlg-tran.html">Transaction dialog</a>.</p>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
   <div class="rounded content">
-    <h2><a id="scheduled" name="scheduled"></a>Scheduled</h2>
+    <h2 id="scheduled">Scheduled</h2>
     <p>Scheduled is a transaction you can configure to be automatically inserted.<br>
     Typical such transactions are the one's occurring very often, for example: <em>Wage, Rent, Phone, Taxes, etc</em>...</p>
     <p>Managing scheduled is done in the <a href="dlg-arch.html">Scheduled/Template dialog</a>.<br>
@@ -273,22 +281,51 @@ account.</p>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
   <div class="rounded content">
-    <h2><a id="template" name="template"></a>Template</h2>
+    <h2 id="template">Template</h2>
     <p>Template will enable to fast add manually some transactions without too much seizure, most of the fields already populated with correct data</p>
     <p>Managing templates is done in the <a href="dlg-arch.html">Scheduled/Template dialog</a>.</p>
     <p>Templates can also be created from existing transactions from the <a href="win-account.html">Account window</a>.<br>
     Every template is available as a bookmark for fill purpose in the <a href="dlg-tran.html">Transaction dialog</a>.</p>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
+  
   <div class="rounded content">
-    <h2><a id="payee" name="payee"></a>Payee</h2>
+    <h2 id="payee">Payee</h2>
     <p>A payee can optionally be set for each transaction to later perform sorting, filtering and analysis. The payee identify people you give money to, as like as those you receive money from.<br>
     Managing payees is done on the <a href="dlg-paye.html">Payee dialog</a>. Payees are global to the wallet and are shared between all the accounts.</p>
+    <p>For each payee, you can define a default <i>payment mode</i> and <i>category</i>, those 2 fields will be used to populate related field on 2 occasion:<br>
+    - into the transaction/scheduled/template dialog: if you choose a payee, the payment mode and the category will be filled if none/empty<br>
+    - at the end of the import, if you check 1) Enrich with payee default, with same restriction value must be none/empty<br>
+  </p>
+
+
     <p>&lt;no payee&gt; will be displayed when the item has no payee set.</p>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
+
+<div class="rounded content">
+    <h2 id="pending">Pending</h2>
+    <p>Transaction may be set to a pending status. This status is an outflow status, so that transaction "ghostly" exists, until you Approve/Reject them.<br>
+    This status can occurs in 2 situation:</p>
+    <ol>
+     <li>you choose to explicitly import some transaction into that status</li>
+     <li>you create a transaction with a date prior to the last reconciled date of its account, or prior 90 days before today.</li>
+    </ol>
+
+    <p>Any account with transactions into this status will have:</p>
+    <ul>
+      <li>'My accounts' list: show a warning icon</li>
+      <li>ledger: a quick filter 'Unapproved'</li>
+      <li>ledger: a warning bar on top</li>
+      <li>ledger: a popmenu (right click) to Approve or Reject them</li>
+    </ul>
+
+    <p class="top"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+
   <div class="rounded content">
-    <h2><a id="category" name="category"></a>Category</h2>
+    <h2 id="category">Category</h2>
     <p>A category can optionally set for each transaction to later perform sorting, filtering and analysis. The categories are another classification model of your financial transactions.<br>
     Managing categories is done on the <a href="dlg-cate.html">Categories dialog</a>. Categories are global to the wallet and are shared between all the accounts.</p>
     <p>Please also note well that categories and subcategories are the same from a HomeBank point of view, the subcategories are only to create a hierarchy in category tree. This is especially important for the <a href="dlg-bud1.html">budget dialog</a></p>
@@ -296,18 +333,18 @@ account.</p>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
   <div class="rounded content">
-    <h2><a id="tag" name="tag"></a>Tag</h2>
+    <h2 id="tag">Tag</h2>
     <p>Some tags can optionally be set for each transaction to later perform sorting, and analysis. The tags are most common to those yo can find in the web, so it is words separated by space. Which mean for composed word you must use a dash to separate the words within the tags like my-card.</p>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
   <div class="rounded content">
-    <h2><a id="assignment" name="assignment"></a>Assignment</h2>
+    <h2 id="assignment">Assignment</h2>
     <p>Assignments are some rule to fast set payee and/or category to the transactions</p>
     <p>Please refer to the <a href="use-auto_assign.html">Using the Automatic assignment feature</a> for details on how using this feature.</p>
     <p class="top"><a href="#top">↑ Back to Top</a></p>
   </div>
   <div class="rounded content">
-    <h2><a id="budget" name="budget"></a>Budget</h2>
+    <h2 id="budget">Budget</h2>
     <p>The budget is aimed towards reporting comparing actual values to predefined budget values allocated to each expense/income category. The budget report shows the difference (decay) between the budget and the actual expense/income for each categories. You can select which accounts are included in the budget report.</p>
     <p><a href="use-budget.html">Using the Budget feature</a> provides a quick overview to get you started. For more in-depth details see the <a href="dlg-bud1.html">Budget dialog</a> and the <a href="win-budget.html">Budget report</a>.</p>
     <p>The budget is global to the wallet, so if you need to manage a different budget each year, you can use CSV import/export capabilities.</p>
@@ -315,7 +352,7 @@ account.</p>
   </div>
 
 <div class="rounded content">
-    <h2><a id="backup" name="backup"></a>Backup</h2>
+    <h2 id="backup">Backup</h2>
     <p>There is 2 mechanism that ensure you can get back to a several previous version of your .xhb file.</p>
     <p><b>1) the last backup file</b><br>
     Every-time you save your file, the previous version will be saved with .xhb~ (tilde at the end), into the wallet folder.<br>
@@ -330,7 +367,7 @@ account.</p>
   </div>
 
   <div class="rounded content">
-    <h2><a id="balance" name="balance"></a>Balances</h2>
+    <h2 id="balance">Balances</h2>
     <p>A key point of your accounts are balances. HomeBank offers 4 balances covering the entire life cycle of your accounts. You can show/hide the balances you need for your usage, for example hide the reconciled and future for a simple management.</p>
     <img src="images/doc_balance.png">
 

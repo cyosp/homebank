@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -21,13 +21,9 @@
 #ifndef __HB_TRANSACTION_H__
 #define __HB_TRANSACTION_H__
 
-#include "hb-split.h"
 
+#include "hb-types.h"
 
-typedef struct _transaction	Transaction;
-
-
-#include "hb-account.h"
 
 struct _transaction
 {
@@ -60,43 +56,53 @@ struct _transaction
 	//GList		*same;		//used for import todo: change this
 };
 
-#include "hb-archive.h"
-
 
 // saved flags -- data
 //gushort is 2 bytes / 16 bits
 //FREE (1<<0) 
 #define OF_INCOME	(1<< 1)
-#define OF_AUTO		(1<< 2)	//scheduled
+//FREE (1<< 2) 
 #define OF_INTXFER	(1<< 3)
 #define OF_ADVXFER  (1<< 4)	//xfer with != kcur
-//FREE (1<<5)
+#define OF_REMIND	(1<< 5)	//added 5.9
 #define OF_CHEQ2	(1<< 6)
-#define OF_LIMIT	(1<< 7)	//scheduled
+//FREE (1<< 7)
 #define OF_SPLIT	(1<< 8)
+#define OF_ISIMPORT	(1<< 9) //added 5.9
+#define OF_ISPAST	(1<<10) //added 5.9
 
+//deprecated > 5.x
+#define OLDF_VALID		(1<< 0)
+#define OLDF_REMIND		(1<< 5)
+//deprecated > 5.9
+#define OLDF_AUTO		(1<< 2)	//scheduled
+#define OLDF_LIMIT		(1<< 7)	//scheduled
+#define OLDF_ADDED		(1<< 9) //was 1<<3 < 5.3
+#define OLDF_CHANGED	(1<<10) //was 1<<4 < 5.3
+#define OLDF_PREFILLED	(1<<11)
 
-//deprecated since 5.x
-#define OLDF_VALID	(1<<0)
-#define OLDF_REMIND	(1<<5)
 
 // unsaved flags -- display/session
-#define OF_ADDED		(1<<9)  //was 1<<3 < 5.3
-#define OF_CHANGED		(1<<10) //was 1<<4 < 5.3
-#define OF_PREFILLED	(1<<11)
-#define	TXN_DSPFLG_OVER		(1<<1)
-#define	TXN_DSPFLG_LOWBAL	(1<<2)
-#define	TXN_DSPFLG_DUPSRC	(1<<9)
-#define	TXN_DSPFLG_DUPDST	(1<<10)
+#define FLAG_TMP_ADDED		(1<< 1)
+#define FLAG_TMP_EDITED		(1<< 2)
+#define FLAG_TMP_PREFILLED	(1<< 3) //scheduled
+#define	FLAG_TMP_OVER		(1<< 4)
+#define	FLAG_TMP_LOWBAL		(1<< 5)
+#define	FLAG_TMP_DUPSRC		(1<< 9)
+#define	FLAG_TMP_DUPDST		(1<<10)
+#define	FLAG_TMP_CHKSIGN	(1<< 11)
 
 
 typedef enum {
-	TXN_STATUS_NONE,
-	TXN_STATUS_CLEARED,
-	TXN_STATUS_RECONCILED,
-	TXN_STATUS_REMIND,
-	TXN_STATUS_VOID
+	TXN_STATUS_NONE,		//0
+	TXN_STATUS_CLEARED,		//1
+	TXN_STATUS_RECONCILED,	//2
+	TXN_STATUS_VOID			//3 (OLD 4)
 } HbTxnStatus;
+
+#define TXN_OLDSTATUS_REMIND	3
+#define TXN_OLDSTATUS_VOID		4
+
 
 enum {
 	TXN_MARK_NONE,
@@ -173,9 +179,10 @@ Transaction *transaction_old_get_child_transfer(Transaction *src);
 
 guint transaction_auto_all_from_payee(GList *txnlist);
 
-
 gint transaction_similar_mark(Account *acc, guint32 daygap);
 void transaction_similar_unmark(Account *acc);
 
+gint transaction_check_chkcatsign_mark(Account *acc);
+void transaction_check_chkcatsign_unmark(Account *acc);
 
 #endif

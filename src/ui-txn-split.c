@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -19,7 +19,10 @@
 
 #include "homebank.h"
 
-#include "ui-txn-split.h"
+#include "ui-dialogs.h"
+#include "ui-widgets.h"
+
+
 #include "ui-transaction.h"
 #include "ui-archive.h"
 #include "gtk-dateentry.h"
@@ -27,6 +30,9 @@
 #include "ui-category.h"
 #include "ui-account.h"
 
+#include "hbtk-decimalentry.h"
+
+#include "ui-txn-split.h"
 
 /****************************************************************************/
 /* Debug macros                                                             */
@@ -356,7 +362,7 @@ guint i;
 	da_splits_sort(data->tmp_splits);
 }
 
-
+/*
 static gboolean ui_split_dialog_cb_amount_focus_out (GtkEditable *spin_button, GdkEvent  *event, gpointer user_data)
 {
 struct ui_split_dialog_data *data;
@@ -366,23 +372,15 @@ const gchar *txt;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(GTK_WIDGET(spin_button), GTK_TYPE_WINDOW)), "inst_data");
 
+	//force store
 	txt = gtk_entry_get_text(GTK_ENTRY(spin_button));
-
-	data->amountsign = SPLIT_AMT_SIGN_OFF;
-	if( *txt == '+' )
-	{
-		data->amountsign = SPLIT_AMT_SIGN_INC;
-	}
-	else if( *txt == '-' )
-	{
-		data->amountsign = SPLIT_AMT_SIGN_EXP;
-	}
+	data->amountsign = hb_amount_forced_sign(txt);
 
 	DB( g_print(" txt='%s'\n amt=%.8f\n sign=%d\n", txt, gtk_spin_button_get_value (GTK_SPIN_BUTTON(spin_button)), data->amountsign) );
 
 	return FALSE;
 }
-
+*/
 
 static void ui_split_dialog_update(GtkWidget *widget, gpointer user_data)
 {
@@ -399,6 +397,7 @@ guint count;
 	//btn: edit/rem
 	tmpval = gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_split)), NULL, NULL);
 	gtk_widget_set_sensitive (data->BT_edit, (data->isedited) ? FALSE : tmpval);
+	gtk_widget_set_sensitive (data->BT_dup, (data->isedited) ? FALSE : tmpval);
 	gtk_widget_set_sensitive (data->BT_rem, (data->isedited) ? FALSE : tmpval);
 
 	//btn: remall
@@ -442,7 +441,9 @@ struct ui_split_dialog_data *data;
 	//ui_cat_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_cat), 0);
 	ui_cat_entry_popover_set_active(GTK_BOX(data->PO_cat), 0);
 	if( data->mode == SPLIT_MODE_EMPTY )
-		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_amount), 0.0);
+		//gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_amount), 0.0);
+		hbtk_decimal_entry_set_value(HBTK_DECIMAL_ENTRY(data->ST_amount), 0.0);
+
 	gtk_entry_set_text(GTK_ENTRY(data->ST_memo), "");
 
 	gtk_widget_grab_focus(data->ST_amount);
@@ -473,7 +474,8 @@ GtkTreeIter			 iter;
 
 		//ui_cat_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_cat), split->kcat);
 		ui_cat_entry_popover_set_active(GTK_BOX(data->PO_cat), split->kcat);
-		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_amount), split->amount);
+		//gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_amount), split->amount);
+		hbtk_decimal_entry_set_value(HBTK_DECIMAL_ENTRY(data->ST_amount), split->amount);
 		txt = (split->memo != NULL) ? split->memo : "";
 		gtk_entry_set_text(GTK_ENTRY(data->ST_memo), txt);
 		
@@ -516,8 +518,10 @@ GtkTreeIter			 iter;
 
 		gtk_tree_model_get(model, &iter, 0, &split, -1);
 		DB( g_print(" update spin\n") );
-		gtk_spin_button_update (GTK_SPIN_BUTTON(data->ST_amount));
-		amount = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_amount));
+		
+		//gtk_spin_button_update (GTK_SPIN_BUTTON(data->ST_amount));
+		//amount = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_amount));
+		amount = hbtk_decimal_entry_get_value(HBTK_DECIMAL_ENTRY(data->ST_amount));
 		if(amount)
 		{
 			//split->kcat = ui_cat_comboboxentry_get_key_add_new(GTK_COMBO_BOX(data->PO_cat));
@@ -562,6 +566,43 @@ gint result;
 		ui_split_dialog_compute (widget, data);
 		ui_split_dialog_update (widget, user_data);
 	}
+}
+
+
+static void ui_split_dialog_cb_duplicate(GtkWidget *widget, gpointer user_data)
+{
+struct ui_split_dialog_data *data;
+GtkTreeSelection *selection;
+GtkTreeModel		 *model;
+GtkTreeIter			 iter;
+
+	DB( g_print("\n[ui_split_dialog] duplicate\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(GTK_WIDGET(widget), GTK_TYPE_WINDOW)), "inst_data");
+
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_split));
+	if (gtk_tree_selection_get_selected(selection, &model, &iter))
+	{
+	Split *src_split, *new_split;
+
+		gtk_tree_model_get(model, &iter, 0, &src_split, -1);
+		new_split = da_split_duplicate(src_split);
+		if( new_split )
+		{
+			//ui_split_listview_add(GTK_TREE_VIEW(data->LV_split), new_split);
+
+			da_splits_append (data->tmp_splits, new_split);
+
+			//model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_split));
+			gtk_list_store_append (GTK_LIST_STORE(model), &iter);
+			gtk_list_store_set (GTK_LIST_STORE(model), &iter,
+				0, new_split,
+				-1);
+		}
+	}
+
+	ui_split_dialog_compute (widget, data);
+	ui_split_dialog_update (widget, user_data);
 }
 
 
@@ -612,27 +653,33 @@ gdouble amount;
 	{
 		split = da_split_malloc ();
 		//5.4.4
-		DB( g_print(" update spin\n") );
-		gtk_spin_button_update (GTK_SPIN_BUTTON(data->ST_amount));
-		amount = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_amount));
+		DB( g_print(" update spin %d\n", data->amountsign) );
+		
+		//gtk_spin_button_update (GTK_SPIN_BUTTON(data->ST_amount));
+		//amount = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_amount));
+		amount = hbtk_decimal_entry_get_value(HBTK_DECIMAL_ENTRY(data->ST_amount));
 		if(amount)
 		{
-			DB( g_print(" raw amt=%.2f\n", amount) );
-			switch( data->amountsign )
+			//force sign apply
+			if( hbtk_decimal_entry_get_forcedsign(HBTK_DECIMAL_ENTRY(data->ST_amount)) == FALSE )
 			{
-				case SPLIT_AMT_SIGN_EXP:
-					if( amount > 0)
-						amount *= -1;
-					break;
-				case SPLIT_AMT_SIGN_INC:
-					if( amount < 0)
-						amount *= -1;
-					break;
-				default:
-					if( hb_amount_type_match(amount, data->txntype) == FALSE )
-						amount *= -1;
-					break;
-			}
+				DB( g_print(" raw amt=%.2f\n", amount) );
+				switch( data->amountsign )
+				{
+					case HB_AMT_SIGN_EXP:
+						if( amount > 0)
+							amount *= -1;
+						break;
+					case HB_AMT_SIGN_INC:
+						if( amount < 0)
+							amount *= -1;
+						break;
+					default:
+						if( hb_amount_type_match(amount, data->txntype) == FALSE )
+							amount *= -1;
+						break;
+				}
+			}	
 
 			DB( g_print(" final amt=%.2f\n", amount) );
 			//split->amount = amount;
@@ -644,17 +691,21 @@ gdouble amount;
 			split->memo = g_strdup((gchar *)gtk_entry_get_text(GTK_ENTRY(data->ST_memo)));
 
 			//#1977686 add into memo autocomplete
-			if( da_transaction_insert_memo(split->memo, data->date) )
+			if(PREFS->txn_memoacp == TRUE)
 			{
-			GtkEntryCompletion *completion;
-			GtkTreeModel *model;
-			GtkTreeIter  iter;
+				if( da_transaction_insert_memo(split->memo, data->date) )
+				{
+				GtkEntryCompletion *completion;
+				GtkTreeModel *model;
+				GtkTreeIter  iter;
 
-				completion = gtk_entry_get_completion (GTK_ENTRY(data->ST_memo));
-				model = gtk_entry_completion_get_model (completion);
-				gtk_list_store_insert_with_values(GTK_LIST_STORE(model), &iter, -1,
-					0, split->memo, 
-					-1);
+					DB( g_print(" add memo to completion\n") );
+					completion = gtk_entry_get_completion (GTK_ENTRY(data->ST_memo));
+					model = gtk_entry_completion_get_model (completion);
+					gtk_list_store_insert_with_values(GTK_LIST_STORE(model), &iter, -1,
+						0, split->memo, 
+						-1);
+				}
 			}
 
 			DB( g_print(" append split : %d, %.2f, %s\n", split->kcat, split->amount, split->memo) );
@@ -695,7 +746,7 @@ struct ui_split_dialog_data *data;
 
 	//we trigger the focus-out-event on spinbutton, with grab the add button
 	//because we also do things before the legacy spinbutton fucntion
-	gtk_widget_grab_focus(data->BT_add);
+	//gtk_widget_grab_focus(data->BT_add);
 
 	if( data->isedited == TRUE )
 		ui_split_dialog_apply_cb(widget, NULL);
@@ -783,7 +834,8 @@ gboolean valid;
 		if( hb_amount_round(data->remsplit, data->cur->frac_digits) == 0.0 )
 		{
 			g_sprintf(buf, "----");
-			gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_amount), 0);
+			//gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_amount), 0);
+			hbtk_decimal_entry_set_value(HBTK_DECIMAL_ENTRY(data->ST_amount), 0.0);
 		}
 		else
 		{
@@ -794,7 +846,8 @@ gboolean valid;
 			//revert, because block any edition/inherit
 			//sensitive = (count > 1) ? FALSE : sensitive;
 			//but keep prefill remainder
-			gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_amount), data->remsplit);
+			//gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_amount), data->remsplit);
+			hbtk_decimal_entry_set_value(HBTK_DECIMAL_ENTRY(data->ST_amount), data->remsplit);
 
 			gtk_widget_show_all(data->IB_wrnsum);
 			//#GTK+710888: hack waiting a GTK fix 
@@ -840,12 +893,11 @@ guint count;
 
 	data->isedited = FALSE;
 
-
-	gtk_spin_button_set_digits (GTK_SPIN_BUTTON(data->ST_amount), data->cur->frac_digits);
+	//gtk_spin_button_set_digits (GTK_SPIN_BUTTON(data->ST_amount), data->cur->frac_digits);
+	hbtk_decimal_entry_set_digits(HBTK_DECIMAL_ENTRY(data->ST_amount), data->cur->frac_digits);
 
 	//5.5 done in popover
 	//ui_cat_comboboxentry_populate(GTK_COMBO_BOX(data->PO_cat), GLOBALS->h_cat);
-
 	ui_split_dialog_compute(data->dialog, data);
 	ui_split_dialog_update (data->dialog, data);
 }
@@ -890,10 +942,9 @@ gint w, h, dw, dh, row;
 	hb_widget_set_margin(GTK_WIDGET(table), SPACING_SMALL);
 	gtk_grid_set_row_spacing (GTK_GRID (table), SPACING_TINY);
 	gtk_grid_set_column_spacing (GTK_GRID (table), SPACING_TINY);
-	gtk_box_pack_start (GTK_BOX (content), table, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (content), table);
 
 	row = 0;
-
 	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_widget_set_size_request(scrollwin, HB_MINWIDTH_LIST, HB_MINHEIGHT_LIST);
 	gtk_widget_set_hexpand (scrollwin, TRUE);
@@ -920,7 +971,7 @@ GtkWidget *ui_split_dialog (GtkWidget *parent, GPtrArray **src_splits, gint txnt
 {
 struct ui_split_dialog_data *data;
 GtkWidget *dialog, *content, *table, *box, *scrollwin, *bar;
-GtkWidget *label, *widget;
+GtkWidget *label, *widget, *treeview;
 gint row;
 
 	DB( g_print("\n[ui_split_dialog] new\n") );
@@ -976,15 +1027,16 @@ gint row;
 	hb_widget_set_margin(GTK_WIDGET(table), SPACING_LARGE);
 	gtk_grid_set_row_spacing (GTK_GRID (table), SPACING_TINY);
 	gtk_grid_set_column_spacing (GTK_GRID (table), SPACING_TINY);
-	gtk_box_pack_start (GTK_BOX (content), table, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (content), table);
 
 	row = 0;
 
 	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_widget_set_size_request(scrollwin, HB_MINWIDTH_LIST, HB_MINHEIGHT_LIST);
-	gtk_widget_set_hexpand (scrollwin, TRUE);
-	gtk_widget_set_vexpand (scrollwin, TRUE);
-	data->LV_split = list_split_new(kcur);
+	//gtk_widget_set_size_request(scrollwin, HB_MINWIDTH_LIST, HB_MINHEIGHT_LIST);
+	//gtk_widget_set_hexpand (scrollwin, TRUE);
+	treeview = list_split_new(kcur);
+	data->LV_split = treeview;
+	gtk_widget_set_vexpand (treeview, TRUE);
 	gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scrollwin), data->LV_split);
 	gtk_grid_attach (GTK_GRID (table), scrollwin, 0, row, 4, 1);
 
@@ -994,15 +1046,19 @@ gint row;
 
 		widget = make_image_button(ICONNAME_LIST_DELETE_ALL, _("Delete all"));
 		data->BT_remall = widget;
-		gtk_box_pack_end (GTK_BOX (box), widget, FALSE, FALSE, 0);
+		gtk_box_append (GTK_BOX (box), widget);
 
 		widget = make_image_button(ICONNAME_LIST_DELETE, _("Delete"));
 		data->BT_rem = widget;
-		gtk_box_pack_end (GTK_BOX(box), widget, FALSE, FALSE, 0);
+		gtk_box_append (GTK_BOX(box), widget);
+
+		widget = make_image_button(ICONNAME_LIST_DUPLICATE, _("Duplicate"));
+		data->BT_dup = widget;
+		gtk_box_append (GTK_BOX(box), widget);
 
 		widget = make_image_button(ICONNAME_HB_OPE_EDIT, _("Edit"));
 		data->BT_edit = widget;
-		gtk_box_pack_end (GTK_BOX(box), widget, FALSE, FALSE, 0);
+		gtk_box_append (GTK_BOX(box), widget);
 
 	row++;
 	label = gtk_label_new(_("Category"));
@@ -1036,32 +1092,33 @@ gint row;
 	gtk_widget_set_hexpand(widget, TRUE);
 	gtk_grid_attach (GTK_GRID (table), widget, 1, row, 1, 1);
 
-	widget = make_amount(NULL);
+	//widget = make_amount(NULL);
+	widget = hbtk_decimal_entry_new(NULL);
 	data->ST_amount = widget;
 	gtk_grid_attach (GTK_GRID (table), widget, 2, row, 1, 1);
 
 	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_TINY);
 	gtk_grid_attach (GTK_GRID (table), box, 3, row, 1, 1);
 
-		widget = gtk_image_new_from_icon_name (ICONNAME_INFO, GTK_ICON_SIZE_BUTTON);
+		widget = hbtk_image_new_from_icon_name_16 (ICONNAME_HB_QUICKTIPS);
 		gtk_widget_set_tooltip_text(widget, _("Prefix with -/+ to force the sign"));
-		gtk_box_pack_start (GTK_BOX (box), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (box), widget);
 		
-		widget = gtk_image_new_from_icon_name (ICONNAME_HB_OPE_EDIT, GTK_ICON_SIZE_BUTTON);
+		widget = hbtk_image_new_from_icon_name_16 (ICONNAME_HB_OPE_EDIT);
 		data->IM_edit = widget;
-		gtk_box_pack_start (GTK_BOX(box), widget, TRUE, TRUE, 0);
+		hbtk_box_prepend (GTK_BOX(box), widget);
 
 		widget = make_image_button(ICONNAME_LIST_ADD, _("Add"));
 		data->BT_add = widget;
-		gtk_box_pack_start (GTK_BOX(box), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX(box), widget);
 
 		widget = make_image_button(ICONNAME_EMBLEM_OK, _("Apply"));
 		data->BT_apply = widget;
-		gtk_box_pack_start (GTK_BOX(box), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX(box), widget);
 
 		widget = make_image_button(ICONNAME_WINDOW_CLOSE, _("Cancel"));
 		data->BT_cancel = widget;
-		gtk_box_pack_start (GTK_BOX(box), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX(box), widget);
 
 
 	if( data->mode == SPLIT_MODE_AMOUNT )
@@ -1071,7 +1128,8 @@ gint row;
 		gtk_widget_set_halign (label, GTK_ALIGN_END);
 		gtk_grid_attach (GTK_GRID (table), label, 1, row, 1, 1);
 		widget = gtk_label_new(NULL);
-		gtk_widget_set_halign (widget, GTK_ALIGN_CENTER);
+		gtk_widget_set_halign (widget, GTK_ALIGN_END);
+		gtk_widget_set_margin_end (widget, SPACING_SMALL);
 		data->LB_txnamount = widget;
 		gtk_grid_attach (GTK_GRID (table), widget, 2, row, 1, 1);
 
@@ -1080,7 +1138,8 @@ gint row;
 		gtk_widget_set_halign (label, GTK_ALIGN_END);
 		gtk_grid_attach (GTK_GRID (table), label, 1, row, 1, 1);
 		widget = gtk_label_new(NULL);
-		gtk_widget_set_halign (widget, GTK_ALIGN_CENTER);
+		gtk_widget_set_halign (widget, GTK_ALIGN_END);
+		gtk_widget_set_margin_end (widget, SPACING_SMALL);
 		data->LB_remain = widget;
 		gtk_grid_attach (GTK_GRID (table), widget, 2, row, 1, 1);
 
@@ -1095,7 +1154,8 @@ gint row;
 	gtk_widget_set_halign (label, GTK_ALIGN_END);
 	gtk_grid_attach (GTK_GRID (table), label, 1, row, 1, 1);
 	widget = gtk_label_new(NULL);
-	gtk_widget_set_halign (widget, GTK_ALIGN_CENTER);
+	gtk_widget_set_halign (widget, GTK_ALIGN_END);
+	gtk_widget_set_margin_end (widget, SPACING_SMALL);
 	data->LB_sumsplit = widget;
 	gtk_grid_attach (GTK_GRID (table), widget, 2, row, 1, 1);
 
@@ -1104,7 +1164,7 @@ gint row;
 	data->IB_inflimit = bar;
 	gtk_info_bar_set_message_type (GTK_INFO_BAR (bar), GTK_MESSAGE_INFO);
 	label = gtk_label_new (_("Number of splits limit is reached"));
-	gtk_box_pack_start (GTK_BOX (gtk_info_bar_get_content_area (GTK_INFO_BAR (bar))), label, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (gtk_info_bar_get_content_area (GTK_INFO_BAR (bar))), label);
 	gtk_grid_attach (GTK_GRID (table), bar, 0, row, 4, 1);
 
 	row++;
@@ -1112,7 +1172,7 @@ gint row;
 	data->IB_errtype = bar;
 	gtk_info_bar_set_message_type (GTK_INFO_BAR (bar), GTK_MESSAGE_WARNING);
 	label = gtk_label_new (_("Warning: sum of splits and transaction type don't match"));
-	gtk_box_pack_start (GTK_BOX (gtk_info_bar_get_content_area (GTK_INFO_BAR (bar))), label, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (gtk_info_bar_get_content_area (GTK_INFO_BAR (bar))), label);
 	gtk_grid_attach (GTK_GRID (table), bar, 0, row, 4, 1);
 
 	row++;
@@ -1120,7 +1180,7 @@ gint row;
 	data->IB_wrnsum = bar;
 	gtk_info_bar_set_message_type (GTK_INFO_BAR (bar), GTK_MESSAGE_ERROR);
 	label = gtk_label_new (_("Warning: sum of splits and transaction amount don't match"));
-	gtk_box_pack_start (GTK_BOX (gtk_info_bar_get_content_area (GTK_INFO_BAR (bar))), label, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (gtk_info_bar_get_content_area (GTK_INFO_BAR (bar))), label);
 	gtk_grid_attach (GTK_GRID (table), bar, 0, row, 4, 1);
 
 	//connect all our signals
@@ -1128,12 +1188,15 @@ gint row;
 	g_signal_connect (GTK_TREE_VIEW(data->LV_split), "row-activated", G_CALLBACK (ui_split_rowactivated), data);
 
 	g_signal_connect (data->BT_edit  , "clicked", G_CALLBACK (ui_split_dialog_edit_start), NULL);
+	g_signal_connect (data->BT_dup   , "clicked", G_CALLBACK (ui_split_dialog_cb_duplicate), NULL);
+
 	g_signal_connect (data->BT_rem   , "clicked", G_CALLBACK (ui_split_dialog_delete_cb), NULL);
 	g_signal_connect (data->BT_remall, "clicked", G_CALLBACK (ui_split_dialog_deleteall_cb), NULL);
 
 	g_signal_connect (data->ST_memo  , "insert-text", G_CALLBACK(ui_split_dialog_filter_text_handler), data);
-	g_signal_connect (data->ST_amount, "focus-out-event", G_CALLBACK (ui_split_dialog_cb_amount_focus_out), data);
-	g_signal_connect (data->ST_amount, "activate", G_CALLBACK (ui_split_dialog_cb_amount_activate), NULL);
+	
+	//g_signal_connect_after (data->ST_amount, "focus-out-event", G_CALLBACK (ui_split_dialog_cb_amount_focus_out), data);
+	g_signal_connect_after (data->ST_amount, "activate", G_CALLBACK (ui_split_dialog_cb_amount_activate), NULL);
 
 	g_signal_connect (data->BT_add   , "clicked", G_CALLBACK (ui_split_dialog_add_cb), NULL);
 	g_signal_connect (data->BT_apply , "clicked", G_CALLBACK (ui_split_dialog_apply_cb), NULL);

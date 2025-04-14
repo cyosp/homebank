@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -415,9 +415,13 @@ guint count = 0;
 		{
 		Tag *tag = da_tag_get(*tags);
 
-			tag->nb_use_all++;
-			if( txn == TRUE )
-				tag->nb_use_txn++;
+			//#2106027 crash
+			if( tag != NULL )
+			{
+				tag->nb_use_all++;
+				if( txn == TRUE )
+					tag->nb_use_txn++;
+			}
 			tags++;
 			count++;
 		}

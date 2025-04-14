@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   id="svg7384"
+   height="16"
+   width="16"
+   version="1.1"
+   sodipodi:docname="hicolor_actions_scalable_hb-ope-add-symbolic.svg"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title1153">Txn Add</title>
+  <defs
+     id="defs9" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1003"
+     id="namedview7"
+     showgrid="true"
+     inkscape:zoom="20.85965"
+     inkscape:cx="-0.83894025"
+     inkscape:cy="11.21783"
+     inkscape:window-x="1440"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg7384"
+     inkscape:snap-global="false"
+     inkscape:pagecheckerboard="0"
+     inkscape:showpageshadow="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid825" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata90">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Txn Add</dc:title>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Maxime DOYEN</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:source>https://www.gethomebank.org</dc:source>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <path
+     d="m 2.4,13.599999 q -0.5775,0 -0.9887499,-0.411249 Q 1,12.7775 1,12.2 V 2.4000001 Q 1,1.8225 1.4112501,1.4112501 1.8225,1 2.4,1 h 9.8 Q 12.7775,1 13.188751,1.4112501 13.6,1.8225 13.6,2.4000001 v 4.69 Q 13.2675,6.9325 12.9175,6.8187501 12.5675,6.705 12.2,6.6525001 v -4.2525 H 2.4 V 12.2 h 4.235 q 0.0525,0.384999 0.1662499,0.734999 0.1137497,0.350001 0.27125,0.665 z M 2.4,11.5 v 0.7 -9.7999999 4.2525 -0.0525 z m 1.3999999,-0.700001 h 2.8525 q 0.0525,-0.367499 0.16625,-0.717499 0.1137498,-0.3499998 0.25375,-0.6824999 h -3.2725 z m 0,-2.7999989 h 4.2699999 q 0.56,-0.5249999 1.2512501,-0.875 Q 10.0125,6.775 10.8,6.6525001 v -0.0525 H 3.7999999 Z m 0,-2.8 H 10.8 V 3.8 H 3.7999999 Z M 11.5,15 q -1.452499,0 -2.4762501,-1.02375 -1.02375,-1.023751 -1.02375,-2.47625 0,-1.4525 1.02375,-2.4762498 Q 10.047501,8.0000001 11.5,8.0000001 q 1.4525,0 2.476249,1.0237501 Q 15,10.0475 15,11.5 15,12.952499 13.976249,13.97625 12.9525,15 11.5,15 Z m -0.35,-1.400001 h 0.7 v -1.75 h 1.75 v -0.7 H 11.85 V 9.4000001 h -0.7 V 11.149999 H 9.3999998 v 0.7 H 11.15 Z"
+     id="path2"
+     style="fill:#bebebe;stroke-width:0.0175" />
+</svg>

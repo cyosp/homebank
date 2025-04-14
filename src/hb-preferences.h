@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -29,21 +29,11 @@
 
 #define MAX_FRAC_DIGIT		6
 
-//Tango light
-#define LIGHT_EXP_COLOR		"#fcaf3e"	//Orange
-#define LIGHT_INC_COLOR		"#8ae234"	//Chameleon
-#define LIGHT_WARN_COLOR	"#ef2929"	//Scarlett Red
-
-//Tango medium
-#define MEDIUM_EXP_COLOR	"#f57900"	//Orange
-#define MEDIUM_INC_COLOR	"#73d216"	//Chameleon
-#define MEDIUM_WARN_COLOR	"#cc0000"	//Scarlett Red
-
 //Tango dark
 #define DEFAULT_EXP_COLOR		"#ce5c00"	//Orange
 #define DEFAULT_INC_COLOR		"#4e9a36"	//Chameleon
 #define DEFAULT_WARN_COLOR		"#a40000"	//Scarlett Red
-
+#define DEFAULT_FUTURE_BG_COLOR	"#204a87"
 
 
 
@@ -57,9 +47,21 @@ struct WinGeometry
 };
 
 
+typedef enum
+{
+	HB_PREF_WINGEO_NONE,
+	HB_PREF_WINGEO_DEFAULT,
+	HB_PREF_WINGEO_SCREEN,
+	HB_PREF_WINGEO_NETBOOK,	//1024x600
+	HB_PREF_WINGEO_HD,		//1366x768
+	HB_PREF_WINGEO_HDPLUS,	//1600x900
+	HB_PREF_WINGEO_FHD,		//1920x1080
+} HbPrefWinGeoPreset;
+
+
 struct Preferences
 {
-	//general
+//--general
 	gboolean	showsplash;
 	gboolean	showwelcome;
 	gboolean	loadlast;
@@ -70,20 +72,24 @@ struct Preferences
 	//gint		date_range_wal;
 	gint		rep_maxspenditems;
 
-	//interface
-	gshort		toolbar_style;
+//--interface
+	gboolean	custom_colors;
+	gboolean	custom_bg_future;
 	gshort		grid_lines;
+	gboolean	rep_smallfont;
+	gshort		toolbar_style;
 
+	gboolean	gtk_darktheme;
+	gchar		*icontheme;
+	gboolean	icon_symbolic;
 	gboolean	gtk_override;
 	gshort		gtk_fontsize;
-	gboolean	gtk_darktheme;
 
-	gchar		*icontheme;
-
-	gboolean	custom_colors;
+	gboolean	color_use_palette;
 	gchar		*color_exp;
 	gchar		*color_inc;
 	gchar		*color_warn;
+	gchar		*color_bg_future;
 
 	//locale
 	gchar		*language;
@@ -94,28 +100,33 @@ struct Preferences
 	gboolean	vehicle_unit_isgal;		// true if unit is gallon, default Liter
 
 	//transactions
-	//-- register
-	gint		date_range_txn;
-	gint		date_future_nbdays;
-	gboolean	hidereconciled;
+	//--general
 	gboolean    showremind;
 	gboolean    showvoid;
 	gboolean	includeremind;
-	gboolean	lockreconciled;
+	//--safety
+	gboolean	safe_lock_recon;
+	gboolean	safe_pend_recon;
+	gboolean	safe_pend_past;
+	gshort		safe_pend_past_days;
+	gshort		padx;
+	//-- ledger
+	gint		date_range_txn;
+	gint		date_future_nbdays;
+	gboolean	hidereconciled;
 	//-- dialog
 	gboolean	heritdate;
+
 	gboolean	txn_memoacp;
 	gshort		txn_memoacp_days;
 	gboolean	txn_showtemplate;
 	gboolean	txn_showconfirm;
-
-	//txn xfer
+	//--transfer
 	gboolean	xfer_showdialog;
 	gshort		xfer_daygap;
 	gboolean	xfer_syncdate;
 	gboolean	xfer_syncstat;
-
-	//5.8 paymode
+	//--paymode
 	gint 		lst_paymode[NUM_PAYMODE_KEY+1];
 
 	//import/export
@@ -131,12 +142,13 @@ struct Preferences
 	//report options
 	gint		date_range_rep;
 	gint		report_color_scheme;
-	gboolean	rep_smallfont;
+
 	gboolean	stat_byamount;
 	gboolean	stat_showrate;
 	gboolean	stat_showdetail;
 	gboolean	stat_includexfer;
 	gboolean	budg_showdetail;
+	gboolean	budg_unexclsub;
 	//5.7
 	gboolean	rep_forcast;
 	gint		rep_forecat_nbmonth;
@@ -239,6 +251,9 @@ struct Preferences
 	gchar	   *vehicle_unit_vol;
 	gchar	   *vehicle_unit_100;
 	gchar	   *vehicle_unit_distbyvol;
+
+	//unsaved
+	gushort		lastlvl1, lastlvl2;
 
 };
 

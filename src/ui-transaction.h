@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -19,6 +19,10 @@
 
 #ifndef __HB_TRANSACTION_GTK_H__
 #define __HB_TRANSACTION_GTK_H__
+
+
+#include "hb-transaction.h"
+
 
 #include "ui-txn-split.h"
 
@@ -56,6 +60,7 @@ struct deftransaction_data
 	GtkWidget	*ST_tags, *CY_tags;
 	//GtkWidget   *CY_status;
 	GtkWidget   *RA_status;
+	GtkWidget	*CM_remind;
 
 	GtkWidget   *IB_warnsign;
 	GtkWidget	*LB_msgadded;

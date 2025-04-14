@@ -1,5 +1,5 @@
 /*	HomeBank -- Free, easy, personal accounting for everyone.
- *	Copyright (C) 1995-2024 Maxime DOYEN
+ *	Copyright (C) 1995-2025 Maxime DOYEN
  *
  *	This file is part of HomeBank.
  *
@@ -27,6 +27,7 @@
 #include "gtk-dateentry.h"
 #include "list-operation.h"
 #include "ui-tag.h"
+#include "ui-widgets.h"
 
 
 /****************************************************************************/
@@ -410,7 +411,7 @@ guint changes;
 		//#2087750 moved
 		if( change == TRUE )
 		{
-			txn->flags |= OF_CHANGED;
+			txn->dspflags |= FLAG_TMP_EDITED;
 			GLOBALS->changes_count++;
 		}
 
@@ -483,7 +484,7 @@ gint row;
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
 	hb_widget_set_margin(GTK_WIDGET(group_grid), SPACING_LARGE);
-	gtk_box_pack_start (GTK_BOX (content), group_grid, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (content), group_grid);
 
 	row = -1;
 
@@ -638,11 +639,11 @@ gint row;
 
 			widget = make_string(label);
 			data->ST_tags = widget;
-			gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
+			hbtk_box_prepend (GTK_BOX (hbox), widget);
 
 			widget = ui_tag_popover_list(data->ST_tags);
 			data->CY_tags = widget;
-			gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+			gtk_box_prepend (GTK_BOX (hbox), widget);
 
 		g_signal_connect (data->CM_tags , "toggled", G_CALLBACK (ui_multipleedit_dialog_update), NULL);
 	}

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -19,7 +19,9 @@
 
 #include "homebank.h"
 
-#include "hb-tag.h"
+#include "ui-dialogs.h"
+#include "ui-widgets.h"
+
 #include "ui-tag.h"
 
 
@@ -152,7 +154,7 @@ ui_tag_popover_list(GtkWidget *entry)
 GtkWidget *box, *menubutton, *image, *scrollwin, *treeview;
 
 	menubutton = gtk_menu_button_new ();
-	image = gtk_image_new_from_icon_name ("pan-down-symbolic", GTK_ICON_SIZE_BUTTON);
+	image = hbtk_image_new_from_icon_name_16 ("pan-down-symbolic");
 	gtk_button_set_image(GTK_BUTTON(menubutton), image);
 
 	gtk_menu_button_set_direction (GTK_MENU_BUTTON(menubutton), GTK_ARROW_LEFT );
@@ -163,7 +165,7 @@ GtkWidget *box, *menubutton, *image, *scrollwin, *treeview;
 
 	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, SPACING_MEDIUM);
 	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_box_pack_start(GTK_BOX(box), scrollwin, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX(box), scrollwin);
 	treeview = ui_tag_listview_new(FALSE, TRUE);
 	//data.LV_tag = treeview;
 	gtk_scrolled_window_set_child(GTK_SCROLLED_WINDOW(scrollwin), treeview);
@@ -889,7 +891,7 @@ guint32 key;
 		gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
 		gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
 		hb_widget_set_margin(GTK_WIDGET(content_grid), SPACING_MEDIUM);
-		gtk_box_pack_start (GTK_BOX (content_area), content_grid, TRUE, TRUE, 0);
+		hbtk_box_prepend (GTK_BOX (content_area), content_grid);
 
 		crow = 0;
 		// group :: General
@@ -1009,7 +1011,7 @@ GtkTreeIter iter;
 
 		content = gtk_message_dialog_get_message_area(GTK_MESSAGE_DIALOG (dialog));
 		mainvbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, SPACING_SMALL);
-		gtk_box_pack_start (GTK_BOX (content), mainvbox, TRUE, TRUE, 0);
+		hbtk_box_prepend (GTK_BOX (content), mainvbox);
 
 		secondtext = _("Transactions assigned to this tag,\n"
 			  "will be moved to the tag selected below.");
@@ -1018,14 +1020,14 @@ GtkTreeIter iter;
 		g_free(title);
 
 		getwidget = ui_tag_combobox_new(NULL);
-		gtk_box_pack_start (GTK_BOX (mainvbox), getwidget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (mainvbox), getwidget);
 
 		secondtext = g_strdup_printf (
 			_("_Delete the tag '%s'"), srctag->name);
 		togglebutton = gtk_check_button_new_with_mnemonic(secondtext);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(togglebutton), TRUE);
 		g_free(secondtext);
-		gtk_box_pack_start (GTK_BOX (mainvbox), togglebutton, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (mainvbox), togglebutton);
 
 		//setup 
 
@@ -1295,14 +1297,14 @@ gint w, h, dw, dh, row;
 	//dialog contents
 	content = gtk_dialog_get_content_area(GTK_DIALOG (dialog));
 	mainvbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, SPACING_SMALL);
-	gtk_box_pack_start (GTK_BOX (content), mainvbox, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (content), mainvbox);
 	hb_widget_set_margin(GTK_WIDGET(mainvbox), SPACING_LARGE);
 
     //our table
 	table = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (table), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (table), SPACING_MEDIUM);
-	gtk_box_pack_start (GTK_BOX (mainvbox), table, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (mainvbox), table);
 
 	row = 0;
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
@@ -1312,14 +1314,14 @@ gint w, h, dw, dh, row;
 
 	widget = make_image_toggle_button(ICONNAME_HB_BUTTON_USAGE, _("Show Usage") );
 	data->BT_showusage = widget;
-	gtk_box_pack_start(GTK_BOX (bbox), widget, FALSE, FALSE, 0);	
+	gtk_box_prepend(GTK_BOX (bbox), widget);	
 
 	//menubutton
 	widget = gtk_menu_button_new();
-	image = gtk_image_new_from_icon_name (ICONNAME_HB_BUTTON_MENU, GTK_ICON_SIZE_MENU);
+	image = hbtk_image_new_from_icon_name_16 (ICONNAME_HB_BUTTON_MENU);
 	g_object_set (widget, "image", image,  NULL);
 	gtk_widget_set_halign (widget, GTK_ALIGN_END);
-	gtk_box_pack_end(GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+	gtk_box_append(GTK_BOX (bbox), widget);
 
 	GMenu *menu = g_menu_new ();
 	GMenu *section = g_menu_new ();
@@ -1346,7 +1348,7 @@ gint w, h, dw, dh, row;
 	gtk_grid_attach (GTK_GRID (table), box, 0, row, 2, 1);
 	
 	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_box_pack_start(GTK_BOX(box), scrollwin, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX(box), scrollwin);
 	gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scrollwin), HB_MINHEIGHT_LIST);
 	gtk_widget_set_hexpand (scrollwin, TRUE);
 	gtk_widget_set_vexpand (scrollwin, TRUE);
@@ -1356,21 +1358,21 @@ gint w, h, dw, dh, row;
 
 	tbar = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
-	gtk_box_pack_start (GTK_BOX (box), tbar, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (box), tbar);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (tbar), bbox);
 		data->BT_add = widget = make_image_toggle_button(ICONNAME_LIST_ADD, _("Add"));
-		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend(GTK_BOX(bbox), widget);
 		data->BT_delete = widget = make_image_button(ICONNAME_LIST_DELETE, _("Delete")); 
-		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend(GTK_BOX(bbox), widget);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (tbar), bbox);
 		data->BT_edit = widget = make_image_button(ICONNAME_LIST_EDIT, _("Edit"));
-		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend(GTK_BOX(bbox), widget);
 		data->BT_merge = widget = make_image_button(ICONNAME_HB_LIST_MERGE, _("Move/Merge"));
-		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend(GTK_BOX(bbox), widget);
 		
 	row++;
 	addreveal = gtk_revealer_new ();

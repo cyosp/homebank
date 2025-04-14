@@ -19,6 +19,7 @@ homebank_SOURCES =  \
 	dsp-mainwindow.c \
 	dsp-mainwindow.h \
 	enums.h \
+	hb-types.h \
 	gtk-chart.c \
 	gtk-chart.h \
 	gtk-chart-colors.c \
@@ -66,6 +67,8 @@ homebank_SOURCES =  \
 	hb-tag.h \
 	hb-split.c \
 	hb-split.h \
+	hbtk-decimalentry.c \
+	hbtk-decimalentry.h \
 	hb-transaction.c \
 	hb-transaction.h \
 	hb-xml.c \
