@@ -2179,6 +2179,7 @@ gint row;
 		gtk_widget_set_margin_start(label, SPACING_MEDIUM);
 		gtk_box_pack_start (GTK_BOX (fbox), label, FALSE, FALSE, 0);
 		label = make_label(NULL, 0.0, 0.5);
+		gtk_widget_set_margin_start(label, SPACING_SMALL);
 		data->TX_fltactive = label;
 		gtk_box_pack_start (GTK_BOX (fbox), label, FALSE, FALSE, 0);
 		widget = gtk_image_new_from_icon_name (ICONNAME_INFO, GTK_ICON_SIZE_BUTTON);

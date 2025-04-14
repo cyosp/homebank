@@ -381,12 +381,6 @@ guint changes;
 			}
 		}
 
-		if( change == TRUE )
-		{
-			txn->flags |= OF_CHANGED;
-			GLOBALS->changes_count++;
-		}
-
 		//TODO: not sure this ever happen, to check
 		if( data->has_xfer && (txn->flags & OF_INTXFER) )
 		{
@@ -407,10 +401,20 @@ guint changes;
 				{
 					txn->kxferacc = dstkey;
 					transaction_xfer_search_or_add_child(GTK_WINDOW(data->dialog), FALSE, txn, dstkey);
+					//#2087750
+					change = TRUE;
 				}
 			}
 		}
-		
+
+		//#2087750 moved
+		if( change == TRUE )
+		{
+			txn->flags |= OF_CHANGED;
+			GLOBALS->changes_count++;
+		}
+
+	
 		list = g_list_previous(list);
 	}
 

@@ -1,10 +1,30 @@
 
 
+2024-12-26  Maxime Doyen
+
+ Made 5.8.6 release
+
+ * bugfix: fix crash when print your accounts
+ * bugfix: ledger similar marked txn were persisted after close
+ * bugfix: ledger similair marked txn now display their group
+ * bugfix: repbalance first column title was not set to interval
+ * bugfix: #2091004 statistics time report totals line with exact 0 is not displayed
+ * bugfix: #2090668 close after start wizard not not let choose filename to save
+ * bugfix: #2090183 the export CSV functionality does not take into account the frac digits property of the currency
+ * bugfix: #2089407 trendtime/balance report clear filter don't clear properly
+ * bugfix: #2087750 save indicator (*) not showing after editing multiple transfert
+ * bugfix: #2085376 future/remind main window bottom list column not updated
+ * bugfix: #2083127 inherit operations should not preserve colour flags
+ * bugfix: #2079801 alert about budget usage when move/delete a category
+ * bugfix: #2060159 window width and height size is reset to a small size after demaximizing on startup
+ * wish  : #2086475 add menu keyboard shortcut to import files
+
+
 2024-10-05  Maxime Doyen
 
  Made 5.8.5 release
 
- * bugfix: date button shortened in ledger book
+ * bugfix: #2083718 date and other button shortened in ledger book
 
 
 2024-10-04  Maxime Doyen

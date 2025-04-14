@@ -25,6 +25,7 @@
 #include "dsp-mainwindow.h"
 
 #include "list-account.h"
+#include "list-operation.h"
 
 #include "hub-scheduled.h"
 #include "hub-reptotal.h"
@@ -1509,9 +1510,16 @@ gint flags;
 		hb_widget_visible(data->MI_eurominor, PREFS->euro_active);
 	}
 
+	if(flags & UF_TXNLIST)
+	{
+		DB( g_print(" --txn list\n") );
+		list_txn_set_columns(GTK_TREE_VIEW(data->LV_txn[HUB_TXN_TYPE_FUTURE]), PREFS->lst_ope_columns);
+		list_txn_set_columns(GTK_TREE_VIEW(data->LV_txn[HUB_TXN_TYPE_REMIND]), PREFS->lst_ope_columns);
+	}
+
 	if(flags & UF_REFRESHALL)
 	{
-		DB( g_print(" 16: refreshall\n") );
+		DB( g_print(" --refreshall\n") );
 
 		ui_hub_account_compute(GLOBALS->mainwindow, NULL);
 		//5.7 don't process if not visible...
@@ -1561,6 +1569,30 @@ static void
   }
 
 
+//#2060159 store after every move
+static gboolean 
+ui_mainwindow_getgeometry(GtkWidget *widget, GdkEventConfigure *event, gpointer user_data)
+{
+//struct hbfile_data *data = user_data;
+struct WinGeometry *wg;
+
+	//DB( g_print("\n[ui-mainwindow] get geometry\n") );
+
+	//store position and size
+	wg = &PREFS->wal_wg;
+	wg->s = gtk_window_is_maximized(GTK_WINDOW(widget));
+	if(!wg->s)
+	{
+		gtk_window_get_position(GTK_WINDOW(widget), &wg->l, &wg->t);
+		gtk_window_get_size(GTK_WINDOW(widget), &wg->w, &wg->h);
+	}
+
+	//DB( g_print(" window: l=%d, t=%d, w=%d, h=%d s=%d\n", wg->l, wg->t, wg->w, wg->h, wg->s) );
+
+	return FALSE;
+}
+
+
 static void ui_mainwindow_destroy(GtkWidget *widget, gpointer user_data)
 {
 struct hbfile_data *data;
@@ -1608,12 +1640,7 @@ gboolean retval = FALSE;
 
 	//store position and size
 	wg = &PREFS->wal_wg;
-	gtk_window_get_position(GTK_WINDOW(widget), &wg->l, &wg->t);
-	gtk_window_get_size(GTK_WINDOW(widget), &wg->w, &wg->h);
-	GdkWindow *gdk_window = gtk_widget_get_window(GTK_WIDGET(widget));
-	GdkWindowState state = gdk_window_get_state(gdk_window);
-	wg->s = (state & GDK_WINDOW_STATE_MAXIMIZED) ? 1 : 0;
-	DB( g_print(" window: l=%d, t=%d, w=%d, h=%d s=%d, state=%d\n", wg->l, wg->t, wg->w, wg->h, wg->s, state & GDK_WINDOW_STATE_MAXIMIZED) );
+	wg->s = gtk_window_is_maximized(GTK_WINDOW(widget));
 
  	PREFS->wal_vpaned = gtk_paned_get_position(GTK_PANED(data->vpaned));
  	PREFS->wal_hpaned = gtk_paned_get_position(GTK_PANED(data->hpaned));
@@ -1931,7 +1958,9 @@ GtkAccelGroup *accel_group = NULL;
 		data->MI_saveas     = menuitem = hbtk_menu_add_menuitem(menu, _("Save _As..."));
 		gtk_widget_add_accelerator(menuitem, "activate", accel_group, GDK_KEY_s, GDK_SHIFT_MASK|GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), gtk_separator_menu_item_new());
-		data->MI_import     = hbtk_menu_add_menuitem(menu, _("Import..."));
+		data->MI_import     = menuitem = hbtk_menu_add_menuitem(menu, _("Import..."));
+		//#2086475
+		gtk_widget_add_accelerator(menuitem, "activate", accel_group, GDK_KEY_i, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
 		data->MI_exportqif  = hbtk_menu_add_menuitem(menu, _("Export as QIF..."));
 		gtk_menu_shell_append (GTK_MENU_SHELL (menu), gtk_separator_menu_item_new());
 		data->MI_revert     = hbtk_menu_add_menuitem(menu, _("Revert"));
@@ -2203,12 +2232,11 @@ GtkWidget *window;
 
 	//setup, init and show window
 	wg = &PREFS->wal_wg;
-	if(wg->s == 0)
-	{
-		gtk_window_move(GTK_WINDOW(window), wg->l, wg->t);
-		gtk_window_resize(GTK_WINDOW(window), wg->w, wg->h);
-	}
-	else
+	DB( g_print(" window: l=%d, t=%d, w=%d, h=%d s=%d\n", wg->l, wg->t, wg->w, wg->h, wg->s) );
+
+	gtk_window_move(GTK_WINDOW(window), wg->l, wg->t);
+	gtk_window_resize(GTK_WINDOW(window), wg->w, wg->h);
+	if(wg->s == 1)
 		gtk_window_maximize(GTK_WINDOW(window));
 
 	gtk_widget_show_all (window);
@@ -2258,6 +2286,7 @@ GtkWidget *window;
 	/* GtkWindow events */
 	g_signal_connect (window, "destroy", G_CALLBACK (ui_mainwindow_destroy), NULL);
     g_signal_connect (window, "delete-event", G_CALLBACK (ui_mainwindow_dispose), (gpointer)data);
+	g_signal_connect (window, "configure-event",	G_CALLBACK (ui_mainwindow_getgeometry), (gpointer)data);
 
 	//menu signals
 	g_signal_connect (data->MI_new , "activate", G_CALLBACK (ui_mainwindow_action_new), (gpointer)data);

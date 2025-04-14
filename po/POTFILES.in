@@ -49,10 +49,10 @@ src/ui-group.c
 src/ui-hbfile.c
 src/ui-payee.c
 src/ui-pref.c
-src/ui-split.c
 src/ui-tag.c
 src/ui-transaction.c
 src/ui-txn-multi.c
+src/ui-txn-split.c
 src/ui-widgets-data.c
 src/ui-widgets.c
 

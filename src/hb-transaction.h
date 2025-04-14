@@ -54,7 +54,8 @@ struct _transaction
 	/* unsaved datas */
 	guint32		kcur;		//init at loadxml (preprend) + add
 	gushort		dspflags;	//
-	gushort		matchrate;	//used only when find xfer target
+	guchar		dupgid;		//duplicate group id
+	guchar		matchrate;	//used only when find xfer target
 	gdouble		balance;	//init at dsp balance refresh
 	//GList		*same;		//used for import todo: change this
 };

@@ -67,6 +67,8 @@ GtkWidget *create_list_import_transaction(gboolean enable_choose);
 
 void list_txn_set_warn_nocategory(GtkTreeView *treeview, gboolean warn);
 
+void list_txn_set_columns(GtkTreeView *treeview, gint *col_id);
+void list_txn_get_columns(GtkTreeView *treeview);
 gboolean list_txn_column_id_isvisible(GtkTreeView *treeview, gint sort_id);
 
 void list_txn_set_column_acc_visible(GtkTreeView *treeview, gboolean visible);

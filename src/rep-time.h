@@ -127,7 +127,7 @@ struct reptime_data
 	GtkWidget	*LV_detail;
 
 
-	gulong		handler_id[MAX_REPTIME_HID];
+	gulong		hid[MAX_REPTIME_HID];
 
 };
 

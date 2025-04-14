@@ -311,6 +311,29 @@ gchar *iconname = NULL;
 
 
 static void
+list_txn_cell_data_func_status_dupgid (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
+{
+Split *split;
+Transaction *ope;
+gchar buffer[6];
+
+	buffer[0] = 0;
+	gtk_tree_model_get(model, iter, 
+		MODEL_TXN_SPLITPTR, &split,
+	    MODEL_TXN_POINTER, &ope, 
+	    -1);
+
+	if( split == NULL )
+	{
+		if( ope->dspflags & (TXN_DSPFLG_DUPSRC|TXN_DSPFLG_DUPDST) )
+			g_snprintf(buffer, 6-1, ":%d", ope->dupgid);
+	}
+
+	g_object_set(renderer, "text", buffer, NULL);
+}
+
+
+static void
 list_txn_cell_data_func_account (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
 {
 Transaction *ope;
@@ -843,18 +866,27 @@ gchar sep[2];
 
 static void list_txn_to_string_line(GString *node, gchar sep, Transaction *ope, guint32 kcat, gchar *memo, gdouble amount, guint flags)
 {
+Account *acc;
 Payee *payee;
 Category *category;
 gchar *tags;
+gint digits = 2;
 char strbuf[G_ASCII_DTOSTR_BUF_SIZE];
 
 	DB( g_print("----\n") );
 
+	//#2090183 get currency digits
+	acc = da_acc_get(ope->kacc);
+	if( acc != NULL )
+	{
+	Currency *cur = da_cur_get(acc->kcur);
+		if( cur != NULL)	
+			digits = cur->frac_digits;
+	}
+
 	//account
 	if( flags & LST_TXN_EXP_ACC )
 	{
-	Account *acc = da_acc_get(ope->kacc);
-	
 		g_string_append (node, (acc != NULL) ? acc->name : "");
 		g_string_append_c (node, sep );
 	}
@@ -901,7 +933,7 @@ char strbuf[G_ASCII_DTOSTR_BUF_SIZE];
 	//#1750257 use locale numdigit
 	//g_ascii_formatd (amountbuf, sizeof (amountbuf), "%.2f", ope->amount);
 	//TODO: or not we should use the currency fmt here
-	g_snprintf(strbuf, sizeof (strbuf), "%.2f", amount);
+	g_snprintf(strbuf, sizeof (strbuf), "%.*f", digits, amount);
 
 	DB( g_print("amount = %f '%s'\n", amount, strbuf) );
 	g_string_append_c (node, sep );
@@ -942,7 +974,7 @@ char strbuf[G_ASCII_DTOSTR_BUF_SIZE];
 	//balance
 	if( flags & LST_TXN_EXP_BAL )
 	{
-		g_snprintf(strbuf, sizeof (strbuf), "%.2f", ope->balance);
+		g_snprintf(strbuf, sizeof (strbuf), "%.*f", digits, ope->balance);
 
 		DB( g_print(" balance = %f '%s'\n", ope->balance, strbuf) );
 		g_string_append_c (node, sep );
@@ -1182,6 +1214,8 @@ void list_txn_set_save_column_width(GtkTreeView *treeview, gboolean save_column_
 {
 struct list_txn_data *data;
 
+	DB( g_print("\n[list_txn] save column width\n") );
+
 	data = g_object_get_data(G_OBJECT(treeview), "inst_data");
 	if( data )
 	{
@@ -1252,7 +1286,7 @@ void list_txn_sort_force(GtkTreeSortable *sortable, gpointer user_data)
 gint sort_column_id;
 GtkSortType order;
 
-	DB( g_print("list_txn_sort_force\n") );
+	DB( g_print("\n[list_txn] sort\n") );
 
 	gtk_tree_sortable_get_sort_column_id(sortable, &sort_column_id, &order);
 	DB( g_print(" - id %d order %d\n", sort_column_id, order) );
@@ -1262,7 +1296,7 @@ GtkSortType order;
 }
 
 
-static void list_txn_get_columns(GtkTreeView *treeview)
+void list_txn_get_columns(GtkTreeView *treeview)
 {
 struct list_txn_data *data;
 GtkTreeViewColumn *column;
@@ -1318,7 +1352,7 @@ gint *col_width_ptr;
 }
 
 
-static void list_txn_set_columns(GtkTreeView *treeview, gint *col_id)
+void list_txn_set_columns(GtkTreeView *treeview, gint *col_id)
 {
 struct list_txn_data *data;
 GtkTreeViewColumn *column, *base;
@@ -1772,6 +1806,7 @@ GtkWidget *treeview;
 GtkCellRenderer *renderer;
 GtkTreeViewColumn *column, *col_acc = NULL, *col_status = NULL, *col_match = NULL;
 
+	DB( g_print ("\n[list_txn] new\n") );
 
 	data = g_malloc0(sizeof(struct list_txn_data));
 	if(!data) return NULL;
@@ -1813,18 +1848,20 @@ GtkTreeViewColumn *column, *col_acc = NULL, *col_status = NULL, *col_match = NUL
 
 	renderer = gtk_cell_renderer_pixbuf_new ();
 	//gtk_cell_renderer_set_fixed_size(renderer, GLOBALS->lst_pixbuf_maxwidth, -1);
-	gtk_tree_view_column_pack_start(column, renderer, TRUE);
+	gtk_cell_renderer_set_padding(renderer, 1, 0);
+	gtk_tree_view_column_pack_start(column, renderer, FALSE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, list_txn_cell_data_func_status, GINT_TO_POINTER(1), NULL);
 
 	renderer = gtk_cell_renderer_pixbuf_new ();
 	//gtk_cell_renderer_set_fixed_size(renderer, GLOBALS->lst_pixbuf_maxwidth, -1);
-	gtk_tree_view_column_pack_start(column, renderer, TRUE);
+	gtk_tree_view_column_pack_start(column, renderer, FALSE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, list_txn_cell_data_func_status, GINT_TO_POINTER(2), NULL);
 
-	renderer = gtk_cell_renderer_pixbuf_new ();
-	//gtk_cell_renderer_set_fixed_size(renderer, GLOBALS->lst_pixbuf_maxwidth, -1);
+	//5.8.6
+	renderer = gtk_cell_renderer_text_new ();
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	gtk_tree_view_column_set_cell_data_func(column, renderer, list_txn_cell_data_func_status, GINT_TO_POINTER(3), NULL);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, list_txn_cell_data_func_status_dupgid, NULL, NULL);
+	gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
 
 	gtk_tree_view_column_set_sort_column_id (column, LST_DSPOPE_STATUS);
 	//gtk_tree_view_column_set_resizable(column, TRUE);
