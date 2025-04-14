@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -286,13 +286,13 @@ guint i;
 	gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (button), !buttonstyle);
 	g_signal_connect(button, "toggled", G_CALLBACK(_radiotest_cb_button_toggled), switcher);
 
-    gtk_box_pack_start (GTK_BOX (switcher), button, FALSE, FALSE, 0);
+    gtk_box_prepend (GTK_BOX (switcher), button);
 	for (i = 1; items[i] != NULL; i++)
 	{
 		newbutton = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (button), _(items[i]));
 		gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (newbutton), !buttonstyle);
 		g_signal_connect(newbutton, "toggled", G_CALLBACK(_radiotest_cb_button_toggled), switcher);
-	    gtk_box_pack_start (GTK_BOX (switcher), newbutton, FALSE, FALSE, 0);
+	    gtk_box_prepend (GTK_BOX (switcher), newbutton);
 	}
 
 	if(buttonstyle)
@@ -305,7 +305,7 @@ guint i;
 
 
 void
-hbtk_switcher_setup_with_data (HbtkSwitcher *switcher, HbKivData *kivdata, gboolean buttonstyle)
+hbtk_switcher_setup_with_data (HbtkSwitcher *switcher, GtkWidget *label, HbKivData *kivdata, gboolean buttonstyle)
 {
 HbtkSwitcherPrivate *priv = switcher->priv;
 GtkWidget *button, *image, *newbutton;
@@ -315,12 +315,12 @@ guint i;
     //button = gtk_radio_button_new_with_label (NULL, _(items[0]));
 	button = gtk_radio_button_new(NULL);
 	priv->first = GTK_RADIO_BUTTON(button);
-	image = gtk_image_new_from_icon_name (tmp->iconname, GTK_ICON_SIZE_BUTTON);
+	image = hbtk_image_new_from_icon_name_16 (tmp->iconname);
 	g_object_set (button, "image", image, "tooltip-text", _(tmp->name), NULL);
 	gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (button), !buttonstyle);
 	//#2065592
 	g_signal_connect(button, "toggled", G_CALLBACK(_radiotest_cb_button_toggled), switcher);
-    gtk_box_pack_start (GTK_BOX (switcher), button, FALSE, FALSE, 0);
+    gtk_box_prepend (GTK_BOX (switcher), button);
 	for (i = 1; ; i++)
 	{
 		tmp = &kivdata[i];
@@ -329,11 +329,11 @@ guint i;
 
 		//newbutton = gtk_radio_button_new_with_label_from_widget (GTK_BUTTON (button), _(items[i]));
 		newbutton = gtk_radio_button_new_from_widget (GTK_RADIO_BUTTON (button));
-		image = gtk_image_new_from_icon_name (tmp->iconname, GTK_ICON_SIZE_BUTTON);
+		image = hbtk_image_new_from_icon_name_16 (tmp->iconname);
 		g_object_set (newbutton, "image", image, "tooltip-text", _(tmp->name), NULL);
 		gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (newbutton), !buttonstyle);
 		g_signal_connect(newbutton, "toggled", G_CALLBACK(_radiotest_cb_button_toggled), switcher);
-	    gtk_box_pack_start (GTK_BOX (switcher), newbutton, FALSE, FALSE, 0);
+	    gtk_box_prepend (GTK_BOX (switcher), newbutton);
 	}
 
 	if(buttonstyle)

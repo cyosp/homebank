@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -44,8 +44,9 @@ extern struct Preferences *PREFS;
 
 extern HbKvData CYA_FLT_RANGE_DWF[];
 extern HbKvData CYA_FLT_RANGE_MQY[];
-extern HbKvData CYA_FLT_RANGE_NORMAL[];
-extern HbKvData CYA_FLT_RANGE_BUDGET[];
+extern HbKvData CYA_FLT_RANGE_YTO[];
+extern HbKvData CYA_FLT_RANGE_LASTXXD[];
+extern HbKvData CYA_FLT_RANGE_COMMON[];
 extern HbKvData CYA_FLT_RANGE_CUSTOM[];
 
 extern gchar *CYA_ABMONTHS[];
@@ -79,11 +80,34 @@ void gtk_revealer_set_child (GtkRevealer* revealer, GtkWidget* child)
 void gtk_expander_set_child (GtkExpander* expander, GtkWidget* child)
 { gtk_container_add (GTK_CONTAINER(expander), child); }
 
+void gtk_box_prepend (GtkBox* box, GtkWidget* child)
+{ gtk_box_pack_start (GTK_BOX(box), child, FALSE, FALSE, 0); }
+void gtk_box_append (GtkBox* box, GtkWidget* child)
+{ gtk_box_pack_end (GTK_BOX(box), child, FALSE, FALSE, 0); }
+
 
 void gtk_window_destroy (GtkWindow* window)
-{ gtk_widget_destroy(GTK_WIDGET(window)); }
+{ gtk_widget_destroy (GTK_WIDGET(window)); }
 
 #endif
+
+
+//TODO: to be removed when migrate
+GtkWidget *hbtk_image_new_from_icon_name_16(const gchar *icon_name)
+{
+	return gtk_image_new_from_icon_name (icon_name, GTK_ICON_SIZE_BUTTON);
+}
+
+GtkWidget *hbtk_image_new_from_icon_name_24(const gchar *icon_name)
+{
+	return gtk_image_new_from_icon_name (icon_name, GTK_ICON_SIZE_LARGE_TOOLBAR);
+}
+
+GtkWidget *hbtk_image_new_from_icon_name_32(const gchar *icon_name)
+{
+	return gtk_image_new_from_icon_name (icon_name, GTK_ICON_SIZE_DIALOG);
+}
+
 
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
@@ -105,6 +129,7 @@ GtkWidget *button = gtk_widget_new(GTK_TYPE_TOOL_BUTTON,
 
 	return button;
 }
+
 
 
 GtkWidget *
@@ -250,6 +275,14 @@ gimp_label_set_attributes (GtkLabel *label,
 }
 
 
+// can't get rid of FILL|EXPAND for now
+void hbtk_box_prepend (GtkBox* box, GtkWidget* child)
+{
+	gtk_box_pack_start (GTK_BOX(box), child, TRUE, TRUE, 0);
+}
+
+
+
 gint hb_clicklabel_to_int(const gchar *uri)
 {
 gint retval = HB_LIST_QUICK_SELECT_UNSET;
@@ -351,21 +384,21 @@ void hbtk_entry_set_text(GtkEntry *entry, gchar *text)
 }
 
 
-void hbtk_entry_replace_text(GtkEntry *entry, gchar **storage)
+gboolean hbtk_entry_replace_text(GtkEntry *entry, gchar **storage)
 {
-const gchar *text;
+const gchar *text = gtk_entry_get_text(GTK_ENTRY(entry));
+gint tmpcmp = hb_string_ascii_compare(*storage, (gchar *)text);
 
 	DB( g_print(" storage is '%p' at '%p'\n", *storage, storage) );
-
-	/* free any previous string */
-	if( *storage != NULL )
+	if( tmpcmp != 0 )
 	{
+		// free any previous string
 		g_free(*storage);
+		*storage = g_strdup(text);
+		DB( g_print(" replace with '%s'", text) );
+		return TRUE;
 	}
-
-	*storage = NULL;
-	text = gtk_entry_get_text(GTK_ENTRY(entry));
-	*storage = g_strdup(text);
+	return FALSE;
 }
 
 
@@ -486,6 +519,15 @@ GtkWidget *label = gtk_label_new (str);
 	return label;
 }
 
+GtkWidget *make_label_left(char *str)
+{
+GtkWidget *label = gtk_label_new_with_mnemonic (str);
+
+	gtk_widget_set_valign (label, GTK_ALIGN_CENTER);
+	gtk_widget_set_halign (label, GTK_ALIGN_START);
+	return label;
+}
+
 
 GtkWidget *make_label_widget(char *str)
 {
@@ -554,36 +596,92 @@ GtkWidget *entry;
 }
 
 
-static GtkWidget *_raw_image_button(GType type, gchar *icon_name, gchar *tooltip_text)
+static GtkWidget *_raw_image_button(GType type, gchar *icon_name, gchar *tooltip_text, gboolean flat)
 {
 GtkWidget *image, *button;
 
 	image = gtk_widget_new(GTK_TYPE_IMAGE, "icon-name", icon_name, /*"margin", 2,*/ NULL);
 	button = gtk_widget_new(type, "image", image, "tooltip-text", tooltip_text, NULL);
+	if( flat )
+		gtk_style_context_add_class (gtk_widget_get_style_context (button), GTK_STYLE_CLASS_FLAT);
 	return button;
 }
 
 
 GtkWidget *make_image_button(gchar *icon_name, gchar *tooltip_text)
 {
-	return _raw_image_button(GTK_TYPE_BUTTON, icon_name, tooltip_text);
+	return _raw_image_button(GTK_TYPE_BUTTON, icon_name, tooltip_text, FALSE);
 }
 
 
 GtkWidget *make_image_toggle_button(gchar *icon_name, gchar *tooltip_text)
 {
-	return _raw_image_button(GTK_TYPE_TOGGLE_BUTTON, icon_name, tooltip_text);
+	return _raw_image_button(GTK_TYPE_TOGGLE_BUTTON, icon_name, tooltip_text, FALSE);
 }
 
 
 GtkWidget *make_image_radio_button(gchar *icon_name, gchar *tooltip_text)
 {
-GtkWidget * button = _raw_image_button(GTK_TYPE_RADIO_BUTTON, icon_name, tooltip_text);
+GtkWidget * button = _raw_image_button(GTK_TYPE_RADIO_BUTTON, icon_name, tooltip_text, FALSE);
 
 	gtk_toggle_button_set_mode(GTK_TOGGLE_BUTTON(button), FALSE);
 
 	return button;
 }
+
+
+/* toolbar stuff */
+
+
+GtkWidget *make_tb(void)
+{
+GtkWidget *widget = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
+	gtk_style_context_add_class (gtk_widget_get_style_context (widget), GTK_STYLE_CLASS_PRIMARY_TOOLBAR);
+	return widget;
+}
+
+
+GtkWidget *make_tb_separator(void)
+{
+GtkWidget *widget = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
+	gtk_widget_set_margin_start(widget, SPACING_SMALL);
+	gtk_widget_set_margin_end  (widget, SPACING_SMALL);
+	return widget;
+}
+
+
+GtkWidget *make_tb_image_button(gchar *icon_name, gchar *tooltip_text)
+{
+GtkWidget *button = _raw_image_button(GTK_TYPE_BUTTON, icon_name, tooltip_text, TRUE);
+GtkWidget *img = gtk_button_get_image(GTK_BUTTON(button));
+
+	g_object_set(img, "icon-size", GTK_ICON_SIZE_LARGE_TOOLBAR, NULL);
+	return button;
+}
+
+
+GtkWidget *make_tb_image_toggle_button(gchar *icon_name, gchar *tooltip_text)
+{
+GtkWidget *button = _raw_image_button(GTK_TYPE_TOGGLE_BUTTON, icon_name, tooltip_text, TRUE);
+GtkWidget *img = gtk_button_get_image(GTK_BUTTON(button));
+
+	g_object_set(img, "icon-size", GTK_ICON_SIZE_LARGE_TOOLBAR, NULL);
+	return button;
+}
+
+
+GtkWidget *make_tb_image_radio_button(gchar *icon_name, gchar *tooltip_text)
+{
+GtkWidget * button = _raw_image_button(GTK_TYPE_RADIO_BUTTON, icon_name, tooltip_text, TRUE);
+GtkWidget *img = gtk_button_get_image(GTK_BUTTON(button));
+
+	g_object_set(img, "icon-size", GTK_ICON_SIZE_LARGE_TOOLBAR, NULL);
+	gtk_toggle_button_set_mode(GTK_TOGGLE_BUTTON(button), FALSE);
+
+	return button;
+}
+
+
 
 
 /*
@@ -646,51 +744,6 @@ GtkWidget *entry;
 
 	return entry;
 }
-
-/*
-static void make_entry_numeric_insert_text_handler (GtkEntry    *entry,
-                          const gchar *text,
-                          gint         length,
-                          gint        *position,
-                          gpointer     data)
-{
-GtkEditable *editable = GTK_EDITABLE(entry);
-int i, count=0;
-gchar *result = g_new (gchar, length);
-
-	for (i=0; i < length; i++) {
-	if (!g_ascii_isdigit(text[i]))
-	  continue;
-	result[count++] = text[i];
-	}
-
-	if (count > 0) {
-	g_signal_handlers_block_by_func (G_OBJECT (editable),
-		                             G_CALLBACK (make_entry_numeric_insert_text_handler),
-		                             data);
-	gtk_editable_insert_text (editable, result, count, position);
-	g_signal_handlers_unblock_by_func (G_OBJECT (editable),
-		                               G_CALLBACK (make_entry_numeric_insert_text_handler),
-		                               data);
-	}
-	g_signal_stop_emission_by_name (G_OBJECT (editable), "insert_text");
-
-	g_free (result);
-}
-
-
-GtkWidget *make_entry_numeric(GtkWidget *label, gint min, gint max)
-{
-GtkWidget *entry;
-
-	entry = make_string(label);
-	gtk_entry_set_text(GTK_ENTRY(entry), "1");
-
-	g_signal_connect(G_OBJECT(entry), "insert-text", G_CALLBACK(make_entry_numeric_insert_text_handler),
-			 NULL);
-
-	return entry;
-}*/
 
 
 static void hb_amount_insert_text_handler (GtkEntry *entry, const gchar *text, gint length, gint *position, gpointer data)
@@ -1337,10 +1390,12 @@ GList *renderers, *list;
 
 	make_daterange_fill_items(GTK_COMBO_BOX(combo_box), CYA_FLT_RANGE_MQY);
 
-	if( flags & DATE_RANGE_FLAG_BUDGET_MODE )
-		make_daterange_fill_items(GTK_COMBO_BOX(combo_box), CYA_FLT_RANGE_BUDGET);
-	else
-		make_daterange_fill_items(GTK_COMBO_BOX(combo_box), CYA_FLT_RANGE_NORMAL);
+	make_daterange_fill_items(GTK_COMBO_BOX(combo_box), CYA_FLT_RANGE_YTO);
+
+	if( !(flags & DATE_RANGE_FLAG_BUDGET_MODE) )
+		make_daterange_fill_items(GTK_COMBO_BOX(combo_box), CYA_FLT_RANGE_LASTXXD);
+
+	make_daterange_fill_items(GTK_COMBO_BOX(combo_box), CYA_FLT_RANGE_COMMON);
 
 	if( !(flags & DATE_RANGE_FLAG_CUSTOM_HIDDEN) )
 		make_daterange_fill_items(GTK_COMBO_BOX(combo_box), CYA_FLT_RANGE_CUSTOM);
@@ -1366,7 +1421,8 @@ GList *renderers, *list;
 	gtk_combo_box_set_wrap_width (GTK_COMBO_BOX(combo_box), 3);
 
 	//gtk_combo_box_set_active(GTK_COMBO_BOX(combobox), FLT_RANGE_MISC_ALLDATE);
-	hbtk_combo_box_set_active_id(GTK_COMBO_BOX(combo_box), FLT_RANGE_MISC_ALLDATE);
+	//5.8.6 leave unset to trigger a change
+	//hbtk_combo_box_set_active_id(GTK_COMBO_BOX(combo_box), FLT_RANGE_MISC_ALLDATE);
 	gtk_combo_box_set_row_separator_func (GTK_COMBO_BOX (combo_box), hbtk_combo_box_is_separator, NULL, NULL);
 
 	return combo_box;

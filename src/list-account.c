@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -22,6 +22,8 @@
 
 #include "list-account.h"
 #include "hub-account.h"
+
+#include "ui-widgets.h"
 
 /****************************************************************************/
 /* Debug macros																*/
@@ -238,13 +240,18 @@ gint dt;
 		switch(GPOINTER_TO_INT(user_data))
 		{
 			case 1:
-				iconname = (acc->flags & AF_ADDED) ? ICONNAME_HB_OPE_NEW : NULL;
+				if(acc->dspflags & FLAG_ACC_TMP_EDITED)
+					iconname = ICONNAME_HB_ITEM_EDITED;
+				else
+				if(acc->dspflags & FLAG_ACC_TMP_ADDED)
+					iconname = ICONNAME_HB_ITEM_ADDED;
 				// override if closed account
 				if( acc->flags & AF_CLOSED )
-					iconname = ICONNAME_CHANGES_PREVENT;
+					iconname = ICONNAME_HB_ITEM_CLOSED;
 				break;
 			case 2:
-				iconname = (acc->flags & AF_CHANGED) ? ICONNAME_HB_OPE_EDIT : NULL;
+				if( acc->flags & AF_HASNOTICE )
+					iconname = ICONNAME_WARNING;
 				break;
 		}
 	}
@@ -831,7 +838,7 @@ GtkTreeViewColumn  *column;
 
 	//add system icon to 1st column
 	gtk_tree_view_column_set_clickable(column, TRUE);
-	GtkWidget *img = gtk_image_new_from_icon_name (ICONNAME_EMBLEM_SYSTEM, GTK_ICON_SIZE_BUTTON);
+	GtkWidget *img = hbtk_image_new_from_icon_name_16 (ICONNAME_EMBLEM_SYSTEM);
 	gtk_widget_show(img);
 	gtk_tree_view_column_set_widget(column, img);
 

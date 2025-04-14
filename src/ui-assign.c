@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal ruleing for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -18,6 +18,9 @@
  */
 
 #include "homebank.h"
+
+#include "ui-dialogs.h"
+#include "ui-widgets.h"
 
 #include "ui-assign.h"
 #include "hbtk-switcher.h"
@@ -44,14 +47,6 @@ extern struct Preferences *PREFS;
 
 
 extern gchar *CYA_ASG_FIELD[];
-
-
-static gchar *CYA_ASG_ACTION[] = {
-	N_("Disabled"), 
-	N_("If empty"), 
-	N_("Overwrite"), 
-	NULL
-};
 
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
@@ -149,7 +144,18 @@ gint retval = 0;
 			break;
 		case LST_DEFASG_SORT_PAYMENT:
 			retval = item1->paymode - item2->paymode;
-			break;			
+			break;
+
+		case LST_DEFASG_SORT_TAGS:
+		gchar *t1, *t2;
+
+			t1 = tags_tostring(item1->tags);
+			t2 = tags_tostring(item2->tags);
+			retval = hb_string_utf8_compare(t1, t2);
+			g_free(t2);
+			g_free(t1);
+			break;
+
 		case LST_DEFASG_SORT_NOTES:
 			retval = hb_string_utf8_compare(item1->notes, item2->notes);
 			break;			
@@ -174,7 +180,7 @@ gchar *iconname = NULL;
 	switch(GPOINTER_TO_INT(user_data))
 	{
 		case 1:
-			iconname = ( asgitem->flags & ASGF_PREFILLED  ) ? ICONNAME_HB_OPE_PREFILLED : NULL;
+			iconname = ( asgitem->flags & ASGF_PREFILLED  ) ? ICONNAME_HB_ITEM_PREFILLED : NULL;
 			break;
 	}
 
@@ -191,6 +197,28 @@ gchar buffer[256];
 	gtk_tree_model_get(model, iter, LST_DEFASG_DATAS, &asgitem, -1);
 	g_snprintf(buffer, 256-1, "%d", asgitem->pos);
 	g_object_set(renderer, "text", buffer, NULL);
+}
+
+
+static void 
+ui_asg_listview_cell_data_func_searchicons (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
+{
+Assign *asgitem;
+gchar *iconname = NULL;
+
+	gtk_tree_model_get(model, iter, LST_DEFASG_DATAS, &asgitem, -1);
+
+	switch(GPOINTER_TO_INT(user_data))
+	{
+		case 1:
+			iconname = ( asgitem->flags & ASGF_EXACT  ) ? ICONNAME_HB_TEXT_CASE : NULL;
+			break;
+		case 2:
+			iconname = ( asgitem->flags & ASGF_REGEX ) ? ICONNAME_HB_TEXT_REGEX : NULL;
+			break;
+	}
+
+	g_object_set(renderer, "icon-name", iconname, NULL);
 }
 
 
@@ -252,6 +280,24 @@ Assign *asgitem;
 
 	gtk_tree_model_get(model, iter, LST_DEFASG_DATAS, &asgitem, -1);
 	g_object_set(renderer, "icon-name", get_paymode_icon_name(asgitem->paymode), NULL);	
+}
+
+
+static void
+ui_asg_listview_cell_data_function_tags (GtkTreeViewColumn *col, GtkCellRenderer *renderer, GtkTreeModel *model, GtkTreeIter *iter, gpointer user_data)
+{
+Assign *asgitem;
+
+	gtk_tree_model_get(model, iter, LST_DEFASG_DATAS, &asgitem, -1);
+
+	if(asgitem->tags != NULL)
+	{
+	gchar *text = tags_tostring(asgitem->tags);
+		g_object_set(renderer, "text", text, NULL);
+		g_free(text);
+	}
+	else
+		g_object_set(renderer, "text", NULL, NULL);
 }
 
 
@@ -577,6 +623,14 @@ GtkTreeViewColumn	*column;
 	
 	// column : Search
 	column = ui_asg_listview_column_text_create(_("Search"), LST_DEFASG_SORT_SEARCH, ui_asg_listview_cell_data_function_search, NULL);
+	renderer = gtk_cell_renderer_pixbuf_new ();
+	gtk_cell_renderer_set_fixed_size(renderer, 16, -1);
+	gtk_tree_view_column_pack_start(column, renderer, FALSE);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_asg_listview_cell_data_func_searchicons, GINT_TO_POINTER(1), NULL);
+	renderer = gtk_cell_renderer_pixbuf_new ();
+	gtk_cell_renderer_set_fixed_size(renderer, 16, -1);
+	gtk_tree_view_column_pack_start(column, renderer, FALSE);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_asg_listview_cell_data_func_searchicons, GINT_TO_POINTER(2), NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
 	// column : Notes
@@ -595,13 +649,18 @@ GtkTreeViewColumn	*column;
 	renderer = gtk_cell_renderer_pixbuf_new ();
 	g_object_set(renderer, "xalign", 0.0, NULL);
 	column = gtk_tree_view_column_new();
-	gtk_tree_view_column_set_title(column, _("Payment"));
+	//TRANSLATORS: abbreviation for payment
+	gtk_tree_view_column_set_title(column, _("Pay."));
 	gtk_tree_view_column_set_sort_column_id (column, LST_DEFASG_SORT_PAYMENT);
 	gtk_tree_view_column_pack_start(column, renderer, FALSE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_asg_listview_cell_data_function_payment, 0, NULL);
 	gtk_tree_view_column_set_min_width (column, HB_MINWIDTH_COLUMN);
-	
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+
+	// column : Tags
+	column = ui_asg_listview_column_text_create(_("Tags"), LST_DEFASG_SORT_TAGS, ui_asg_listview_cell_data_function_tags, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+
 
   	/* column : empty */
 	column = gtk_tree_view_column_new();
@@ -638,6 +697,7 @@ GtkTreeViewColumn	*column;
 	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_DEFASG_SORT_PAYEE, ui_asg_listview_compare_func, GINT_TO_POINTER(LST_DEFASG_SORT_PAYEE), NULL);
 	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_DEFASG_SORT_CATEGORY, ui_asg_listview_compare_func, GINT_TO_POINTER(LST_DEFASG_SORT_CATEGORY), NULL);
 	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_DEFASG_SORT_PAYMENT, ui_asg_listview_compare_func, GINT_TO_POINTER(LST_DEFASG_SORT_PAYMENT), NULL);
+	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_DEFASG_SORT_TAGS, ui_asg_listview_compare_func, GINT_TO_POINTER(LST_DEFASG_SORT_TAGS), NULL);
 	gtk_tree_sortable_set_sort_func(GTK_TREE_SORTABLE(store), LST_DEFASG_SORT_NOTES, ui_asg_listview_compare_func, GINT_TO_POINTER(LST_DEFASG_SORT_NOTES), NULL);
 
 	gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), LST_DEFASG_SORT_POS, GTK_SORT_ASCENDING);
@@ -670,26 +730,29 @@ gboolean sensitive;
 
 
 	sensitive = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_amount));
-	gtk_widget_set_sensitive(data->LB_amount, sensitive);
 	gtk_widget_set_sensitive(data->ST_amount, sensitive);
 
 
-	sensitive = (hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_pay)) > 0) ? TRUE : FALSE;
+	sensitive = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_pay));
 	gtk_widget_set_sensitive(data->LB_pay, sensitive);
 	gtk_widget_set_sensitive(data->PO_pay, sensitive);
+	gtk_widget_set_sensitive(data->CM_payovw, sensitive);
 	
-	sensitive = (hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_cat)) > 0) ? TRUE : FALSE;
+	sensitive = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_cat));
 	gtk_widget_set_sensitive(data->LB_cat, sensitive);
 	gtk_widget_set_sensitive(data->PO_cat, sensitive);
+	gtk_widget_set_sensitive(data->CM_catovw, sensitive);
 	
-	sensitive = (hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_mod)) > 0) ? TRUE : FALSE;
+	sensitive = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_mod));
 	gtk_widget_set_sensitive(data->LB_mod, sensitive);
 	gtk_widget_set_sensitive(data->NU_mod, sensitive);
+	gtk_widget_set_sensitive(data->CM_modovw, sensitive);
 
-	sensitive = (hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_tags)) > 0) ? TRUE : FALSE;
+	sensitive = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_tags));
 	gtk_widget_set_sensitive(data->LB_tags, sensitive);
 	gtk_widget_set_sensitive(data->ST_tags, sensitive);
 	gtk_widget_set_sensitive(data->CY_tags, sensitive);
+	gtk_widget_set_sensitive(data->CM_tagsovw, sensitive);
 
 }
 
@@ -813,27 +876,26 @@ gchar *txt;
 		//#1710085 assignment based on amount 
 		active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_amount));
 		if(active == 1) item->flags |= ASGF_AMOUNT;
-		
-		active = hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_pay));
+
+		active = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_pay));
 		if(active == 1) item->flags |= ASGF_DOPAY;
-		else 
-			if(active == 2) item->flags |= ASGF_OVWPAY;
+		active = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_payovw));
+		if(active == 1) item->flags |= ASGF_OVWPAY;
 		
-		active = hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_cat));
+		active = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_cat));
 		if(active == 1) item->flags |= ASGF_DOCAT;
-		else 
-			if(active == 2) item->flags |= ASGF_OVWCAT;
+		active = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_catovw));
+		if(active == 1) item->flags |= ASGF_OVWCAT;
 		
-		active = hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_mod));
+		active = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_mod));
 		if(active == 1) item->flags |= ASGF_DOMOD;
-		else 
-			if(active == 2) item->flags |= ASGF_OVWMOD;
+		active = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_modovw));
+		if(active == 1) item->flags |= ASGF_OVWMOD;
 
-		active = hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_tags));
+		active = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_tags));
 		if(active == 1) item->flags |= ASGF_DOTAG;
-		else 
-			if(active == 2) item->flags |= ASGF_OVWTAG;
-
+		active = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_tagsovw));
+		if(active == 1) item->flags |= ASGF_OVWTAG;
 
 		item->amount = gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_amount));
 
@@ -889,30 +951,30 @@ gint active;
 		//g_signal_handlers_unblock_by_func(G_OBJECT(data->CM_amount), G_CALLBACK(ui_asg_manage_update_amount), NULL);
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->ST_amount), item->amount);
 
-		active = 0;
-		if(item->flags & ASGF_DOPAY) active = 1;
-		else if(item->flags & ASGF_OVWPAY) active = 2;
-		hbtk_switcher_set_active (HBTK_SWITCHER(data->RA_pay), active);
+		active = (item->flags & ASGF_DOPAY) ? 1 : 0;
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(data->CM_pay), active);
+		active = (item->flags & ASGF_OVWPAY) ? 1 : 0;
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(data->CM_payovw), active);
 		//ui_pay_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_pay), item->kpay);
 		ui_pay_entry_popover_set_active(GTK_BOX(data->PO_pay), item->kpay);
 
-		active = 0;
-		if(item->flags & ASGF_DOCAT) active = 1;
-		else if(item->flags & ASGF_OVWCAT) active = 2;
-		hbtk_switcher_set_active (HBTK_SWITCHER(data->RA_cat), active);
+		active = (item->flags & ASGF_DOCAT) ? 1 : 0;
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(data->CM_cat), active);
+		active = (item->flags & ASGF_OVWCAT) ? 1 : 0;
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(data->CM_catovw), active);
 		//ui_cat_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_cat), item->kcat);
 		ui_cat_entry_popover_set_active(GTK_BOX(data->PO_cat), item->kcat);
 
-		active = 0;
-		if(item->flags & ASGF_DOMOD) active = 1;
-		else if(item->flags & ASGF_OVWMOD) active = 2;
-		hbtk_switcher_set_active (HBTK_SWITCHER(data->RA_mod), active);
+		active = (item->flags & ASGF_DOMOD) ? 1 : 0;
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(data->CM_mod), active);
+		active = (item->flags & ASGF_OVWMOD) ? 1 : 0;
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(data->CM_modovw), active);
 		paymode_combo_box_set_active(GTK_COMBO_BOX(data->NU_mod), item->paymode);
 
-		active = 0;
-		if(item->flags & ASGF_DOTAG) active = 1;
-		else if(item->flags & ASGF_OVWTAG) active = 2;
-		hbtk_switcher_set_active (HBTK_SWITCHER(data->RA_tags), active);
+		active = (item->flags & ASGF_DOTAG) ? 1 : 0;
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(data->CM_tags), active);
+		active = (item->flags & ASGF_OVWTAG) ? 1 : 0;
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(data->CM_tagsovw), active);
 		
 		gchar *tagstr = tags_tostring(item->tags);
 		hbtk_entry_set_text(GTK_ENTRY(data->ST_tags), tagstr);
@@ -987,7 +1049,7 @@ gint w, h, dw, dh;
 	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
 	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
 	hb_widget_set_margin(GTK_WIDGET(content_grid), SPACING_LARGE);
-	gtk_box_pack_start(GTK_BOX(content), content_grid, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX(content), content_grid);
 
 	// group :: Rule
 	crow = 0;
@@ -1011,28 +1073,18 @@ gint w, h, dw, dh;
 		entry1 = make_string(label);
 		data->ST_search = entry1;
 		gtk_widget_set_hexpand(entry1, TRUE);
-		gtk_box_pack_start(GTK_BOX(bbox), entry1, TRUE, TRUE, 0);
-		widget = make_image_toggle_button(ICONNAME_HB_TEXT_CASE, _("Case sensitive"));
-		//widget = gtk_toggle_button_new_with_label("Aa");
-		//gtk_widget_set_tooltip_text(widget, _("Case sensitive"));
-		data->CM_exact = widget;
-		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
-		widget = make_image_toggle_button(ICONNAME_HB_TEXT_REGEX, _("Regular expression"));
-		//widget = gtk_toggle_button_new_with_label(".*");
-		//gtk_widget_set_tooltip_text(widget, _("Regular expression"));
-		data->CM_re = widget;
-		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+		hbtk_box_prepend (GTK_BOX(bbox), entry1);
 
 	row++;
 	bbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	data->GR_wrntxt = bbox;
 	gtk_grid_attach (GTK_GRID (group_grid), bbox, 2, row, 2, 1);
 	
-		widget = gtk_image_new_from_icon_name (ICONNAME_WARNING, GTK_ICON_SIZE_BUTTON);
-		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+		widget = hbtk_image_new_from_icon_name_16 (ICONNAME_WARNING);
+		gtk_box_prepend(GTK_BOX(bbox), widget);
 		widget = make_label(NULL, 0.0, 0.5);
 		data->LB_wrntxt = widget;
-		gtk_box_pack_start(GTK_BOX(bbox), widget, TRUE, TRUE, 0);
+		hbtk_box_prepend (GTK_BOX(bbox), widget);
 	
 	row++;
 	label = make_label_widget(_("_In:"));
@@ -1042,40 +1094,35 @@ gint w, h, dw, dh;
 	data->CY_field = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 2, 1);
 
-	/*row++;
-	widget = gtk_check_button_new_with_mnemonic (_("Match _case"));
+	row++;
+	widget = gtk_check_button_new_with_mnemonic (_("Case _sensitive"));
 	data->CM_exact = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 2, 1);
 
 	row++;
-	widget = gtk_check_button_new_with_mnemonic (_("Use _regular expressions"));
+	widget = gtk_check_button_new_with_mnemonic (_("_Regular expression"));
 	data->CM_re = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 2, 1);
-	*/
+
 
 	row++;
-	widget = gtk_check_button_new_with_mnemonic(_("_AND"));
-	data->CM_amount = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
-	
+	label = make_label_widget(_("Amou_nt:"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	bbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	gtk_grid_attach (GTK_GRID (group_grid), bbox, 2, row, 2, 1);
-	
-		//gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
 
-		label = make_label_widget(_("Amou_nt:"));
-		data->LB_amount = label;
-		gtk_box_pack_start(GTK_BOX(bbox), label, FALSE, FALSE, 0);
+		widget = gtk_check_button_new_with_mnemonic(_("_AND"));
+		data->CM_amount = widget;
+		gtk_box_prepend(GTK_BOX(bbox), widget);
 
 		widget = make_amount(label);
 		data->ST_amount = widget;
-		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend(GTK_BOX(bbox), widget);
 
 
 	// group :: Assignments
 	crow++;
     group_grid = gtk_grid_new ();
-	data->GR_assignment = group_grid;
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
 	gtk_grid_attach (GTK_GRID (content_grid), group_grid, 0, crow, 1, 1);
@@ -1087,87 +1134,88 @@ gint w, h, dw, dh;
 
 	//payee
 	row++;
-	widget = hbtk_switcher_new (GTK_ORIENTATION_HORIZONTAL);
-	hbtk_switcher_setup(HBTK_SWITCHER(widget), CYA_ASG_ACTION, FALSE);
-	data->RA_pay = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+	widget = gtk_check_button_new();
+	data->CM_pay = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
 
-	row++;
 	label = make_label_widget (_("_Payee:"));
 	data->LB_pay = label;
-	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), label, 2, row, 1, 1);
 
 	//widget = ui_pay_comboboxentry_new(label);
 	widget = ui_pay_entry_popover_new(label);
 	data->PO_pay = widget;
 	gtk_widget_set_hexpand(widget, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 3, row, 1, 1);
+
+	widget = gtk_check_button_new_with_mnemonic(_("Overwrite"));
+	data->CM_payovw = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 4, row, 1, 1);
 
 	//category
 	row++;
-	widget = hbtk_switcher_new (GTK_ORIENTATION_HORIZONTAL);
-	hbtk_switcher_setup(HBTK_SWITCHER(widget), CYA_ASG_ACTION, FALSE);
-	data->RA_cat = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+	widget = gtk_check_button_new();
+	data->CM_cat = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
 
-	gtk_widget_set_margin_top(widget, SPACING_MEDIUM);
-
-	
-	row++;
 	label = make_label_widget (_("_Category:"));
 	data->LB_cat = label;
-	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), label, 2, row, 1, 1);
 
 	//widget = ui_cat_comboboxentry_new(label);
 	widget = ui_cat_entry_popover_new(label);
 	data->PO_cat = widget;
 	gtk_widget_set_hexpand(widget, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 3, row, 1, 1);
+
+	widget = gtk_check_button_new_with_mnemonic(_("Overwrite"));
+	data->CM_catovw = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 4, row, 1, 1);
 
 	//payment
 	row++;
-	widget = hbtk_switcher_new (GTK_ORIENTATION_HORIZONTAL);
-	hbtk_switcher_setup(HBTK_SWITCHER(widget), CYA_ASG_ACTION, FALSE);
-	data->RA_mod = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+	widget = gtk_check_button_new();
+	data->CM_mod = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
 
-	gtk_widget_set_margin_top(widget, SPACING_MEDIUM);
-
-	row++;
 	label = make_label_widget (_("Pay_ment:"));
 	data->LB_mod = label;
-	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), label, 2, row, 1, 1);
 
 	widget = make_paymode (label);
 	data->NU_mod = widget;
-	gtk_widget_set_hexpand(widget, TRUE);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+	gtk_widget_set_halign(widget, GTK_ALIGN_START);
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 3, row, 1, 1);
+
+	widget = gtk_check_button_new_with_mnemonic(_("Overwrite"));
+	data->CM_modovw = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 4, row, 1, 1);
 
 	//tags
 	row++;
-	widget = hbtk_switcher_new (GTK_ORIENTATION_HORIZONTAL);
-	hbtk_switcher_setup(HBTK_SWITCHER(widget), CYA_ASG_ACTION, FALSE);
-	data->RA_tags = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
+	widget = gtk_check_button_new();
+	data->CM_tags = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
 
-	gtk_widget_set_margin_top(widget, SPACING_MEDIUM);
-
-	row++;
 	label = make_label_widget (_("_Tags:"));
 	data->LB_tags = label;
-	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), label, 2, row, 1, 1);
 
 	wbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(wbox)), GTK_STYLE_CLASS_LINKED);
-	gtk_grid_attach (GTK_GRID (group_grid), wbox, 2, row, 1, 1);
+	gtk_grid_attach (GTK_GRID (group_grid), wbox, 3, row, 1, 1);
 
 		widget = make_string(label);
 		data->ST_tags = widget;
-		gtk_box_pack_start (GTK_BOX (wbox), widget, TRUE, TRUE, 0);
+		hbtk_box_prepend (GTK_BOX (wbox), widget);
 
 		widget = ui_tag_popover_list(data->ST_tags);
 		data->CY_tags = widget;
-		gtk_box_pack_start (GTK_BOX (wbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (wbox), widget);
+
+	widget = gtk_check_button_new_with_mnemonic(_("Overwrite"));
+	data->CM_tagsovw = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 4, row, 1, 1);
 
 	//misc
 	crow++;
@@ -1204,13 +1252,10 @@ gint w, h, dw, dh;
 
 	g_signal_connect (data->CM_amount, "toggled", G_CALLBACK (ui_asg_dialog_update), NULL);
 
-	g_signal_connect (G_OBJECT (data->RA_pay), "changed", G_CALLBACK (ui_asg_dialog_update), NULL);
-
-	g_signal_connect (G_OBJECT (data->RA_cat), "changed", G_CALLBACK (ui_asg_dialog_update), NULL);
-
-	g_signal_connect (G_OBJECT (data->RA_mod), "changed", G_CALLBACK (ui_asg_dialog_update), NULL);
-
-	g_signal_connect (G_OBJECT (data->RA_tags), "changed", G_CALLBACK (ui_asg_dialog_update), NULL);
+	g_signal_connect (G_OBJECT (data->CM_pay), "toggled", G_CALLBACK (ui_asg_dialog_update), NULL);
+	g_signal_connect (G_OBJECT (data->CM_cat), "toggled", G_CALLBACK (ui_asg_dialog_update), NULL);
+	g_signal_connect (G_OBJECT (data->CM_mod), "toggled", G_CALLBACK (ui_asg_dialog_update), NULL);
+	g_signal_connect (G_OBJECT (data->CM_tags), "toggled", G_CALLBACK (ui_asg_dialog_update), NULL);
 
 
 	return dialog;
@@ -1240,9 +1285,6 @@ struct ui_asg_manage_data *data;
 GtkTreeModel *model;
 GtkTreeIter iter;
 gboolean selected, sensitive, canup, candw, canto;
-gint sort_column_id;
-//gint searchlen;
-GtkSortType sort_order;
 
 	DB( g_print("\n[ui-asg-manage] update\n") );
 
@@ -1264,29 +1306,32 @@ GtkSortType sort_order;
 
 	DB( g_print(" is_sortable= %d\n", GTK_IS_TREE_SORTABLE(model)) );
 
-	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_rul));
-	sort_column_id = GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID;
-	sort_order = GTK_SORT_DESCENDING;
-	gtk_tree_sortable_get_sort_column_id(GTK_TREE_SORTABLE(model), &sort_column_id, &sort_order);
-	DB( g_print(" sort is colid=%d order=%d (ok is %d %d)\n", sort_column_id, sort_order, LST_DEFASG_SORT_POS, GTK_SORT_ASCENDING) );
-
-	if( !((sort_column_id == LST_DEFASG_SORT_POS) && (sort_order == GTK_SORT_ASCENDING)) )
-	{
-		canup = candw = FALSE;
-		DB( g_print(" sort is not by position ASC\n") );
-		goto end;
-	}
-
 	if( selected == TRUE )
 	{
-	Assign *item;
+	GtkTreeIter *tmpIter;
+	gint sort_column_id;
+	GtkSortType sort_order;
 
-		gtk_tree_model_get(model, &iter, LST_DEFASG_DATAS, &item, -1);
-		
-		DB( g_print(" item pos is %d\n", item->pos) );
+		model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_rul));
+		sort_column_id = GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID;
+		sort_order = GTK_SORT_DESCENDING;
+		gtk_tree_sortable_get_sort_column_id(GTK_TREE_SORTABLE(model), &sort_column_id, &sort_order);
+		DB( g_print(" sort is colid=%d order=%d (ok is %d %d)\n", sort_column_id, sort_order, LST_DEFASG_SORT_POS, GTK_SORT_ASCENDING) );
 
-		canup = (item->pos <= 1) ? FALSE : TRUE;
-		candw = (item->pos >= da_asg_length()) ? FALSE : TRUE;
+		if( !((sort_column_id == LST_DEFASG_SORT_POS) && (sort_order == GTK_SORT_ASCENDING)) )
+		{
+			canup = candw = FALSE;
+			DB( g_print(" sort is not by position ASC\n") );
+			goto end;
+		}
+
+		tmpIter = gtk_tree_iter_copy(&iter);
+		canup = gtk_tree_model_iter_previous(model, tmpIter);
+		gtk_tree_iter_free(tmpIter);
+
+		tmpIter = gtk_tree_iter_copy(&iter);
+		candw = gtk_tree_model_iter_next(model, tmpIter);
+		gtk_tree_iter_free(tmpIter);
 	}
 
 end:
@@ -1757,10 +1802,8 @@ GtkWidget *pop_content;
 	menubutton = gtk_menu_button_new ();
 	data->MB_moveto = menubutton;
 	box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
-	//label = gtk_label_new_with_mnemonic (_("Use a _template"));
-	//gtk_box_pack_start (GTK_BOX(box), label, FALSE, FALSE, 0);
 	image = gtk_image_new_from_icon_name (ICONNAME_LIST_MOVE_AFTER, GTK_ICON_SIZE_BUTTON);
-	gtk_box_pack_start (GTK_BOX(box), image, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX(box), image);
 	gtk_container_add(GTK_CONTAINER(menubutton), box);
 	gtk_widget_set_tooltip_text(menubutton, _("Move to..."));
 
@@ -1772,33 +1815,32 @@ GtkWidget *pop_content;
 	pop_content = gtk_box_new(GTK_ORIENTATION_VERTICAL, SPACING_SMALL);
 
 	widget = make_label_group(_("Move rule"));
-	gtk_box_pack_start(GTK_BOX(pop_content), widget, FALSE, FALSE, 0);
+	gtk_box_prepend(GTK_BOX(pop_content), widget);
 
 	widget = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
-	gtk_box_pack_start(GTK_BOX(pop_content), widget, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX(pop_content), widget);
 
 	box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
-	gtk_box_pack_start(GTK_BOX(pop_content), box, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX(pop_content), box);
 
 		label = make_label_widget(_("_To:"));
-		gtk_box_pack_start(GTK_BOX(box), label, FALSE, FALSE, 0);
+		gtk_box_prepend(GTK_BOX(box), label);
 
 		widget = make_numeric(label, 1, 99);
 		data->ST_poppos = widget;
 		gtk_entry_set_width_chars(GTK_ENTRY(widget), 10);
-		gtk_box_pack_start(GTK_BOX(box), widget, FALSE, FALSE, 0);
+		gtk_box_prepend(GTK_BOX(box), widget);
 
 	widget = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
-	gtk_box_pack_start(GTK_BOX(pop_content), widget, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX(pop_content), widget);
 
-	box = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
-	gtk_button_box_set_layout(GTK_BUTTON_BOX(box), GTK_BUTTONBOX_END);
-	gtk_box_pack_start(GTK_BOX(pop_content), box, TRUE, TRUE, 0);
-	
+	box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_box_append(GTK_BOX(pop_content), box);
+
 		widget = gtk_button_new_with_mnemonic(_("Move"));
 		data->BT_popmove = widget;
 		gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(widget)), GTK_STYLE_CLASS_SUGGESTED_ACTION);
-		gtk_box_pack_end(GTK_BOX(box), widget, TRUE, TRUE, 0);
+		gtk_box_append(GTK_BOX(box), widget);
 	
 	gtk_widget_show_all(pop_content);
 	
@@ -1851,23 +1893,23 @@ gint w, h, dw, dh;
 
 	content = gtk_box_new(GTK_ORIENTATION_VERTICAL, SPACING_MEDIUM);
 	hb_widget_set_margin(GTK_WIDGET(content), SPACING_LARGE);
-	gtk_box_pack_start (GTK_BOX (content_area), content, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (content_area), content);
 	
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start (GTK_BOX (content), hbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (content), hbox);
 
 		box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-		gtk_box_pack_start (GTK_BOX (hbox), box, TRUE, TRUE, 0);
+		hbtk_box_prepend (GTK_BOX (hbox), box);
 
 	widget = make_search ();
 	data->ST_search = widget;
 	gtk_widget_set_size_request(widget, HB_MINWIDTH_SEARCH, -1);
 	gtk_widget_set_halign(widget, GTK_ALIGN_END);
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (hbox), widget);
 
 	// list + toolbar
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	gtk_box_pack_start (GTK_BOX (content), vbox, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (content), vbox);
 	
 	// listview
 	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
@@ -1875,48 +1917,48 @@ gint w, h, dw, dh;
 	data->LV_rul = treeview;
 	gtk_widget_set_size_request(treeview, HB_MINWIDTH_LIST, -1);
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
-	gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (vbox), scrollwin);
 
 	tbar = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
-	gtk_box_pack_start (GTK_BOX (vbox), tbar, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (vbox), tbar);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (tbar), bbox);
 
 		widget = make_image_button(ICONNAME_LIST_ADD, _("Add"));
 		data->BT_add = widget;
-		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend(GTK_BOX(bbox), widget);
 
 		widget = make_image_button(ICONNAME_LIST_DELETE, _("Delete"));
 		data->BT_rem = widget;
-		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend(GTK_BOX(bbox), widget);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (tbar), bbox);
 
 		widget = make_image_button(ICONNAME_LIST_EDIT, _("Edit"));
 		data->BT_edit = widget;
-		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend(GTK_BOX(bbox), widget);
 
 		widget = make_image_button(ICONNAME_LIST_DUPLICATE, _("Duplicate"));
 		data->BT_dup = widget;
-		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend(GTK_BOX(bbox), widget);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (tbar), bbox);
 
 		widget = make_image_button(ICONNAME_LIST_MOVE_UP, _("Move up"));
 		data->BT_up = widget;
-		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend(GTK_BOX(bbox), widget);
 
 		widget = make_image_button(ICONNAME_LIST_MOVE_DOWN, _("Move down"));
 		data->BT_down = widget;
-		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend(GTK_BOX(bbox), widget);
 
 		widget = ui_asg_popover_move_after_new(data);
 		data->BT_move = widget;
-		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend(GTK_BOX(bbox), widget);
 
 	// connect dialog signals
 	g_signal_connect (dialog, "destroy", G_CALLBACK (gtk_widget_destroyed), &dialog);

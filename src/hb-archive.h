@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -20,10 +20,8 @@
 #ifndef __HB_ARCHIVE_H__
 #define __HB_ARCHIVE_H__
 
-#include "hb-transaction.h"
-#include "hb-split.h"
+#include "hb-types.h"
 
-typedef struct _archive		Archive;
 
 struct _archive
 {
@@ -49,14 +47,27 @@ struct _archive
 	
 	GPtrArray	*splits;
 
-	/* automation data */
+	//recurrence :: https://learn.microsoft.com/en-us/graph/outlook-schedule-recurring-events
+	gushort		rec_flags;		//flags
+	guchar		rec_freq;		//0-3
+	guchar		rec_every;		//100
+	guchar		rec_ordinal;	//0-5
+	guchar		rec_weekday;	//1-10
 	guint32		nextdate;
-	gushort		daygap;
-	gushort		every;
-	gushort		unit;
-	gushort		limit;
-	gushort		weekend;
+	guchar		daygap;
+	guchar		weekend;	//0 - 3
+	gushort		limit;		//366	
+
+	/* unsaved datas */
+	gushort		dspflags;
 };
+
+
+// saved flags -- data
+//gushort is 2 bytes / 16 bits
+#define TF_RECUR	(1<< 0)
+#define TF_LIMIT	(1<< 1)
+#define TF_RELATIVE	(1<< 2)
 
 
 enum
@@ -70,18 +81,40 @@ enum
 /*
 ** scheduled unit
 */
-enum
-{
-	AUTO_UNIT_DAY,
-	AUTO_UNIT_WEEK,
-	AUTO_UNIT_MONTH,
+enum {
+	AUTO_FREQ_DAY,
+	AUTO_FREQ_WEEK,
+	AUTO_FREQ_MONTH,
 	//AUTO_UNIT_QUARTER,
-	AUTO_UNIT_YEAR
+	AUTO_FREQ_YEAR
+};
+
+//5.9
+enum {
+	AUTO_ORDINAL_FIRST = 1,
+	AUTO_ORDINAL_SECOND,
+	AUTO_ORDINAL_THIRD,
+	AUTO_ORDINAL_FOURTH,
+	AUTO_ORDINAL_LAST,
+};
+
+//5.9
+enum {
+	AUTO_WEEKDAY_MONDAY = 1,
+	AUTO_WEEKDAY_TUESDAY,
+	AUTO_WEEKDAY_WEDNESDAY,
+	AUTO_WEEKDAY_THURSDAY,
+	AUTO_WEEKDAY_FRIDAY,
+	AUTO_WEEKDAY_SATURDAY,
+	AUTO_WEEKDAY_SUNDAY,
+	//----
+	AUTO_WEEKDAY_DAY,
+	AUTO_WEEKDAY_WEEKDAY,
+	AUTO_WEEKDAY_WEEKENDDAY,
 };
 
 
-enum
-{
+enum {
 	ARC_WEEKEND_POSSIBLE,
 	ARC_WEEKEND_BEFORE,
 	ARC_WEEKEND_AFTER,
@@ -129,8 +162,10 @@ gboolean template_is_account_used(Archive *arc);
 
 void scheduled_nextdate_weekend_adjust(Archive *arc);
 guint32 scheduled_date_get_next_post(GDate *date, Archive *arc, guint32 nextdate);
+guint32 scheduled_date_get_next_relative(GDate *date, guint ordinal, guint weekday, guint every);
+
 gboolean scheduled_is_postable(Archive *arc);
-guint32 scheduled_get_postdate(Archive *arc, guint32 postdate);
+guint32 scheduled_get_txn_real_postdate(guint32 postdate, gint weekend);
 guint32 scheduled_get_latepost_count(GDate *date, Archive *arc, guint32 jrefdate);
 guint32 scheduled_date_advance(Archive *arc);
 

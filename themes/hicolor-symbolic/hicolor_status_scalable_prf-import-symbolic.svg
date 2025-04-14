@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   id="svg7384"
+   height="16"
+   width="16"
+   version="1.1"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="hicolor_status_scalable_prf-import-symbolic.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs12">
+    <linearGradient
+       id="linearGradient5606"
+       inkscape:swatch="solid">
+      <stop
+         id="stop5608"
+         offset="0"
+         style="stop-color:#000000;stop-opacity:1;" />
+    </linearGradient>
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1003"
+     id="namedview10"
+     showgrid="true"
+     inkscape:zoom="46.845824"
+     inkscape:cx="5.0911688"
+     inkscape:cy="8.0903689"
+     inkscape:window-x="1280"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg7384"
+     inkscape:showpageshadow="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid4491" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata90">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>HomeBank Symbolic Icon Theme</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <title
+     id="title9167">HomeBank Symbolic Icon Theme</title>
+  <path
+     inkscape:connector-curvature="0"
+     id="path834"
+     style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:medium;line-height:normal;font-family:sans-serif;font-variant-ligatures:normal;font-variant-position:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-alternates:normal;font-feature-settings:normal;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;text-decoration-style:solid;text-decoration-color:#000000;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;text-orientation:mixed;dominant-baseline:auto;baseline-shift:baseline;text-anchor:start;white-space:normal;shape-padding:0;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;vector-effect:none;fill:#bebebe;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+     d="M 1.02076,7.4807296 C 1.01386,8.1970958 1.00692,8.9134622 1,9.6298288 c 2.199355,-0.0055 4.398721,-0.01116 6.598076,-0.0167 0.007,-0.7163665 0.01384,-1.4327429 0.02076,-2.1491093 -2.199356,0.00553 -4.398721,0.011164 -6.598077,0.016695 z M 5.409719,5.2772974 C 4.761971,5.3767324 4.380612,6.252224 4.721112,6.8581228 4.967726,7.2313215 5.302225,7.5254154 5.592159,7.8595251 L 6.182505,8.4998383 C 5.737568,8.9864856 5.284903,9.4651035 4.845046,9.9570297 4.400712,10.493586 4.631313,11.445422 5.26144,11.675734 5.695278,11.872045 6.178706,11.657804 6.464451,11.283535 7.311358,10.35744 8.175848,9.4500119 8.999999,8.4997879 8.134246,7.5027982 7.226157,6.5507306 6.33736,5.5781916 6.106016,5.3102208 5.725465,5.1920775 5.409719,5.2772974 Z M 14.026354,1 V 15 H 2.0263541 V 11 C 2.0167941,10.323839 3.2355626,10.323839 3.226,11 v 2.8 h 9.6 V 2.2 h -9.6 v 3.7999999 c 0.00956,0.6761613 -1.2092085,0.6761613 -1.1996459,0 V 1 Z"
+     sodipodi:nodetypes="sccccsccccccccccccccccccccccc" />
+</svg>

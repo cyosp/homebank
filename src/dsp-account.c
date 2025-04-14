@@ -1,5 +1,5 @@
 /*	HomeBank -- Free, easy, personal accounting for everyone.
- *	Copyright (C) 1995-2024 Maxime DOYEN
+ *	Copyright (C) 1995-2025 Maxime DOYEN
  *
  *	This file is part of HomeBank.
  *
@@ -27,11 +27,12 @@
 #include "hub-account.h"
 
 #include "gtk-dateentry.h"
-#include "ui-widgets.h"
 #include "ui-filter.h"
 #include "ui-transaction.h"
 #include "ui-txn-multi.h"
 #include "ui-flt-widget.h"
+#include "ui-dialogs.h"
+#include "ui-widgets.h"
 
 
 
@@ -54,13 +55,16 @@ extern HbKvData CYA_FLT_TYPE[];
 extern HbKvData CYA_FLT_STATUS[];
 
 
-static gint
-_list_txn_get_count_reconciled(GtkTreeView *treeview)
+static void
+_list_txn_selection_count_type(GtkTreeView *treeview, gint *nbrecon, gint *nbpending)
 {
 GtkTreeModel *model;
 GList *lselection, *list;
-gint count = 0;
-	
+gint tmprecon = 0;
+gint tmppending = 0;
+
+	DB( g_print("\n[hub-ledger] selection count type\n") );
+
 	model = gtk_tree_view_get_model(treeview);
 	lselection = gtk_tree_selection_get_selected_rows(gtk_tree_view_get_selection(treeview), &model);
 
@@ -70,19 +74,24 @@ gint count = 0;
 	GtkTreeIter iter;
 	Transaction *txn;
 
-
 		gtk_tree_model_get_iter(model, &iter, list->data);
 		gtk_tree_model_get(model, &iter, MODEL_TXN_POINTER, &txn, -1);
 		if(txn->status == TXN_STATUS_RECONCILED)
-			count++;
-		
+			tmprecon++;
+		if(txn->flags & (OF_ISIMPORT|OF_ISPAST))
+			tmppending++;
+
 		list = g_list_previous(list);
 	}
 
 	g_list_foreach(lselection, (GFunc)gtk_tree_path_free, NULL);
 	g_list_free(lselection);
 
-	return count;
+	if(nbrecon)
+		*nbrecon = tmprecon;
+	if(nbpending)
+		*nbpending = tmppending;
+
 }
 
 
@@ -131,18 +140,18 @@ gushort lpos = 1;
 		ope->balance = balance;
 
 		// clear mark flags
-		ope->dspflags &= ~(TXN_DSPFLG_OVER|TXN_DSPFLG_LOWBAL);
+		ope->dspflags &= ~(FLAG_TMP_OVER|FLAG_TMP_LOWBAL);
 
 		//#1661806 add show overdraft
 		//#1672209 added round like for #400483
 		value = hb_amount_round(balance, 2);
 		if( (value != 0.0) && (value < data->acc->minimum) )
 		{
-			ope->dspflags |= TXN_DSPFLG_OVER;
+			ope->dspflags |= FLAG_TMP_OVER;
 		}
 	
 		//# mark lowest balance for future
-		if( (ope->date > GLOBALS->today) )
+		if ((ope->date > GLOBALS->today))
 		{
 			if( balance < lbalance )
 				minbalope = ope;
@@ -164,7 +173,7 @@ gushort lpos = 1;
 	}
 
 	if( minbalope != NULL )
-		minbalope->dspflags |= TXN_DSPFLG_LOWBAL;
+		minbalope->dspflags |= FLAG_TMP_LOWBAL;
 
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_ope));
 	list_txn_sort_force(GTK_TREE_SORTABLE(model), NULL);
@@ -192,7 +201,7 @@ gint count = 0;
 	/* set window title */
 	if(flags & FLG_REG_TITLE)
 	{
-		DB( g_print(" FLG_REG_TITLE\n") );
+		DB( g_print("\n FLG_REG_TITLE\n") );
 
 	}
 
@@ -201,8 +210,7 @@ gint count = 0;
 	{
 	//gboolean visible;
 		
-		DB( g_print(" FLG_REG_VISUAL\n") );
-
+		DB( g_print("\n FLG_REG_VISUAL\n") );
 
 		//minor ?
 		hb_widget_visible (data->CM_minor, PREFS->euro_active);
@@ -230,13 +238,15 @@ gint count = 0;
 	/* update balances */
 	if(flags & FLG_REG_BALANCE)
 	{
-		DB( g_print(" FLG_REG_BALANCE\n") );
+		DB( g_print("\n FLG_REG_BALANCE\n") );
 
 		if(data->showall == FALSE)
 		{
 		Account *acc = data->acc;
 
 			hub_ledger_balance_refresh(widget);
+
+			DB( g_print(" update 4 balances widget\n") );
 			hb_label_set_colvalue(GTK_LABEL(data->TX_balance[0]), acc->bal_recon, acc->kcur, GLOBALS->minor);
 			hb_label_set_colvalue(GTK_LABEL(data->TX_balance[1]), acc->bal_clear, acc->kcur, GLOBALS->minor);
 			hb_label_set_colvalue(GTK_LABEL(data->TX_balance[2]), acc->bal_today, acc->kcur, GLOBALS->minor);
@@ -263,6 +273,7 @@ gint count = 0;
 			}
 			g_list_free(lst_acc);
 		
+			DB( g_print(" update 4 balances widget\n") );
 			hb_label_set_colvalue(GTK_LABEL(data->TX_balance[0]), recon, GLOBALS->kcur, GLOBALS->minor);
 			hb_label_set_colvalue(GTK_LABEL(data->TX_balance[1]), clear, GLOBALS->kcur, GLOBALS->minor);
 			hb_label_set_colvalue(GTK_LABEL(data->TX_balance[2]), today, GLOBALS->kcur, GLOBALS->minor);
@@ -296,6 +307,7 @@ gint count = 0;
 		g_simple_action_set_enabled(G_SIMPLE_ACTION(g_action_map_lookup_action (G_ACTION_MAP (data->actions), "browse")), sensitive);
 		//tools
 		//hb_widget_visible(data->MI_markdup, sensitive);
+		g_simple_action_set_enabled(G_SIMPLE_ACTION(g_action_map_lookup_action (G_ACTION_MAP (data->actions), "mrksign")), sensitive);
 		g_simple_action_set_enabled(G_SIMPLE_ACTION(g_action_map_lookup_action (G_ACTION_MAP (data->actions), "mrkdup")), sensitive);
 		//hb_widget_visible(data->MI_chkintxfer, sensitive);
 		g_simple_action_set_enabled(G_SIMPLE_ACTION(g_action_map_lookup_action (G_ACTION_MAP (data->actions), "chkxfer")), sensitive);
@@ -330,6 +342,7 @@ gint count = 0;
 		g_simple_action_set_enabled(G_SIMPLE_ACTION(g_action_map_lookup_action (G_ACTION_MAP (data->actions), "txnpaste")), sensitive);
 		g_simple_action_set_enabled(G_SIMPLE_ACTION(g_action_map_lookup_action (G_ACTION_MAP (data->actions), "txnpastet")), sensitive);
 
+		g_simple_action_set_enabled(G_SIMPLE_ACTION(g_action_map_lookup_action (G_ACTION_MAP (data->actions), "mrksign")), sensitive);
 		g_simple_action_set_enabled(G_SIMPLE_ACTION(g_action_map_lookup_action (G_ACTION_MAP (data->actions), "mrkdup")), sensitive);
 		g_simple_action_set_enabled(G_SIMPLE_ACTION(g_action_map_lookup_action (G_ACTION_MAP (data->actions), "chkxfer")), sensitive);
 		g_simple_action_set_enabled(G_SIMPLE_ACTION(g_action_map_lookup_action (G_ACTION_MAP (data->actions), "runasg")), sensitive);
@@ -363,12 +376,19 @@ gint count = 0;
 		// single: disable multiedit
 		sensitive = (count <= 1 ) ? FALSE : TRUE;
 		//1909749 lock/unlock reconciled
-		if( (_list_txn_get_count_reconciled(GTK_TREE_VIEW(data->LV_ope)) > 0) && (gtk_switch_get_active (GTK_SWITCH(data->SW_lockreconciled)) == TRUE) )
+		gint nbrecon, nbpending;
+		_list_txn_selection_count_type(GTK_TREE_VIEW(data->LV_ope), &nbrecon, &nbpending);
+		if( (nbrecon > 0) && (gtk_switch_get_active (GTK_SWITCH(data->SW_lockreconciled)) == TRUE) )
 			sensitive = FALSE;
 		//gtk_widget_set_sensitive(data->MI_multiedit   , sensitive);
 		//gtk_widget_set_sensitive(data->MI_popmultiedit, sensitive);
 		g_simple_action_set_enabled(G_SIMPLE_ACTION(g_action_map_lookup_action (G_ACTION_MAP (data->actions), "txnmedit")), sensitive);
 		gtk_widget_set_sensitive(data->BT_multiedit   , sensitive);
+
+		//pending action
+		sensitive = (count >=1 && nbpending > 0) ? TRUE : FALSE;
+		g_simple_action_set_enabled(G_SIMPLE_ACTION(g_action_map_lookup_action (G_ACTION_MAP (data->actions), "txnapprove")), sensitive);
+		g_simple_action_set_enabled(G_SIMPLE_ACTION(g_action_map_lookup_action (G_ACTION_MAP (data->actions), "txnreject")), sensitive);
 
 		// no selection: disable reconcile, delete
 		sensitive = (count > 0 ) ? TRUE : FALSE;
@@ -459,6 +479,16 @@ gint count = 0;
 		//gtk_widget_set_sensitive(data->MI_poptxndown, nsensitive);
 		g_simple_action_set_enabled(G_SIMPLE_ACTION(g_action_map_lookup_action (G_ACTION_MAP (data->actions), "txndw")), nsensitive);
 		gtk_widget_set_sensitive(data->BT_down, nsensitive);
+	}
+
+	//#1875100 show infobar for pending
+	visible = data->nb_pending > 0 ? TRUE : FALSE;
+	hb_widget_visible(data->IB_accnotif, visible);
+	if( visible == TRUE )
+	{
+	gchar *accmsg = g_strdup_printf(_("%d requires approval"), data->nb_pending);
+		gtk_label_set_markup(GTK_LABEL(data->LB_accnotif), accmsg);
+		g_free (accmsg);
 	}
 
 	//#1835588
@@ -557,7 +587,6 @@ gint count = 0;
 
 	list_txn_set_lockreconciled(GTK_TREE_VIEW(data->LV_ope), lockrecon);
 	gchar *iconname = lockrecon == TRUE ? ICONNAME_CHANGES_PREVENT : ICONNAME_CHANGES_ALLOW;
-	//gtk_image_set_from_icon_name(GTK_IMAGE(data->IM_lockreconciled), iconname, GTK_ICON_SIZE_BUTTON);
 	g_object_set(data->IM_lockreconciled, "icon-name", iconname, NULL);
 	
 	gtk_widget_set_tooltip_text (data->SW_lockreconciled, 
@@ -607,7 +636,7 @@ GtkWidget *dialog;
 		{
 			//#1782749 update account status
 			if( data->acc != NULL )
-				data->acc->flags |= AF_CHANGED;
+				data->acc->dspflags |= FLAG_ACC_TMP_EDITED;
 
 			ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE));
 		}
@@ -711,7 +740,7 @@ hub_ledger_collect_filtered_txn(GtkWidget *view, gboolean emptysearch)
 struct hub_ledger_data *data;
 GList *lst_acc, *lnk_acc;
 GList *lnk_txn;
-gint flag;
+gint flag, status;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(view, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -724,7 +753,10 @@ gint flag;
 	data->gpatxn = g_ptr_array_sized_new(64);
 
 	flag   = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_flag));
+	status = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_status));
 	DB( g_print(" flag=%d\n", flag) );
+
+	data->nb_pending = 0;
 
 	lst_acc = g_hash_table_get_values(GLOBALS->h_acc);
 	lnk_acc = g_list_first(lst_acc);
@@ -741,6 +773,8 @@ gint flag;
 		if( (data->showall == FALSE) && (data->acc != NULL) && (acc->key != data->acc->key) )
 			goto next_acc;
 
+		data->nb_pending += acc->nb_pending;
+
 		lnk_txn = g_queue_peek_head_link(acc->txn_queue);
 		while (lnk_txn != NULL)
 		{
@@ -751,10 +785,14 @@ gint flag;
 				//#1600356 filter flag
 				if( flag == GRPFLAG_ANY || (ope->grpflg == flag) )
 				{
+					//#1875100 filter pending
+					if( status==FLT_STATUS_UNAPPROVED && !(ope->flags & (OF_ISIMPORT|OF_ISPAST)) )
+						goto next_txn;
 					//add to the list
 					g_ptr_array_add(data->gpatxn, (gpointer)ope);
 				}
 			}
+		next_txn:
 			lnk_txn = g_list_next(lnk_txn);
 		}
 	
@@ -877,7 +915,7 @@ guint i, qs_flag;
 		
 		daterange = filter_daterange_text_get(data->filter);
 		gtk_widget_set_tooltip_markup(GTK_WIDGET(data->CY_range), daterange);
-		gtk_label_set_markup(GTK_LABEL(data->TX_daterange), daterange);
+		//gtk_label_set_markup(GTK_LABEL(data->TX_daterange), daterange);
 		g_free(daterange);
 	}
 
@@ -906,6 +944,20 @@ gboolean lifnrgval;
 		);
 	}
 	list_txn_set_life_energy(GTK_TREE_VIEW(data->LV_ope), lifnrgval);
+}
+
+
+static void
+hub_ledger_info_cb_show_pending(GtkWidget *widget, gpointer user_data)
+{
+struct hub_ledger_data *data;
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	DB( g_print("\n[hub-ledger] infobar show pending\n") );
+
+	//TODO: change date to all date ?
+	hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_status), FLT_STATUS_UNAPPROVED);
 }
 
 
@@ -1147,7 +1199,7 @@ gboolean saverecondate = FALSE;
 				case TXN_STATUS_CLEARED:
 				case TXN_STATUS_RECONCILED:
 					txn->status = TXN_STATUS_NONE;
-					txn->flags |= OF_CHANGED;
+					txn->dspflags |= FLAG_TMP_EDITED;
 					break;
 			}
 			break;
@@ -1158,11 +1210,11 @@ gboolean saverecondate = FALSE;
 				case TXN_STATUS_NONE:
 				case TXN_STATUS_RECONCILED:
 					txn->status = TXN_STATUS_CLEARED;
-					txn->flags |= OF_CHANGED;
+					txn->dspflags |= FLAG_TMP_EDITED;
 					break;
 				case TXN_STATUS_CLEARED:
 					txn->status = TXN_STATUS_NONE;
-					txn->flags |= OF_CHANGED;
+					txn->dspflags |= FLAG_TMP_EDITED;
 					break;
 			}
 			break;
@@ -1173,12 +1225,12 @@ gboolean saverecondate = FALSE;
 				case TXN_STATUS_NONE:
 				case TXN_STATUS_CLEARED:
 					txn->status = TXN_STATUS_RECONCILED;
-					txn->flags |= OF_CHANGED;
+					txn->dspflags |= FLAG_TMP_EDITED;
 					saverecondate = TRUE;
 					break;
 				case TXN_STATUS_RECONCILED:
 					txn->status = TXN_STATUS_CLEARED;
-					txn->flags |= OF_CHANGED;
+					txn->dspflags |= FLAG_TMP_EDITED;
 					break;
 			}
 			break;
@@ -1204,7 +1256,7 @@ gboolean saverecondate = FALSE;
 				//#2080756 recompute bal
 				account_balances_sub(child);
 				child->status = txn->status;
-				child->flags |= OF_CHANGED;
+				child->dspflags |= FLAG_TMP_EDITED;
 				account_balances_add(child);
 
 				//#2080756 if open refresh target account balances
@@ -1470,8 +1522,6 @@ struct hub_ledger_data *data;
 }
 
 
-
-
 static gboolean
 hub_ledger_cb_search_focus_in_event(GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
 {
@@ -1486,7 +1536,6 @@ struct hub_ledger_data *data;
 
 	return FALSE;
 }
-
 
 
 static void
@@ -1621,7 +1670,7 @@ guint changes = GLOBALS->changes_count;
 
 				hub_ledger_update(data->window, GINT_TO_POINTER(FLG_REG_BALANCE));
 				//#1667201 already done into add
-				//data->acc->flags |= AF_ADDED;
+				//data->acc->dspflags |= FLAG_ACC_TMP_ADDED;
 				GLOBALS->changes_count++;
 			}
 			else
@@ -1757,6 +1806,78 @@ struct hub_ledger_data *data = user_data;
 	hub_ledger_edit_multiple(data->window, NULL, 0, user_data);
 }
 
+
+static void
+_helper_proceed_pending(struct hub_ledger_data *data, Transaction *txn)
+{
+Account *acc = da_acc_get(txn->kacc);
+
+	if( acc->nb_pending > 0 )
+	{
+		acc->nb_pending--;
+	}
+	if( acc->nb_pending == 0 )
+		acc->flags &= ~(AF_HASNOTICE);
+
+	if(data->nb_pending > 0)
+		data->nb_pending--;
+}
+
+
+static void
+hub_ledger_action_txnapprove(GSimpleAction *action, GVariant *parameter, gpointer user_data)
+{
+struct hub_ledger_data *data = user_data;
+GtkTreeModel *model;
+GList *selection, *list;
+guint changes = GLOBALS->changes_count;
+//gint count;
+
+	DB( g_print(" approve\n") );
+
+	//#2042692
+	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_ope));
+	selection = gtk_tree_selection_get_selected_rows(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_ope)), &model);
+	//count = g_list_length(selection);
+
+	list = g_list_last(selection);
+	while(list != NULL)
+	{
+	Transaction *txn;
+	GtkTreeIter iter;
+
+		if( gtk_tree_model_get_iter(model, &iter, list->data) == TRUE )
+		{
+			gtk_tree_model_get(model, &iter, MODEL_TXN_POINTER, &txn, -1);
+			if( txn->flags & (OF_ISIMPORT|OF_ISPAST))
+			{
+				DB( g_print(" approving txn '%s' %.2f\n", txn->memo, txn->amount) );
+				account_balances_sub(txn);
+				txn->flags &= ~(OF_ISIMPORT|OF_ISPAST);
+				account_balances_add(txn);
+				txn->dspflags |= FLAG_TMP_EDITED;
+				//todo: move this 
+				//#1875100
+				_helper_proceed_pending(data, txn);
+				GLOBALS->changes_count++;
+			}
+		}
+		list = g_list_previous(list);
+	}
+
+	g_list_foreach(selection, (GFunc)gtk_tree_path_free, NULL);
+	g_list_free(selection);
+
+
+	hub_ledger_update(data->window, GINT_TO_POINTER(FLG_REG_BALANCE));
+
+	//refresh main
+	if( GLOBALS->changes_count > changes )
+		ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE));
+
+}
+
+
 static void
 hub_ledger_action_txndelete(GSimpleAction *action, GVariant *parameter, gpointer user_data)
 {
@@ -1838,7 +1959,13 @@ gint count, result;
 						}
 					}
 
-					// 2) remove datamodel
+					// 2) manage pending
+					if( rem_txn->flags & (OF_ISIMPORT|OF_ISPAST) )
+					{
+						_helper_proceed_pending(data, rem_txn);
+					}
+
+					// 3) remove datamodel
 					transaction_remove(rem_txn);
 					data->total--;
 					GLOBALS->changes_count++;
@@ -1932,7 +2059,7 @@ GtkTreeSelection *selection;
 gint count, result;
 guint changes = GLOBALS->changes_count;
 	
-	count = _list_txn_get_count_reconciled(GTK_TREE_VIEW(data->LV_ope));
+	_list_txn_selection_count_type(GTK_TREE_VIEW(data->LV_ope), &count, NULL);
 
 	if(count > 0 )
 	{
@@ -1979,7 +2106,7 @@ GtkTreeSelection *selection;
 gint count, result;
 guint changes = GLOBALS->changes_count;
 
-	count = _list_txn_get_count_reconciled(GTK_TREE_VIEW(data->LV_ope));
+	_list_txn_selection_count_type(GTK_TREE_VIEW(data->LV_ope), &count, NULL);
 
 	if(count > 0 )
 	{
@@ -2026,7 +2153,7 @@ GtkTreeSelection *selection;
 gint count, result;
 guint changes = GLOBALS->changes_count;
 	
-	count = _list_txn_get_count_reconciled(GTK_TREE_VIEW(data->LV_ope));
+	_list_txn_selection_count_type(GTK_TREE_VIEW(data->LV_ope), &count, NULL);
 
 	if(count > 0 )
 	{
@@ -2316,6 +2443,79 @@ gboolean statement = FALSE;
 
 
 static void
+hub_ledger_action_check_catsign_mark (GSimpleAction *action, GVariant *parameter, gpointer user_data)
+{
+struct hub_ledger_data *data = user_data;
+
+	// noaction if show all/closed account
+	if(data->showall || data->closed)
+		return;
+
+	DB( g_print("\n[hub-ledger] check category sign\n\n") );
+
+	data->chkcatsign = transaction_check_chkcatsign_mark (data->acc);
+	if( data->chkcatsign > 0 )
+	{
+	gchar *text = g_strdup_printf(_("%d category sign don't match"), data->chkcatsign);
+		gtk_label_set_text(GTK_LABEL(data->LB_chkcatsign), text);
+		g_free(text);
+	}
+	else
+		gtk_label_set_text(GTK_LABEL(data->LB_chkcatsign), _("No category sign don't match were found !"));
+
+	gtk_widget_show(data->IB_chkcatsign);
+	//#GTK+710888: hack waiting a fix
+	gtk_widget_queue_resize (data->IB_chkcatsign);
+
+	DB( g_print(" redraw LV_ope\n") );
+	gtk_widget_queue_draw (data->LV_ope);
+
+}
+
+
+static void
+hub_ledger_action_check_catsign_unmark(GSimpleAction *action, GVariant *parameter, gpointer user_data)
+{
+struct hub_ledger_data *data = user_data;
+
+	// noaction if show all/closed account
+	if(data->showall || data->closed)
+		return;
+
+	DB( g_print("\n[hub-ledger] uncheck category sign\n\n") );
+
+	if(data->showall == FALSE)
+	{   
+		data->chkcatsign = 0;
+		gtk_widget_hide(data->IB_chkcatsign);
+		transaction_check_chkcatsign_unmark(data->acc);
+		DB( g_print(" redraw LV_ope\n") );
+		gtk_widget_queue_draw (data->LV_ope);
+	}
+}
+
+
+static void
+hub_ledger_cb_bar_chkcatsign_response(GtkWidget *info_bar, gint response_id, gpointer user_data)
+{
+struct hub_ledger_data *data;
+
+	DB( g_print("\n[hub-ledger] bar_chlcatsign_response\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(info_bar, GTK_TYPE_WINDOW)), "inst_data");
+
+	switch( response_id )
+	{
+		case GTK_RESPONSE_CLOSE:
+			hub_ledger_action_check_catsign_unmark(NULL, NULL, data);
+			gtk_widget_hide (GTK_WIDGET (info_bar));	
+			break;
+	}
+}
+
+
+
+static void
 hub_ledger_action_duplicate_mark (GSimpleAction *action, GVariant *parameter, gpointer user_data)
 {
 struct hub_ledger_data *data = user_data;
@@ -2446,7 +2646,7 @@ gint count;
 				if( txn->kxferacc <= 0 )
 				{
 					DB( g_print(" unrecoverable, revert to normal xfer\n") );
-					txn->flags |= OF_CHANGED;
+					txn->dspflags |= FLAG_TMP_EDITED;
 					txn->paymode = PAYMODE_XFER;
 					txn->kxfer = 0;
 					txn->kxferacc = 0;
@@ -2702,7 +2902,7 @@ gboolean istoday = FALSE;
 			item->date = GLOBALS->today;
 
 		add_txn = transaction_add(GTK_WINDOW(data->window), FALSE, item);
-		add_txn->flags |= OF_ADDED;
+		add_txn->dspflags |= FLAG_TMP_ADDED;
 
 		hub_ledger_add_after_propagate(data, add_txn);
 
@@ -2805,6 +3005,8 @@ static GActionEntry win_entries[] = {
 	{ "txnherit"	, hub_ledger_action_txnaddherit, NULL, NULL, NULL, {0,0,0} },
 	{ "txnedit"		, hub_ledger_action_txnedit, NULL, NULL, NULL, {0,0,0} },
 	{ "txnmedit"	, hub_ledger_action_txnmedit, NULL, NULL, NULL, {0,0,0} },
+	{ "txnapprove"	, hub_ledger_action_txnapprove, NULL, NULL, NULL, {0,0,0} },
+	{ "txnreject"	, hub_ledger_action_txndelete, NULL, NULL, NULL, {0,0,0} },
 
 	{ "stanon"		, hub_ledger_action_status_none, NULL, NULL, NULL, {0,0,0} },
 	{ "staclr"		, hub_ledger_action_status_clear, NULL, NULL, NULL, {0,0,0} },
@@ -2842,6 +3044,7 @@ static GActionEntry win_entries[] = {
 	{ "txnfind"		, hub_ledger_action_find, NULL, NULL, NULL, {0,0,0} },
 
 	{ "mrkdup"		, hub_ledger_action_duplicate_mark, NULL, NULL, NULL, {0,0,0} },
+	{ "mrksign"		, hub_ledger_action_check_catsign_mark, NULL, NULL, NULL, {0,0,0} },
 	{ "chkxfer"		, hub_ledger_action_check_internal_xfer, NULL, NULL, NULL, {0,0,0} },
 	{ "runasg"		, hub_ledger_action_assign, NULL, NULL, NULL, {0,0,0} },
 	{ "convert"		, hub_ledger_action_converttoeuro, NULL, NULL, NULL, {0,0,0} },
@@ -2879,47 +3082,58 @@ hub_ledger_popmenu_create2(struct hub_ledger_data *data)
 GtkWidget *gtkmenu;
 GMenu *menu, *submenu, *section;
 
-	//g_menu_append (submenu, , "reg.");
+	//g_menu_append (submenu, , "ldgr.");
 	menu = g_menu_new();
 
 	section = g_menu_new ();
-	_add_menuitem (section, _("_Add...")				, "reg.txnadd"	, "<Ctrl>N");
-	_add_menuitem (section, _("_Inherit...")			, "reg.txnherit", "<Ctrl>U");
-	_add_menuitem (section, _("_Edit...")				, "reg.txnedit", "<Ctrl>E");
-	_add_menuitem (section, _("_Multiple Edit...")		, "reg.txnmedit", NULL);
-	g_menu_append_section (menu, NULL, G_MENU_MODEL(section));
-	g_object_unref (section);
-
-	submenu = g_menu_new ();
-	_add_menuitem (submenu, _("None")					, "reg.flgn", "<Ctrl>0");
-	_add_menuitem (submenu, _("Red")					, "reg.flg1", "<Ctrl>1");
-	_add_menuitem (submenu, _("Orange")					, "reg.flg2", "<Ctrl>2");
-	_add_menuitem (submenu, _("Yellow")					, "reg.flg3", "<Ctrl>3");
-	_add_menuitem (submenu, _("Green")					, "reg.flg4", "<Ctrl>4");
-	_add_menuitem (submenu, _("Blue")					, "reg.flg5", "<Ctrl>5");
-	_add_menuitem (submenu, _("Purple")					, "reg.flg6", "<Ctrl>6");
-	g_menu_append_submenu (menu, _("_Flag"), G_MENU_MODEL(submenu));
-	g_object_unref (submenu);
-
-	submenu = g_menu_new ();
-	_add_menuitem (submenu, _("_None")					, "reg.stanon", "<Ctrl><Shift>C");
-	_add_menuitem (submenu, _("_Cleared")				, "reg.staclr", "<Ctrl><Shift>R");
-	_add_menuitem (submenu, _("_Reconciled")			, "reg.starec", "<Ctrl>R");
-	g_menu_append_submenu (menu, _("_Status"), G_MENU_MODEL(submenu));
-	g_object_unref (submenu);
-
-	section = g_menu_new ();
-	_add_menuitem (section, _("View _Split")			, "reg.viewsplit", NULL);
-	_add_menuitem (section, _("Copy raw amount")		, "reg.copyamt", NULL);
-	_add_menuitem (section, _("Create template...")		, "reg.newtpl", NULL);
-	_add_menuitem (section, _("Create assignment...")	, "reg.newasg", NULL);
-	_add_menuitem (section, _("_Delete...")				, "reg.txndel", "Delete");
+	_add_menuitem (section, _("_Add...")				, "ldgr.txnadd"	, "<Ctrl>N");
+	_add_menuitem (section, _("_Inherit...")			, "ldgr.txnherit", "<Ctrl>U");
+	_add_menuitem (section, _("_Edit...")				, "ldgr.txnedit", "<Ctrl>E");
 	g_menu_append_section (menu, NULL, G_MENU_MODEL(section));
 	g_object_unref (section);
 
 	section = g_menu_new ();
-	_add_menuitem (section, _("_Up")				, "reg.txnup", NULL);
-	_add_menuitem (section, _("_Down")				, "reg.txndw", NULL);
+	g_menu_append_section (menu, NULL, G_MENU_MODEL(section));
+	g_object_unref (section);
+
+	submenu = g_menu_new ();
+	_add_menuitem (submenu, _("_None")					, "ldgr.stanon", "<Ctrl><Shift>C");
+	_add_menuitem (submenu, _("_Cleared")				, "ldgr.staclr", "<Ctrl><Shift>R");
+	_add_menuitem (submenu, _("_Reconciled")			, "ldgr.starec", "<Ctrl>R");
+	g_menu_append_submenu (section, _("_Status"), G_MENU_MODEL(submenu));
+	g_object_unref (submenu);
+
+	submenu = g_menu_new ();
+	_add_menuitem (submenu, _("None")					, "ldgr.flgn", "<Ctrl>0");
+	_add_menuitem (submenu, _("Red")					, "ldgr.flg1", "<Ctrl>1");
+	_add_menuitem (submenu, _("Orange")					, "ldgr.flg2", "<Ctrl>2");
+	_add_menuitem (submenu, _("Yellow")					, "ldgr.flg3", "<Ctrl>3");
+	_add_menuitem (submenu, _("Green")					, "ldgr.flg4", "<Ctrl>4");
+	_add_menuitem (submenu, _("Blue")					, "ldgr.flg5", "<Ctrl>5");
+	_add_menuitem (submenu, _("Purple")					, "ldgr.flg6", "<Ctrl>6");
+	g_menu_append_submenu (section, _("_Flag"), G_MENU_MODEL(submenu));
+	g_object_unref (submenu);
+
+	section = g_menu_new ();
+	g_menu_append_section (menu, NULL, G_MENU_MODEL(section));
+	g_object_unref (section);
+
+	_add_menuitem (section, _("Approve")				, "ldgr.txnapprove", NULL);
+	_add_menuitem (section, _("Reject (Delete)...")		, "ldgr.txnreject", NULL);
+
+	section = g_menu_new ();
+	_add_menuitem (section, _("_Multiple Edit...")		, "ldgr.txnmedit", NULL);
+	_add_menuitem (section, _("View _Split")			, "ldgr.viewsplit", NULL);
+	_add_menuitem (section, _("Copy raw amount")		, "ldgr.copyamt", NULL);
+	_add_menuitem (section, _("Create template...")		, "ldgr.newtpl", NULL);
+	_add_menuitem (section, _("Create assignment...")	, "ldgr.newasg", NULL);
+	_add_menuitem (section, _("_Delete...")				, "ldgr.txndel", "Delete");
+	g_menu_append_section (menu, NULL, G_MENU_MODEL(section));
+	g_object_unref (section);
+
+	section = g_menu_new ();
+	_add_menuitem (section, _("_Up")				, "ldgr.txnup", NULL);
+	_add_menuitem (section, _("_Down")				, "ldgr.txndw", NULL);
 	g_menu_append_section (menu, NULL, G_MENU_MODEL(section));
 	g_object_unref (section);
 
@@ -2940,18 +3154,18 @@ gboolean showall, closed;
 	showall = data->showall;
 	closed  = data->closed;
 
-	//g_menu_append (submenu, , "reg.");
+	//g_menu_append (submenu, , "ldgr.");
 	menubar = g_menu_new();
 
 	//menu Account
 	menu = g_menu_new();
 	if( showall == FALSE )
-		_add_menuitem(menu, _("Export QIF...")	, "reg.expqif"	, NULL);
-	_add_menuitem(menu, _("Export CSV...")	, "reg.expcsv"	, NULL);
-	_add_menuitem(menu, _("Print...")		, "reg.print"	, "<Ctrl>P");
+		_add_menuitem(menu, _("Export QIF...")	, "ldgr.expqif"	, NULL);
+	_add_menuitem(menu, _("Export CSV...")	, "ldgr.expcsv"	, NULL);
+	_add_menuitem(menu, _("Print...")		, "ldgr.print"	, "<Ctrl>P");
 	if( showall == FALSE )
-		_add_menuitem(menu, _("Browse Website")	, "reg.browse"	, NULL);
-	_add_menuitem(menu, _("Close")			, "reg.close"	, "<Ctrl>W");
+		_add_menuitem(menu, _("Browse Website")	, "ldgr.browse"	, NULL);
+	_add_menuitem(menu, _("Close")			, "ldgr.close"	, "<Ctrl>W");
 	//...
 	menuitem = g_menu_item_new (_("A_ccount"), NULL);
 	g_menu_item_set_submenu (menuitem, G_MENU_MODEL (menu));
@@ -2963,12 +3177,12 @@ gboolean showall, closed;
 	menu = g_menu_new();
 	if( closed == FALSE )
 	{
-		_add_menuitem(menu, _("Copy")			, "reg.txncopy"		, "<Ctrl>C");
-		_add_menuitem(menu, _("Paste")			, "reg.txnpaste"	, "<Ctrl>V");
-		_add_menuitem(menu, _("Paste (today)")	, "reg.txnpastet"	, "<Ctrl><Shift>V");
+		_add_menuitem(menu, _("Copy")			, "ldgr.txncopy"		, "<Ctrl>C");
+		_add_menuitem(menu, _("Paste")			, "ldgr.txnpaste"	, "<Ctrl>V");
+		_add_menuitem(menu, _("Paste (today)")	, "ldgr.txnpastet"	, "<Ctrl><Shift>V");
 	}
-	_add_menuitem(menu, _("Copy clipboard")	, "reg.txnclip"		, "<Ctrl><Shift>C");
-	_add_menuitem(menu, _("Find")			, "reg.txnfind" 	, "<Ctrl>F");
+	_add_menuitem(menu, _("Copy clipboard")	, "ldgr.txnclip"		, "<Ctrl><Shift>C");
+	_add_menuitem(menu, _("Find")			, "ldgr.txnfind" 	, "<Ctrl>F");
 	//...
 	menuitem = g_menu_item_new (_("_Edit"), NULL);
 	g_menu_item_set_submenu (menuitem, G_MENU_MODEL (menu));
@@ -2980,10 +3194,11 @@ gboolean showall, closed;
 	if( closed == FALSE && showall == FALSE )
 	{
 		menu = g_menu_new();
-		_add_menuitem(menu, _("Mark duplicate...")		, "reg.mrkdup"	, NULL);
-		_add_menuitem(menu, _("Check internal transfer"), "reg.chkxfer"	, NULL);
-		_add_menuitem(menu, _("Auto. assignments")		, "reg.runasg"	, NULL);
-		_add_menuitem(menu, _("Convert to Euro...")		, "reg.convert"	, NULL);
+		_add_menuitem(menu, _("Mark duplicate...")		, "ldgr.mrkdup"	, NULL);
+		_add_menuitem(menu, _("Mark category sign...")	, "ldgr.mrksign"	, NULL);
+		_add_menuitem(menu, _("Check internal transfer"), "ldgr.chkxfer"	, NULL);
+		_add_menuitem(menu, _("Auto. assignments")		, "ldgr.runasg"	, NULL);
+		_add_menuitem(menu, _("Convert to Euro...")		, "ldgr.convert"	, NULL);
 		//...
 		menuitem = g_menu_item_new (_("_Tools"), NULL);
 		g_menu_item_set_submenu (menuitem, G_MENU_MODEL (menu));
@@ -3006,73 +3221,73 @@ GtkWidget *toolbar, *button, *bbox, *hbox, *widget, *label;
 	toolbar = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 
 	bbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start (GTK_BOX (toolbar), bbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (toolbar), bbox);
 
 		data->BT_up   = button = make_image_button(ICONNAME_HB_OPE_MOVUP, _("Move transaction up"));
-		gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "reg.txnup");
-		gtk_box_pack_start (GTK_BOX (bbox), button, FALSE, FALSE, 0);
+		gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "ldgr.txnup");
+		gtk_box_prepend (GTK_BOX (bbox), button);
 		
 		data->BT_down = button = make_image_button(ICONNAME_HB_OPE_MOVDW, _("Move transaction down"));
-		gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "reg.txndw");
-		gtk_box_pack_start (GTK_BOX (bbox), button, FALSE, FALSE, 0);
+		gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "ldgr.txndw");
+		gtk_box_prepend (GTK_BOX (bbox), button);
 
 	bbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start (GTK_BOX (toolbar), bbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (toolbar), bbox);
 
 		data->BT_add   = button = make_image_button(ICONNAME_HB_OPE_ADD, _("Add a new transaction"));
 		g_object_set(button, "label", _("Add"), "always-show-image", TRUE, NULL);
-		gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "reg.txnadd");
-		gtk_box_pack_start (GTK_BOX (bbox), button, FALSE, FALSE, 0);
+		gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "ldgr.txnadd");
+		gtk_box_prepend (GTK_BOX (bbox), button);
 		
 		data->BT_herit = button = make_image_button(ICONNAME_HB_OPE_HERIT, _("Inherit from the active transaction"));
 		g_object_set(button, "label", _("Inherit"), "always-show-image", TRUE, NULL);
-		gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "reg.txnherit");
-		gtk_box_pack_start (GTK_BOX (bbox), button, FALSE, FALSE, 0);
+		gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "ldgr.txnherit");
+		gtk_box_prepend (GTK_BOX (bbox), button);
 		
 		data->BT_edit  = button = make_image_button(ICONNAME_HB_OPE_EDIT, _("Edit the active transaction"));
 		g_object_set(button, "label", _("Edit"), "always-show-image", TRUE, NULL);
-		gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "reg.txnedit");
-		gtk_box_pack_start (GTK_BOX (bbox), button, FALSE, FALSE, 0);
+		gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "ldgr.txnedit");
+		gtk_box_prepend (GTK_BOX (bbox), button);
 
 	bbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start (GTK_BOX (toolbar), bbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (toolbar), bbox);
 
 		data->BT_clear = button     = make_image_button(ICONNAME_HB_OPE_CLEARED, _("Toggle cleared for selected transaction(s)"));
-		gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "reg.staclr");
-		gtk_box_pack_start (GTK_BOX (bbox), button, FALSE, FALSE, 0);
+		gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "ldgr.staclr");
+		gtk_box_prepend (GTK_BOX (bbox), button);
 		
 		data->BT_reconcile = button = make_image_button(ICONNAME_HB_OPE_RECONCILED, _("Toggle reconciled for selected transaction(s)"));
-		gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "reg.starec");
-		gtk_box_pack_start (GTK_BOX (bbox), button, FALSE, FALSE, 0);
+		gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "ldgr.starec");
+		gtk_box_prepend (GTK_BOX (bbox), button);
 
 		data->BT_multiedit = button = make_image_button(ICONNAME_HB_OPE_MULTIEDIT, _("Edit multiple transaction"));
-		gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "reg.txnmedit");
-		gtk_box_pack_start (GTK_BOX (bbox), button, FALSE, FALSE, 0);
+		gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "ldgr.txnmedit");
+		gtk_box_prepend (GTK_BOX (bbox), button);
 
 		data->BT_delete    = button = make_image_button(ICONNAME_HB_OPE_DELETE, _("Delete selected transaction(s)"));
-		gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "reg.txndel");
-		gtk_box_pack_start (GTK_BOX (bbox), button, FALSE, FALSE, 0);
+		gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "ldgr.txndel");
+		gtk_box_prepend (GTK_BOX (bbox), button);
 
 	//#1909749 lock/unlock reconciled
 	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
 	gtk_widget_set_margin_start (hbox, SPACING_LARGE);
-	gtk_box_pack_start (GTK_BOX (toolbar), hbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (toolbar), hbox);
 
 		label = gtk_label_new (_("Reconciled changes is"));
 		gtk_label_set_ellipsize(GTK_LABEL(label), PANGO_ELLIPSIZE_END);
 		data->LB_lockreconciled = label;
-		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (hbox), label);
 
-		//widget = gtk_image_new_from_icon_name (ICONNAME_CHANGES_PREVENT, GTK_ICON_SIZE_BUTTON);
+		//widget = hbtk_image_new_from_icon_name_16 (ICONNAME_CHANGES_PREVENT);
 		widget = gtk_image_new();
 		g_object_set(widget, "icon-name", ICONNAME_CHANGES_PREVENT, NULL);
 		data->IM_lockreconciled = widget;
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (hbox), widget);
 
 		widget = gtk_switch_new();
 		data->SW_lockreconciled = widget;
 		gtk_widget_set_valign (widget, GTK_ALIGN_CENTER);
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (hbox), widget);
 
 	return toolbar;
 }
@@ -3095,7 +3310,7 @@ struct WinGeometry *wg;
 		gtk_window_get_size(GTK_WINDOW(widget), &wg->w, &wg->h);
 	}
 	
-	//DB( g_print(" window: l=%d, t=%d, w=%d, h=%d s=%dd\n", wg->l, wg->t, wg->w, wg->h, wg->s) );
+	//DB( g_print(" window: l=%d, t=%d, w=%d, h=%d s=%d\n", wg->l, wg->t, wg->w, wg->h, wg->s) );
 
 	return FALSE;
 }
@@ -3172,8 +3387,8 @@ hub_ledger_window_new(Account *acc)
 {
 struct hub_ledger_data *data;
 struct WinGeometry *wg;
-GtkWidget *window, *mainvbox,  *intbox, *actionbox, *hbox, *table;
-GtkWidget *menubar, *bar, *scrollwin, *treeview, *label, *widget, *image;
+GtkWidget *window, *mainvbox, *intbox, *actionbox, *labelbox, *hbox;
+GtkWidget *menubar, *bar, *scrollwin, *treeview, *label, *widget;
 GActionGroup *actions;
 gint col;
 
@@ -3252,7 +3467,7 @@ gint col;
 	g_action_map_add_action_entries (G_ACTION_MAP (actions),
 		win_entries, G_N_ELEMENTS (win_entries), data);
 
-	gtk_widget_insert_action_group (window, "reg", actions);
+	gtk_widget_insert_action_group (window, "ldgr", actions);
 
 
 	/* connect signal */
@@ -3268,14 +3483,32 @@ gint col;
 
 	//1 - menubar
 	menubar = hub_ledger_menubar_create2(data);
-	gtk_box_pack_start (GTK_BOX (mainvbox), menubar, FALSE, FALSE, 0);	
+	gtk_box_prepend (GTK_BOX (mainvbox), menubar);	
 
-	//2 - info bar for duplicate
+	//2 - account txn notification
+	bar = gtk_info_bar_new ();
+	data->IB_accnotif = bar;
+	gtk_box_prepend (GTK_BOX (mainvbox), bar);
+
+	gtk_info_bar_set_message_type (GTK_INFO_BAR (bar), GTK_MESSAGE_WARNING);
+	//gtk_info_bar_set_show_close_button (GTK_INFO_BAR (bar), TRUE);
+
+		label = gtk_label_new (NULL);
+		data->LB_accnotif = label;
+		//gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+		//gtk_label_set_xalign (GTK_LABEL (label), 0);
+		gtk_box_prepend (GTK_BOX (gtk_info_bar_get_content_area (GTK_INFO_BAR (bar))), label);
+
+		widget = gtk_button_new_with_label(_("Show"));
+		data->BT_info_showpending = widget;
+		gtk_box_prepend (GTK_BOX (gtk_info_bar_get_content_area (GTK_INFO_BAR (bar))), widget);
+
+	//3 - info bar for duplicate
 	bar = gtk_info_bar_new_with_buttons (_("_Refresh"), HB_RESPONSE_REFRESH, NULL);
 	data->IB_duplicate = bar;
 	gtk_info_bar_set_message_type (GTK_INFO_BAR (bar), GTK_MESSAGE_WARNING);
 	gtk_info_bar_set_show_close_button (GTK_INFO_BAR (bar), TRUE);
-	gtk_box_pack_start (GTK_BOX (mainvbox), bar, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (mainvbox), bar);
 
 		hbox = gtk_info_bar_get_content_area (GTK_INFO_BAR (bar));
 
@@ -3283,130 +3516,116 @@ gint col;
 		data->LB_duplicate = label;
 		gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
 		gtk_label_set_xalign (GTK_LABEL (label), 0);
-		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (hbox), label);
 		//5.8.6
 		label = make_label(_("Date _gap:"), 0, 0.5);
-		gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (hbox), label);
 		widget = make_numeric(label, 0, HB_DATE_MAX_GAP);
 		data->NB_txn_daygap = widget;
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (hbox), widget);
+
+	//3c - bar for category sign check
+	bar = gtk_info_bar_new ();
+	data->IB_chkcatsign = bar;
+	gtk_box_prepend (GTK_BOX (mainvbox), bar);
+
+	gtk_info_bar_set_message_type (GTK_INFO_BAR (bar), GTK_MESSAGE_WARNING);
+	gtk_info_bar_set_show_close_button (GTK_INFO_BAR (bar), TRUE);
+
+		label = gtk_label_new (NULL);
+		data->LB_chkcatsign = label;
+		//gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+		//gtk_label_set_xalign (GTK_LABEL (label), 0);
+		gtk_box_prepend (GTK_BOX (gtk_info_bar_get_content_area (GTK_INFO_BAR (bar))), label);
 
 	//4 - windows interior
 	intbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, SPACING_SMALL);
 	hb_widget_set_margin(GTK_WIDGET(intbox), SPACING_SMALL);
-	gtk_box_pack_start (GTK_BOX (mainvbox), intbox, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (mainvbox), intbox);
 
 	//4a - actionbox
 	actionbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
-	//gtk_widget_set_hexpand(actionbox, TRUE);
-	gtk_box_pack_start (GTK_BOX (intbox), actionbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (intbox), actionbox);
 
 		hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 		gtk_widget_set_halign(hbox, GTK_ALIGN_START);
-		//gtk_widget_set_hexpand(hbox, TRUE);
 		scrollwin = make_scrolled_window_ns(GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
-		//gtk_widget_set_hexpand(scrollwin, TRUE);
-		gtk_box_pack_start (GTK_BOX (actionbox), scrollwin, TRUE, TRUE, 0);
+		hbtk_box_prepend (GTK_BOX (actionbox), scrollwin);
 		gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), hbox);
-		//gtk_box_prepend (GTK_BOX (actionbox), hbox);
 
 		widget = make_daterange(NULL, DATE_RANGE_FLAG_CUSTOM_DISABLE);
 		data->CY_range = widget;
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (hbox), widget);
 
-		widget = gtk_toggle_button_new();
-		//image = gtk_image_new_from_icon_name (ICONNAME_HB_OPE_FUTURE, GTK_ICON_SIZE_MENU);
-		image = gtk_image_new();
-		g_object_set(image, "icon-name", ICONNAME_HB_OPE_FUTURE, NULL);
-		g_object_set (widget, "image", image,  NULL);
+		widget = make_image_toggle_button(ICONNAME_HB_OPE_FUTURE, NULL);
 		data->CM_future = widget;
 		//#2008521 set more accurate tooltip
 		gchar *tt = g_strdup_printf(_("Toggle show %d days ahead"), PREFS->date_future_nbdays);
 		gtk_widget_set_tooltip_text (widget, tt);
 		g_free(tt);
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (hbox), widget);
 
 	//5.8 flag
 		widget = make_fltgrpflag(NULL);
 		data->CY_flag = widget;
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (hbox), widget);
 
 		widget = hbtk_combo_box_new_with_data(label, CYA_FLT_TYPE);
 		data->CY_type = widget;
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (hbox), widget);
 
 		widget = hbtk_combo_box_new_with_data(label, CYA_FLT_STATUS);
 		data->CY_status = widget;
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (hbox), widget);
 
 		//5.8 beta test
 		if( data->showall )
 		{
 			widget = create_popover_widget(GTK_WINDOW(data->window), data->filter);
 			data->PO_hubfilter = widget;
-			gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+			gtk_box_prepend (GTK_BOX (hbox), widget);
 		}
 
 
 	widget = make_image_button(ICONNAME_HB_FILTER, _("Edit filter"));
 	data->BT_filter = widget;
-	gtk_box_pack_start (GTK_BOX (actionbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (actionbox), widget);
 
 	//widget = gtk_button_new_with_mnemonic (_("Reset _filters"));
 	//widget = gtk_button_new_with_mnemonic (_("_Reset"));
 	widget = make_image_button(ICONNAME_HB_CLEAR, _("Clear filter"));
 	data->BT_reset = widget;
-	gtk_box_pack_start (GTK_BOX (actionbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (actionbox), widget);
 
 
 	widget = make_image_button(ICONNAME_HB_REFRESH, _("Refresh results"));
 	data->BT_refresh = widget;
-	gtk_box_pack_start (GTK_BOX (actionbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (actionbox), widget);
 
 	widget = make_image_toggle_button(ICONNAME_HB_LIFEENERGY, _("Toggle Life Energy"));
 	data->BT_lifnrg = widget;
-	gtk_box_pack_start (GTK_BOX (actionbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (actionbox), widget);
 
 	//TRANSLATORS: this is for Euro specific users, a toggle to display in 'Minor' currency
 	widget = gtk_check_button_new_with_mnemonic (_("Euro _minor"));
 	data->CM_minor = widget;
-	gtk_box_pack_start (GTK_BOX (actionbox), widget, FALSE, FALSE, 0);
-
-	//test menubutton
-	/*
-	widget = gtk_menu_button_new();
-	image = gtk_image_new_from_icon_name (ICONNAME_HB_BUTTON_MENU, GTK_ICON_SIZE_MENU);
-	g_object_set (widget, "image", image,  NULL);	
-	gtk_grid_attach (GTK_GRID(table), widget, col, 0, 1, 1);
-	*/
+	gtk_box_prepend (GTK_BOX (actionbox), widget);
 
 	//quick search
 	widget = make_search ();
 	data->ST_search = widget;
 	gtk_widget_set_size_request(widget, HB_MINWIDTH_SEARCH, -1);
 	gtk_widget_set_halign(widget, GTK_ALIGN_END);
-	gtk_box_pack_start (GTK_BOX (actionbox), widget, FALSE, FALSE, 0);
-
+	gtk_box_prepend (GTK_BOX (actionbox), widget);
 
 
 	/* grid line 2 */
-	table = gtk_grid_new();
-	gtk_grid_set_row_spacing (GTK_GRID (table), SPACING_SMALL);
-	gtk_grid_set_column_spacing (GTK_GRID (table), SPACING_MEDIUM);
-	//gtk_style_context_add_class (gtk_widget_get_style_context (table), GTK_STYLE_CLASS_FRAME);
-	//gtk_style_context_add_class (gtk_widget_get_style_context (table), GTK_STYLE_CLASS_VIEW);
-	gtk_box_pack_start (GTK_BOX (intbox), table, FALSE, FALSE, 0);
+	labelbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_widget_set_margin_start(labelbox, SPACING_TINY);
+	gtk_widget_set_margin_end(labelbox, SPACING_TINY);
+	//gtk_widget_set_hexpand(actionbox, TRUE);
+	gtk_box_prepend (GTK_BOX (intbox), labelbox);
 
-	col = 0;
-	// text range
-	label = gtk_label_new(NULL);
-	data->TX_daterange = label;
-	gimp_label_set_attributes (GTK_LABEL (label), PANGO_ATTR_SCALE,  PANGO_SCALE_SMALL, -1);
-	//gtk_widget_set_halign (label, GTK_ALIGN_CENTER);
-	//gtk_widget_set_hexpand (label, TRUE);
-	gtk_grid_attach (GTK_GRID(table), label, col, 0, 1, 1);
-
-	col++;
 	// text total/selection
 	label = make_label(NULL, 0.0, 0.5);
 	gtk_label_set_ellipsize(GTK_LABEL(label), PANGO_ELLIPSIZE_END);
@@ -3416,81 +3635,69 @@ gint col;
 	gtk_widget_set_halign (label, GTK_ALIGN_CENTER);
 	gtk_widget_set_hexpand (label, TRUE);
 	data->TX_selection = label;
-	hb_widget_set_margin(GTK_WIDGET(label), SPACING_TINY);
-	gtk_grid_attach (GTK_GRID(table), label, col, 0, 1, 1);
+	gtk_box_prepend (GTK_BOX (labelbox), label);
 
-
-	col++;
 	label = gtk_label_new(_("Reconciled:"));
-	//data->LB_recon = label;
-	gtk_grid_attach (GTK_GRID(table), label, col, 0, 1, 1);
-	col++;
+	gtk_widget_set_margin_start(label, SPACING_MEDIUM);
+	gtk_box_prepend (GTK_BOX (labelbox), label);
 	widget = gtk_label_new(NULL);
+	gtk_widget_set_margin_start(widget, SPACING_TINY);
 	data->TX_balance[0] = widget;
-	gtk_grid_attach (GTK_GRID(table), widget, col, 0, 1, 1);
+	gtk_box_prepend (GTK_BOX (labelbox), widget);
 
-	col++;
 	label = gtk_label_new(_("Cleared:"));
-	//data->LB_clear = label;
-	gtk_grid_attach (GTK_GRID(table), label, col, 0, 1, 1);
-	col++;
+	gtk_widget_set_margin_start(label, SPACING_MEDIUM);
+	gtk_box_prepend (GTK_BOX (labelbox), label);
 	widget = gtk_label_new(NULL);
+	gtk_widget_set_margin_start(widget, SPACING_TINY);
 	data->TX_balance[1] = widget;
-	gtk_grid_attach (GTK_GRID(table), widget, col, 0, 1, 1);
+	gtk_box_prepend (GTK_BOX (labelbox), widget);
 
 	col++;
 	label = gtk_label_new(_("Today:"));
-	//data->LB_today = label;
-	gtk_grid_attach (GTK_GRID(table), label, col, 0, 1, 1);
-	col++;
+	gtk_widget_set_margin_start(label, SPACING_MEDIUM);
+	gtk_box_prepend (GTK_BOX (labelbox), label);
 	widget = gtk_label_new(NULL);
+	gtk_widget_set_margin_start(widget, SPACING_TINY);
 	data->TX_balance[2] = widget;
-	gtk_grid_attach (GTK_GRID(table), widget, col, 0, 1, 1);
+	gtk_box_prepend (GTK_BOX (labelbox), widget);
 
 	col++;
 	label = gtk_label_new(_("Future:"));
-	//data->LB_futur = label;
-	gtk_grid_attach (GTK_GRID(table), label, col, 0, 1, 1);
-	col++;
+	gtk_widget_set_margin_start(label, SPACING_MEDIUM);
+	gtk_box_prepend (GTK_BOX (labelbox), label);
 	widget = gtk_label_new(NULL);
+	gtk_widget_set_margin_start(widget, SPACING_TINY);
 	data->TX_balance[3] = widget;
-	hb_widget_set_margin(GTK_WIDGET(widget), SPACING_TINY);
-	gtk_grid_attach (GTK_GRID(table), widget, col, 0, 1, 1);
-
+	gtk_box_prepend (GTK_BOX (labelbox), widget);
 
 	
 	//list
 	GtkWidget *lbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	gtk_box_pack_start (GTK_BOX (intbox), lbox, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (intbox), lbox);
 	
 	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_ALWAYS);
 	treeview = (GtkWidget *)create_list_transaction(LIST_TXN_TYPE_BOOK, PREFS->lst_ope_columns);
 	data->LV_ope = treeview;
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
-	//gtk_box_pack_start (GTK_BOX (intbox), scrollwin, TRUE, TRUE, 0);
-	gtk_box_pack_start (GTK_BOX (lbox), scrollwin, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (lbox), scrollwin);
 
 	list_txn_set_save_column_width(GTK_TREE_VIEW(treeview), TRUE);
 	
 
 	
 	/* toolbars */
-	//table = gtk_grid_new();
-	//gtk_box_pack_start (GTK_BOX (intbox), table, FALSE, FALSE, 0);
-	
-	//test new toolbar
 	bar = hub_ledger_toolbar_create(data);
 	data->TB_bar = bar;
 	gtk_style_context_add_class (gtk_widget_get_style_context (bar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
-	gtk_box_pack_start (GTK_BOX (lbox), bar, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (lbox), bar);
 
-	
 	//TODO should move this
 	//setup
 	//TODO minor data seems no more used
-	data->lockreconciled = PREFS->lockreconciled;
-	gtk_switch_set_active(GTK_SWITCH(data->SW_lockreconciled), PREFS->lockreconciled);
-	list_txn_set_lockreconciled(GTK_TREE_VIEW(data->LV_ope), PREFS->lockreconciled);
+	data->lockreconciled = PREFS->safe_lock_recon;
+	gtk_switch_set_active(GTK_SWITCH(data->SW_lockreconciled), PREFS->safe_lock_recon);
+	list_txn_set_lockreconciled(GTK_TREE_VIEW(data->LV_ope), PREFS->safe_lock_recon);
 	
 	g_object_set_data(G_OBJECT(gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_ope))), "minor", data->CM_minor);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_future), (PREFS->date_future_nbdays > 0) ? TRUE : FALSE );
@@ -3498,7 +3705,12 @@ gint col;
 	gtk_widget_grab_focus(GTK_WIDGET(data->LV_ope));
 
 	// connect signals
+	g_signal_connect (data->BT_info_showpending, "clicked", G_CALLBACK (hub_ledger_info_cb_show_pending), NULL);
+
+
+
 	g_signal_connect (data->IB_duplicate    , "response", G_CALLBACK (hub_ledger_cb_bar_duplicate_response), NULL);
+	g_signal_connect (data->IB_chkcatsign   , "response", G_CALLBACK (hub_ledger_cb_bar_chkcatsign_response), NULL);
 
 	g_signal_connect (data->SW_lockreconciled, "state-set", G_CALLBACK (hub_ledger_cb_recon_change), NULL);
 
@@ -3558,8 +3770,9 @@ gint col;
 	DB( g_print(" show\n") );
 	gtk_widget_show_all (window);
 	
+	gtk_widget_hide(data->IB_accnotif);
 	gtk_widget_hide(data->IB_duplicate);
-
+	gtk_widget_hide(data->IB_chkcatsign);
 
 	return window;
 }

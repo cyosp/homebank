@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -65,7 +65,6 @@ struct repbudget_data
 	gboolean	detail;
 	gboolean	legend;
 
-
 	GtkWidget	*window;
 	GActionGroup *actions;
 	gboolean	mapped_done;
@@ -80,6 +79,7 @@ struct repbudget_data
 	
 	GtkWidget	*TX_info;
 	GtkWidget	*TX_daterange;
+	GtkWidget	*CM_untiltoday;
 	GtkWidget	*CM_onlyout;
 	GtkWidget	*CM_minor;
 	GtkWidget	*RA_mode;
@@ -92,6 +92,7 @@ struct repbudget_data
 	GtkWidget	*LV_report;
 
 	//GtkWidget	*PO_mindate, *PO_maxdate;
+	GtkWidget	*LB_maxdate;
 	GtkWidget	*SB_mindate, *SB_maxdate;
 
 	GtkWidget	*CY_range;

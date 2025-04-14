@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -20,9 +20,7 @@
 #ifndef __HB_ACCOUNT_H__
 #define __HB_ACCOUNT_H__
 
-
-typedef struct _account		Account;
-
+#include "hb-types.h"
 
 struct _account
 {
@@ -50,6 +48,9 @@ struct _account
 	/* unsaved datas */
 	GQueue		*txn_queue;
 
+	gushort		dspflags;	
+	gushort		nb_pending;	//5.9
+
 	gdouble     bal_recon;	//bank balance (reconciled transaction)
 	gdouble		bal_clear;	//cleared
 	gdouble     bal_today;	//today balance (every transaction until today)
@@ -72,12 +73,14 @@ struct _account
 #define AF_NOREPORT		(1<<6)
 #define AF_OUTFLOWSUM	(1<<7)
 
-//unsaved tmp flags
-#define AF_ADDED		(1<<9)	//was 1<<2 < 5.5.3
-#define AF_CHANGED		(1<<10)	//was 1<<3 < 5.5.3
+#define AF_HASNOTICE	(1<< 9) //added 5.9 for pending/import
 
 //deprecated
 #define AF_OLDBUDGET	(1<<0)
+
+// unsaved flags -- display/session
+#define FLAG_ACC_TMP_ADDED		(1<< 1)
+#define FLAG_ACC_TMP_EDITED		(1<< 2)
 
 
 enum

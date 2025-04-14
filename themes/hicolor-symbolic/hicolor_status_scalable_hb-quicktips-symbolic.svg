@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="16"
+   height="16"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   version="1.0"
+   sodipodi:docname="Default_status_scalable_hb-quicktips-symbolic.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="41.166668"
+     inkscape:cx="11.477732"
+     inkscape:cy="9.2793519"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1003"
+     inkscape:window-x="1280"
+     inkscape:window-y="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:window-maximized="1"
+     inkscape:showpageshadow="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid443" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       d="M 8,16 Q 7.34,16 6.87,15.53 6.4,15.06 6.4,14.4 h 3.2 q 0,0.66 -0.47,1.13 Q 8.66,16 8,16 Z M 4.8,13.6 V 12 h 6.4 v 1.6 z M 5,11.2 Q 3.62,10.38 2.81,9 2,7.62 2,6 2,3.5 3.75,1.75 5.5,0 8,0 10.5,0 12.25,1.75 14,3.5 14,6 14,7.62 13.19,9 12.38,10.38 11,11.2 Z M 5.48,9.6 h 5.04 Q 11.42,8.96 11.91,8.02 12.4,7.08 12.4,6 12.4,4.16 11.12,2.88 9.84,1.6 8,1.6 6.16,1.6 4.88,2.88 3.6,4.16 3.6,6 3.6,7.08 4.09,8.02 4.58,8.96 5.48,9.6 Z M 8,9.6 Z"
+       id="path133"
+       style="stroke-width:0.025;fill:#bebebe" />
+  </g>
+</svg>

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -684,11 +684,11 @@ guint changes = 0;
 
 			if(changed == TRUE)
 			{
-				ope->flags |= OF_CHANGED;
+				ope->dspflags |= FLAG_TMP_EDITED;
 				changes++;
 				if( child != NULL )
 				{
-					child->flags |= OF_CHANGED;
+					child->dspflags |= FLAG_TMP_EDITED;
 					changes++;
 				}
 			}

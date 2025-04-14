@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   id="svg7384"
+   height="16"
+   width="16"
+   version="1.1"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="hicolor_actions_scalable_hb-view-pie-symbolic.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title1049">View Pie</title>
+  <defs
+     id="defs12" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1003"
+     id="namedview10"
+     showgrid="true"
+     inkscape:zoom="17.132147"
+     inkscape:cx="-0.4961433"
+     inkscape:cy="8.9305795"
+     inkscape:window-x="1440"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg7384"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:snap-global="false"
+     inkscape:pagecheckerboard="0"
+     inkscape:showpageshadow="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3209"
+       originx="0"
+       originy="0"
+       spacingx="1.0666667"
+       spacingy="1.0666667" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata90">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Maxime DOYEN</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:source>https://www.gethomebank.org</dc:source>
+        <dc:title>View Pie</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <path
+     d="M 8.5999999,7.3999998 H 14.78 Q 14.56,4.9599999 12.81,3.17 11.06,1.38 8.5999999,1.22 Z m -1.2,7.3799992 V 1.22 Q 4.7799998,1.44 2.9899994,3.4 1.2000003,5.3599999 1.2000003,7.9999998 q 0,2.6399992 1.7899991,4.6000002 1.7900004,1.959999 4.4100005,2.179999 z m 1.2,0 Q 11.06,14.619999 12.81,12.829999 14.56,11.04 14.78,8.5999998 H 8.5999999 Z M 8,7.9999998 Z M 8,16 q -1.6600001,0 -3.1199995,-0.630001 -1.4600008,-0.63 -2.5400004,-1.71 Q 1.2599995,12.58 0.63000029,11.119999 0,9.6599994 0,7.9999998 0,6.3399998 0.63000029,4.8799999 1.2599995,3.42 2.3400001,2.34 3.4199997,1.26 4.8800005,0.63000007 6.3399999,0 8,0 9.6600005,0 11.12,0.63000007 12.58,1.26 13.66,2.34 14.74,3.42 15.37,4.8799999 16,6.3399998 16,7.9999998 q 0,1.6599996 -0.63,3.1199992 -0.63,1.460001 -1.71,2.54 -1.08,1.08 -2.54,1.71 Q 9.6600005,16 8,16 Z"
+     id="path92"
+     style="stroke-width:0.4;fill:#bebebe" />
+</svg>

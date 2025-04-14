@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -19,6 +19,10 @@
 
 
 #include "homebank.h"
+
+#include "ui-dialogs.h"
+#include "ui-widgets.h"
+
 
 #include "rep-stats.h"
 
@@ -234,9 +238,9 @@ gint response_id;
 		//beta 5.8
 		ui_flt_manage_header_sensitive(data->PO_hubfilter, NULL);
 
-		g_signal_handler_block(data->CY_range, data->handler_id[HID_REPDIST_RANGE]);
+		g_signal_handler_block(data->CY_range, data->hid[HID_REPDIST_RANGE]);
 		hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_range), data->filter->range);
-		g_signal_handler_unblock(data->CY_range, data->handler_id[HID_REPDIST_RANGE]);
+		g_signal_handler_unblock(data->CY_range, data->hid[HID_REPDIST_RANGE]);
 
 		repstats_update_date_widget(data->window, NULL);
 		repstats_update_daterange(data->window, NULL);
@@ -268,9 +272,9 @@ Filter *newflt;
 
 		//#2073805 same range will not trigger
 		//hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_range), data->filter->range);
-		g_signal_handler_block(data->CY_range, data->handler_id[HID_REPDIST_RANGE]);
+		g_signal_handler_block(data->CY_range, data->hid[HID_REPDIST_RANGE]);
 		hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_range), data->filter->range);
-		g_signal_handler_unblock(data->CY_range, data->handler_id[HID_REPDIST_RANGE]);
+		g_signal_handler_unblock(data->CY_range, data->hid[HID_REPDIST_RANGE]);
 		////#2076458 force update
 		repstats_range_change(widget, user_data);
 		ui_flt_manage_header_sensitive(data->PO_hubfilter, NULL);
@@ -296,9 +300,9 @@ GtkWidget * combobox;
 
 	repstats_filter_setup(data);
 
-	g_signal_handler_block(data->CY_range, data->handler_id[HID_REPDIST_RANGE]);
+	g_signal_handler_block(data->CY_range, data->hid[HID_REPDIST_RANGE]);
 	hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_range), data->filter->range);
-	g_signal_handler_unblock(data->CY_range, data->handler_id[HID_REPDIST_RANGE]);
+	g_signal_handler_unblock(data->CY_range, data->hid[HID_REPDIST_RANGE]);
 
 	repstats_update_date_widget(data->window, NULL);
 	repstats_update_daterange(data->window, NULL);
@@ -348,9 +352,9 @@ struct repstats_data *data;
 		gtk_date_entry_set_error(GTK_DATE_ENTRY(data->PO_mindate), ( data->filter->mindate > data->filter->maxdate ) ? TRUE : FALSE);
 		gtk_date_entry_set_error(GTK_DATE_ENTRY(data->PO_maxdate), ( data->filter->maxdate < data->filter->mindate ) ? TRUE : FALSE);
 
-	g_signal_handler_block(data->CY_range, data->handler_id[HID_REPDIST_RANGE]);
+	g_signal_handler_block(data->CY_range, data->hid[HID_REPDIST_RANGE]);
 	hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_range), FLT_RANGE_MISC_CUSTOM);
-	g_signal_handler_unblock(data->CY_range, data->handler_id[HID_REPDIST_RANGE]);
+	g_signal_handler_unblock(data->CY_range, data->hid[HID_REPDIST_RANGE]);
 
 	repstats_compute(widget, NULL);
 	repstats_update_daterange(widget, NULL);
@@ -383,13 +387,13 @@ gint range;
 	repstats_update_date_widget(data->window, NULL);
 
 	//5.7.1 test add disable forecast
-	/*g_signal_handler_block(data->CM_forecast, data->handler_id[HID_REPDIST_FORECAST]);
+	/*g_signal_handler_block(data->CM_forecast, data->hid[HID_REPDIST_FORECAST]);
 	gint can_future = filter_preset_daterange_future_enable(data->filter, range); 
 	
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_forecast), can_future ? PREFS->rep_forcast : FALSE);
 
 	gtk_widget_set_sensitive(data->CM_forecast, can_future);
-	g_signal_handler_unblock(data->CM_forecast, data->handler_id[HID_REPDIST_FORECAST]);
+	g_signal_handler_unblock(data->CM_forecast, data->hid[HID_REPDIST_FORECAST]);
 	*/
 
 	repstats_compute(data->window, NULL);
@@ -531,14 +535,14 @@ struct repstats_data *data;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
-	g_signal_handler_block(data->PO_mindate, data->handler_id[HID_REPDIST_MINDATE]);
-	g_signal_handler_block(data->PO_maxdate, data->handler_id[HID_REPDIST_MAXDATE]);
+	g_signal_handler_block(data->PO_mindate, data->hid[HID_REPDIST_MINDATE]);
+	g_signal_handler_block(data->PO_maxdate, data->hid[HID_REPDIST_MAXDATE]);
 	
 	gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_mindate), data->filter->mindate);
 	gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_maxdate), data->filter->maxdate);
 	
-	g_signal_handler_unblock(data->PO_mindate, data->handler_id[HID_REPDIST_MINDATE]);
-	g_signal_handler_unblock(data->PO_maxdate, data->handler_id[HID_REPDIST_MAXDATE]);
+	g_signal_handler_unblock(data->PO_mindate, data->hid[HID_REPDIST_MINDATE]);
+	g_signal_handler_unblock(data->PO_maxdate, data->hid[HID_REPDIST_MAXDATE]);
 
 }
 
@@ -741,7 +745,7 @@ static void repstats_detail(GtkWidget *widget, gpointer user_data)
 {
 struct repstats_data *data;
 guint active = GPOINTER_TO_INT(user_data);
-guint tmpsrc;
+guint tmpmode, tmpsrc, tmpintvl;
 GList *list;
 GtkTreeModel *model;
 GtkTreeIter  iter, child;
@@ -767,8 +771,10 @@ gboolean is_subcat = FALSE;
 	if( active_cat )
 		is_subcat = (active_cat->parent == 0) ? FALSE : TRUE;
 
+	tmpmode = hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_mode));
 	//tmpsrc  = gtk_combo_box_get_active(GTK_COMBO_BOX(data->CY_src));
 	tmpsrc  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_src));
+	tmpintvl  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_intvl));
 
 	g_object_ref(model); /* Make sure the model stays with us after the tree view unrefs it */
 	gtk_tree_view_set_model(GTK_TREE_VIEW(data->LV_detail), NULL); /* Detach model from view */
@@ -779,6 +785,15 @@ gboolean is_subcat = FALSE;
 	{
 	Transaction *ope = list->data;
 	gdouble dtlamt = ope->amount;
+
+		if(tmpmode == 1 && data->sel_colid != -1 && data->sel_colid < LST_REP_COLID_MAX)
+		{
+		gint txn_colid = report_interval_get_pos(tmpintvl, data->filter->mindate, ope);
+
+			//DB( g_print(" sel_colid=%d txncolid=%d\n", data->sel_colid, txn_colid) );
+			if( data->sel_colid != txn_colid )
+				goto next_txn;
+		}
 
 		if(filter_txn_match(data->filter, ope) == 1)
 		{
@@ -890,7 +905,7 @@ gboolean is_subcat = FALSE;
 				
 			}
 		}
-
+	next_txn:
 		list = g_list_next(list);
 	}
 
@@ -901,6 +916,44 @@ gboolean is_subcat = FALSE;
 	gtk_tree_view_columns_autosize( GTK_TREE_VIEW(data->LV_detail) );
 	//gtk_tree_view_expand_all( GTK_TREE_VIEW(data->LV_detail) );
 }
+
+
+
+static gboolean
+reptime_list_click_func ( GtkWidget *widget, GdkEventButton *ev, gpointer user_data )
+{
+	if (ev->type == GDK_BUTTON_PRESS)
+	{
+	struct repstats_data *data;
+	GtkTreeModel *model;
+	GtkTreePath *path;
+	GtkTreeViewColumn *column;
+	GtkTreeIter iter;
+
+		data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+		DB( g_print(" capture row/col\n") );
+		data->sel_colid = -1;
+		if( gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(widget), ev->x, ev->y, &path, &column, NULL, NULL) )
+		{
+			data->sel_colid = gtk_tree_view_column_get_sort_column_id (column);
+
+			model = gtk_tree_view_get_model(GTK_TREE_VIEW(widget));
+			if(gtk_tree_model_get_iter(model, &iter, path) )
+			{
+			gint key;
+
+				gtk_tree_model_get(model, &iter, LST_REPORT2_KEY, &key, -1);
+				DB( g_print(" reptime click key=%d col=%d '%s'\n", key, data->sel_colid, gtk_tree_view_column_get_title (column)) );
+				repstats_detail(widget, GINT_TO_POINTER(key));
+			}
+
+			gtk_tree_path_free (path);
+		}
+	}
+	return FALSE;
+}
+
 
 
 static void repstats_compute(GtkWidget *widget, gpointer user_data)
@@ -919,25 +972,26 @@ GtkTreeIter  iter, parent, *tmpparent;
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
 	//clear all
-	//free previous txn
-	if(data->txn_queue != NULL)
-		g_queue_free (data->txn_queue);
-	data->txn_queue = NULL;
 	#if HB_STATS_DO_TOTAL == 1
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_report));
 	gtk_tree_store_clear (GTK_TREE_STORE(model));
 	gtk_chart_set_datas_none(GTK_CHART(data->RE_chart));
 	#endif
+
+	if(data->txn_queue != NULL)
+		g_queue_free (data->txn_queue);
+	data->txn_queue = NULL;
 	
 	//refresh the datatable
-	if(data->trend)
-		da_datatable_free (data->trend);	
-	data->trend = NULL;
 	#if HB_STATS_DO_TIME == 1
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_report2));
 	gtk_tree_store_clear (GTK_TREE_STORE(model));
 	gtk_chart_set_datas_none(GTK_CHART(data->RE_chart2));
 	#endif
+
+	if(data->trend)
+		da_datatable_free (data->trend);	
+	data->trend = NULL;
 
 	data->total_expense = 0.0;
 	data->total_income = 0.0;
@@ -1223,7 +1277,7 @@ GtkTreeIter  iter, parent, *tmpparent;
 
 
 			//#2024940 test on exp/inc individually
-			if( hb_amount_equal(dr->rowexp, 0.0) && hb_amount_equal(dr->rowinc, 0.0) )
+			if( (hb_amount_cmp(dr->rowexp, 0.0)==0) && (hb_amount_cmp(dr->rowinc, 0.0)==0) )
 			{
 				DB( g_printf(" %4d:'%s' %.2f :: hide (no data)\n", i, dr->label, dr->rowexp + dr->rowinc ) );
 				continue;
@@ -1407,7 +1461,7 @@ gboolean result;
 	Transaction *old_txn, *new_txn;
 
 		//#1909749 skip reconciled if lock is ON
-		if( PREFS->lockreconciled == TRUE && active_txn->status == TXN_STATUS_RECONCILED )
+		if( PREFS->safe_lock_recon == TRUE && active_txn->status == TXN_STATUS_RECONCILED )
 			return;
 
 		old_txn = da_transaction_clone (active_txn);
@@ -1459,7 +1513,7 @@ struct repstats_data *data;
 		DB( g_print(" showdetail=%d\n", data->detail) );
 
 		//#2018039
-		list_txn_set_lockreconciled(GTK_TREE_VIEW(data->LV_detail), PREFS->lockreconciled);
+		list_txn_set_lockreconciled(GTK_TREE_VIEW(data->LV_detail), PREFS->safe_lock_recon);
 
 		if(data->detail)
 		{
@@ -1655,20 +1709,20 @@ guint key = -1;
 
 static void repstats_selection2(GtkTreeSelection *treeselection, gpointer user_data)
 {
-GtkTreeModel *model;
-GtkTreeIter iter;
-guint key = -1;
+//GtkTreeModel *model;
+//GtkTreeIter iter;
+//guint key = -1;
 
 	DB( g_print("\n[repdist] selection time\n") );
 
-	if (gtk_tree_selection_get_selected(treeselection, &model, &iter))
+	/*if (gtk_tree_selection_get_selected(treeselection, &model, &iter))
 	{
 		gtk_tree_model_get(model, &iter, LST_REPORT2_KEY, &key, -1);
 	}
 
 	DB( g_print(" - time active is %d\n", key) );
 
-	repstats_detail(GTK_WIDGET(gtk_tree_selection_get_tree_view (treeselection)), GINT_TO_POINTER(key));
+	repstats_detail(GTK_WIDGET(gtk_tree_selection_get_tree_view (treeselection)), GINT_TO_POINTER(key));*/
 	repstats_sensitive(GTK_WIDGET(gtk_tree_selection_get_tree_view (treeselection)), NULL);
 }
 
@@ -1779,16 +1833,15 @@ GtkWidget *toolbar, *button;
 	g_menu_append (section, _("_Detail to CSV")      , "win.detcsv");
 	g_object_unref (section);
 
-	GActionGroup *group = (GActionGroup*)g_simple_action_group_new ();
-	data->actions = group;
-	g_action_map_add_action_entries (G_ACTION_MAP (group), win_actions, G_N_ELEMENTS (win_actions), data);
+	GActionGroup *actiongroup = (GActionGroup*)g_simple_action_group_new ();
+	data->actions = actiongroup;
+	g_action_map_add_action_entries (G_ACTION_MAP (actiongroup), win_actions, G_N_ELEMENTS (win_actions), data);
 
-	gtk_widget_insert_action_group (button, "win", G_ACTION_GROUP(group));
+	gtk_widget_insert_action_group (button, "win", G_ACTION_GROUP(actiongroup));
 	gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (button), G_MENU_MODEL (menu));
 
 	button = hbtk_toolbar_add_toolbutton(GTK_TOOLBAR(toolbar), ICONNAME_HB_PRINT, _("Print"), _("Print"));
 	data->BT_print = button;
-	
 	
 	return toolbar;
 }
@@ -1854,10 +1907,10 @@ static void repstats_window_setup(struct repstats_data *data)
 	g_signal_connect (G_OBJECT (data->BT_collapse), "clicked", G_CALLBACK (repstats_cb_collapse_all), NULL);
 
 
-    data->handler_id[HID_REPDIST_MINDATE] = g_signal_connect (data->PO_mindate, "changed", G_CALLBACK (repstats_date_change), (gpointer)data);
-    data->handler_id[HID_REPDIST_MAXDATE] = g_signal_connect (data->PO_maxdate, "changed", G_CALLBACK (repstats_date_change), (gpointer)data);
+    data->hid[HID_REPDIST_MINDATE] = g_signal_connect (data->PO_mindate, "changed", G_CALLBACK (repstats_date_change), (gpointer)data);
+    data->hid[HID_REPDIST_MAXDATE] = g_signal_connect (data->PO_maxdate, "changed", G_CALLBACK (repstats_date_change), (gpointer)data);
 
-	data->handler_id[HID_REPDIST_RANGE] = g_signal_connect (data->CY_range, "changed", G_CALLBACK (repstats_range_change), NULL);
+	data->hid[HID_REPDIST_RANGE] = g_signal_connect (data->CY_range, "changed", G_CALLBACK (repstats_range_change), NULL);
 
     g_signal_connect (data->CY_src, "changed", G_CALLBACK (repstats_compute), (gpointer)data);
 
@@ -1865,13 +1918,13 @@ static void repstats_window_setup(struct repstats_data *data)
 
 	g_signal_connect (data->CY_intvl, "changed", G_CALLBACK (repstats_compute), (gpointer)data);
 	
-    data->handler_id[HID_REPDIST_VIEW] = g_signal_connect (data->CY_type, "changed", G_CALLBACK (repstats_compute), (gpointer)data);
+    data->hid[HID_REPDIST_VIEW] = g_signal_connect (data->CY_type, "changed", G_CALLBACK (repstats_compute), (gpointer)data);
 
 	g_signal_connect (data->RG_zoomx, "value-changed", G_CALLBACK (repstats_zoomx_callback), NULL);
 
 
 	g_signal_connect (data->CM_balance, "toggled", G_CALLBACK (repstats_compute), NULL);
-	data->handler_id[HID_REPDIST_FORECAST] = g_signal_connect (data->CM_forecast, "toggled", G_CALLBACK (repstats_compute), NULL);
+	data->hid[HID_REPDIST_FORECAST] = g_signal_connect (data->CM_forecast, "toggled", G_CALLBACK (repstats_compute), NULL);
 	g_signal_connect (data->CM_byamount, "toggled", G_CALLBACK (repstats_update), NULL);
 	g_signal_connect (data->CM_compare, "toggled", G_CALLBACK (repstats_update), NULL);
 
@@ -1895,11 +1948,10 @@ static void repstats_window_setup(struct repstats_data *data)
 	g_signal_connect (gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_report)), "sort-column-changed", G_CALLBACK (repstats_cb_sortcolumnchanged), NULL);
 
 	g_signal_connect (gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_report2)), "changed", G_CALLBACK (repstats_selection2), NULL);
-
+	//we use this to intercep column click
+	g_signal_connect ( G_OBJECT (data->LV_report2), "button-press-event", G_CALLBACK (reptime_list_click_func), data );
 
 	g_signal_connect (GTK_TREE_VIEW(data->LV_detail), "row-activated", G_CALLBACK (repstats_detail_onRowActivated), NULL);
-	
-
 
 }
 
@@ -2022,7 +2074,7 @@ gint row;
 	//control part
 	table = gtk_grid_new ();
 	gtk_widget_set_hexpand (GTK_WIDGET(table), FALSE);
-    gtk_box_pack_start (GTK_BOX (mainbox), table, FALSE, FALSE, 0);
+    gtk_box_prepend (GTK_BOX (mainbox), table);
 
 	gtk_grid_set_row_spacing (GTK_GRID (table), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (table), SPACING_MEDIUM);
@@ -2036,55 +2088,8 @@ gint row;
 
 		label = make_label_group(_("Display"));
 		//gtk_grid_attach (GTK_GRID (table), label, 0, row, 3, 1);
-		gtk_box_pack_start (GTK_BOX (fbox), label, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (fbox), label);
 		
-		//test button
-		/*bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-		gtk_style_context_add_class (gtk_widget_get_style_context (bbox), GTK_STYLE_CLASS_LINKED);
-		gtk_box_pack_end (GTK_BOX (fbox), bbox, FALSE, FALSE, 0);
-
-		group = widget = make_image_radio_button(ICONNAME_HB_VIEW_LIST, _("View results as list"));
-		data->BT_list = widget;
-		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
-
-		widget = make_image_radio_button(ICONNAME_HB_VIEW_COLUMN, _("View results as column"));
-		gtk_radio_button_join_group(GTK_RADIO_BUTTON(widget), GTK_RADIO_BUTTON(group));
-		data->BT_column = widget;
-		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
-
-		widget = make_image_radio_button(ICONNAME_HB_VIEW_DONUT, _("View results as donut"));
-		gtk_radio_button_join_group(GTK_RADIO_BUTTON(widget), GTK_RADIO_BUTTON(group));
-		data->BT_donut = widget;
-		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
-
-		widget = make_image_radio_button(ICONNAME_HB_VIEW_STACK, _("View results as stack"));
-		gtk_radio_button_join_group(GTK_RADIO_BUTTON(widget), GTK_RADIO_BUTTON(group));
-		data->BT_stack = widget;
-		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
-
-		widget = make_image_radio_button(ICONNAME_HB_VIEW_STACK100, _("View results as stack 100%"));
-		gtk_radio_button_join_group(GTK_RADIO_BUTTON(widget), GTK_RADIO_BUTTON(group));
-		data->BT_stack100 = widget;
-		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
-
-		widget = make_image_toggle_button(ICONNAME_HB_OPE_SHOW, _("Toggle detail"));
-		data->BT_detail = widget;
-		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
-
-		widget = make_image_toggle_button(ICONNAME_HB_SHOW_LEGEND, _("Toggle legend"));
-		data->BT_legend = widget;
-		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
-
-		widget = make_image_toggle_button(ICONNAME_HB_SHOW_RATE, _("Toggle rate"));
-		data->BT_rate = widget;
-		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
-
-		widget = make_image_button(ICONNAME_HB_REFRESH, _("Refresh results"));
-		data->BT_refresh = widget;
-		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
-		*/
-
-
 	row++;
 	label = make_label_widget(_("Mode:"));
 	gtk_grid_attach (GTK_GRID (table), label, 1, row, 1, 1);
@@ -2172,30 +2177,30 @@ gint row;
 
 		label = make_label_group(_("Filter"));
 		//gtk_grid_attach (GTK_GRID (table), label, 0, row, 3, 1);
-		gtk_box_pack_start (GTK_BOX (fbox), label, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (fbox), label);
 
 		// active
 		label = make_label_widget(_("Active:"));
 		gtk_widget_set_margin_start(label, SPACING_MEDIUM);
-		gtk_box_pack_start (GTK_BOX (fbox), label, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (fbox), label);
 		label = make_label(NULL, 0.0, 0.5);
 		gtk_widget_set_margin_start(label, SPACING_SMALL);
 		data->TX_fltactive = label;
-		gtk_box_pack_start (GTK_BOX (fbox), label, FALSE, FALSE, 0);
-		widget = gtk_image_new_from_icon_name (ICONNAME_INFO, GTK_ICON_SIZE_BUTTON);
+		gtk_box_prepend (GTK_BOX (fbox), label);
+		widget = hbtk_image_new_from_icon_name_16 (ICONNAME_HB_QUICKTIPS);
 		data->TT_fltactive = fbox;
-		gtk_box_pack_start (GTK_BOX (fbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (fbox), widget);
 
 		//test button
 		bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 		gtk_style_context_add_class (gtk_widget_get_style_context (bbox), GTK_STYLE_CLASS_LINKED);
-		gtk_box_pack_end (GTK_BOX (fbox), bbox, FALSE, FALSE, 0);
+		gtk_box_append (GTK_BOX (fbox), bbox);
 		widget = make_image_button(ICONNAME_HB_FILTER, _("Edit filter"));
 		data->BT_filter = widget;
-		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (bbox), widget);
 		widget = make_image_button(ICONNAME_HB_CLEAR, _("Clear filter"));
 		data->BT_reset = widget;
-		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (bbox), widget);
 
 		row++;
 		widget = create_popover_widget(GTK_WINDOW(data->window), data->filter);
@@ -2231,42 +2236,42 @@ gint row;
 	//part: info + report
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_widget_set_margin_start (vbox, SPACING_SMALL);
-    gtk_box_pack_start (GTK_BOX (mainbox), vbox, TRUE, TRUE, 0);
+    hbtk_box_prepend (GTK_BOX (mainbox), vbox);
 
 	//toolbar
 	widget = repstats_toolbar_create(data);
 	data->TB_bar = widget;
-	gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (vbox), widget);
 
 
 	//infos + total
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
 	hb_widget_set_margin(GTK_WIDGET(hbox), SPACING_SMALL);
-    gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
+    gtk_box_prepend (GTK_BOX (vbox), hbox);
 
 	widget = make_label(NULL, 0.5, 0.5);
 	gimp_label_set_attributes (GTK_LABEL (widget), PANGO_ATTR_SCALE,  PANGO_SCALE_SMALL, -1);
 	data->TX_daterange = widget;
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (hbox), widget);
 
 	entry = gtk_label_new(NULL);
 	data->TX_total[2] = entry;
-	gtk_box_pack_end (GTK_BOX (hbox), entry, FALSE, FALSE, 0);
+	gtk_box_append (GTK_BOX (hbox), entry);
 	label = gtk_label_new(_("Total:"));
-	gtk_box_pack_end (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_box_append (GTK_BOX (hbox), label);
 
 	entry = gtk_label_new(NULL);
 	data->TX_total[1] = entry;
-	gtk_box_pack_end (GTK_BOX (hbox), entry, FALSE, FALSE, 0);
+	gtk_box_append (GTK_BOX (hbox), entry);
 	label = gtk_label_new(_("Income:"));
-	gtk_box_pack_end (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_box_append (GTK_BOX (hbox), label);
 
 
 	entry = gtk_label_new(NULL);
 	data->TX_total[0] = entry;
-	gtk_box_pack_end (GTK_BOX (hbox), entry, FALSE, FALSE, 0);
+	gtk_box_append (GTK_BOX (hbox), entry);
 	label = gtk_label_new(_("Expense:"));
-	gtk_box_pack_end (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	gtk_box_append (GTK_BOX (hbox), label);
 
 
 	/* report area */
@@ -2275,7 +2280,7 @@ gint row;
 	gtk_widget_show(notebook);
 	gtk_notebook_set_show_tabs(GTK_NOTEBOOK(notebook), FALSE);
 	gtk_notebook_set_show_border(GTK_NOTEBOOK(notebook), FALSE);
-    gtk_box_pack_start (GTK_BOX (vbox), notebook, TRUE, TRUE, 0);
+    hbtk_box_prepend (GTK_BOX (vbox), notebook);
 
 	// page list/detail
 	vpaned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
@@ -2287,7 +2292,7 @@ gint row;
 	// list total
 	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	data->SW_total = scrollwin;
-	gtk_box_pack_start (GTK_BOX(vbox), scrollwin, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX(vbox), scrollwin);
 	treeview = lst_report_create();
 	data->LV_report = treeview;
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
@@ -2295,7 +2300,7 @@ gint row;
 	// list trend
 	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	data->SW_trend = scrollwin;	
-	gtk_box_pack_start (GTK_BOX(vbox), scrollwin, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX(vbox), scrollwin);
 	treeview = lst_rep_time_create();
 	data->LV_report2 = treeview;
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
@@ -2304,18 +2309,18 @@ gint row;
 	tbar = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	data->GR_listbar = tbar;
 	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
-	gtk_box_pack_start (GTK_BOX (vbox), tbar, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (vbox), tbar);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_end (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
+	gtk_box_append (GTK_BOX (tbar), bbox);
 
 		widget = make_image_button(ICONNAME_HB_BUTTON_EXPAND, _("Expand all"));
 		data->BT_expand = widget;
-		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (bbox), widget);
 
 		widget = make_image_button(ICONNAME_HB_BUTTON_COLLAPSE, _("Collapse all"));
 		data->BT_collapse = widget;
-		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (bbox), widget);
 
 	//detail
 	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);

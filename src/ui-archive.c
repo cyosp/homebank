@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -27,14 +27,17 @@
 #include "ui-txn-split.h"
 #include "ui-tag.h"
 
+#include "ui-dialogs.h"
+#include "ui-widgets.h"
+
 #include "list-scheduled.h"
 #include "gtk-dateentry.h"
+#include "hbtk-switcher.h"
 
 /****************************************************************************/
 /* Debug macros                                                             */
 /****************************************************************************/
 #define MYDEBUG 0
-
 #if MYDEBUG
 #define DB(x) (x);
 #else
@@ -45,8 +48,9 @@
 extern struct HomeBank *GLOBALS;
 extern struct Preferences *PREFS;
 
-
-extern HbKvData CYA_ARC_UNIT[];
+extern char *CYA_ARC_FREQ[];
+extern HbKvData CYA_ARC_ORDINAL[];
+extern HbKvData CYA_ARC_WEEKDAY[];
 extern HbKvData CYA_ARC_WEEKEND[];
 
 
@@ -88,7 +92,7 @@ struct ui_arc_manage_data *data;
 GtkTreeModel *model;
 GtkTreeIter iter;
 Archive *arc;
-gboolean selected, sensitive;
+gboolean selected, recurring, sensitive;
 
 	DB( g_print("\n[ui-scheduled] update\n") );
 
@@ -98,41 +102,59 @@ gboolean selected, sensitive;
 
 	DB( g_print(" toolbutton sensitive\n") );
 
-	sensitive = (selected == TRUE) ? TRUE : FALSE;
+	sensitive = selected;
 	gtk_widget_set_sensitive(data->BT_edit, sensitive);
 	gtk_widget_set_sensitive(data->BT_rem, sensitive);
-	gtk_widget_set_sensitive(data->MB_schedule, sensitive);
-	gtk_widget_set_sensitive(data->CM_auto, sensitive);
+	gtk_widget_set_sensitive(data->BT_dup, sensitive);
+	gtk_widget_set_sensitive(data->BT_schedule, sensitive);
+	gtk_widget_set_sensitive(data->IM_wrnwe, sensitive);
+
+	gtk_widget_set_sensitive(data->SW_recurrent, sensitive);
 
 	DB( g_print(" scheduled popover sensitive\n") );
 
-	sensitive = FALSE;
+	recurring = FALSE;
 	if(selected)
 	{
 		gtk_tree_model_get(model, &iter, LST_DSPUPC_DATAS, &arc, -1);
 
-		if( arc->flags & OF_AUTO )
-			sensitive = TRUE;
+		if( arc->rec_flags & TF_RECUR )
+			recurring = TRUE;
 	}
-	
-	gtk_widget_set_sensitive(data->LB_next, sensitive);
-	gtk_widget_set_sensitive(data->PO_next, sensitive);
 
-	gtk_widget_set_sensitive(data->LB_every, sensitive);
-	gtk_widget_set_sensitive(data->NB_every, sensitive);
+	gtk_widget_set_sensitive(data->GR_recurrent, recurring);
+	gtk_widget_set_sensitive(data->SW_recurrent, TRUE);
+	gtk_widget_set_sensitive(data->LB_next, recurring);
+	gtk_widget_set_sensitive(data->PO_next, recurring);
 
-	gtk_widget_set_sensitive(data->LB_weekend, sensitive);
-	gtk_widget_set_sensitive(data->CY_weekend, sensitive);
+	if(recurring == TRUE)
+	{
+		sensitive = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_relative));
+		DB( g_print(" relative = %d (recu=%d cm=%d)\n", sensitive, recurring, gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_relative))) );
+		gtk_widget_set_sensitive(data->LB_relative, sensitive);
+		gtk_widget_set_sensitive(data->CY_ordinal, sensitive);
+		gtk_widget_set_sensitive(data->CY_weekday, sensitive);
 
-	gtk_widget_set_sensitive(data->EX_options, sensitive);
-	
-	gtk_widget_set_sensitive(data->CY_unit, sensitive);
-	gtk_widget_set_sensitive(data->CM_limit, sensitive);
+		//gint freq = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_rec_freq));
+		gint freq = hbtk_switcher_get_active(HBTK_SWITCHER(data->RA_rec_freq));
+		sensitive = (freq == AUTO_FREQ_MONTH) ? TRUE : FALSE;
+		hb_widget_visible(data->CM_relative, sensitive);
+		hb_widget_visible(data->LB_relative, sensitive);
+		hb_widget_visible(data->CY_ordinal, sensitive);
+		hb_widget_visible(data->CY_weekday, sensitive);
 
-	gtk_widget_set_sensitive(data->LB_posts, sensitive);
-	
-	sensitive = (sensitive == TRUE) ? gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_limit)) : sensitive;
-	gtk_widget_set_sensitive(data->NB_limit, sensitive);
+		//update freq label
+		gchar *txt = ui_arc_listview_get_freq_label(freq);
+		gtk_label_set_text(GTK_LABEL(data->LB_rec_every2), txt);
+
+		sensitive = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_relative));
+		gtk_widget_set_sensitive(data->LB_weekend, sensitive);
+		gtk_widget_set_sensitive(data->CY_weekend, sensitive);
+
+		sensitive = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_limit));
+		gtk_widget_set_sensitive(data->NB_limit, sensitive);
+		gtk_widget_set_sensitive(data->LB_posts, sensitive);
+	}
 
 	DB( g_print(" row changed\n") );
 	
@@ -152,13 +174,61 @@ gboolean selected, sensitive;
 
 
 static void
+ui_arc_manage_cb_check_weekend(GtkWidget *widget, gpointer user_data)
+{
+struct ui_arc_manage_data *data;
+gboolean visible;
+gint tmpwe;
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	//update weekend info
+	tmpwe = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_weekend));
+	visible = FALSE;
+	if( tmpwe==ARC_WEEKEND_BEFORE || tmpwe==ARC_WEEKEND_AFTER )
+	{
+	guint32 tmpdate = gtk_date_entry_get_date(GTK_DATE_ENTRY(data->PO_next));
+
+		if( tmpdate != scheduled_get_txn_real_postdate(tmpdate, tmpwe) )
+			visible = TRUE;
+	}
+	DB( g_print(" warn weekend %d\n", visible) );
+	hb_widget_visible(data->IM_wrnwe, visible);
+}
+
+
+static void
+ui_arc_manage_cb_relative_changed(GtkWidget *widget, gpointer user_data)
+{
+struct ui_arc_manage_data *data;
+gint ordinal, nextwd, every;
+GDate date;
+guint32 nextdate = GLOBALS->today;
+
+	DB( g_print("\n[ui-scheduled] cb relative changed\n") );
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	ordinal = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_ordinal));
+	nextwd  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_weekday));
+	every = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(data->NB_rec_every));
+
+	g_date_set_julian(&date, GLOBALS->today);
+	nextdate = scheduled_date_get_next_relative(&date, ordinal, nextwd, every);
+
+	gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_next), nextdate);
+
+	ui_arc_manage_update(widget, user_data);
+}
+
+
+static void
 ui_arc_manage_cb_schedule_changed(GtkWidget *widget, gpointer user_data)
 {
 struct ui_arc_manage_data *data;
 Archive *arcitem;
 GtkTreeModel		 *model;
 GtkTreeIter			 iter;
-
 gboolean selected, sensitive;
 
 	DB( g_print("\n[ui-scheduled] cb schedule changed\n") );
@@ -172,18 +242,15 @@ gboolean selected, sensitive;
 	{
 		gtk_tree_model_get(model, &iter, LST_DSPUPC_DATAS, &arcitem, -1);
 
-		arcitem->flags &= ~(OF_AUTO);
-		sensitive = gtk_switch_get_active(GTK_SWITCH(data->CM_auto)) ? TRUE : FALSE;
+		arcitem->rec_flags &= ~(TF_RECUR);
+		sensitive = gtk_switch_get_active(GTK_SWITCH(data->SW_recurrent)) ? TRUE : FALSE;
 		if(sensitive)
-			arcitem->flags |= OF_AUTO;
+			arcitem->rec_flags |= TF_RECUR;
 	}
-	
+
 	ui_arc_manage_update(widget, user_data);
 		
 }
-
-
-
 
 
 static void
@@ -219,10 +286,10 @@ gint i, typsch, typtpl;
 	Archive *item = list->data;
 	gboolean insert = FALSE;
 
-		if( (typsch) && (item->flags & OF_AUTO) )
+		if( (typsch) && (item->rec_flags & TF_RECUR) )
 			insert = TRUE;
 
-		if( (typtpl) && !(item->flags & OF_AUTO) )
+		if( (typtpl) && !(item->rec_flags & TF_RECUR) )
 			insert = TRUE;
 
 		if( insert )
@@ -291,10 +358,10 @@ gboolean result;
 		typtpl = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->BT_typtpl));
 		
 		if( typsch && !typtpl )
-			item->flags |= OF_AUTO;
+			item->rec_flags |= TF_RECUR;
 
-		item->every = 1;
-		item->unit = AUTO_UNIT_MONTH;
+		item->rec_every = 1;
+		item->rec_freq = AUTO_FREQ_MONTH;
 		item->nextdate = GLOBALS->today;
 		
 		//GLOBALS->arc_list = g_list_append(GLOBALS->arc_list, item);
@@ -370,6 +437,43 @@ gboolean result;
 
 
 static void
+ui_arc_manage_cb_dup_clicked(GtkWidget *widget, gpointer user_data)
+{
+struct ui_arc_manage_data *data;
+GtkTreeSelection *selection;
+GtkTreeModel *model;
+GtkTreeIter iter;
+Archive *arcitem, *newitem;
+
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+	DB( g_print("\n[ui-scheduled] dup (data=%p)\n", data) );
+
+	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_arc));
+	//if true there is a selected node
+	if (gtk_tree_selection_get_selected(selection, &model, &iter))
+	{
+		gtk_tree_model_get(model, &iter, LST_DSPUPC_DATAS, &arcitem, -1);
+		
+		newitem = da_archive_clone(arcitem);
+		if( newitem )
+		{
+			if( da_archive_append(newitem) )						
+			{
+				gtk_list_store_append (GTK_LIST_STORE(model), &iter);
+				gtk_list_store_set (GTK_LIST_STORE(model), &iter,
+					LST_DSPUPC_DATAS, newitem,
+		//			LST_DEFARC_OLDPOS, 0,
+					-1);
+	
+				gtk_tree_selection_select_iter (gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_arc)), &iter);
+			}
+			
+		}
+	}
+}
+
+
+static void
 ui_arc_manage_cb_delete_clicked(GtkWidget *widget, gpointer user_data)
 {
 struct ui_arc_manage_data *data;
@@ -392,7 +496,7 @@ gint result;
 		gtk_tree_model_get(model, &iter, LST_DSPUPC_DATAS, &item, -1);
 
 		//5.7.4 check if template is used
-		if( !(item->flags & OF_AUTO) )
+		if( !(item->rec_flags & TF_RECUR) )
 		{
 			if( template_is_account_used(item) == TRUE )
 			{
@@ -450,20 +554,29 @@ Archive *item;
 	{
 		gtk_tree_model_get(model, &iter, LST_DSPUPC_DATAS, &item, -1);
 
-		g_signal_handlers_block_by_func (G_OBJECT (data->CM_auto ), G_CALLBACK (ui_arc_manage_cb_schedule_changed), NULL);
+		g_signal_handlers_block_by_func (G_OBJECT (data->PO_next), G_CALLBACK (ui_arc_manage_cb_check_weekend), NULL);
+		g_signal_handlers_block_by_func (G_OBJECT (data->CY_weekend), G_CALLBACK (ui_arc_manage_cb_check_weekend), NULL);
+		g_signal_handlers_block_by_func (G_OBJECT (data->SW_recurrent ), G_CALLBACK (ui_arc_manage_cb_schedule_changed), NULL);
 		g_signal_handlers_block_by_func (G_OBJECT (data->CM_limit), G_CALLBACK (ui_arc_manage_cb_schedule_changed), NULL);
 
-		gtk_switch_set_active(GTK_SWITCH(data->CM_auto), (item->flags & OF_AUTO) ? 1 : 0);
-		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_every), item->every);
-		hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_unit), item->unit);
+		gtk_switch_set_active(GTK_SWITCH(data->SW_recurrent), (item->rec_flags & TF_RECUR) ? 1 : 0);
+		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_rec_every), item->rec_every);
+		//hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_rec_freq), item->rec_freq);
+		hbtk_switcher_set_active(HBTK_SWITCHER(data->RA_rec_freq), item->rec_freq);
 		gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_next), item->nextdate);
-		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_limit), (item->flags & OF_LIMIT) ? 1 : 0);
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_limit), (item->rec_flags & TF_LIMIT) ? 1 : 0);
 		DB( g_print(" nb_limit = %d %g\n", item->limit, (gdouble)item->limit) );
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_limit), (gdouble)item->limit);
 		hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_weekend), item->weekend);
-		
+
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_relative), (item->rec_flags & TF_RELATIVE) ? 1 : 0);
+		hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_ordinal), item->rec_ordinal);
+		hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_weekday), item->rec_weekday);
+
 		g_signal_handlers_unblock_by_func (G_OBJECT (data->CM_limit), G_CALLBACK (ui_arc_manage_cb_schedule_changed), NULL);
-		g_signal_handlers_unblock_by_func (G_OBJECT (data->CM_auto ), G_CALLBACK (ui_arc_manage_cb_schedule_changed), NULL);
+		g_signal_handlers_unblock_by_func (G_OBJECT (data->SW_recurrent ), G_CALLBACK (ui_arc_manage_cb_schedule_changed), NULL);
+		g_signal_handlers_unblock_by_func (G_OBJECT (data->CY_weekend ), G_CALLBACK (ui_arc_manage_cb_check_weekend), NULL);
+		g_signal_handlers_unblock_by_func (G_OBJECT (data->PO_next ), G_CALLBACK (ui_arc_manage_cb_check_weekend), NULL);
 	}
 }
 
@@ -483,23 +596,30 @@ gboolean active;
 		gtk_tree_model_get(model, &iter, LST_DSPUPC_DATAS, &item, -1);
 
 		//#1863484: reset flag to enable remove auto and limit :)
-		item->flags &= ~(OF_AUTO|OF_LIMIT);
-		
-		active = gtk_switch_get_active(GTK_SWITCH(data->CM_auto));
-		if(active == 1) item->flags |= OF_AUTO;
+		item->rec_flags &= ~(TF_RECUR|TF_LIMIT|TF_RELATIVE);
 
-		gtk_spin_button_update(GTK_SPIN_BUTTON(data->NB_every));
-		item->every   = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(data->NB_every));
-		item->unit    = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_unit));
+		active = gtk_switch_get_active(GTK_SWITCH(data->SW_recurrent));
+		if(active == 1) item->rec_flags |= TF_RECUR;
+
+		gtk_spin_button_update(GTK_SPIN_BUTTON(data->NB_rec_every));
+		item->rec_every   = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(data->NB_rec_every));
+		//item->rec_freq    = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_rec_freq));
+		item->rec_freq    = hbtk_switcher_get_active(HBTK_SWITCHER(data->RA_rec_freq));
 		item->nextdate	= gtk_date_entry_get_date(GTK_DATE_ENTRY(data->PO_next));
 
 		active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_limit));
-		if(active == 1) item->flags |= OF_LIMIT;
+		if(active == 1) item->rec_flags |= TF_LIMIT;
 
 		gtk_spin_button_update(GTK_SPIN_BUTTON(data->NB_limit));
 		item->limit   = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(data->NB_limit));
 
 		item->weekend = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_weekend));
+
+		active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_relative));
+		if(active == 1) item->rec_flags |= TF_RELATIVE;
+
+		item->rec_ordinal = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_ordinal));
+		item->rec_weekday = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_weekday));
 
 		//#1906953 add skip weekend
 		scheduled_nextdate_weekend_adjust(item);
@@ -520,7 +640,8 @@ gboolean selected;
 
 	DB( g_print("\n[ui-scheduled] cb popover closed\n") );
 
-	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(popover, GTK_TYPE_WINDOW)), "inst_data");
+	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(popover, GTK_TYPE_WINDOW)), "inst_data");
+	data = user_data;
 
 	/* redraw the row to display/hide the icon */
 	selected = gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_arc)), &model, &iter);
@@ -594,6 +715,7 @@ Archive *arcitem;
 		ui_arc_manage_set(treeview, NULL);
 	}
 
+	ui_arc_manage_cb_check_weekend(GTK_WIDGET(treeview), NULL);
 	ui_arc_manage_update(GTK_WIDGET(treeview), NULL);
 }
 
@@ -642,7 +764,8 @@ ui_arc_manage_setup(struct ui_arc_manage_data *data)
 
 	DB( g_print(" set widgets default\n") );
 
-	hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_unit), 2);
+	//hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_rec_freq), AUTO_FREQ_MONTH);
+	hbtk_switcher_set_active(HBTK_SWITCHER(data->RA_rec_freq), AUTO_FREQ_MONTH);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->BT_typsch), TRUE);
 
 
@@ -665,12 +788,24 @@ ui_arc_manage_setup(struct ui_arc_manage_data *data)
 	g_signal_connect (data->LV_arc, "row-activated", G_CALLBACK (ui_arc_manage_cb_row_activated), NULL);
 
 	g_signal_connect (data->BT_add , "clicked", G_CALLBACK (ui_arc_manage_cb_add_clicked), NULL);
-	g_signal_connect (data->BT_edit, "clicked", G_CALLBACK (ui_arc_manage_cb_edit_clicked), NULL);
 	g_signal_connect (data->BT_rem , "clicked", G_CALLBACK (ui_arc_manage_cb_delete_clicked), NULL);
 
-	g_signal_connect (data->PO_schedule, "closed", G_CALLBACK (ui_arc_manage_cb_popover_closed), NULL);
+	g_signal_connect (data->BT_edit, "clicked", G_CALLBACK (ui_arc_manage_cb_edit_clicked), NULL);
+	g_signal_connect (data->BT_dup , "clicked", G_CALLBACK (ui_arc_manage_cb_dup_clicked), NULL);
+
+	//popover
+	g_signal_connect (data->PO_recurrent, "closed", G_CALLBACK (ui_arc_manage_cb_popover_closed), data);
 	
-	g_signal_connect (data->CM_auto,  "notify::active", G_CALLBACK (ui_arc_manage_cb_schedule_changed), NULL);
+	g_signal_connect (data->SW_recurrent,  "notify::active", G_CALLBACK (ui_arc_manage_cb_schedule_changed), NULL);
+	g_signal_connect (data->PO_next, "changed", G_CALLBACK (ui_arc_manage_cb_check_weekend), NULL);
+
+	g_signal_connect (data->RA_rec_freq, "changed", G_CALLBACK (ui_arc_manage_cb_schedule_changed), NULL);
+
+	g_signal_connect (data->CM_relative, "toggled", G_CALLBACK (ui_arc_manage_cb_relative_changed), NULL);
+	g_signal_connect (data->CY_ordinal, "changed", G_CALLBACK (ui_arc_manage_cb_relative_changed), NULL);
+	g_signal_connect (data->CY_weekday, "changed", G_CALLBACK (ui_arc_manage_cb_relative_changed), NULL);
+
+	g_signal_connect (data->CY_weekend, "changed", G_CALLBACK (ui_arc_manage_cb_check_weekend), NULL);
 	g_signal_connect (data->CM_limit, "toggled", G_CALLBACK (ui_arc_manage_cb_schedule_changed), NULL);
 
 	if(data->ext_arc != NULL)
@@ -704,50 +839,104 @@ struct ui_arc_manage_data *data;
 static GtkWidget *
 ui_arc_manage_create_scheduling(struct ui_arc_manage_data *data)
 {
-GtkWidget *content, *group_grid, *hbox, *expander, *label, *widget;
+GtkWidget *content, *group_grid, *hbox, *vbox, *expander, *label, *widget;
 gint row;
 
 	content = gtk_box_new(GTK_ORIENTATION_VERTICAL, SPACING_SMALL);
+
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
+	gtk_box_prepend (GTK_BOX (content), hbox);
+
+		//on/off switch
+		widget = gtk_switch_new();
+		data->SW_recurrent = widget;
+		gtk_widget_set_hexpand(widget, TRUE);
+		gtk_widget_set_valign(widget, GTK_ALIGN_CENTER);
+		gtk_box_prepend (GTK_BOX (hbox), widget);
+
+		widget = gtk_date_entry_new(NULL);
+		data->PO_next = widget;
+		gtk_box_append (GTK_BOX (hbox), widget);
+	
+		widget = hbtk_image_new_from_icon_name_16 (ICONNAME_WARNING);
+		gtk_widget_set_tooltip_text(widget, _("The post date will be shifted outside of the weekend"));
+		data->IM_wrnwe = widget;
+		gtk_box_append (GTK_BOX (hbox), widget);
+
+		label = gtk_label_new_with_mnemonic (_("Next _date:"));
+		data->LB_next = label;
+		gtk_box_append (GTK_BOX (hbox), label);
+
+	vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, SPACING_SMALL);
+	data->GR_recurrent = vbox;
+	gtk_box_prepend (GTK_BOX (content), vbox);
+
+	label = make_label_group(_("Recurrence pattern"));
+	gtk_box_prepend (GTK_BOX (vbox), label);
+
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
+	gtk_box_prepend (GTK_BOX (vbox), hbox);
+
+	widget = hbtk_switcher_new(GTK_ORIENTATION_VERTICAL);
+	data->RA_rec_freq = widget;
+	hbtk_switcher_setup(HBTK_SWITCHER(widget), CYA_ARC_FREQ, FALSE);
+	gtk_box_prepend (GTK_BOX (hbox), widget);
+
+	widget = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
+	gtk_box_prepend (GTK_BOX (hbox), widget);
 
 	// group :: Scheduled insertion
 	group_grid = gtk_grid_new ();
 	gtk_grid_set_row_spacing (GTK_GRID (group_grid), SPACING_SMALL);
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
-	gtk_box_pack_start (GTK_BOX (content), group_grid, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (hbox), group_grid);
 
 	row = 0;
-	widget = gtk_switch_new();
-	data->CM_auto = widget;
-	gtk_widget_set_halign(widget, GTK_ALIGN_START);
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
-	
-	row++;
-	label = gtk_label_new_with_mnemonic (_("Next _date:"));
-	data->LB_next = label;
-	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
-	widget = gtk_date_entry_new(label);
-	data->PO_next = widget;
-	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
-
-	row++;
 	label = make_label_widget(_("Ever_y:"));
-	data->LB_every = label;
+	data->LB_rec_every = label;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
 
-	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	gtk_grid_attach (GTK_GRID (group_grid), hbox, 1, row, 1, 1);
 	widget = make_numeric(label, 1, 100);
-	data->NB_every = widget;
-    gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
-	//label = gtk_label_new_with_mnemonic (_("_Unit:"));
-    //gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
-	widget = hbtk_combo_box_new_with_data(label, CYA_ARC_UNIT);
-	data->CY_unit = widget;
-    gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
+	data->NB_rec_every = widget;
+    gtk_box_prepend (GTK_BOX (hbox), widget);
+	label = gtk_label_new(NULL);
+	data->LB_rec_every2 = label;
+	//gtk_widget_set_hexpand(label, TRUE);
+    gtk_box_prepend (GTK_BOX (hbox), label);
 
+	row++;
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
+	gtk_widget_set_halign(hbox, GTK_ALIGN_START);
+	gtk_grid_attach (GTK_GRID (group_grid), hbox, 0, row, 1, 1);
+
+		widget = gtk_check_button_new();
+		data->CM_relative = widget;
+	    gtk_box_prepend (GTK_BOX (hbox), widget);
+
+		label = make_label_widget(_("The"));
+		data->LB_relative = label;
+	    gtk_box_prepend (GTK_BOX (hbox), label);
+
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
+	gtk_widget_set_halign(hbox, GTK_ALIGN_START);
+	gtk_grid_attach (GTK_GRID (group_grid), hbox, 1, row, 1, 1);
+
+		widget = hbtk_combo_box_new_with_data(label, CYA_ARC_ORDINAL);
+		data->CY_ordinal = widget;
+	    gtk_box_prepend (GTK_BOX (hbox), widget);
+
+		widget = hbtk_combo_box_new_with_data(label, CYA_ARC_WEEKDAY);
+	    data->CY_weekday = widget;
+		gtk_box_prepend (GTK_BOX (hbox), widget);
+
+
+	row++;
 	expander = gtk_expander_new_with_mnemonic(_("More options"));
 	data->EX_options = expander;
-	gtk_box_pack_start (GTK_BOX (content), expander, FALSE, FALSE, 0);
+	gtk_grid_attach (GTK_GRID (group_grid), expander, 0, row, 2, 1);
+	//gtk_box_prepend (GTK_BOX (content), expander);
 
 	// group :: Scheduled insertion
 	group_grid = gtk_grid_new ();
@@ -755,12 +944,13 @@ gint row;
 	gtk_grid_set_column_spacing (GTK_GRID (group_grid), SPACING_MEDIUM);
 	hb_widget_set_margin(GTK_WIDGET(group_grid), SPACING_SMALL);
 	gtk_expander_set_child (GTK_EXPANDER(expander), group_grid);
-	
+
 	row++;
 	label = make_label_widget(_("Week end:"));
 	data->LB_weekend = label;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
 	widget = hbtk_combo_box_new_with_data(label, CYA_ARC_WEEKEND);
+	gtk_widget_set_hexpand(widget, FALSE);
 	data->CY_weekend = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
 
@@ -768,20 +958,20 @@ gint row;
 	label = make_label_widget(_("_Stop after:"));
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
 
-	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
+	hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	gtk_grid_attach (GTK_GRID (group_grid), hbox, 1, row, 1, 1);
 
 		widget = gtk_check_button_new();
 		data->CM_limit = widget;
-		gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (hbox), widget);
 
 		widget = make_numeric(label, 1, 366);
 		data->NB_limit = widget;
-	    gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 0);
+	    hbtk_box_prepend (GTK_BOX (hbox), widget);
 
 		label = gtk_label_new_with_mnemonic (_("posts"));
 		data->LB_posts = label;
-	    gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+	    gtk_box_prepend (GTK_BOX (hbox), label);
 
 	gtk_widget_show_all(content);
 	
@@ -829,31 +1019,31 @@ gint w, h, dw, dh;
 
 	content = gtk_box_new(GTK_ORIENTATION_VERTICAL, SPACING_MEDIUM);
 	hb_widget_set_margin(GTK_WIDGET(content), SPACING_LARGE);
-	gtk_box_pack_start (GTK_BOX (content_area), content, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (content_area), content);
 	
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start (GTK_BOX (content), hbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (content), hbox);
 
 		box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
-		gtk_box_pack_start (GTK_BOX (hbox), box, TRUE, TRUE, 0);
+		hbtk_box_prepend (GTK_BOX (hbox), box);
 
 		widget = gtk_toggle_button_new_with_label(_("Scheduled"));
 		data->BT_typsch = widget;
-		gtk_box_pack_start (GTK_BOX (box), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (box), widget);
 		
 		widget = gtk_toggle_button_new_with_label(_("Template"));
 		data->BT_typtpl = widget;
-		gtk_box_pack_start (GTK_BOX (box), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (box), widget);
 	
 	widget = make_search ();
 	data->ST_search = widget;
 	gtk_widget_set_size_request(widget, HB_MINWIDTH_SEARCH, -1);
 	gtk_widget_set_halign(widget, GTK_ALIGN_END);
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (hbox), widget);
 
 	// list + toolbar
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	gtk_box_pack_start (GTK_BOX (content), vbox, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (content), vbox);
 	
 	// listview
 	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
@@ -863,49 +1053,53 @@ gint w, h, dw, dh;
 	data->LV_arc = treeview;
 	gtk_widget_set_size_request(treeview, HB_MINWIDTH_LIST, -1);
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
-	gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (vbox), scrollwin);
 
 	tbar = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
-	gtk_box_pack_start (GTK_BOX (vbox), tbar, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (vbox), tbar);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (tbar), bbox);
 
 		widget = make_image_button(ICONNAME_LIST_ADD, _("Add"));
 		data->BT_add = widget;
-		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend(GTK_BOX(bbox), widget);
 
 		widget = make_image_button(ICONNAME_LIST_DELETE, _("Delete"));
 		data->BT_rem = widget;
-		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend(GTK_BOX(bbox), widget);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (tbar), bbox);
 
 		//widget = gtk_button_new_with_mnemonic(_("_Edit"));
 		widget = make_image_button(ICONNAME_LIST_EDIT, _("Edit"));
 		data->BT_edit = widget;
-		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend(GTK_BOX(bbox), widget);
+
+		widget = make_image_button(ICONNAME_LIST_DUPLICATE, _("Duplicate"));
+		data->BT_dup = widget;
+		gtk_box_prepend(GTK_BOX(bbox), widget);
 
 		//schedule button
 		menubutton = gtk_menu_button_new ();
-		data->MB_schedule = menubutton;
+		data->BT_schedule = menubutton;
 		gtk_menu_button_set_direction (GTK_MENU_BUTTON(menubutton), GTK_ARROW_DOWN );
 		gtk_widget_set_halign (menubutton, GTK_ALIGN_END);
 		//gtk_widget_set_hexpand (menubutton, TRUE);
 		gtk_widget_show_all(menubutton);
-		gtk_box_pack_start(GTK_BOX(bbox), menubutton, FALSE, FALSE, 0);
+		gtk_box_prepend(GTK_BOX(bbox), menubutton);
 
 		box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
 		label = gtk_label_new_with_mnemonic (_("_Schedule"));
-		gtk_box_pack_start (GTK_BOX(box), label, FALSE, FALSE, 0);
-		image = gtk_image_new_from_icon_name ("pan-down-symbolic", GTK_ICON_SIZE_BUTTON);
-		gtk_box_pack_start (GTK_BOX(box), image, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX(box), label);
+		image = hbtk_image_new_from_icon_name_16 ("pan-down-symbolic");
+		gtk_box_prepend (GTK_BOX(box), image);
 		gtk_container_add(GTK_CONTAINER(menubutton), box);
 		GtkWidget *template = ui_arc_manage_create_scheduling(data);
 		GtkWidget *popover = create_popover (menubutton, template, GTK_POS_TOP);
-		data->PO_schedule = popover;
+		data->PO_recurrent = popover;
 		gtk_menu_button_set_popover(GTK_MENU_BUTTON(menubutton), popover);
 	
 

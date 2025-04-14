@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   id="svg7384"
+   height="16"
+   width="16"
+   version="1.1"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="hicolor_actions_scalable_hb-file-import-symbolic.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title1156">File Import</title>
+  <defs
+     id="defs12">
+    <linearGradient
+       id="linearGradient5606"
+       inkscape:swatch="solid">
+      <stop
+         id="stop5608"
+         offset="0"
+         style="stop-color:#000000;stop-opacity:1;" />
+    </linearGradient>
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1003"
+     id="namedview10"
+     showgrid="true"
+     inkscape:zoom="23.422912"
+     inkscape:cx="3.0525666"
+     inkscape:cy="8.8801939"
+     inkscape:window-x="1440"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg7384"
+     inkscape:snap-global="false"
+     inkscape:pagecheckerboard="0"
+     inkscape:showpageshadow="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid4491" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata90">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>File Import</dc:title>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Maxime DOYEN</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:source>https://www.gethomebank.org</dc:source>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="g829"
+     transform="matrix(0.92882983,0,0,1.007447,-0.85422778,-0.92258969)"
+     style="stroke-width:1.03376257" />
+  <path
+     id="path192"
+     style="fill:#bebebe;stroke-width:0.421607"
+     d="M 3.2894083,1 C 2.9942836,1 2.7348734,1.1161692 2.5135294,1.3495046 2.2921853,1.58284 2.1819864,1.8563035 2.1819864,2.1674174 V 3.9167418 H 3.2894083 V 2.1674174 H 13.355449 V 13.832583 H 3.2894083 V 12.083259 H 2.1819864 v 1.749324 c 0,0.311114 0.1101989,0.584578 0.331543,0.817913 C 2.7348734,14.883832 2.9942836,15 3.2894083,15 H 13.355449 c 0.295125,0 0.554536,-0.116168 0.775879,-0.349504 0.221344,-0.233335 0.331543,-0.506799 0.331543,-0.817913 V 2.1674174 c 0,-0.3111139 -0.110199,-0.5845774 -0.331543,-0.8179128 C 13.909985,1.1161692 13.650574,1 13.355449,1 Z M 7.1807657,4.3833485 6.4065958,5.1994597 8.4898477,7.4171922 H 1.462504 V 8.582808 h 7.0273437 l -2.0832519,2.217733 0.7741699,0.816111 3.4299313,-3.615751 z"
+     sodipodi:nodetypes="sssccccccccsssssssssscccccccccc" />
+</svg>

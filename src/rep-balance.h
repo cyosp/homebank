@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -76,6 +76,7 @@ struct repbalance_data
 	GtkWidget	*BT_line;
 	GtkWidget	*BT_detail;
 	GtkWidget	*BT_refresh;
+
 	GtkWidget	*BT_reset;
 	GtkWidget	*BT_print;
 	
@@ -94,6 +95,7 @@ struct repbalance_data
 
 	GtkWidget	*PO_mindate, *PO_maxdate;
 
+	GtkWidget	*CM_inclxfer;
 	GtkWidget	*CY_range;
 	GtkWidget	*GR_result;
 

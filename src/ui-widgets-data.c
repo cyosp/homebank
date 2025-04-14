@@ -1,5 +1,5 @@
 /*	HomeBank -- Free, easy, personal accounting for everyone.
- *	Copyright (C) 1995-2024 Maxime DOYEN
+ *	Copyright (C) 1995-2025 Maxime DOYEN
  *
  *	This file is part of HomeBank.
  *
@@ -19,6 +19,8 @@
 
 
 #include "homebank.h"
+
+#include "ui-widgets.h"
 
 
 /* = = = = = = = = = = = = = = = = = = = = */
@@ -53,18 +55,52 @@ HbKvData CYA_ACC_TYPE[] =
 //bud, cat
 gchar *CYA_CAT_TYPE[] = { 
 	N_("Expense"), 
-	N_("Income"), 
+	N_("Income"),
 	NULL
 };
 
+gchar *CYA_ARC_FREQ[] = { 
+	N_("Daily"), 
+	N_("Weekly"),
+	N_("Monthly"),
+	N_("Yearly"), 
+	NULL
+};
+
+gchar *CYA_ARC_FREQ2[] = { 
+	N_("day(s)"), 
+	N_("week(s)"),
+	N_("month(s)"),
+	N_("year(s)"), 
+	NULL
+};
+
+
 //arc
-HbKvData CYA_ARC_UNIT[] = {
-	{ AUTO_UNIT_DAY,	N_("Day") },
-	{ AUTO_UNIT_WEEK,	N_("Week") },
-	{ AUTO_UNIT_MONTH,	N_("Month") },
-	{ AUTO_UNIT_YEAR,	N_("Year") },
+HbKvData CYA_ARC_ORDINAL[] = {
+	{ AUTO_ORDINAL_FIRST,	N_("First") },
+	{ AUTO_ORDINAL_SECOND,	N_("Second") },
+	{ AUTO_ORDINAL_THIRD,	N_("Third") },
+	{ AUTO_ORDINAL_FOURTH,	N_("Fourth") },
+	{ AUTO_ORDINAL_LAST,	N_("Last") },
 	{ 0, NULL }
 };
+
+
+//arc
+HbKvData CYA_ARC_WEEKDAY[] = {
+	{ AUTO_WEEKDAY_DAY,	N_("Day") },
+
+	{ AUTO_WEEKDAY_MONDAY,		N_("Monday") },
+	{ AUTO_WEEKDAY_TUESDAY,		N_("Tuesday") },
+	{ AUTO_WEEKDAY_WEDNESDAY,	N_("Wednesday") },
+	{ AUTO_WEEKDAY_THURSDAY,	N_("Thursday") },
+	{ AUTO_WEEKDAY_FRIDAY,		N_("Friday") },
+	{ AUTO_WEEKDAY_SATURDAY,	N_("Saturday") },
+	{ AUTO_WEEKDAY_SUNDAY,		N_("Sunday") },
+	{ 0, NULL }
+};
+
 
 //arc
 HbKvData CYA_ARC_WEEKEND[] = { 
@@ -98,10 +134,10 @@ gchar *CYA_TXN_TYPE[] = {
 HbKivData CYA_TXN_STATUSIMG[] = 
 {
 	{ TXN_STATUS_NONE,			NULL, N_("None") },
-	{ TXN_STATUS_CLEARED, 		ICONNAME_HB_OPE_CLEARED, N_("Cleared") },
-	{ TXN_STATUS_RECONCILED, 	ICONNAME_HB_OPE_RECONCILED, N_("Reconciled") },
-	{ TXN_STATUS_REMIND, 		ICONNAME_HB_OPE_REMIND, N_("Remind") },
-	{ TXN_STATUS_VOID, 			ICONNAME_HB_OPE_VOID, N_("Void") },
+	{ TXN_STATUS_CLEARED, 		ICONNAME_HB_ITEM_CLEAR, N_("Cleared") },
+	{ TXN_STATUS_RECONCILED, 	ICONNAME_HB_ITEM_RECON, N_("Reconciled") },
+	//{ TXN_STATUS_REMIND, 		ICONNAME_HB_ITEM_REMIND, N_("Remind") },
+	{ TXN_STATUS_VOID, 			ICONNAME_HB_ITEM_VOID, N_("Void") },
 	{ 0, NULL, NULL }
 };
 
@@ -218,20 +254,24 @@ HbKvData CYA_FLT_RANGE_MQY[] = {
 };
 
 
-HbKvData CYA_FLT_RANGE_NORMAL[] = {
-	{  FLT_RANGE_LAST_30DAYS    , N_("Last 30 Days") },
-	{  FLT_RANGE_LAST_60DAYS    , N_("Last 60 Days") },
-	{  FLT_RANGE_LAST_90DAYS    , N_("Last 90 Days") },
-
-	{  FLT_RANGE_LAST_12MONTHS  , N_("Last 12 Months") },
-	{  FLT_RANGE_MISC_30DAYS    , N_("30 Days Around") },
-	{  FLT_RANGE_MISC_ALLDATE   , N_("All Date") },
+HbKvData CYA_FLT_RANGE_YTO[] = {
+	{  FLT_RANGE_TODATE_YEAR    , N_("Year to date") },
+	{  FLT_RANGE_TODATE_MONTH   , N_("Month to date") },
+	{  FLT_RANGE_TODATE_ALL     , N_("All to date") },
 	{ 0, NULL }
 };
 
-HbKvData CYA_FLT_RANGE_BUDGET[] = {
+HbKvData CYA_FLT_RANGE_LASTXXD[] = {
+	{  FLT_RANGE_LAST_90DAYS    , N_("Last 90 Days") },
+	{  FLT_RANGE_LAST_60DAYS    , N_("Last 60 Days") },
+	{  FLT_RANGE_LAST_30DAYS    , N_("Last 30 Days") },
+	{ 0, NULL }
+};
+
+
+HbKvData CYA_FLT_RANGE_COMMON[] = {
 	{  FLT_RANGE_LAST_12MONTHS  , N_("Last 12 Months") },
-	{  FLT_RANGE_LAST_6MONTHS   , N_("Last 6 Months") },
+	{  FLT_RANGE_MISC_30DAYS    , N_("30 Days Around") },
 	{  FLT_RANGE_MISC_ALLDATE   , N_("All Date") },
 	{ 0, NULL }
 };
@@ -290,6 +330,8 @@ HbKvData CYA_FLT_STATUS[] = {
 	{ FLT_STATUS_UNRECONCILED,	N_("Unreconciled") },
 	{ HBTK_IS_SEPARATOR, "" },
 	{ FLT_STATUS_UNCATEGORIZED,	N_("Uncategorized") },
+	//5.9
+	{ FLT_STATUS_UNAPPROVED,	N_("Unapproved") },
 	{ 0, NULL }
 };
 
@@ -312,15 +354,6 @@ HbKvData CYA_GRID_LINES[] = {
 	{ GTK_TREE_VIEW_GRID_LINES_HORIZONTAL, N_("Horizontal") },
 	{ GTK_TREE_VIEW_GRID_LINES_VERTICAL, N_("Vertical") },
 	{ GTK_TREE_VIEW_GRID_LINES_BOTH, N_("Both") },
-	{ 0, NULL }
-};
-
-
-HbKvData CYA_TANGO_COLORS[] = {
-	{ 0, "----" },
-	{ 1, N_("Tango light") },
-	{ 2, N_("Tango medium") },
-	{ 3, N_("Tango dark") },
 	{ 0, NULL }
 };
 

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -23,6 +23,9 @@
 #include "dsp-mainwindow.h"
 #include "hb-preferences.h"
 #include "language.h"
+
+#include "ui-dialogs.h"
+#include "ui-widgets.h"
 
 #include <libsoup/soup.h>
 
@@ -1024,8 +1027,7 @@ gchar *pathfilename;
 		g_free(ver_string);
 		*/
 
-		gtk_box_pack_start (GTK_BOX (vbox), image, FALSE, FALSE, 0);
-		//gtk_box_pack_start (GTK_BOX (vbox), version, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (vbox), image);
 
 		gtk_window_set_auto_startup_notification (FALSE);
 		gtk_widget_show_all (window);
@@ -1292,9 +1294,10 @@ homebank_app_startup (GApplication *application)
 
 	DB( g_print("\n[homebank] app startup\n") );
 
-	#ifdef PORTABLE_APP
-	g_object_set (gtk_settings_get_default (), "gtk-recent-files-enabled", FALSE, NULL);
-	#endif	
+	//#2043886 
+	//#ifdef PORTABLE_APP
+	//g_object_set (gtk_settings_get_default (), "gtk-recent-files-enabled", FALSE, NULL);
+	//#endif	
 
 	GLOBALS->color_scheme = DEFAULT;
 	#ifdef G_OS_UNIX

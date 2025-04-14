@@ -14,6 +14,15 @@
     <h1>Previously on HomeBank...</h1>
     <p>To review the complete list of changes, please use the <i>Help > Release Notes</i> menu from HomeBank program.</p>
 
+    <b>New features in v5.8</b>
+    <ul class="toc">
+      <li><a href="#58favfilter">Favorite saved filters</a></li>
+      <li><a href="#58flags">Colour flags</a></li>
+      <li><a href="#58lifhrg">Life energy</a></li>
+      <li><a href="#58custpay">Payment re-order & hide</a></li>
+      <li><a href="#5858tipfilter">Tooltip of active filters</a></li>
+    </ul>
+  
     <b>New features in v5.7</b>
     <ul class="toc">
       <li><a href="#57cashflow">Cash Flow Forecast</a></li>
@@ -96,7 +105,54 @@
       <li><a href="#accflt">New filters for account window</a></li>
       <li><a href="#schedul">Scheduled append until a day of month</a></li>
     </ul>
+
   </div>
+
+
+<!-- end of menu -->
+
+
+  <h2>New features in v5.8</h2>
+
+  <div class="rounded content">
+    <h3><a id="58favfilter" name="58favfilter"></a>Favorite saved filters</h3>
+    <img class="gtkshot left" src="images/58favfilters.png">
+    <p>From the statistic report and the show all transaction window, you can now manage a list of favorite filters, saved for each of your wallet.
+    This will ease the grouping you want to show those reports. Read the <a href="use-favfilters.html">favorite filter usage</a> for more details.</p>
+    <p class="top clear"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+  <div class="rounded content">
+    <h3><a id="58tipfilter" name="58tipfilter"></a>Tooltip of active filters</h3>
+    <img class="gtkshot left" src="images/58tipfilters.png">
+    <p>In several report windows: statistics, trend time and balance, there is now a tooltip that shows the active filters, as sometimes there are implicit filters you cannot control, and this will help you understand what the results are composed of.<br>
+    The whole area between Filter and the filter button will show the tooltip if you put the mouse pointer over it.</p>
+    <p class="top clear"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+  <div class="rounded content">
+    <h3><a id="58flags" name="58flags"></a>Color flags</h3>
+    <img class="gtkshot left" src="images/58flags.png">
+    <p>There is now 6 color flags you can assign to transaction, colors are Red, Orange, Yellow, Green, Blue and Purple.
+    The assign can only be done from the ledger window using the context menu or some shortcuts CTRL+x.
+    There is also a new quick-filter to easily filter on flags.</p>
+    <p class="top clear"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+  <div class="rounded content">
+    <h3><a id="58lifhrg" name="58lifhrg"></a>Life energy</h3>
+    <img class="gtkshot left" src="images/58lifeenergy.png">
+    <p>Life energy is a measurement of your expense by hours of work, based on you estimate earning by hour. This is an alternative and interesting way to consider your spending.<br>
+    After you have filled your estimate 'earn by hour' into <a href="dlg-wall.html">Properties dialog</a>, you will be able to toggle on/off an additional (..h..m) beside the Expense into the ledger window, there is a toggle toolbar button on the top.</p>
+    <p class="top clear"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
+  <div class="rounded content">
+    <h3><a id="58custpay" name="58custpay"></a>Payment re-order & hide</h3>
+    <p>A new preference is available for you to re-order the payment method and hide the ones you don't use.</p>
+    <p class="top clear"><a href="#top">↑ Back to Top</a></p>
+  </div>
+
 
   <h2>New features in v5.7</h2>
 
@@ -165,8 +221,6 @@
     
     <p class="top clear"><a href="#top">↑ Back to Top</a></p>
   </div>
-
-
 
 
   <h2>New features in v5.6</h2>
@@ -374,7 +428,7 @@
     <p>From the main window transaction menu you can now open a ledger window with all transaction of all accounts.<br>
     Most of the action are available here, except:</p>
     <ul>
-      <li>export to qif, pdf
+      <li>export to .qif, .pdf
       <li>the duplicate finder
       <li>convert to Euro
       <li>auto assignment
@@ -494,7 +548,7 @@
       <tr>
         <td>
           <p>Starting 4.6, you can define your fiscal year start/end date.</p>
-          <p>Previously the fiscal year was aligned to the calendar year, starting on 1st january and ending on 31 december.</p>
+          <p>Previously the fiscal year was aligned to the calendar year, starting on 1st January and ending on 31 December.</p>
         </td>
         <td><img class="gtkshot" src="images/46fiscyear.png"></td>
       </tr>
@@ -519,7 +573,7 @@
       <tr>
         <td>
           <p>You now have 2 buttons below the scheduled list on the main window, one to Skip, one to Post, and this for every scheduled you want to manage manually.</p>
-          <p>If the scheduled transaction can be posted as it, it will be, otherwise if the amount or target account is not pre-filled, you will be prompted with the transaction dialog to make any changes before posting the transaction.</p>
+          <p>If the scheduled transaction can be posted as it, it will be, otherwise if the amount or target account is not prefilled, you will be prompted with the transaction dialog to make any changes before posting the transaction.</p>
         </td>
         <td><img class="gtkshot" src="images/use-scheduled2.png"></td>
       </tr>

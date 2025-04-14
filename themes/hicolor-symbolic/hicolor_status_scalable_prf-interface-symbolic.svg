@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   id="svg7384"
+   height="16"
+   width="16"
+   version="1.1"
+   sodipodi:docname="hicolor_status_scalable_prf-interface-symbolic.svg"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xml:space="preserve"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"><defs
+     id="defs12" /><sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1003"
+     id="namedview10"
+     showgrid="true"
+     inkscape:zoom="29.5"
+     inkscape:cx="5.9491525"
+     inkscape:cy="8.7457627"
+     inkscape:window-x="1280"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg7384"
+     inkscape:showpageshadow="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#d1d1d1"><inkscape:grid
+       type="xygrid"
+       id="grid822" /></sodipodi:namedview><metadata
+     id="metadata90"><rdf:RDF><cc:Work
+         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title>HomeBank Symbolic Icon Theme</dc:title></cc:Work></rdf:RDF></metadata><title
+     id="title9167">HomeBank Symbolic Icon Theme</title><g
+     style="fill:#bebebe;stroke-width:1"
+     id="g245"
+     transform="matrix(0.0175,0,0,0.0175,-0.4,16.4)"><path
+       d="m 300,-360 h 60 v -160 h -60 v 50 h -60 v 60 h 60 z m 100,-50 h 320 v -60 H 400 Z m 200,-110 h 60 v -50 h 60 v -60 h -60 v -50 h -60 z m -360,-50 h 320 v -60 H 240 Z m 80,450 v -80 H 160 q -33,0 -56.5,-23.5 Q 80,-247 80,-280 v -480 q 0,-33 23.5,-56.5 Q 127,-840 160,-840 h 640 q 33,0 56.5,23.5 23.5,23.5 23.5,56.5 v 480 q 0,33 -23.5,56.5 Q 833,-200 800,-200 H 640 v 80 z M 160,-280 H 800 V -760 H 160 Z m 0,0 v -480 z"
+       id="path236"
+       style="stroke-width:1.42857" /></g></svg>

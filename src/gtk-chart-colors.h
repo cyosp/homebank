@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -134,6 +134,8 @@ void cairo_user_set_rgbcol(cairo_t *cr, struct rgbcol *col);
 void cairo_user_set_rgbacol(cairo_t *cr, struct rgbcol *col, double alpha);
 void cairo_user_set_rgbacol_over(cairo_t *cr, struct rgbcol *col, gboolean over, double alpha);
 void cairo_user_set_rgbcol_over(cairo_t *cr, struct rgbcol *col, gboolean over);
+
+void colorsheme_col8_to_rgba(struct rgbcol *col8, GdkRGBA *rgba);
 
 void colorscheme_init(GtkColorScheme *scheme, gint index);
 

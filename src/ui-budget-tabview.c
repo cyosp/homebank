@@ -20,11 +20,13 @@
 
 
 #include "homebank.h"
-#include "hb-misc.h"
+
 #include "dsp-mainwindow.h"
-#include "hb-category.h"
+#include "ui-dialogs.h"
+#include "ui-widgets.h"
 #include "hbtk-switcher.h"
 #include "ui-budget-tabview.h"
+
 
 /****************************************************************************/
 /* Implementation notes */
@@ -1247,7 +1249,7 @@ static void ui_bud_tabview_icon_cell_data_function (GtkTreeViewColumn *col, GtkC
 //ui_bud_tabview_data_t *data = user_data;
 gchar *iconname = NULL;
 gboolean has_budget, is_monitoring_forced;
-ui_bud_tabview_view_mode_t view_mode = UI_BUD_TABVIEW_VIEW_SUMMARY;
+//ui_bud_tabview_view_mode_t view_mode = UI_BUD_TABVIEW_VIEW_SUMMARY;
 	
 	gtk_tree_model_get(model, iter,
 	UI_BUD_TABVIEW_IS_MONITORING_FORCED, &is_monitoring_forced,
@@ -1258,13 +1260,13 @@ ui_bud_tabview_view_mode_t view_mode = UI_BUD_TABVIEW_VIEW_SUMMARY;
 
 	//5.3 added
 	if( is_monitoring_forced )
-		iconname = ICONNAME_HB_OPE_FORCED;
+		iconname = ICONNAME_HB_ITEM_FORCED;
 	else
-		if (view_mode != UI_BUD_TABVIEW_VIEW_SUMMARY )
-		{
+		//if (view_mode != UI_BUD_TABVIEW_VIEW_SUMMARY )
+		//{
 			if( has_budget )
-				iconname = ICONNAME_HB_OPE_BUDGET;
-		}
+				iconname = ICONNAME_HB_ITEM_BUDGET;
+		//}
 
 	g_object_set(renderer, "icon-name", iconname, NULL);
 }
@@ -2248,7 +2250,7 @@ gboolean exists_default_select = FALSE;
 	gtk_grid_set_row_spacing (GTK_GRID (grid), SPACING_MEDIUM);
 	gtk_grid_set_column_spacing (GTK_GRID (grid), SPACING_MEDIUM);
 	hb_widget_set_margin(GTK_WIDGET(grid), SPACING_MEDIUM);
-	gtk_box_pack_start (GTK_BOX (content), grid, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (content), grid);
 
 	// First row display parent selector
 	gridrow = 0;
@@ -2501,7 +2503,7 @@ gchar *label_source, *label_delete;
 		gtk_grid_set_row_spacing (GTK_GRID (grid), SPACING_MEDIUM);
 		gtk_grid_set_column_spacing (GTK_GRID (grid), SPACING_MEDIUM);
 		hb_widget_set_margin(GTK_WIDGET(grid), SPACING_MEDIUM);
-		gtk_box_pack_start (GTK_BOX (content), grid, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (content), grid);
 
 		// First row display parent selector
 		gridrow = 0;
@@ -2856,6 +2858,310 @@ ui_bud_tabview_cat_type_t category_type;
 }
 
 
+/*
+** index 0 is all month, then 1 -> 12 are months
+*/
+static gchar *ui_bud_manage_getcsvbudgetstr(Category *item)
+{
+gchar *retval = NULL;
+char buf[G_ASCII_DTOSTR_BUF_SIZE];
+
+	//DB( g_print(" get budgetstr for '%s'\n", item->name) );
+
+	if( !(item->flags & GF_CUSTOM) )
+	{
+		if( item->budget[0] )
+		{
+			//g_ascii_dtostr (buf, sizeof (buf), item->budget[0]);
+			//#1750257 use locale numdigit
+			g_snprintf(buf, sizeof (buf), "%.2f", item->budget[0]);
+			retval = g_strdup(buf);
+
+			//DB( g_print(" => %d: %s\n", 0, retval) );
+		}
+	}
+	else
+	{
+	gint i;
+
+		for(i=1;i<=12;i++)
+		{
+			//if( item->budget[i] )
+			//{
+			gchar *tmp = retval;
+
+				//g_ascii_dtostr (buf, sizeof (buf), item->budget[i]);
+				//#1750257 use locale numdigit
+				g_snprintf(buf, sizeof (buf), "%.2f", item->budget[i]);
+
+				if(retval != NULL)
+				{
+					retval = g_strconcat(retval, ";", buf, NULL);
+					g_free(tmp);
+				}
+				else
+					retval = g_strdup(buf);
+
+				//DB( g_print(" => %d: %s\n", i, retval) );
+
+			//}
+		}
+	}
+
+	return retval;
+}
+
+
+static void ui_bud_tabview_manage_clearall(GSimpleAction *action, GVariant *parameter, gpointer user_data)
+{
+ui_bud_tabview_data_t *data = user_data;
+gint result;
+
+	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(GTK_WIDGET(widget), GTK_TYPE_WINDOW)), "inst_data");
+
+	DB( g_print("\n[ui-budget] clear all\n") );
+
+	result = ui_dialog_msg_confirm_alert(
+			GTK_WINDOW(data->dialog),
+			_("Clear the entire Budget"),
+			_("Are you sure you want to permanently\nclear the budget?"),
+			_("_Clear"),
+			TRUE
+		);
+
+	if( result == GTK_RESPONSE_OK )
+	{
+	GtkTreeModel *filter, *model;
+	GList *lcat, *list;
+
+		filter = gtk_tree_view_get_model(GTK_TREE_VIEW(data->TV_budget));
+		model = gtk_tree_model_filter_get_model(GTK_TREE_MODEL_FILTER(filter));
+		gtk_tree_store_clear(GTK_TREE_STORE(model));
+
+		lcat = list = category_glist_sorted(HB_GLIST_SORT_KEY);
+	    while (list != NULL)
+	    {
+		Category *category = list->data;
+
+			// Update data
+			for(int i=0;i<=12;i++)
+			{
+				category->budget[i] = 0;
+			}
+
+			// Reset budget flag
+			category->flags &= ~(GF_BUDGET);
+
+			list = g_list_next(list);
+		}
+
+		g_list_free(lcat);
+
+		//update the treeview
+		ui_bud_tabview_model_populate(GTK_TREE_STORE(model));
+		gtk_tree_view_expand_all(GTK_TREE_VIEW(data->TV_budget));
+	}
+
+}
+
+
+static void ui_bud_tabview_manage_load_csv(GSimpleAction *action, GVariant *parameter, gpointer user_data)
+{
+ui_bud_tabview_data_t *data = user_data;
+gchar *filename = NULL;
+GIOChannel *io;
+const gchar *encoding;
+
+	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(GTK_WIDGET(widget), GTK_TYPE_WINDOW)), "inst_data");
+	DB( g_print("\n[ui-budget] load csv - data %p\n", data) );
+
+	if( ui_file_chooser_csv(GTK_WINDOW(data->dialog), GTK_FILE_CHOOSER_ACTION_OPEN, &filename, NULL) == TRUE )
+	{
+		DB( g_print(" + filename is %s\n", filename) );
+
+		encoding = homebank_file_getencoding(filename);
+
+		io = g_io_channel_new_file(filename, "r", NULL);
+		if(io != NULL)
+		{
+		GtkTreeModel *filter, *model;
+		gboolean error = FALSE;
+		gchar *tmpstr;
+		gint io_stat;
+
+			DB( g_print(" -> encoding should be %s\n", encoding) );
+			if( encoding != NULL )
+			{
+				g_io_channel_set_encoding(io, encoding, NULL);
+			}
+
+			filter = gtk_tree_view_get_model(GTK_TREE_VIEW(data->TV_budget));
+			model = gtk_tree_model_filter_get_model(GTK_TREE_MODEL_FILTER(filter));
+			
+			gtk_tree_store_clear(GTK_TREE_STORE(model));
+
+			for(;;)
+			{
+				io_stat = g_io_channel_read_line(io, &tmpstr, NULL, NULL, NULL);
+				if( io_stat == G_IO_STATUS_EOF)
+					break;
+				if( io_stat == G_IO_STATUS_NORMAL)
+				{
+					if( tmpstr != NULL)
+					{
+					gchar **str_array;
+					gboolean budget;
+					Category *tmpitem;
+					gint i;
+
+						hb_string_strip_crlf(tmpstr);
+						str_array = g_strsplit (tmpstr, ";", 15);
+						// lvl; type; name; value(s)...
+						if( (g_strv_length (str_array) < 4 || *str_array[1] != '*') && (g_strv_length (str_array) < 15))
+						{
+							error = TRUE;
+							break;
+						}
+
+						DB( g_print(" csv read '%s : %s : %s ...'\n", str_array[0], str_array[1], str_array[2]) );
+
+						tmpitem = da_cat_get_by_fullname(str_array[2]);
+						if( tmpitem != NULL )
+						{
+							DB( g_print(" found cat, updating '%s' '%s'\n", tmpitem->name, tmpitem->fullname) );
+
+							data->change++;
+
+							tmpitem->flags &= ~(GF_CUSTOM);		//delete flag
+							if( *str_array[1] == '*' )
+							{
+								//tmpitem->budget[0] = g_ascii_strtod(str_array[3], NULL);
+								//#1750257 use locale numdigit
+								tmpitem->budget[0] = g_strtod(str_array[3], NULL);
+
+								DB( g_print(" monthly '%.2f'\n", tmpitem->budget[0]) );
+							}
+							else
+							{
+								tmpitem->flags |= (GF_CUSTOM);
+
+								for(i=1;i<=12;i++)
+								{
+									//tmpitem->budget[i] = g_ascii_strtod(str_array[2+i], NULL);
+									//#1750257 use locale numdigit
+									tmpitem->budget[i] = g_strtod(str_array[2+i], NULL);
+									DB( g_print(" month %d '%.2f'\n", i, tmpitem->budget[i]) );
+								}
+							}
+
+							// if any value,set the flag to visual indicator
+							budget = FALSE;
+							tmpitem->flags &= ~(GF_BUDGET);		//delete flag
+							for(i=0;i<=12;i++)
+							{
+								if(tmpitem->budget[i])
+								{
+									budget = TRUE;
+									break;
+								}
+							}
+
+							if(budget == TRUE)
+								tmpitem->flags |= GF_BUDGET;
+						}
+
+						g_strfreev (str_array);
+					}
+					g_free(tmpstr);
+				}
+
+			}
+
+			g_io_channel_unref (io);
+
+			//update the treeview
+			ui_bud_tabview_model_populate(GTK_TREE_STORE(model));
+			gtk_tree_view_expand_all(GTK_TREE_VIEW(data->TV_budget));
+
+			if( error == TRUE )
+			{
+				ui_dialog_msg_infoerror(GTK_WINDOW(data->dialog), GTK_MESSAGE_ERROR,
+					_("File format error"),
+					_("The CSV file must contains the exact numbers of column,\nseparated by a semi-colon, please see the help for more details.")
+					);
+			}
+
+		}
+
+		g_free( filename );
+
+	}
+	
+	
+}
+
+
+static void ui_bud_tabview_manage_save_csv(GSimpleAction *action, GVariant *parameter, gpointer user_data)
+{
+ui_bud_tabview_data_t *data = user_data;
+gchar *filename = NULL;
+GIOChannel *io;
+
+	DB( g_print("\n[ui-budget] save csv\n") );
+
+	//data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+	
+	if( ui_file_chooser_csv(GTK_WINDOW(data->dialog), GTK_FILE_CHOOSER_ACTION_SAVE, &filename, NULL) == TRUE )
+	{
+
+		DB( g_print(" + filename is %s\n", filename) );
+
+		io = g_io_channel_new_file(filename, "w", NULL);
+		if(io != NULL)
+		{
+		GList *lcat, *list;
+
+			lcat = list = category_glist_sorted(HB_GLIST_SORT_KEY);
+		    while (list != NULL)
+		    {
+			gchar *outstr, *outvalstr;
+			Category *category = list->data;
+			gchar lvl, type;
+
+				if( category->flags & GF_BUDGET )
+				{
+					lvl  = (category->parent == 0) ? '1' : '2';
+					type = (category->flags & GF_CUSTOM) ? ' ' : '*';
+
+					outvalstr = ui_bud_manage_getcsvbudgetstr(category);
+					outstr = g_strdup_printf("%c;%c;%s;%s\n", lvl, type, category->fullname, outvalstr);
+					DB( g_print("%s", outstr) );
+					g_io_channel_write_chars(io, outstr, -1, NULL, NULL);
+					g_free(outstr);
+					g_free(outvalstr);
+				}
+
+				list = g_list_next(list);
+			}
+
+			g_io_channel_unref (io);
+			g_list_free(lcat);
+		}
+
+		g_free( filename );
+	}
+}
+
+
+
+static const GActionEntry win_actions[] = {
+	{ "imp"		, ui_bud_tabview_manage_load_csv, NULL, NULL, NULL, {0,0,0} },
+	{ "exp"		, ui_bud_tabview_manage_save_csv, NULL, NULL, NULL, {0,0,0} },
+	{ "del"		, ui_bud_tabview_manage_clearall, NULL, NULL, NULL, {0,0,0} },
+//	{ "actioname"	, not_implemented, NULL, NULL, NULL, {0,0,0} },
+};
+
+
 static void ui_bud_tabview_dialog_close(ui_bud_tabview_data_t *data, gint response)
 {
 	DB( g_print("[ui_bud_tabview] dialog close\n") );
@@ -2877,6 +3183,7 @@ GtkWidget *vbox, *hbox, *bbox;
 GtkWidget *search_entry;
 GtkWidget *scrollwin, *treeview;
 GtkWidget *tbar;
+GtkWidget *image;
 GtkTreeModel *model, *filter;
 gint response;
 gint w, h, dw, dh;
@@ -2927,7 +3234,7 @@ gint gridrow;
 	gtk_grid_set_row_spacing (GTK_GRID (grid), SPACING_MEDIUM);
 	gtk_grid_set_column_spacing (GTK_GRID (grid), SPACING_MEDIUM);
 	hb_widget_set_margin(GTK_WIDGET(grid), SPACING_MEDIUM);
-	gtk_box_pack_start (GTK_BOX (content), grid, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (content), grid);
 
 	// First row displays radio button to change mode (edition / view) and search entry
 	gridrow = 0;
@@ -2941,10 +3248,40 @@ gint gridrow;
 	data->RA_mode = radiomode;
 	gtk_box_set_center_widget(GTK_BOX (hbox), radiomode);
 
+
+	// future
+	//menubutton
+	widget = gtk_menu_button_new();
+	image = hbtk_image_new_from_icon_name_16 (ICONNAME_HB_BUTTON_MENU);
+	g_object_set (widget, "image", image,  NULL);
+	gtk_widget_set_halign (widget, GTK_ALIGN_END);
+	gtk_box_append(GTK_BOX (hbox), widget);
+
+	GMenu *menu = g_menu_new ();
+	GMenu *section = g_menu_new ();
+	g_menu_append_section(menu, NULL, G_MENU_MODEL(section));
+	g_menu_append (section, _("_Import CSV..."), "win.imp");
+	g_menu_append (section, _("E_xport CSV..."), "win.exp");
+	g_object_unref (section);
+
+	section = g_menu_new ();
+	g_menu_append_section(menu, NULL, G_MENU_MODEL(section));
+	g_menu_append (section, _("_Clear All..."), "win.del");
+	g_object_unref (section);
+
+	GActionGroup *group = (GActionGroup*)g_simple_action_group_new ();
+	data->actions = group;
+	g_action_map_add_action_entries (G_ACTION_MAP (group), win_actions, G_N_ELEMENTS (win_actions), data);
+
+	gtk_widget_insert_action_group (widget, "win", G_ACTION_GROUP(group));
+	gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (widget), G_MENU_MODEL (menu));
+	
+
+
 	// Search
 	search_entry = make_search();
 	data->EN_search = search_entry;
-	gtk_box_pack_end (GTK_BOX (hbox), search_entry, FALSE, FALSE, 0);
+	gtk_box_append (GTK_BOX (hbox), search_entry);
 
 	// Next row displays the budget tree with its toolbar
 	gridrow++;
@@ -2957,7 +3294,7 @@ gint gridrow;
 	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 	gtk_widget_set_hexpand (scrollwin, TRUE);
 	gtk_widget_set_vexpand (scrollwin, TRUE);
-	gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (vbox), scrollwin);
 
 	treeview = ui_bud_tabview_view_new ((gpointer) data);
 	data->TV_budget = treeview;
@@ -2968,27 +3305,27 @@ gint gridrow;
 	// Toolbar to add, remove categories, expand and collapse categorie
 	tbar = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
-	gtk_box_pack_start (GTK_BOX (vbox), tbar, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (vbox), tbar);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (tbar), bbox);
 
 #if HB_BUD_TABVIEW_EDIT_ENABLE
 	// Add / Remove / Merge
 	widget = make_image_button(ICONNAME_LIST_ADD, _("Add category"));
 	data->BT_category_add = widget;
 	gtk_widget_set_sensitive(widget, FALSE);
-	gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend(GTK_BOX(bbox), widget);
 
 	widget = make_image_button(ICONNAME_LIST_DELETE, _("Remove category"));
 	data->BT_category_delete = widget;
 	gtk_widget_set_sensitive(widget, FALSE);
-	gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend(GTK_BOX(bbox), widget);
 
 	widget = gtk_button_new_with_label (_("Merge"));
 	data->BT_category_merge = widget;
 	gtk_widget_set_sensitive(widget, FALSE);
-	gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend(GTK_BOX(bbox), widget);
 
 #endif
 
@@ -2996,28 +3333,28 @@ gint gridrow;
 	widget = gtk_button_new_with_label (_("Clear input"));
 	data->BT_category_reset = widget;
 	gtk_widget_set_sensitive(widget, FALSE);
-	gtk_box_pack_start (GTK_BOX (tbar), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (bbox), widget);
 
 	// Force monitoring
 	widget = gtk_check_button_new_with_mnemonic (_("_Force monitoring this category"));
 	data->BT_category_force_monitoring = widget;
 	gtk_widget_set_sensitive (widget, FALSE);
-	gtk_box_pack_start (GTK_BOX (tbar), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (tbar), widget);
 	g_object_set(widget,
 		"draw-indicator", TRUE,
 		NULL);
 
 	// Expand / Collapse
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_end (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
+	gtk_box_append (GTK_BOX (tbar), bbox);
 
 	widget = make_image_button(ICONNAME_HB_BUTTON_EXPAND, _("Expand all"));
 	data->BT_expand = widget;
-	gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend(GTK_BOX(bbox), widget);
 
 	widget = make_image_button(ICONNAME_HB_BUTTON_COLLAPSE, _("Collapse all"));
 	data->BT_collapse = widget;
-	gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend(GTK_BOX(bbox), widget);
 
 	/* signal connect */
 	g_signal_connect (data->RA_mode, "changed", G_CALLBACK(ui_bud_tabview_view_update_mode), (gpointer)data);

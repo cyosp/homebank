@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -26,6 +26,7 @@
 #include "list-operation.h"
 
 #include "ui-transaction.h"
+#include "ui-widgets.h"
 
 
 /****************************************************************************/
@@ -83,7 +84,8 @@ GtkTreeIter	iter;
 						-1);
 			}
 
-			if(txn->status == TXN_STATUS_REMIND)
+			//if(txn->status == TXN_STATUS_REMIND)
+			if(txn->flags & OF_REMIND)
 			{
 				gtk_tree_store_insert_with_values(GTK_TREE_STORE(model2), &iter, NULL, -1,
 						MODEL_TXN_POINTER, txn,
@@ -156,10 +158,10 @@ GtkWidget *hub, *vbox, *scrollwin, *treeview;
 	hb_widget_set_margin(GTK_WIDGET(hub), SPACING_SMALL);
 
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	gtk_box_pack_start (GTK_BOX (hub), vbox, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (hub), vbox);
 
 	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (vbox), scrollwin);
 	
 	treeview = (GtkWidget *)create_list_transaction(LIST_TXN_TYPE_OTHER, PREFS->lst_ope_columns);
 	list_txn_set_column_acc_visible(GTK_TREE_VIEW(treeview), TRUE);

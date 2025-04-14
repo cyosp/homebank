@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -20,7 +20,8 @@
 #include "homebank.h"
 
 #include "ui-currency.h"
-
+#include "ui-dialogs.h"
+#include "ui-widgets.h"
 
 #define MYDEBUG 0
 
@@ -804,7 +805,7 @@ gint crow, row;
 	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
 	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
 	hb_widget_set_margin(GTK_WIDGET(content_grid), SPACING_MEDIUM);
-	gtk_box_pack_start (GTK_BOX (content_area), content_grid, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (content_area), content_grid);
 
 	crow = 0;
 	// group :: Currency
@@ -1174,7 +1175,7 @@ gint crow, row;
 	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
 	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
 	hb_widget_set_margin(GTK_WIDGET(content_grid), SPACING_MEDIUM);
-	gtk_box_pack_start (GTK_BOX (content_area), content_grid, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (content_area), content_grid);
 
 	crow = 0;
 	// group :: Search
@@ -1748,7 +1749,7 @@ gint crow, row, w, h, dw, dh;
 	gtk_grid_set_row_spacing (GTK_GRID (content_grid), SPACING_LARGE);
 	gtk_orientable_set_orientation(GTK_ORIENTABLE(content_grid), GTK_ORIENTATION_VERTICAL);
 	hb_widget_set_margin(GTK_WIDGET(content_grid), SPACING_LARGE);
-	gtk_box_pack_start (GTK_BOX (content_area), content_grid, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (content_area), content_grid);
 
 	crow = 0;
 	// group :: --------
@@ -1760,15 +1761,15 @@ gint crow, row, w, h, dw, dh;
 	row = 1;
 	bbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	data->BB_update = bbox;
-	gtk_grid_attach (GTK_GRID(group_grid), bbox, 0, row, 1, 1);
+	gtk_grid_attach (GTK_GRID(group_grid), bbox, 0, row, 2, 1);
 
-	widget = gtk_button_new_from_icon_name (ICONNAME_HB_REFRESH, GTK_ICON_SIZE_BUTTON);
-	gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, TRUE, 0);
-	
+	widget = make_image_button (ICONNAME_HB_REFRESH, NULL);
+	gtk_box_prepend (GTK_BOX(bbox), widget);
 	g_signal_connect (G_OBJECT (widget), "clicked", G_CALLBACK (ui_cur_manage_dialog_sync), NULL);
 
 	widget = make_label_widget (_("Update online"));
-	gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, TRUE, 0);
+	gtk_box_prepend(GTK_BOX(bbox), widget);
+
 
 	//5.7.2 log
 	row++;
@@ -1792,7 +1793,7 @@ gint crow, row, w, h, dw, dh;
 	gtk_grid_attach (GTK_GRID (group_grid), vbox, 0, row, 2, 1);
 	
 	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_box_pack_start(GTK_BOX(vbox), scrollwin, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX(vbox), scrollwin);
 	gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scrollwin), HB_MINHEIGHT_LIST);
 	treeview = ui_cur_listview_new(FALSE);
  	data->LV_cur = treeview;
@@ -1802,29 +1803,29 @@ gint crow, row, w, h, dw, dh;
 
 	tbar = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
-	gtk_box_pack_start (GTK_BOX (vbox), tbar, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (vbox), tbar);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (tbar), bbox);
 
 		widget = make_image_button(ICONNAME_LIST_ADD, _("Add"));
 		data->BT_add = widget;
-		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend(GTK_BOX(bbox), widget);
 
 		widget = make_image_button(ICONNAME_LIST_DELETE, _("Delete"));
 		data->BT_del = widget;
-		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend(GTK_BOX(bbox), widget);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (tbar), bbox);
 
 		widget = make_image_button(ICONNAME_LIST_EDIT, _("Edit"));
 		data->BT_edit = widget;
-		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend(GTK_BOX(bbox), widget);
 
 		widget = gtk_button_new_with_mnemonic(_("Set as base"));
 		data->BT_base = widget;
-		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend(GTK_BOX(bbox), widget);
 
 	// connect dialog signals
 	g_signal_connect (dialog, "destroy", G_CALLBACK (gtk_widget_destroyed), &dialog);

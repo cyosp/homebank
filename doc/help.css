@@ -55,14 +55,14 @@ h3 { color: #4686c0; }
 h4 { color: #3c3c3c; }
 h4 img { vertical-align: baseline; padding: 4px; }
 */
-ul { /*list-style-type:square;*/ overflow: hidden; margin-left: 1em; margin-top: 0;
+ul, ol { /*list-style-type:square;*/ overflow: hidden; margin-left: 1em; margin-top: 0;
 }
 
 p { margin-left: 1.5em; }
 
 h3 + p { margin-top:0; }
 
-ol li { margin-top: .5em; }
+/*ol li { margin-top: .5em; }*/
 
 .padleft { margin-left: 3em; }
 
@@ -145,7 +145,7 @@ ol li { margin-top: .5em; }
 /* navigation link */
 .navig a {
 	color: #484848;
-	padding: 0 4px;*/
+	padding: 0 4px;
 }
 
 .navig a:hover {
@@ -236,17 +236,22 @@ td,th {
 	vertical-align: top;
 }
 
-.lexicon {
+table.ghost td
+{
+	border:none;
+}
+
+table.lexicon {
 	width: 100%;
 	table-layout: fixed;
 }
 
-.lexicon td,th {
+table.lexicon td,th {
 	width: 20%;
 	text-align: left;
 }
 
-.lexicon i { font-size:75%; color: #888;}
+table.lexicon i { font-size:75%; color: #888;}
 
 
 .hotkeys {

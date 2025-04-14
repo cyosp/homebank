@@ -256,20 +256,15 @@ private_icons = \
 	hicolor_actions_24x24_hb-document-open.png \
 	hicolor_actions_24x24_hb-document-print.png \
 	hicolor_actions_24x24_hb-document-save.png \
-	hicolor_actions_24x24_hb-document-save-as.png \
 	hicolor_actions_24x24_hb-account.png \
 	hicolor_actions_24x24_hb-archive.png \
 	hicolor_actions_24x24_hb-assign.png \
-	hicolor_actions_24x24_hb-assign-run.png \
 	hicolor_actions_24x24_hb-budget.png \
 	hicolor_actions_24x24_hb-category.png \
 	hicolor_actions_24x24_hb-clear.png \
-	hicolor_actions_24x24_hb-currency.png \
 	hicolor_actions_24x24_hb-donate.png \
 	hicolor_actions_24x24_hb-file-export.png \
 	hicolor_actions_24x24_hb-file-import.png \
-	hicolor_actions_24x24_hb-file-valid.png \
-	hicolor_actions_24x24_hb-file-invalid.png \
 	hicolor_actions_24x24_hb-filter.png \
 	hicolor_actions_24x24_hb-go-down.png \
 	hicolor_actions_24x24_hb-go-up.png \
@@ -280,10 +275,10 @@ private_icons = \
 	hicolor_actions_24x24_hb-ope-cleared.png \
 	hicolor_actions_24x24_hb-ope-delete.png \
 	hicolor_actions_24x24_hb-ope-edit.png \
+	hicolor_actions_24x24_hb-ope-future.png \
 	hicolor_actions_24x24_hb-ope-herit.png \
 	hicolor_actions_24x24_hb-ope-multiedit.png \
 	hicolor_actions_24x24_hb-ope-reconciled.png \
-	hicolor_actions_24x24_hb-ope-convert.png \
 	hicolor_actions_24x24_hb-ope-show.png \
 	hicolor_actions_24x24_hb-payee.png \
 	hicolor_actions_24x24_hb-rate.png \
@@ -311,18 +306,23 @@ private_icons = \
 	hicolor_status_16x16_hb-gf-purple.png \
 	hicolor_status_16x16_hb-gf-red.png \
 	hicolor_status_16x16_hb-gf-yellow.png \
-	hicolor_status_16x16_hb-ope-auto.png \
-	hicolor_status_16x16_hb-ope-budget.png \
-	hicolor_status_16x16_hb-ope-cleared.png \
-	hicolor_status_16x16_hb-ope-edit.png \
-	hicolor_status_16x16_hb-ope-forced.png \
-	hicolor_status_16x16_hb-ope-future.png \
-	hicolor_status_16x16_hb-ope-new.png \
-	hicolor_status_16x16_hb-ope-prefilled.png \
-	hicolor_status_16x16_hb-ope-reconciled.png \
-	hicolor_status_16x16_hb-ope-remind.png \
-	hicolor_status_16x16_hb-ope-similar.png \
-	hicolor_status_16x16_hb-ope-void.png \
+	hicolor_status_16x16_hb-file-valid.png \
+	hicolor_status_16x16_hb-file-invalid.png \
+	hicolor_status_16x16_hb-item-added.png \
+	hicolor_status_16x16_hb-item-auto.png \
+	hicolor_status_16x16_hb-item-budget.png \
+	hicolor_status_16x16_hb-item-closed.png \
+	hicolor_status_16x16_hb-item-edited.png \
+	hicolor_status_16x16_hb-item-forced.png \
+	hicolor_status_16x16_hb-item-future.png \
+	hicolor_status_16x16_hb-item-import.png \
+	hicolor_status_16x16_hb-item-pending.png \
+	hicolor_status_16x16_hb-item-remind.png \
+	hicolor_status_16x16_hb-item-similar.png \
+	hicolor_status_16x16_hb-item-clear.png \
+	hicolor_status_16x16_hb-item-recon.png \
+	hicolor_status_16x16_hb-item-reconlock.png \
+	hicolor_status_16x16_hb-item-void.png \
 	hicolor_status_16x16_hb-pm-cash.png \
 	hicolor_status_16x16_hb-pm-ccard.png \
 	hicolor_status_16x16_hb-pm-check.png \
@@ -336,32 +336,23 @@ private_icons = \
 	hicolor_status_16x16_hb-pm-mobphone.png \
 	hicolor_status_16x16_hb-pm-standingorder.png \
 	hicolor_status_16x16_hb-pm-transfer.png \
+	hicolor_status_16x16_hb-quicktips.png \
 	hicolor_status_48x48_prf-advanced.png \
 	hicolor_status_48x48_prf-backup.png \
-	hicolor_status_48x48_prf-columns.png \
 	hicolor_status_48x48_prf-euro.png \
 	hicolor_status_48x48_prf-folder.png \
 	hicolor_status_48x48_prf-forecast.png \
 	hicolor_status_48x48_prf-general.png \
 	hicolor_status_48x48_prf-import.png \
 	hicolor_status_48x48_prf-interface.png \
+	hicolor_status_48x48_prf-interface-theme.png \
+	hicolor_status_48x48_prf-interface-color.png \
 	hicolor_status_48x48_prf-locale.png \
-	hicolor_status_48x48_prf-payment.png \
 	hicolor_status_48x48_prf-report.png \
-	hicolor_actions_scalable_edit-split-symbolic.svg \
-	hicolor_actions_scalable_eye-not-looking-symbolic.svg \
-	hicolor_actions_scalable_hb-go-up-symbolic.svg \
-	hicolor_actions_scalable_hb-go-down-symbolic.svg \
-	hicolor_actions_scalable_list-collapse-all-symbolic.svg \
-	hicolor_actions_scalable_list-duplicate-symbolic.svg \
-	hicolor_actions_scalable_list-expand-all-symbolic.svg \
-	hicolor_actions_scalable_list-merge-symbolic.svg \
-	hicolor_actions_scalable_list-move-after-symbolic.svg \
-	hicolor_actions_scalable_open-in-browser-symbolic.svg \
-	hicolor_actions_scalable_text-casesensitive-symbolic.svg \
-	hicolor_actions_scalable_text-regularexpression-symbolic.svg \
-	hicolor_actions_scalable_toggle-sign-symbolic.svg \
-	hicolor_actions_scalable_data-usage-symbolic.svg \
+	hicolor_status_48x48_prf-transaction.png \
+	hicolor_status_48x48_prf-transaction-dialog.png \
+	hicolor_status_48x48_prf-transaction-transfer.png \
+	hicolor_status_48x48_prf-transaction-payment.png \
 	$(NULL)
 
 EXTRA_DIST = \
@@ -564,7 +555,9 @@ update-icon-cache:
 	@-if test -z "$(DESTDIR)"; then \
 		echo "Updating Gtk icon cache in '$(DESTDIR)'"; \
 		for theme in $(public_icons_themes); do \
+			echo " > $(datadir)/icons/$$theme."; \
 			$(gtk_update_icon_cache) $(datadir)/icons/$$theme; \
+			$(gtk_update_icon_cache) $(DESTDIR)$(pkgdatadir)/icons/$$theme; \
 		done; \
 	else \
 		echo "*** Icon cache not updated.  After (un)install, run this:"; \
@@ -574,6 +567,9 @@ update-icon-cache:
 	fi
 
 install-icons:
+	for theme in $(public_icons_themes); do \
+		cp index.theme $(DESTDIR)$(pkgdatadir)/icons/$$theme/index.theme; \
+	done; \
 	for icon in $(public_icons); do \
 		THEME=`echo $$icon | cut -d_ -f1`; \
 		CONTEXT=`echo $$icon | cut -d_ -f2`; \
@@ -592,6 +588,9 @@ install-icons:
 	done
 
 uninstall-icons:
+	for theme in $(public_icons_themes); do \
+		rm $(DESTDIR)$(pkgdatadir)/icons/$$theme/index.theme; \
+	done; \
 	-for icon in $(public_icons); do \
 		THEME=`echo $$icon | cut -d_ -f1`; \
 		CONTEXT=`echo $$icon | cut -d_ -f2`; \

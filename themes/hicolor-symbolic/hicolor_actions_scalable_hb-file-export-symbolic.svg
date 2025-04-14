@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   id="svg7384"
+   height="16"
+   width="16"
+   version="1.1"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="hicolor_actions_scalable_hb-file-export-symbolic.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title1052">File Export</title>
+  <defs
+     id="defs12">
+    <linearGradient
+       id="linearGradient5606"
+       inkscape:swatch="solid">
+      <stop
+         id="stop5608"
+         offset="0"
+         style="stop-color:#000000;stop-opacity:1;" />
+    </linearGradient>
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1003"
+     id="namedview10"
+     showgrid="true"
+     inkscape:zoom="45.254834"
+     inkscape:cx="10.418776"
+     inkscape:cy="7.9107571"
+     inkscape:window-x="1440"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg7384"
+     inkscape:snap-global="false"
+     inkscape:pagecheckerboard="0"
+     inkscape:showpageshadow="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid4491" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata90">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Maxime DOYEN</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:source>https://www.gethomebank.org</dc:source>
+        <dc:title>File Export</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="g829"
+     transform="matrix(0.92882983,0,0,1.007447,-0.88053193,0.04299068)"
+     style="stroke-width:1.03376257" />
+  <path
+     d="M 3.1063597,15 C 2.8112345,15 2.553,14.883333 2.3316561,14.65 2.1103123,14.416666 1.9996403,14.144444 1.9996403,13.833333 V 2.1666666 C 1.9996403,1.8555555 2.1103123,1.5833333 2.3316561,1.35 2.553,1.1166667 2.8112345,1 3.1063597,1 H 13.173914 c 0.295125,0 0.553359,0.1166667 0.774702,0.35 0.221345,0.2333333 0.332017,0.5055555 0.332017,0.8166666 v 1.75 h -1.106719 v -1.75 H 3.1063597 V 13.833333 H 13.173914 v -1.75 h 1.106719 v 1.75 c 0,0.311111 -0.110672,0.583333 -0.332017,0.816667 C 13.727273,14.883333 13.469039,15 13.173914,15 Z M 11.56917,11.616666 10.794466,10.8 12.878788,8.5833332 H 5.8511198 V 7.4166665 H 12.878788 L 10.794466,5.1999999 11.56917,4.3833333 15,7.9999998 Z"
+     id="path92"
+     style="fill:#bebebe;stroke-width:0.421607"
+     sodipodi:nodetypes="sssssssssccccccccsssscccccccccc" />
+</svg>

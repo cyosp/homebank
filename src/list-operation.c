@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -20,6 +20,8 @@
 
 #include "homebank.h"
 
+#include "ui-widgets.h"
+
 #include "list-operation.h"
 
 /****************************************************************************/
@@ -36,10 +38,6 @@
 /* our global datas */
 extern struct HomeBank *GLOBALS;
 extern struct Preferences *PREFS;
-
-
-//debug
-//extern gboolean minor_active;
 
 
 /* This is not pretty. Of course you can also use a
@@ -66,9 +64,9 @@ gdouble tmpval = 0;
     switch (sortcol)
     {
 		case LST_DSPOPE_STATUS:
-			if(!(retval = (ope1->flags & OF_ADDED) - (ope2->flags & OF_ADDED) ) )
+			if(!(retval = (ope1->dspflags & FLAG_TMP_ADDED) - (ope2->dspflags & FLAG_TMP_ADDED) ) )
 			{
-				retval = (ope1->flags & OF_CHANGED) - (ope2->flags & OF_CHANGED);
+				retval = (ope1->dspflags & FLAG_TMP_EDITED) - (ope2->dspflags & FLAG_TMP_EDITED);
 			}
 			break;
 
@@ -217,29 +215,58 @@ gdouble tmpval = 0;
 
 
 static void
+list_txn_cell_set_color(GtkCellRenderer *renderer, Transaction *txn)
+{
+	DB( g_print("\n[list_txn] cell eval future\n") );
+
+	if( PREFS->custom_bg_future == FALSE)
+		return;
+
+	if(txn->date > GLOBALS->today)
+	{
+	GdkRGBA bgrgba;
+
+		DB( g_print(" %s\n", PREFS->color_bg_future) );
+		gdk_rgba_parse(&bgrgba, PREFS->color_bg_future);
+		bgrgba.alpha = (GLOBALS->theme_is_dark) ? 0.165 : 0.33;
+	
+		g_object_set(renderer, 
+			"cell-background-rgba", &bgrgba,
+		NULL);
+	}
+	else
+	{
+		g_object_set(renderer, 
+
+			"cell-background-rgba", NULL,
+		NULL);
+	}
+
+}
+
+
+static void
 list_txn_eval_future(GtkCellRenderer *renderer, Transaction *txn)
 {
+
+	DB( g_print("\n[list_txn] eval future\n") );
 
 	if(txn->date > GLOBALS->today)
 	{
 		g_object_set(renderer, 
-		//	"scale-set", TRUE,
-		//5.4.3 scale disabled
-		//	"scale", 0.8,
-		//	"style-set", TRUE,
 			"style",	PANGO_STYLE_OBLIQUE,
 		NULL);
 	}
 	else
 	{
 		//5.4.3 scale disabled
-		g_object_set(renderer, "style-set", FALSE,
-		//g_object_set(renderer, "scale-set", FALSE, "style-set", FALSE,
+		g_object_set(renderer, 
+			"style-set", FALSE,
 		NULL);
 	}
 	
 	//if( txn->marker == TXN_MARK_DUPDST )
-	if( txn->dspflags & TXN_DSPFLG_DUPDST )
+	if( txn->dspflags & FLAG_TMP_DUPDST )
 	{
 		g_object_set(renderer, 
 		//	"strikethrough-set", TRUE,
@@ -253,7 +280,7 @@ list_txn_eval_future(GtkCellRenderer *renderer, Transaction *txn)
 	}
 
 	//if( txn->marker == TXN_MARK_DUPSRC )
-	if( txn->dspflags & TXN_DSPFLG_DUPSRC )
+	if( txn->dspflags & FLAG_TMP_DUPSRC )
 	{
 		g_object_set(renderer, 
 		//	"weight-set", TRUE,
@@ -282,27 +309,33 @@ gchar *iconname = NULL;
 
 	if( split == NULL )
 	{
+		list_txn_cell_set_color(renderer, ope);
+
 		switch(GPOINTER_TO_INT(user_data))
 		{
+			//status icons
 			case 1:
-				iconname = ( ope->flags & OF_AUTO  ) ? ICONNAME_HB_OPE_AUTO : ( ope->flags & OF_ADDED ) ? ICONNAME_HB_OPE_NEW : NULL;
-				break;
-			case 2:
-				iconname = ( ope->flags & OF_CHANGED  ) ? ICONNAME_HB_OPE_EDIT : NULL;
-				break;
-			case 3:
-				//iconname = ( ope->marker == TXN_MARK_DUPDST ) ? ICONNAME_HB_OPE_SIMILAR : NULL;
-				iconname = ( ope->dspflags & TXN_DSPFLG_DUPDST ) ? ICONNAME_HB_OPE_SIMILAR : NULL;
-				break;
-			/*case 3:
-				if( entry->flags & OF_VALID )
-					iconname = ICONNAME_HB_OPE_VALID;
+				if( ope->dspflags & FLAG_TMP_EDITED )
+					iconname = ICONNAME_HB_ITEM_EDITED;
 				else
-				{
-					if( entry->flags & OF_REMIND )
-						iconname = ICONNAME_HB_OPE_REMIND;
-				}
-				break;*/
+				if( ope->dspflags & FLAG_TMP_ADDED )
+					iconname = ICONNAME_HB_ITEM_ADDED;
+				break;
+			//actions icons
+			case 2:
+				//temporary icons
+				if( ope->dspflags & FLAG_TMP_DUPDST )
+					iconname = ICONNAME_HB_ITEM_SIMILAR;
+				else
+				if( ope->flags & OF_ISIMPORT )
+					iconname = ICONNAME_HB_ITEM_IMPORT;
+				else
+				if( ope->flags & OF_ISPAST )
+					iconname = ICONNAME_HB_ITEM_PAST;
+				else
+				if( ope->date > GLOBALS->today )
+					iconname = ICONNAME_HB_ITEM_FUTURE;
+				break;
 		}
 	}
 
@@ -325,8 +358,16 @@ gchar buffer[6];
 
 	if( split == NULL )
 	{
-		if( ope->dspflags & (TXN_DSPFLG_DUPSRC|TXN_DSPFLG_DUPDST) )
+		list_txn_cell_set_color(renderer, ope);
+
+		if( ope->dspflags & (FLAG_TMP_DUPSRC|FLAG_TMP_DUPDST) )
 			g_snprintf(buffer, 6-1, ":%d", ope->dupgid);
+		else
+			if( ope->dspflags & (FLAG_TMP_CHKSIGN) )
+			{
+				buffer[0]='*';
+				buffer[1]=0;
+			}
 	}
 
 	g_object_set(renderer, "text", buffer, NULL);
@@ -350,6 +391,7 @@ gchar *text = NULL;
 	Account *acc = da_acc_get(ope->kacc);
 
 		//fixed 5.6.3
+		list_txn_cell_set_color(renderer, ope);
 		list_txn_eval_future(renderer, ope);
 
 		if( acc )
@@ -375,8 +417,10 @@ const gchar *iconname = NULL;
 
 	if( split == NULL )
 	{
+		list_txn_cell_set_color(renderer, ope);
 		iconname = ope->grpflg > 0 ? get_grpflag_icon_name(ope->grpflg) : NULL;
 	}
+
 	g_object_set(renderer, "icon-name", iconname, NULL);
 }
 
@@ -413,6 +457,7 @@ GDate date;
 	}
 	else
 	{
+		list_txn_cell_set_color(renderer, ope);
 		list_txn_eval_future(renderer, ope);
 
 		if(ope->date > 0)
@@ -446,6 +491,9 @@ gchar *text = NULL;
 	    MODEL_TXN_POINTER, &ope, 
 	    -1);
 
+	if( split == NULL )
+		list_txn_cell_set_color(renderer, ope);
+
 	switch(GPOINTER_TO_INT(user_data))
 	{
 		case 1:
@@ -461,7 +509,13 @@ gchar *text = NULL;
 				list_txn_eval_future(renderer, ope);
 				text = ope->number;
 			}
-			g_object_set(renderer, "text", text, NULL);
+			#if MYDEBUG
+				gchar *ds = g_strdup_printf ("%s kx[%d] f[%d]", text == NULL ? "" : text, ope->kxfer, ope->flags );
+				g_object_set(renderer, "text", ds, NULL);
+				g_free(ds);
+			#else
+				g_object_set(renderer, "text", text, NULL);
+			#endif
 			break;
 	}
 }
@@ -479,8 +533,10 @@ gchar *text = NULL;
 	    MODEL_TXN_POINTER, &ope, 
 	    -1);
 
+
 	if( split == NULL )
 	{
+		list_txn_cell_set_color(renderer, ope);
 		list_txn_eval_future(renderer, ope);
 
 		//#926782
@@ -520,7 +576,7 @@ gchar *str;
 
 	if( split == NULL )
 	{
-
+		list_txn_cell_set_color(renderer, ope);
 		list_txn_eval_future(renderer, ope);
 
 		if(ope->tags != NULL)
@@ -551,6 +607,7 @@ Split *split;
 
 	if( split == NULL )
 	{
+		list_txn_cell_set_color(renderer, ope);
 		list_txn_eval_future(renderer, ope);
     	g_object_set(renderer, "text", ope->memo, NULL);
 	}
@@ -577,10 +634,11 @@ gchar *iconname = NULL;
 
 	if( split == NULL )
 	{	    
+		list_txn_cell_set_color(renderer, ope);
 		acc = da_acc_get(ope->kacc);
 		if( acc && (acc->flags & AF_CLOSED) )
 		{
-			iconname = ICONNAME_CHANGES_PREVENT;
+			iconname = ICONNAME_HB_ITEM_CLOSED;
 		}
 	}
 
@@ -607,11 +665,17 @@ gchar *iconname = NULL;
 		MODEL_TXN_POINTER, &ope, 
 		 -1);
 
+	if( split == NULL )
+		list_txn_cell_set_color(renderer, ope);
+
 	switch(GPOINTER_TO_INT(user_data))
 	{
 		case 1:
-			if( (data->lockreconciled == TRUE) && (ope->status == TXN_STATUS_RECONCILED) )
-				iconname = ICONNAME_CHANGES_PREVENT;
+			//todo: remove this
+			//if( (data->lockreconciled == TRUE) && (ope->status == TXN_STATUS_RECONCILED) )
+			//	iconname = ICONNAME_CHANGES_PREVENT;
+			if( ope->flags & OF_REMIND )
+				iconname = ICONNAME_HB_ITEM_REMIND;
 			break;
 
 		case 2:
@@ -623,10 +687,14 @@ gchar *iconname = NULL;
 					/*case TXN_STATUS_CLEARED: c = "c"; break;
 					case TXN_STATUS_RECONCILED: c = "R"; break;
 					case TXN_STATUS_REMIND: c = "!"; break;*/
-					case TXN_STATUS_CLEARED:	iconname = ICONNAME_HB_OPE_CLEARED; break;
-					case TXN_STATUS_RECONCILED: iconname = ICONNAME_HB_OPE_RECONCILED; break;
-					case TXN_STATUS_REMIND:     iconname = ICONNAME_HB_OPE_REMIND; break;
-					case TXN_STATUS_VOID:       iconname = ICONNAME_HB_OPE_VOID; break;		
+					case TXN_STATUS_CLEARED:	iconname = ICONNAME_HB_ITEM_CLEAR; break;
+					case TXN_STATUS_RECONCILED: 
+						iconname = ICONNAME_HB_ITEM_RECON;
+						if( (data->lockreconciled == TRUE) )
+							iconname = ICONNAME_HB_ITEM_RECONLOCK;
+						break;
+					//case TXN_STATUS_REMIND:     iconname = ICONNAME_HB_ITEM_REMIND; break;
+					case TXN_STATUS_VOID:       iconname = ICONNAME_HB_ITEM_VOID; break;		
 				}
 			}
 			break;
@@ -670,6 +738,7 @@ gchar *color;
 
 	if( split == NULL )
 	{
+		list_txn_cell_set_color(renderer, ope);
 		list_txn_eval_future(renderer, ope);
 
 		if(column == LST_DSPOPE_BALANCE)
@@ -708,19 +777,34 @@ gchar *color;
 
 		color = get_normal_color_amount(amount);
 		//if( (column == LST_DSPOPE_BALANCE) && (ope->overdraft == TRUE) && (PREFS->custom_colors == TRUE) )
-		if( (column == LST_DSPOPE_BALANCE) && (PREFS->custom_colors == TRUE) && (ope->dspflags & TXN_DSPFLG_OVER) )
+		if( (column == LST_DSPOPE_BALANCE) && (PREFS->custom_colors == TRUE) && (ope->dspflags & FLAG_TMP_OVER) )
 		{
 			color = PREFS->color_warn;
 		}
 
+		//5.6.3 future alpha
+		if( color != NULL && ope->date > GLOBALS->today )
+		{
+			g_object_set(renderer,
+				"foreground",  color,
+				NULL);
+		}
+		else
+		{
+			g_object_set(renderer,
+				"foreground",  color,
+				"text", buf,
+				NULL);
+		}		
+		
 		g_object_set(renderer,
-			"foreground",  color,
 			"text", buf,
 			NULL);
+
 	//}
 
 	//test
-	if( (column == LST_DSPOPE_BALANCE) && (ope->dspflags & TXN_DSPFLG_LOWBAL))
+	if( (column == LST_DSPOPE_BALANCE) && (ope->dspflags & FLAG_TMP_LOWBAL))
 		g_object_set(renderer, "weight", PANGO_WEIGHT_BOLD, NULL);
 	else
 		g_object_set(renderer, "weight", PANGO_WEIGHT_NORMAL, NULL);
@@ -750,6 +834,7 @@ gchar *text = NULL;
 
 	if( split == NULL )
 	{
+		list_txn_cell_set_color(renderer, ope);
 		list_txn_eval_future(renderer, ope);
 		if(ope->flags & OF_SPLIT)
 		{
@@ -784,8 +869,14 @@ gchar *text = NULL;
 		}	
 	}	
 
+	//if( color != NULL )
+	//{
+		g_object_set(renderer,
+			"foreground",  color,
+			NULL);
+	//}
+
 	g_object_set(renderer,
-		"foreground",  color,
 		"text", text,
 		NULL);
 
@@ -1773,13 +1864,84 @@ Transaction *ope;
 }
 
 
+
+static gboolean
+gtk_tree_view_set_tooltip_query_cb (GtkWidget  *widget,
+				    gint        x,
+				    gint        y,
+				    gboolean    keyboard_tip,
+				    GtkTooltip *tooltip,
+				    gpointer    data)
+{
+GtkTreeIter iter;
+GtkTreePath *path;
+GtkTreeViewColumn *column;
+GtkTreeModel *model;
+GtkTreeView *tree_view = GTK_TREE_VIEW (widget);
+gboolean retval = FALSE;
+gint colid;
+
+	if (gtk_tree_view_get_tooltip_context (GTK_TREE_VIEW (widget),
+					  &x, &y,
+					  keyboard_tip,
+					  &model, NULL, &iter) == FALSE )
+		return FALSE;
+
+	gtk_tree_view_get_path_at_pos(tree_view, x, y, &path, &column, NULL, NULL);
+
+	colid = gtk_tree_view_column_get_sort_column_id(column);
+
+	//if( colid == LST_DSPOPE_STATUS || colid == LST_DSPOPE_CLR )
+	if( colid == LST_DSPOPE_STATUS )
+	{
+	GString *node = g_string_sized_new(16);
+	Transaction *ope;
+
+		gtk_tree_model_get(model, &iter, MODEL_TXN_POINTER, &ope, -1);
+
+		#if MYDEBUG == 1
+		gchar *txtpath = gtk_tree_path_to_string(path);
+		g_string_append_printf(node, "col:%d, row:%s\n0x%04x", 
+			colid, 
+			txtpath, ope->flags);
+		#endif
+
+		if( colid == LST_DSPOPE_STATUS )
+		{
+		gboolean addlf = FALSE;
+
+			if( ope->flags & OF_ISIMPORT )
+			{
+				g_string_append(node, _("Imported") );
+				addlf = TRUE;
+			}
+			if( ope->flags & OF_ISPAST )
+			{
+				if(addlf)
+					g_string_append(node, "\n" );
+				g_string_append(node, _("Past date") );
+			}
+		}
+
+		gtk_tooltip_set_markup (tooltip, node->str);
+		gtk_tree_view_set_tooltip_row (tree_view, tooltip, path);
+		g_string_free(node, TRUE);
+		retval = TRUE;
+	}
+
+	gtk_tree_path_free (path);
+
+	return retval;
+}
+
+
 static void list_txn_destroy( GtkWidget *widget, gpointer user_data )
 {
 struct list_txn_data *data;
 
 	data = g_object_get_data(G_OBJECT(widget), "inst_data");
 
-	DB( g_print ("\n[list_transaction] destroy event occurred\n") );
+	DB( g_print ("\n[list_txn] destroy event occurred\n") );
 
 	if( data->save_column_width )
 	{
@@ -1870,7 +2032,7 @@ GtkTreeViewColumn *column, *col_acc = NULL, *col_status = NULL, *col_match = NUL
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
 	//add system icon to 1st column
-	GtkWidget *img = gtk_image_new_from_icon_name (ICONNAME_EMBLEM_SYSTEM, GTK_ICON_SIZE_BUTTON);
+	GtkWidget *img = hbtk_image_new_from_icon_name_16 (ICONNAME_EMBLEM_SYSTEM);
 	gtk_widget_show(img);
 	gtk_tree_view_column_set_widget(column, img);
 	if( list_type == LIST_TXN_TYPE_BOOK || list_type == LIST_TXN_TYPE_DETAIL )
@@ -1937,16 +2099,17 @@ GtkTreeViewColumn *column, *col_acc = NULL, *col_status = NULL, *col_match = NUL
 
 	/* column status CLR */
 	column = gtk_tree_view_column_new();
-	gtk_tree_view_column_set_title(column, _("Status"));
+	//gtk_tree_view_column_set_title(column, _("Status"));
+	gtk_tree_view_column_set_title(column, _("St."));
 	//#2043152
 	gtk_tree_view_column_set_sizing(column, GTK_TREE_VIEW_COLUMN_AUTOSIZE);
 
 	renderer = gtk_cell_renderer_pixbuf_new ();
-	gtk_tree_view_column_pack_start(column, renderer, TRUE);
+	gtk_tree_view_column_pack_start(column, renderer, FALSE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, list_txn_cell_data_func_clr, GINT_TO_POINTER(1), NULL);
 
 	renderer = gtk_cell_renderer_pixbuf_new();
-	gtk_tree_view_column_pack_start(column, renderer, TRUE);
+	gtk_tree_view_column_pack_start(column, renderer, FALSE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, list_txn_cell_data_func_clr, GINT_TO_POINTER(2), NULL);
 
 	gtk_tree_view_column_set_reorderable(column, TRUE);
@@ -2025,10 +2188,15 @@ GtkTreeViewColumn *column, *col_acc = NULL, *col_status = NULL, *col_match = NUL
     DB( g_print("set sort to %d %d\n", PREFS->lst_ope_sort_id, PREFS->lst_ope_sort_order) );
     gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(store), PREFS->lst_ope_sort_id, PREFS->lst_ope_sort_order);
 
+	//add tooltip
+	gtk_widget_set_has_tooltip (GTK_WIDGET (treeview), TRUE);
 
 	/* signals */
 	if(list_type == LIST_TXN_TYPE_BOOK)
 		g_signal_connect (GTK_TREE_SORTABLE(store), "sort-column-changed", G_CALLBACK (list_txn_sort_column_changed), data);
+
+	g_signal_connect (treeview, "query-tooltip",
+		            G_CALLBACK (gtk_tree_view_set_tooltip_query_cb), NULL);
 
 	return(treeview);
 }

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   id="svg7384"
+   height="16"
+   width="16"
+   version="1.1"
+   sodipodi:docname="hicolor_actions_scalable_hb-rate-symbolic.svg"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title1050">View Rate</title>
+  <defs
+     id="defs12" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1003"
+     id="namedview10"
+     showgrid="true"
+     inkscape:zoom="29.5"
+     inkscape:cx="-4.2542373"
+     inkscape:cy="6.440678"
+     inkscape:window-x="1440"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg7384"
+     inkscape:pagecheckerboard="0"
+     inkscape:snap-global="false"
+     inkscape:showpageshadow="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid4489" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata90">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Maxime DOYEN</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:source>https://www.gethomebank.org</dc:source>
+        <dc:title>View Rate</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="g16"
+     transform="matrix(0.021875,0,0,0.021875,-2.5,18.5)">
+    <path
+       d="m 300,-520 q -58,0 -99,-41 -41,-41 -41,-99 0,-58 41,-99 41,-41 99,-41 58,0 99,41 41,41 41,99 0,58 -41,99 -41,41 -99,41 z m 0,-80 q 25,0 42.5,-17.5 Q 360,-635 360,-660 360,-685 342.5,-702.5 325,-720 300,-720 q -25,0 -42.5,17.5 -17.5,17.5 -17.5,42.5 0,25 17.5,42.5 17.5,17.5 42.5,17.5 z m 360,440 q -58,0 -99,-41 -41,-41 -41,-99 0,-58 41,-99 41,-41 99,-41 58,0 99,41 41,41 41,99 0,58 -41,99 -41,41 -99,41 z m 0,-80 q 25,0 42.5,-17.5 Q 720,-275 720,-300 720,-325 702.5,-342.5 685,-360 660,-360 q -25,0 -42.5,17.5 -17.5,17.5 -17.5,42.5 0,25 17.5,42.5 17.5,17.5 42.5,17.5 z m -444,80 -56,-56 584,-584 56,56 z"
+       id="path2"
+       style="fill:#bebebe" />
+  </g>
+</svg>

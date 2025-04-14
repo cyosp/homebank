@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -21,6 +21,7 @@
 #include "homebank.h"
 
 #include "list-scheduled.h"
+#include "ui-widgets.h"
 
 /****************************************************************************/
 /* Debug macros																*/
@@ -38,10 +39,179 @@ extern struct HomeBank *GLOBALS;
 extern struct Preferences *PREFS;
 
 
-extern HbKvData CYA_ARC_UNIT[];
+extern char *CYA_ARC_FREQ2[];
+
+/* = = = = = = = = = = = = = = = = */
+
+gchar *ui_arc_listview_get_freq_label(gint index)
+{
+	if(index <= AUTO_FREQ_YEAR)
+		return CYA_ARC_FREQ2[index];
+	return "";
+}
 
 
 /* = = = = = = = = = = = = = = = = */
+
+
+static void lst_sch_widget_to_string_row(GString *node, gchar sep, GtkTreeModel *model, GtkTreeIter *iter, guint flags)
+{
+gchar strbuf[G_ASCII_DTOSTR_BUF_SIZE];
+gdouble expense, income;
+Archive *arc;
+gint nblate;
+Payee *payee;
+gchar *memo;
+
+	gtk_tree_model_get (model, iter,
+		LST_DSPUPC_DATAS, &arc,
+		LST_DSPUPC_NB_LATE, &nblate,
+		LST_DSPUPC_EXPENSE, &expense,
+		LST_DSPUPC_INCOME , &income,
+		LST_DSPUPC_MEMO, &memo,
+		-1);
+
+
+
+	DB( g_print("---- %p\n", arc) );
+
+	//late
+	if(arc && nblate > 0)
+	{
+		g_string_append_printf(node, nblate < 10 ? "%d" : "+10", nblate);
+	}
+	g_string_append_c (node, sep );
+
+	//still
+	if(arc && (arc->rec_flags & TF_LIMIT) )
+	{
+		g_string_append_printf(node, "%d", arc->limit);
+	}
+
+	g_string_append_c (node, sep );
+
+	//date
+	if( arc != NULL )
+	{
+		hb_sprint_date(strbuf, arc->nextdate);
+		g_string_append (node, strbuf );
+	}
+	g_string_append_c (node, sep );
+
+	//number
+	//g_string_append(node, arc->number);
+	//g_string_append_c (node, sep );
+
+	//payee
+	if( arc != NULL )
+	{
+		payee = da_pay_get(arc->kpay);
+		if(payee != NULL)
+			g_string_append(node, payee->name);
+	}
+	g_string_append_c (node, sep );
+
+	//expense
+	if(expense < 0)
+	{
+		g_snprintf(strbuf, sizeof (strbuf), "%.2f", expense);
+		g_string_append(node, strbuf);
+	}
+	g_string_append_c (node, sep );
+
+	//income
+	if(income > 0)
+	{
+		g_snprintf(strbuf, sizeof (strbuf), "%.2f", income);
+		g_string_append(node, strbuf);
+	}
+	g_string_append_c (node, sep );
+
+	//memo
+	g_string_append(node, memo);
+	g_string_append_c (node, sep );
+	g_free(memo);
+
+	//account
+	if( arc != NULL )
+	{
+	Account *acc = da_acc_get(arc->kacc);
+	
+		g_string_append (node, (acc != NULL) ? acc->name : "");
+	}
+
+	//eol
+	g_string_append (node, "\n" );
+}
+
+
+GString *lst_sch_widget_to_string(GtkTreeView *treeview, ToStringMode mode)
+{
+GString *node;
+GtkTreeModel *model;
+GtkTreeIter	iter;
+gboolean valid;
+guint32 nbcols, i;
+gint uid;
+gchar sep;
+
+	DB( g_print("\n[lst_sch] to string\n") );
+
+	node = g_string_new(NULL);
+
+	sep = (mode == HB_STRING_PRINT) ? '\t' : ';';
+
+	// header (nbcols-2 for icon column)
+	nbcols = gtk_tree_view_get_n_columns (treeview) - 1;
+	for( i=1 ; i < nbcols ; i++ )
+	{
+	GtkTreeViewColumn *column = gtk_tree_view_get_column (treeview, i);
+	
+		//todo: ? restrict to visibility
+		if( GTK_IS_TREE_VIEW_COLUMN(column) )
+		{
+			if( gtk_tree_view_column_get_visible(column))
+			{
+				//skip columns
+				uid = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(column), "uid"));
+				if(	
+					uid == COL_SCH_UID_PAYNUMBER
+				||  uid == COL_SCH_UID_CATEGORY
+				||  uid == COL_SCH_UID_CLR
+
+				)
+				continue;
+
+				/*uid = GPOINTER_TO_UINT(g_object_get_data(G_OBJECT(column), "uid"));
+				switch(uid)
+				{
+					case COL_DSPACC_RECON : flags |= LST_TXN_ACC_REC; break;
+					case COL_DSPACC_CLEAR : flags |= LST_TXN_ACC_CLR; break;
+					case COL_DSPACC_TODAY : flags |= LST_TXN_ACC_TOD; break;
+					case COL_DSPACC_FUTURE: flags |= LST_TXN_ACC_FUT; break;
+				}*/
+				
+				g_string_append(node, gtk_tree_view_column_get_title (column));
+				if( i < nbcols-1 )
+				{
+					g_string_append_c(node, sep);
+				}
+			}
+		}
+	}
+	g_string_append_c(node, '\n');
+
+	//lines
+	model = gtk_tree_view_get_model(treeview);
+	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
+	while (valid)
+	{
+		lst_sch_widget_to_string_row(node, sep, model, &iter, 0);
+		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
+	}
+
+	return node;
+}
 
 
 #if MYDEBUG == 1
@@ -126,7 +296,7 @@ gchar *markuptxt;
 	  LST_DSPUPC_DATAS, &arc,
 		-1);
 
-	if(arc && (arc->flags & OF_LIMIT) )
+	if(arc && (arc->rec_flags & TF_LIMIT) )
 	{
 		markuptxt = g_strdup_printf("%d", arc->limit);
 		g_object_set(renderer, "markup", markuptxt, NULL);
@@ -153,7 +323,8 @@ gchar buffer[256];
 		//TODO: g_date_valid(arc->nextdate) ?
 		if( arc->nextdate > 0 )
 		{
-		GDate *date = g_date_new_julian (arc->nextdate);
+		//#2099918 get date weekend shift
+		GDate *date = g_date_new_julian (scheduled_get_txn_real_postdate(arc->nextdate, arc->weekend));
 
 			g_date_strftime (buffer, 256-1, PREFS->date_format, date);
 			g_date_free(date);
@@ -421,6 +592,12 @@ gchar *iconname = NULL;
 	{
 		switch(GPOINTER_TO_INT(user_data))
 		{
+			case 1:
+			{
+				if( arc->flags & OF_REMIND )
+					iconname = ICONNAME_HB_ITEM_REMIND;
+				break;
+			}
 			case 2:
 			{
 				switch(arc->status)
@@ -428,10 +605,10 @@ gchar *iconname = NULL;
 					/*case TXN_STATUS_CLEARED: c = "c"; break;
 					case TXN_STATUS_RECONCILED: c = "R"; break;
 					case TXN_STATUS_REMIND: c = "!"; break;*/
-					case TXN_STATUS_CLEARED:	iconname = ICONNAME_HB_OPE_CLEARED; break;
-					case TXN_STATUS_RECONCILED: iconname = ICONNAME_HB_OPE_RECONCILED; break;
-					case TXN_STATUS_REMIND:     iconname = ICONNAME_HB_OPE_REMIND; break;
-					case TXN_STATUS_VOID:       iconname = ICONNAME_HB_OPE_VOID; break;		
+					case TXN_STATUS_CLEARED:	iconname = ICONNAME_HB_ITEM_CLEAR; break;
+					case TXN_STATUS_RECONCILED: iconname = ICONNAME_HB_ITEM_RECON; break;
+					//case TXN_STATUS_REMIND:     iconname = ICONNAME_HB_ITEM_REMIND; break;
+					case TXN_STATUS_VOID:       iconname = ICONNAME_HB_ITEM_VOID; break;		
 				}
 				break;
 			}
@@ -570,7 +747,7 @@ gchar *iconname = NULL;
 	switch(GPOINTER_TO_INT(user_data))
 	{
 		case 1:
-			iconname = ( item->flags & OF_PREFILLED  ) ? ICONNAME_HB_OPE_PREFILLED : NULL;
+			iconname = ( item->dspflags & FLAG_TMP_PREFILLED  ) ? ICONNAME_HB_ITEM_PREFILLED : NULL;
 			break;
 	}
 
@@ -590,14 +767,14 @@ gchar *info, *iconname;
 	switch(GPOINTER_TO_INT(user_data))
 	{
 		case 1:
-			iconname = ( item->flags & OF_AUTO ) ? ICONNAME_HB_OPE_AUTO : NULL;
+			iconname = ( item->rec_flags & TF_RECUR ) ? ICONNAME_HB_ITEM_AUTO : NULL;
 			g_object_set(renderer, "icon-name", iconname, NULL);
 			break;
 		case 2:
 			info = NULL;
 			//#1898294 not translated
-			if( ( item->flags & OF_AUTO ) )
-			   info = g_strdup_printf("%d %s", item->every, hbtk_get_label(CYA_ARC_UNIT, item->unit));
+			if( ( item->rec_flags & TF_RECUR ) )
+			   info = g_strdup_printf("%d %s", item->rec_every, ui_arc_listview_get_freq_label(item->rec_freq));
 
 			g_object_set(renderer, "text", info, NULL);
 
@@ -1040,7 +1217,7 @@ GtkTreeViewColumn *column;
 
 	//add system icon to 1st column
 	gtk_tree_view_column_set_clickable(column, TRUE);
-	GtkWidget *img = gtk_image_new_from_icon_name (ICONNAME_EMBLEM_SYSTEM, GTK_ICON_SIZE_BUTTON);
+	GtkWidget *img = hbtk_image_new_from_icon_name_16 (ICONNAME_EMBLEM_SYSTEM);
 	gtk_widget_show(img);
 	gtk_tree_view_column_set_widget(column, img);
 
@@ -1112,9 +1289,9 @@ GtkTreeViewColumn *column;
 	column = gtk_tree_view_column_new();
 	gtk_tree_view_column_set_title(column, _("Status"));
 
-	//renderer = gtk_cell_renderer_pixbuf_new ();
-	//gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	//gtk_tree_view_column_set_cell_data_func(column, renderer, ui_arc_listview_cell_data_func_clr, GINT_TO_POINTER(1), NULL);
+	renderer = gtk_cell_renderer_pixbuf_new ();
+	gtk_tree_view_column_pack_start(column, renderer, TRUE);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_arc_listview_cell_data_func_clr, GINT_TO_POINTER(1), NULL);
 
 	renderer = gtk_cell_renderer_pixbuf_new();
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
@@ -1277,9 +1454,9 @@ GtkTreeViewColumn  *column;
 	column = gtk_tree_view_column_new();
 	gtk_tree_view_column_set_title(column, _("Status"));
 
-	//renderer = gtk_cell_renderer_pixbuf_new ();
-	//gtk_tree_view_column_pack_start(column, renderer, TRUE);
-	//gtk_tree_view_column_set_cell_data_func(column, renderer, ui_arc_listview_cell_data_func_clr, GINT_TO_POINTER(1), NULL);
+	renderer = gtk_cell_renderer_pixbuf_new ();
+	gtk_tree_view_column_pack_start(column, renderer, TRUE);
+	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_arc_listview_cell_data_func_clr, GINT_TO_POINTER(1), NULL);
 
 	renderer = gtk_cell_renderer_pixbuf_new();
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);

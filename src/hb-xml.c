@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -273,7 +273,7 @@ GList *list;
 				entry->status = TXN_STATUS_RECONCILED;
 			else 
 				if(entry->flags & OLDF_REMIND)
-					entry->status = TXN_STATUS_REMIND;
+					entry->status = TXN_OLDSTATUS_REMIND;
 
 			//remove those flags
 			entry->flags &= ~(OLDF_VALID|OLDF_REMIND);
@@ -303,7 +303,7 @@ GList *list;
 			entry->status = TXN_STATUS_RECONCILED;
 		else 
 			if(entry->flags & OLDF_REMIND)
-				entry->status = TXN_STATUS_REMIND;
+				entry->status = TXN_OLDSTATUS_REMIND;
 
 		//remove those flags
 		entry->flags &= ~(OLDF_VALID|OLDF_REMIND);
@@ -431,6 +431,79 @@ GList *list;
 	}
 	g_list_free(lasg);	
 	
+}
+
+
+// migrate 5.9
+static void homebank_upgrade_to_v14_59(void)
+{
+GList *lst_acc, *lnk_acc;
+GList *list;
+
+	DB( g_print("\n[hb-xml] homebank_upgrade_to_v14_59\n") );
+
+	//#chnage template/scheduled
+	list = g_list_first(GLOBALS->arc_list);
+	while (list != NULL)
+	{
+	Archive *item = list->data;
+
+		//#move arc flags
+		if( item->flags & (OLDF_AUTO|OLDF_LIMIT))
+		{
+			DB( g_print(" move tpl flags to rec_flags\n") );
+			item->rec_flags = 0;
+			if(item->flags & OLDF_AUTO)
+				item->rec_flags |= TF_RECUR;
+			if(item->flags & OLDF_LIMIT)
+				item->rec_flags |= TF_LIMIT;
+
+			item->flags &= ~(OLDF_AUTO|OLDF_LIMIT);
+		}
+
+		//#clean arc flags OLDF_ADDED|OLDF_CHANGED 
+		if( item->flags & (OLDF_ADDED|OLDF_CHANGED))
+		{
+
+			DB( g_print(" clean tpl flags\n") );
+			item->flags &= ~(OLDF_ADDED|OLDF_CHANGED);
+		}
+
+		list = g_list_next(list);
+	}
+
+	//#remind status move to flag
+	lst_acc = g_hash_table_get_values(GLOBALS->h_acc);
+	lnk_acc = g_list_first(lst_acc);
+	while (lnk_acc != NULL)
+	{
+	Account *acc = lnk_acc->data;
+	
+		list = g_queue_peek_head_link(acc->txn_queue);
+		while (list != NULL)
+		{
+		Transaction *item = list->data;
+
+			//also remove tpl/sch flags
+			item->flags &= ~(OF_REMIND|OLDF_AUTO|OLDF_LIMIT);	
+			if( item->status == TXN_OLDSTATUS_REMIND )
+			{
+				DB( g_print(" move remind status\n") );
+				item->flags |= OF_REMIND;
+				item->status = 0;
+			}
+
+			if( item->status == TXN_OLDSTATUS_VOID )
+			{
+				DB( g_print(" update void status\n") );
+				item->status = TXN_STATUS_VOID;
+			}
+			list = g_list_next(list);
+		}
+		lnk_acc = g_list_next(lnk_acc);
+	}
+	g_list_free(lst_acc);
+
 }
 
 
@@ -783,7 +856,8 @@ gint i, len;
 			{
 				for(i=0;i<len;i++)
 				{
-				gint id = MAX(NUM_PAYMODE_MAX-1, atoi(bol_array[i]));
+				//#2100875 CLAMP not MAX
+				gint id = CLAMP(atoi(bol_array[i]), 0, NUM_PAYMODE_MAX-1);
 
 					flt->paymode[id] = TRUE;
 				}
@@ -1317,12 +1391,17 @@ gint i;
 				entry->tags = tags_parse(attribute_values[i]);
 			}
 		}
+
+		else if(!strcmp (attribute_names[i], "recflg"     )) { entry->rec_flags = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "nextdate"   )) { entry->nextdate = atoi(attribute_values[i]); }
-		else if(!strcmp (attribute_names[i], "every"      )) { entry->every = atoi(attribute_values[i]); }
-		else if(!strcmp (attribute_names[i], "unit"       )) { entry->unit = atoi(attribute_values[i]); }
+		else if(!strcmp (attribute_names[i], "every"      )) { entry->rec_every = atoi(attribute_values[i]); }
+		else if(!strcmp (attribute_names[i], "unit"       )) { entry->rec_freq = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "limit"      )) { entry->limit = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "weekend"    )) { entry->weekend = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "gap"        )) { entry->daygap = atoi(attribute_values[i]); }
+		else if(!strcmp (attribute_names[i], "ordn"       )) { entry->rec_ordinal = atoi(attribute_values[i]); }
+		else if(!strcmp (attribute_names[i], "wkdy"       )) { entry->rec_weekday = atoi(attribute_values[i]); }
+
 		else if(!strcmp (attribute_names[i], "scat" 	  )) { scat = (gchar *)attribute_values[i]; split = TRUE; }
 		else if(!strcmp (attribute_names[i], "samt"       )) { samt = (gchar *)attribute_values[i]; split = TRUE; }
 		else if(!strcmp (attribute_names[i], "smem"       )) { smem = (gchar *)attribute_values[i]; split = TRUE; }
@@ -1616,7 +1695,7 @@ gboolean rc, dosanity;
 			error = NULL;
 			g_markup_parse_context_end_parse(context, &error);
 
-			if( error )
+			if(error)
 			{
 				g_print("failed: %s\n", error->message);
 				g_error_free (error);
@@ -1701,20 +1780,19 @@ gboolean rc, dosanity;
 			dosanity = TRUE;
 		}
 		if( ctx.data_version < 50402 ) 
-		{
 			//fix income txn flag that may be incorrect (multiple edit)
 			dosanity = TRUE;
-		}
+
 		if( ctx.data_version < 50600 ) 
-		{
 			homebank_upgrade_to_v14_12();
-		}
+
 		if( ctx.data_version < 50604 ) 
-		{
 			//#2018414 tag name replace any space by -
 			dosanity = TRUE;
-		}
-			
+
+		if( ctx.data_version < 50900 )
+			homebank_upgrade_to_v14_59();
+
 		// next ?
 
 
@@ -1734,11 +1812,11 @@ gboolean rc, dosanity;
 /*
 ** XML properties save
 */
-static gint homebank_save_xml_prop(GIOChannel *io)
+static GError *
+homebank_save_xml_prop(GIOChannel *io)
 {
 gchar *title;
 GString *node;
-gint retval = XML_OK;
 GError *error = NULL;
 
 	title = GLOBALS->owner == NULL ? "" : GLOBALS->owner;
@@ -1758,28 +1836,23 @@ GError *error = NULL;
 
 	g_string_append(node, "/>\n");
 
-	error = NULL;
 	g_io_channel_write_chars(io, node->str, -1, NULL, &error);
-	if(error)
-	{
-		retval = XML_IO_ERROR;
-		g_error_free(error);
-	}
-
 	g_string_free(node, TRUE);
-	return retval;
+
+	return error;
 }
 
 
 /*
 ** XML currency save
 */
-static gint homebank_save_xml_cur(GIOChannel *io)
+static GError *
+homebank_save_xml_cur(GIOChannel *io)
 {
 GList *list;
 gchar *tmpstr;
 char buf1[G_ASCII_DTOSTR_BUF_SIZE];
-gint retval = XML_OK;
+GError *error = NULL;
 
 	list = g_hash_table_get_values(GLOBALS->h_cur);
 	while (list != NULL)
@@ -1801,24 +1874,28 @@ gint retval = XML_OK;
 		    item->mdate
 		);
 
-		g_io_channel_write_chars(io, tmpstr, -1, NULL, NULL);
+		g_io_channel_write_chars(io, tmpstr, -1, NULL, &error);
 		g_free(tmpstr);
+		if(error)
+			goto curfail;
 
 		list = g_list_next(list);
 	}
+
+curfail:
 	g_list_free(list);
-	return retval;
+	return error;
 }
 
 
 /*
 ** XML account save
 */
-static gint homebank_save_xml_acc(GIOChannel *io)
+static GError *
+homebank_save_xml_acc(GIOChannel *io)
 {
 GList *lacc, *list;
 GString *node;
-gint retval = XML_OK;
 GError *error = NULL;
 
 	node = g_string_sized_new(255);
@@ -1828,7 +1905,7 @@ GError *error = NULL;
 	{
 	Account *item = list->data;
 
-		item->flags &= ~(AF_ADDED|AF_CHANGED);	//delete flag
+		item->dspflags &= ~(FLAG_ACC_TMP_ADDED|FLAG_ACC_TMP_EDITED);	//delete flag
 
 		g_string_assign(node, "<account");
 		
@@ -1856,30 +1933,27 @@ GError *error = NULL;
 
 		g_string_append(node, "/>\n");
 
-		error = NULL;
 		g_io_channel_write_chars(io, node->str, -1, NULL, &error);
-
 		if(error)
-		{
-			retval = XML_IO_ERROR;
-			g_error_free(error);
-		}
+			goto accfail;
 
 		list = g_list_next(list);
 	}
+
+accfail:
 	g_list_free(lacc);
 	g_string_free(node, TRUE);
-	return retval;
+	return error;
 }
 
 /*
 ** XML payee save
 */
-static gint homebank_save_xml_pay(GIOChannel *io)
+static GError *
+homebank_save_xml_pay(GIOChannel *io)
 {
 GList *lpay, *list;
 GString *node;
-gint retval = XML_OK;
 GError *error = NULL;
 
 	node = g_string_sized_new(255);
@@ -1902,33 +1976,29 @@ GError *error = NULL;
 
 			g_string_append(node, "/>\n");
 
-			error = NULL;
 			g_io_channel_write_chars(io, node->str, -1, NULL, &error);
-
 			if(error)
-			{
-				retval = XML_IO_ERROR;
-				g_error_free(error);
-			}
-
+				goto payfail;
 		}
 		list = g_list_next(list);
 	}
+
+payfail:
 	g_list_free(lpay);
 	g_string_free(node, TRUE);
-	return retval;
+	return error;
 }
 
 
 /*
 ** XML category save
 */
-static gint homebank_save_xml_cat(GIOChannel *io)
+static GError *
+homebank_save_xml_cat(GIOChannel *io)
 {
 GList *lcat, *list;
 GString *node;
 char buf[G_ASCII_DTOSTR_BUF_SIZE];
-gint retval = XML_OK;
 GError *error = NULL;
 
 	node = g_string_sized_new(255);
@@ -1958,32 +2028,28 @@ GError *error = NULL;
 
 			g_string_append(node, "/>\n");
 			
-			error = NULL;
 			g_io_channel_write_chars(io, node->str, -1, NULL, &error);
-
 			if(error)
-			{
-				retval = XML_IO_ERROR;
-				g_error_free(error);
-			}
-
+				goto catfail;
 		}
 		list = g_list_next(list);
 	}
+
+catfail:
 	g_list_free(lcat);
 	g_string_free(node, TRUE);
-	return retval;
+	return error;
 }
 
 
 /*
 ** XML grp save
 */
-static gint homebank_save_xml_grp(GIOChannel *io)
+static GError *
+homebank_save_xml_grp(GIOChannel *io)
 {
 GList *lgrp, *list;
 gchar *tmpstr;
-gint retval = XML_OK;
 GError *error = NULL;
 
 	lgrp = list = group_glist_sorted(HB_GLIST_SORT_KEY);
@@ -2000,31 +2066,28 @@ GError *error = NULL;
 				item->name
 			);
 
-			error = NULL;
 			g_io_channel_write_chars(io, tmpstr, -1, NULL, &error);
 			g_free(tmpstr);
-			
 			if(error)
-			{
-				retval = XML_IO_ERROR;
-				g_error_free(error);
-			}
+				goto grpfail;
 		}
 		list = g_list_next(list);
 	}
+
+grpfail:
 	g_list_free(lgrp);
-	return retval;
+	return error;
 }
 
 
 /*
 ** XML filter save
 */
-static gint homebank_save_xml_flt(GIOChannel *io)
+static GError *
+homebank_save_xml_flt(GIOChannel *io)
 {
 GList *lflt, *list;
 GString *node;
-gint retval = XML_OK;
 GError *error = NULL;
 
 	node = g_string_sized_new(255);
@@ -2056,21 +2119,18 @@ GError *error = NULL;
 			hb_xml_append_txt(node, "name", item->name);
 
 			g_string_append(node, "/>\n");
-			
-			error = NULL;
-			g_io_channel_write_chars(io, node->str, -1, NULL, &error);
 
+			g_io_channel_write_chars(io, node->str, -1, NULL, &error);
 			if(error)
-			{
-				retval = XML_IO_ERROR;
-				g_error_free(error);
-			}
+				goto fltfail;
 		}
 		list = g_list_next(list);
 	}
+
+fltfail:
 	g_list_free(lflt);
 	g_string_free(node, TRUE);
-	return retval;
+	return error;
 }
 
 
@@ -2078,11 +2138,11 @@ GError *error = NULL;
 /*
 ** XML tag save
 */
-static gint homebank_save_xml_tag(GIOChannel *io)
+static GError *
+homebank_save_xml_tag(GIOChannel *io)
 {
 GList *ltag, *list;
 gchar *tmpstr;
-gint retval = XML_OK;
 GError *error = NULL;
 
 	ltag = list = tag_glist_sorted(HB_GLIST_SORT_KEY);
@@ -2097,33 +2157,29 @@ GError *error = NULL;
 				item->name
 			);
 
-			error = NULL;
 			g_io_channel_write_chars(io, tmpstr, -1, NULL, &error);
 			g_free(tmpstr);
-			
 			if(error)
-			{
-				retval = XML_IO_ERROR;
-				g_error_free(error);
-			}
+				goto tagfail;
 		}
 		list = g_list_next(list);
 	}
+
+tagfail:
 	g_list_free(ltag);
-	return retval;
+	return error;
 }
 
 
 /*
 ** XML assign save
 */
-static gint homebank_save_xml_asg(GIOChannel *io)
+static GError *
+homebank_save_xml_asg(GIOChannel *io)
 {
 GList *lasg, *list;
 GString *node;
-gint retval = XML_OK;
 GError *error = NULL;
-gchar *tagstr;
 
 	node = g_string_sized_new(255);
 	
@@ -2131,8 +2187,7 @@ gchar *tagstr;
 	while (list != NULL)
 	{
 	Assign *item = list->data;
-
-		tagstr = tags_tostring(item->tags);
+	gchar *tagstr = tags_tostring(item->tags);
 
 		//#2018680
 		item->flags &= ~(ASGF_PREFILLED);	//delete flag
@@ -2154,32 +2209,28 @@ gchar *tagstr;
 
 		g_string_append(node, "/>\n");
 		
-		error = NULL;
 		g_io_channel_write_chars(io, node->str, -1, NULL, &error);
-
 		if(error)
-		{
-			retval = XML_IO_ERROR;
-			g_error_free(error);
-		}
+			goto asgfail;
 
 		list = g_list_next(list);
 	}
+
+asgfail:
 	g_list_free(lasg);
 	g_string_free(node, TRUE);
-	return retval;
+	return error;
 }
 
 
 /*
 ** XML archive save
 */
-static gint homebank_save_xml_fav(GIOChannel *io)
+static GError *
+homebank_save_xml_fav(GIOChannel *io)
 {
 GList *list;
 GString *node;
-gchar *tagstr;
-gint retval = XML_OK;
 GError *error = NULL;
 
 	node = g_string_sized_new(255);
@@ -2188,11 +2239,7 @@ GError *error = NULL;
 	while (list != NULL)
 	{
 	Archive *item = list->data;
-
-		tagstr = tags_tostring(item->tags);
-
-		//#2018680
-		item->flags &= ~(OF_PREFILLED);	//delete flag
+	gchar *tagstr = tags_tostring(item->tags);
 
 		g_string_assign(node, "<fav");
 
@@ -2211,13 +2258,23 @@ GError *error = NULL;
 		hb_xml_append_int(node, "category", item->kcat);
 		hb_xml_append_txt(node, "wording", item->memo);
 		hb_xml_append_txt(node, "info", item->number);	
-		hb_xml_append_txt(node, "tags", tagstr);	
+		hb_xml_append_txt(node, "tags", tagstr);
+
+		hb_xml_append_int(node, "recflg", item->rec_flags);
 		hb_xml_append_int(node, "nextdate", item->nextdate);
-		hb_xml_append_int(node, "every", item->every);
-		hb_xml_append_int(node, "unit", item->unit);
-		hb_xml_append_int(node, "limit", item->limit);
+		hb_xml_append_int(node, "every", item->rec_every);
+		hb_xml_append_int(node, "unit", item->rec_freq);
+		if(item->rec_flags & TF_LIMIT)
+		{
+			hb_xml_append_int(node, "limit", item->limit);
+		}	
 		hb_xml_append_int(node, "weekend", item->weekend);
 		hb_xml_append_int(node, "gap", item->daygap);
+		if(item->rec_flags & TF_RELATIVE)
+		{
+			hb_xml_append_int(node, "ordn", item->rec_ordinal);
+			hb_xml_append_int(node, "wkdy", item->rec_weekday);
+		}
 
 		if(da_splits_length(item->splits) > 0)
 		{
@@ -2241,32 +2298,29 @@ GError *error = NULL;
 		
 		g_free(tagstr);
 
-		error = NULL;
 		g_io_channel_write_chars(io, node->str, -1, NULL, &error);
 		if(error)
-		{
-			retval = XML_IO_ERROR;
-			g_error_free(error);
-		}
+			goto favfail;
 
 		list = g_list_next(list);
 	}
+
+favfail:
 	//no list free here it is already the global list
 	g_string_free(node, TRUE);
-	return retval;
+	return error;
 }
 
 
 /*
 ** XML transaction save
 */
-static gint homebank_save_xml_ope(GIOChannel *io)
+static GError *
+homebank_save_xml_ope(GIOChannel *io)
 {
 GList *lst_acc, *lnk_acc;
 GList *list;
 GString *node;
-gchar *tagstr;
-gint retval = XML_OK;
 GError *error = NULL;
 
 	node = g_string_sized_new(255);
@@ -2281,9 +2335,9 @@ GError *error = NULL;
 		while (list != NULL)
 		{
 		Transaction *item = list->data;
+		gchar *tagstr = tags_tostring(item->tags);
 
-			item->flags &= ~(OF_AUTO|OF_ADDED|OF_CHANGED);	//delete flag
-			tagstr = tags_tostring(item->tags);
+			item->dspflags = 0;
 
 			g_string_assign(node, "<ope");
 		
@@ -2327,24 +2381,21 @@ GError *error = NULL;
 
 			g_free(tagstr);
 		
-			error = NULL;
 			g_io_channel_write_chars(io, node->str, -1, NULL, &error);
-		
 			if(error)
-			{
-				retval = XML_IO_ERROR;
-				g_error_free(error);
-			}
+				goto opefail;
 
 			list = g_list_next(list);
 		}
 		
 		lnk_acc = g_list_next(lnk_acc);
 	}
+
+opefail:
 	g_list_free(lst_acc);
 
 	g_string_free(node, TRUE);
-	return retval;
+	return error;
 }
 
 
@@ -2390,17 +2441,38 @@ gint retval = XML_IO_ERROR;
 	error = homebank_save_xml_ver(io);
 	if(error) goto failure;
 
-	retval = homebank_save_xml_prop(io);
-	retval = homebank_save_xml_cur(io);
-	retval = homebank_save_xml_grp(io);
-	retval = homebank_save_xml_acc(io);
-	retval = homebank_save_xml_pay(io);
-	retval = homebank_save_xml_cat(io);
-	retval = homebank_save_xml_tag(io);
-	retval = homebank_save_xml_asg(io);
-	retval = homebank_save_xml_fav(io);
-	retval = homebank_save_xml_ope(io);
-	retval = homebank_save_xml_flt(io);
+	error = homebank_save_xml_prop(io);
+	if(error) goto failure;
+
+	error = homebank_save_xml_cur(io);
+	if(error) goto failure;
+
+	error = homebank_save_xml_grp(io);
+	if(error) goto failure;
+
+	error = homebank_save_xml_acc(io);
+	if(error) goto failure;
+
+	error = homebank_save_xml_pay(io);
+	if(error) goto failure;
+
+	error = homebank_save_xml_cat(io);
+	if(error) goto failure;
+
+	error = homebank_save_xml_tag(io);
+	if(error) goto failure;
+
+	error = homebank_save_xml_asg(io);
+	if(error) goto failure;
+
+	error = homebank_save_xml_fav(io);
+	if(error) goto failure;
+
+	error = homebank_save_xml_ope(io);
+	if(error) goto failure;
+
+	error = homebank_save_xml_flt(io);
+	if(error) goto failure;
 
 	g_io_channel_write_chars(io, "</homebank>\n", -1, NULL, &error);
 	if(error) goto failure;

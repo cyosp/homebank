@@ -1,5 +1,5 @@
 /*	HomeBank -- Free, easy, personal accounting for everyone.
- *	Copyright (C) 1995-2024 Maxime DOYEN
+ *	Copyright (C) 1995-2025 Maxime DOYEN
  *
  *	This file is part of HomeBank.
  *
@@ -25,6 +25,7 @@
 #include "dsp-mainwindow.h"
 #include "list-operation.h"
 
+#include "ui-widgets.h"
 
 /****************************************************************************/
 /* Debug macros																*/
@@ -99,7 +100,7 @@ gchar *iconname = NULL;
 
 	//iconname = ( gentxn->julian == 0 ) ? ICONNAME_WARNING : NULL;
 	//if(iconname == NULL)
-	iconname = ( gentxn->is_dst_similar || gentxn->is_imp_similar ) ? ICONNAME_HB_OPE_SIMILAR : NULL;
+	iconname = ( gentxn->is_dst_similar || gentxn->is_imp_similar ) ? ICONNAME_HB_ITEM_SIMILAR : NULL;
 
 	g_object_set(renderer, "icon-name", iconname, NULL);
 }
@@ -1449,12 +1450,14 @@ GtkWidget *mainbox, *label, *widget;
 		PANGO_ATTR_WEIGHT, PANGO_WEIGHT_BOLD, 
 		PANGO_ATTR_SCALE,  PANGO_SCALE_LARGE, 
 		-1);
-	gtk_box_pack_start (GTK_BOX (mainbox), label, FALSE, FALSE, SPACING_SMALL);
+	gtk_box_prepend (GTK_BOX (mainbox), label);
+	//SPACING_SMALL
 
 	label = make_label(
 		_("With this assistant you will be guided through the process of importing one or several\n" \
 		  "downloaded statements from your bank or credit card, in the following formats:"), 0, 0);
-	gtk_box_pack_start (GTK_BOX (mainbox), label, FALSE, FALSE, SPACING_SMALL);
+	gtk_box_prepend (GTK_BOX (mainbox), label);
+	//SPACING_SMALL
 
 	label = gtk_label_new(NULL);
 	gtk_label_set_markup(GTK_LABEL(label), 
@@ -1474,17 +1477,18 @@ GtkWidget *mainbox, *label, *widget;
 		"- CSV (format is specific to HomeBank, see the documentation)\n" \
 	), 0.0, 0.0);*/
 
-	gtk_box_pack_start (GTK_BOX (mainbox), label, FALSE, FALSE, SPACING_SMALL);
-
+	gtk_box_prepend (GTK_BOX (mainbox), label);
+	//SPACING_SMALL
 
 	label = make_label(
 	    _("No changes will be made until you click \"Apply\" at the end of this assistant."), 0., 0.0);
-	gtk_box_pack_start (GTK_BOX (mainbox), label, FALSE, FALSE, SPACING_SMALL);
-
+	gtk_box_prepend (GTK_BOX (mainbox), label);
+	//SPACING_SMALL
 
 	widget = gtk_check_button_new_with_mnemonic (_("Don't show this again"));
 	data->CM_dsta = widget;
-	gtk_box_pack_end (GTK_BOX (mainbox), widget, FALSE, FALSE, SPACING_SMALL);
+	gtk_box_append (GTK_BOX (mainbox), widget);
+	//SPACING_SMALL
 
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(data->CM_dsta), PREFS->dtex_nointro);
 
@@ -1533,23 +1537,21 @@ GtkWidget *widget, *label, *scrollwin, *treeview, *tbar;
 	mainbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, SPACING_SMALL);
 
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start (GTK_BOX (mainbox), hbox, FALSE, FALSE, SPACING_SMALL);
+	gtk_box_prepend (GTK_BOX (mainbox), hbox);
 
-	widget = gtk_image_new_from_icon_name (ICONNAME_INFO, GTK_ICON_SIZE_LARGE_TOOLBAR);
-	gtk_box_pack_start (GTK_BOX (hbox), widget, FALSE, FALSE, SPACING_SMALL);
-
+	widget = hbtk_image_new_from_icon_name_24 (ICONNAME_HB_QUICKTIPS);
+	gtk_box_prepend (GTK_BOX (hbox), widget);
+	//SPACING_SMALL
 
 	label = make_label(
 	    _("Drag&Drop one or several files to import.\n" \
 	    "You can also use the add/delete buttons of the list.")
 			, 0., 0.0);
-	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, SPACING_SMALL);
-
-
-
+	gtk_box_prepend (GTK_BOX (hbox), label);
+	//SPACING_SMALL
 
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	gtk_box_pack_start (GTK_BOX (mainbox), vbox, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (mainbox), vbox);
 
 	//list
 	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
@@ -1558,24 +1560,23 @@ GtkWidget *widget, *label, *scrollwin, *treeview, *tbar;
 	treeview = list_file_new();
 	data->LV_file = treeview;
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
-	//gtk_grid_attach (GTK_GRID (group_grid), scrollwin, 0, row, 2, 1);
-	gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (vbox), scrollwin);
 
 	//list toolbar
 	tbar = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
-	gtk_box_pack_start (GTK_BOX (vbox), tbar, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (vbox), tbar);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (tbar), bbox);
 	
 		widget = make_image_button(ICONNAME_LIST_ADD, _("Add"));
 		data->BT_file_add = widget;
-		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (bbox), widget);
 
 		widget = make_image_button(ICONNAME_LIST_DELETE, _("Delete"));
 		data->BT_file_delete = widget;
-		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (bbox), widget);
 
 	gtk_widget_show_all (mainbox);
 	
@@ -1604,14 +1605,14 @@ gchar *txt;
 	//gtk_widget_set_halign(mainbox, GTK_ALIGN_CENTER);
 	//gtk_widget_set_valign(mainbox, GTK_ALIGN_CENTER);
 
-	widget = gtk_image_new_from_icon_name(ICONNAME_ERROR, GTK_ICON_SIZE_DIALOG );
-	gtk_box_pack_start (GTK_BOX (mainbox), widget, FALSE, FALSE, 0);
+	widget = hbtk_image_new_from_icon_name_32(ICONNAME_ERROR);
+	gtk_box_prepend (GTK_BOX (mainbox), widget);
 	
 	txt = _("There is too much account in the files you choose,\n" \
 			"please use the back button to select less files.");
 	label = gtk_label_new(txt);
 	gtk_widget_set_valign (label, GTK_ALIGN_CENTER);
-	gtk_box_pack_start (GTK_BOX (mainbox), label, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (mainbox), label);
 
 	gtk_widget_show_all (mainbox);
 	
@@ -1712,25 +1713,25 @@ gint row;
 	gtk_grid_attach (GTK_GRID(table), box, 0, row, 1, 1);
 
 		//5.6 info icon
-		widget = gtk_image_new_from_icon_name (ICONNAME_INFO, GTK_ICON_SIZE_BUTTON);
+		widget = hbtk_image_new_from_icon_name_16 (ICONNAME_HB_QUICKTIPS);
 		txndata->LB_acc_info = widget;
-		gtk_box_pack_start (GTK_BOX (box), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (box), widget);
 
 		// XXX (type) + accname
 		label = make_label(NULL, 0.0, 0.5);
 		txndata->LB_acc_title = label;
 		//gimp_label_set_attributes (GTK_LABEL (label), PANGO_ATTR_SCALE, PANGO_SCALE_LARGE, -1);
-		gtk_box_pack_start (GTK_BOX (box), label, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (box), label);
 
 		widget = ui_genacc_comboboxtext_new(data, label);
 		//gtk_widget_set_hexpand(widget, TRUE);
 		txndata->CY_acc = widget;
-		gtk_box_pack_start (GTK_BOX (box), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (box), widget);
 
-		widget = gtk_image_new_from_icon_name(ICONNAME_WARNING, GTK_ICON_SIZE_SMALL_TOOLBAR);
+		widget = hbtk_image_new_from_icon_name_16(ICONNAME_WARNING);
 		txndata->IM_unamed = widget;
 		gtk_widget_set_tooltip_text (widget, _("Target account identification by name or number failed."));
-		gtk_box_pack_start (GTK_BOX (box), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (box), widget);
 
 	//line 1 right
 	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
@@ -1740,49 +1741,47 @@ gint row;
 	//csv options
 	group = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
 	txndata->GR_date = group;
-	gtk_box_pack_start (GTK_BOX(box), group, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX(box), group);
 
 		label = make_label(_("Date order:"), 0, 0.5);
-		gtk_box_pack_start (GTK_BOX(group), label, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX(group), label);
 		widget = hbtk_combo_box_new_with_data(label, CYA_IMPORT_DATEORDER);
 		txndata->CY_txn_dateorder = widget;
-		gtk_box_pack_start (GTK_BOX(group), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX(group), widget);
 
 	stack = gtk_stack_new();
-	gtk_box_pack_start (GTK_BOX(box), stack, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX(box), stack);
 	txndata->ST_stack= stack;
 	
 	//qif options
 	group = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
 	txndata->GR_qif = group;
-	//gtk_box_pack_start (GTK_BOX(box), group, FALSE, FALSE, 0);
 	gtk_stack_add_named(GTK_STACK(stack), group, "QIF");
 	
 		widget = gtk_check_button_new_with_mnemonic (_("_Import memos"));
 		txndata->CM_txn_qifmemo = widget;
-		gtk_box_pack_start (GTK_BOX(group), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX(group), widget);
 
 		widget = gtk_check_button_new_with_mnemonic (_("_Swap memos with payees"));
 		txndata->CM_txn_qifswap = widget;
-		gtk_box_pack_start (GTK_BOX(group), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX(group), widget);
 
 	//ofx options
 	group = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
 	txndata->GR_ofx = group;
-	//gtk_box_pack_start (GTK_BOX(box), group, FALSE, FALSE, 0);
 	gtk_stack_add_named(GTK_STACK(stack), group, "OFX");
 
 		label = make_label(_("OFX _Name:"), 0, 0.5);
-		gtk_box_pack_start (GTK_BOX(group), label, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX(group), label);
 		widget = hbtk_combo_box_new_with_data(label, CYA_IMPORT_OFXNAME);
 		txndata->CY_txn_ofxname = widget;
-		gtk_box_pack_start (GTK_BOX(group), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX(group), widget);
 
 		label = make_label(_("OFX _Memo:"), 0, 0.5);
-		gtk_box_pack_start (GTK_BOX(group), label, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX(group), label);
 		widget = hbtk_combo_box_new_with_data(label, CYA_IMPORT_OFXMEMO);
 		txndata->CY_txn_ofxmemo = widget;
-		gtk_box_pack_start (GTK_BOX(group), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX(group), widget);
 
 	// n transaction ...
 	row++;
@@ -1792,32 +1791,31 @@ gint row;
 	
 		group = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
 		txndata->GR_select = group;
-		gtk_box_pack_start (GTK_BOX (box), group, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (box), group);
 
 			label = make_label (_("Select:"), 0, 0.5);
-			gtk_box_pack_start (GTK_BOX (group), label, FALSE, FALSE, 0);
+			gtk_box_prepend (GTK_BOX (group), label);
 
 			label = make_clicklabel("all", _("All"));
 			txndata->BT_all= label;
-			gtk_box_pack_start (GTK_BOX (group), label, FALSE, FALSE, 0);
+			gtk_box_prepend (GTK_BOX (group), label);
 			
 			label = make_clicklabel("non", _("None"));
 			txndata->BT_non = label;
-			gtk_box_pack_start (GTK_BOX (group), label, FALSE, FALSE, 0);
+			gtk_box_prepend (GTK_BOX (group), label);
 
 			label = make_clicklabel("inv", _("Invert"));
 			txndata->BT_inv = label;
-			gtk_box_pack_start (GTK_BOX (group), label, FALSE, FALSE, 0);
+			gtk_box_prepend (GTK_BOX (group), label);
 
 			label = make_clicklabel("val", _("Valid"));
 			txndata->BT_val = label;
-			gtk_box_pack_start (GTK_BOX (group), label, FALSE, FALSE, 0);
+			gtk_box_prepend (GTK_BOX (group), label);
 
 	
 		label = make_label(NULL, 0.5, 0.5);
 		txndata->LB_txn_title = label;
-		//gtk_widget_set_valign(label, GTK_ALIGN_CENTER);
-		gtk_box_pack_start (GTK_BOX (box), label, TRUE, TRUE, 0);
+		hbtk_box_prepend (GTK_BOX (box), label);
 
 	// import into
 	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
@@ -1825,15 +1823,15 @@ gint row;
 
 		group = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
 		txndata->GR_misc = group;
-		gtk_box_pack_start (GTK_BOX (box), group, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (box), group);
 
 			widget = gtk_check_button_new_with_mnemonic (_("Sentence _case memo/payee"));
 			txndata->CM_txn_ucfirst = widget;
-			gtk_box_pack_start (GTK_BOX(group), widget, FALSE, FALSE, 0);
+			gtk_box_prepend (GTK_BOX(group), widget);
 
 			widget = gtk_check_button_new_with_mnemonic (_("_Toggle amount"));
 			txndata->CM_txn_togamount = widget;
-			gtk_box_pack_start (GTK_BOX(group), widget, FALSE, FALSE, 0);
+			gtk_box_prepend (GTK_BOX(group), widget);
 
 	
 	// error messages
@@ -1846,10 +1844,10 @@ gint row;
 		widget = gtk_image_new ();
 		txndata->IM_txn = widget;
 		gtk_widget_set_valign(widget, GTK_ALIGN_START);
-		gtk_box_pack_start (GTK_BOX (box), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (box), widget);
 		label = make_label(NULL, 0.0, 0.5);
 		txndata->LB_txn = label;
-		gtk_box_pack_start (GTK_BOX (box), label, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (box), label);
 
 	row++;
 	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
@@ -1895,7 +1893,7 @@ gint row;
 		label = make_label(_("days"), 0, 0.5);
 		gtk_grid_attach (GTK_GRID (group), label, 2, row, 1, 1);
 
-		widget = gtk_image_new_from_icon_name(ICONNAME_INFO, GTK_ICON_SIZE_SMALL_TOOLBAR );
+		widget = hbtk_image_new_from_icon_name_16(ICONNAME_HB_QUICKTIPS );
 		gtk_widget_set_hexpand(widget, FALSE);
 		gtk_grid_attach (GTK_GRID (group), widget, 3, row, 1, 1);
 	
@@ -1965,8 +1963,17 @@ gint row = 0;
 	widget = gtk_label_new (NULL);
 	data->TX_summary = widget;
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), widget);
-	//gtk_box_pack_start (GTK_BOX (mainbox), scrollwin, TRUE, TRUE, 0);
 	gtk_grid_attach (GTK_GRID (group_grid), scrollwin, 0, row, 4, 1);
+
+	row++;
+	label = make_label_group(_("Option"));
+	gtk_grid_attach (GTK_GRID (group_grid), label, 3, row, 1, 1);
+
+	row++;
+	widget = gtk_check_button_new_with_mnemonic(_("Import as pending"));
+	gtk_widget_set_margin_start(widget, SPACING_MEDIUM);
+	data->CM_set_pending = widget;
+	gtk_grid_attach (GTK_GRID (group_grid), widget, 3, row, 1, 1);
 
 	row++;
 	label = make_label_group(_("Run automation"));
@@ -1998,63 +2005,6 @@ gint row = 0;
 
 	return group_grid;
 }
-
-
-
-/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
-/**
- * ui_import_assistant_forward_page_func:
- *
- * define the page to be called when the user forward
- *
- * Return value: the page number
- *
- */
-
-/*static gint
-ui_import_assistant_forward_page_func(gint current_page, gpointer func_data)
-{
-struct import_data *data;
-GtkWidget *page;
-gint next_page;
-
-	data = func_data;
-	
-	DB( g_print("---------------------------\n") );
-	DB( g_print("\n[ui-import] forward page func\n") );
-
-	page = gtk_assistant_get_nth_page(GTK_ASSISTANT(data->assistant), current_page);
-	
-	DB( g_print(" -> current: %d %s\n", current_page, gtk_assistant_get_page_title(GTK_ASSISTANT(data->assistant), page) ) );
-
-#if MYDEBUG == 1
-
-	struct import_data *data = func_data;
-	gint i
-	for(i=0;i<NUM_PAGE;i++)
-	{
-		g_print("%d: %d '%s'\n", i, 
-		        gtk_assistant_get_page_complete(GTK_ASSISTANT(data->assistant), data->pages[i]),
-		        page_titles[i]
-				);
-#endif
-	
-	next_page = current_page + 1;	
-	
-	switch(current_page)
-	{
-		//case PAGE_IMPORT:
-			// if no new account, skip the account page
-			//if(ictx->nb_new_acc == 0)
-			//	next_page = PAGE_TRANSACTION;
-			//break;
-	}
-
-	page = gtk_assistant_get_nth_page(GTK_ASSISTANT(data->assistant), next_page);
-	DB( g_print(" -> next: %d %s\n", next_page, gtk_assistant_get_page_title(GTK_ASSISTANT(data->assistant), page) ) );
-
-	return next_page;
-}*/
 
 
 static void
@@ -2221,6 +2171,7 @@ ImportContext *ictx;
 
 	ictx = &data->ictx;
 
+	ictx->set_pending    = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_set_pending));
 	ictx->do_auto_payee  = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_do_auto_payee));
 	ictx->do_auto_assign = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_do_auto_assign));
 

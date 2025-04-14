@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -184,30 +184,15 @@ gboolean retval = FALSE;
 }
 
 
-gint hb_amount_compare(gdouble val1, gdouble val2)
+// TODO: frac should be from currency
+// return -1 if val1 < val2 ; 0 if val1 = val2 ; 1 if val1 > val2
+gint hb_amount_cmp(gdouble val1, gdouble val2)
 {
-gint retval = 0;
-gdouble tmpval = val1 - val2;
-
-	if( tmpval < 0 )
-		retval = -1;
-	else
-	if( tmpval > 0 )
-		retval = 1;
-
-	return retval;
-}
-
-
-/* TODO: frac should be from currency */
-gboolean hb_amount_equal(gdouble val1, gdouble val2)
-{
-gdouble tmpval1, tmpval2;
-
-	tmpval1 = hb_amount_round(val1, 2);
-	tmpval2 = hb_amount_round(val2, 2);
-
-	return tmpval1 == tmpval2;
+	if( hb_amount_round(val1, 2) < hb_amount_round(val2, 2))
+		return -1;
+	if( hb_amount_round(val1, 2) == hb_amount_round(val2, 2))
+		return 0;
+	return 1;	
 }
 
 
@@ -305,7 +290,7 @@ gint len=0, nbint=0, nbdec=0;
 	return d;
 }
 
-//todo: used only in ui_prefs.c
+
 gchar *hb_str_formatd(gchar *outstr, gint outlen, gchar *buf1, Currency *cur, gboolean showsymbol)
 {
 gint len, nbd, nbi;
@@ -366,8 +351,6 @@ void hb_strfmon(gchar *outstr, gint outlen, gdouble value, guint32 kcur, gboolea
 gchar formatd_buf[outlen];
 Currency *cur;
 gdouble monval;
-
-	//g_print(" strfmon: %.2f kcur=%d, minor:%d\n", value, kcur, minor);
 
 	if(minor == FALSE)
 	{
@@ -452,7 +435,7 @@ gshort h, m;
 	//first print monetary
 	hb_strfmon(outstr, outlen, value, kcur, minor);
 
-	if( !hb_amount_equal(GLOBALS->lifen_earnbyh, 0.0) && value < 0.0)
+	if( (hb_amount_cmp(GLOBALS->lifen_earnbyh, 0.0) != 0) && value < 0.0)
 	{
 		monval = hb_amount_base(value, kcur);
 		fracval = modf(ABS(monval) / GLOBALS->lifen_earnbyh, &intval); 
@@ -883,6 +866,9 @@ gchar gdc='.';
 }
 
 
+//#1876134 windows: pasted numbers from calculator loose dchar
+// E2 80 AD 31 C2 A0 31 31 31 2C 31 E2 80 AC : â€­1Â 111,1â€¬
+//https://github.com/microsoft/calculator/issues/504
 gchar *hb_string_dup_raw_amount_clean(const gchar *string, gint digits)
 {
 gint l;
@@ -891,8 +877,6 @@ gchar gdc;
 const gchar *p;
 
 	//sanitize the string first: keep -,.0-9
-	//#1876134 windows: pasted numbers from calculator loose dchar
-	//https://github.com/microsoft/calculator/issues/504
 	san_str = d = g_strdup(string);
 	p = string;
 	while(*p)
@@ -1087,6 +1071,23 @@ gchar *datewithsep;
 	DB( g_print(" >%s :: julian=%d\n", parsed ? "OK":"--", julian) );
 
 	return julian;
+}
+
+
+guint32 hb_date_get_jbound(guint32 jdate, HbDateBound bound)
+{
+GDate date;
+GDateDay d = 1;
+
+	g_date_set_julian(&date, jdate);
+	if(bound == HB_DATE_BOUND_LAST)
+	{
+	GDateMonth m = g_date_get_month(&date);
+	GDateYear y = g_date_get_day_of_year(&date);
+		d = g_date_get_days_in_month(m, y);
+	}
+	g_date_set_day(&date, d);
+	return g_date_get_julian(&date);
 }
 
 

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -25,6 +25,8 @@
 #include "hub-scheduled.h"
 
 #include "ui-transaction.h"
+#include "ui-dialogs.h"
+#include "ui-widgets.h"
 
 
 /****************************************************************************/
@@ -107,7 +109,7 @@ Transaction *txn;
 	/* fill in the transaction */
 	txn = da_transaction_malloc();
 	da_transaction_init_from_template(txn, arc);
-	txn->date = scheduled_get_postdate(arc, arc->nextdate);
+	txn->date = scheduled_get_txn_real_postdate(arc->nextdate, arc->weekend);
 
 	deftransaction_set_transaction(window, txn);
 
@@ -195,7 +197,7 @@ GList *selection, *list;
 			Transaction *txn = da_transaction_malloc ();
 
 				da_transaction_init_from_template(txn, arc);
-				txn->date = scheduled_get_postdate(arc, arc->nextdate);
+				txn->date = scheduled_get_txn_real_postdate(arc->nextdate, arc->weekend);
 				transaction_add(GTK_WINDOW(GLOBALS->mainwindow), FALSE, txn);
 
 				GLOBALS->changes_count++;
@@ -242,7 +244,7 @@ GList *selection, *list;
 
 		DB( g_print(" %s %f\n", arc->memo, arc->amount) );
 
-		if( (arc != NULL) && (arc->flags & OF_AUTO) )
+		if( (arc != NULL) && (arc->rec_flags & TF_RECUR) )
 		{
 			GLOBALS->changes_count++;
 			scheduled_date_advance(arc);
@@ -501,7 +503,7 @@ GDate *date;
 	gdouble inc, exp;
 	gint nbdays, nblate;
 
-		if( (arc->flags & OF_AUTO) ) //&& arc->kacc > 0)
+		if( (arc->rec_flags & TF_RECUR) ) //&& arc->kacc > 0)
 		{
 			count++;
 			nbdays = arc->nextdate - maxpostdate;
@@ -610,6 +612,51 @@ next:
 }
 
 
+
+static void
+ui_hub_scheduled_clipboard (GSimpleAction *action, GVariant *parameter, gpointer user_data)
+{
+struct hbfile_data *data = user_data;
+GtkClipboard *clipboard;
+GString *node;
+
+	//g_print ("Action %s activated\n", g_action_get_name (G_ACTION (action)));
+
+	node = lst_sch_widget_to_string(GTK_TREE_VIEW(data->LV_upc), HB_STRING_PRINT);
+
+	clipboard = gtk_clipboard_get_default(gdk_display_get_default());
+	gtk_clipboard_set_text(clipboard, node->str, node->len);
+
+	g_string_free(node, TRUE);
+}
+
+
+static void
+ui_hub_scheduled_print (GSimpleAction *action, GVariant *parameter, gpointer user_data)
+{
+struct hbfile_data *data = user_data;
+GString *node;
+
+	//g_print ("Action %s activated\n", g_action_get_name (G_ACTION (action)));
+
+	gint8 leftcols[8] = { 0, 1, 2, 3, 6, 7, -1 };
+
+	node = lst_sch_widget_to_string(GTK_TREE_VIEW(data->LV_upc), HB_STRING_PRINT);
+	hb_print_listview(GTK_WINDOW(data->window), node->str, leftcols, _("Scheduled"), NULL, FALSE);
+
+	g_string_free(node, TRUE);
+}
+
+
+
+static const GActionEntry actions[] = {
+//	name, function(), type, state, 
+	{ "clipboard"	, ui_hub_scheduled_clipboard			, NULL, NULL , NULL, {0,0,0} },
+	{ "print"		, ui_hub_scheduled_print				, NULL, NULL , NULL, {0,0,0} },
+//  { "paste", activate_action, NULL, NULL,      NULL, {0,0,0} },
+};
+
+
 GtkWidget *ui_hub_scheduled_create(struct hbfile_data *data)
 {
 GtkWidget *hub, *vbox, *bbox, *scrollwin, *treeview, *tbar;
@@ -621,10 +668,10 @@ GtkWidget *label, *widget;
 	hb_widget_set_margin(GTK_WIDGET(hub), SPACING_SMALL);
 
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	gtk_box_pack_start (GTK_BOX (hub), vbox, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (hub), vbox);
 
 	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (vbox), scrollwin);
 	
 	treeview = (GtkWidget *)lst_sch_widget_new(LIST_SCH_TYPE_DISPLAY);
 	data->LV_upc = treeview;
@@ -632,40 +679,71 @@ GtkWidget *label, *widget;
 
 	tbar = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
-	gtk_box_pack_start (GTK_BOX (vbox), tbar, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (vbox), tbar);
 
-	bbox = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
-	gtk_box_pack_start (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
+	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_box_set_homogeneous(GTK_BOX(bbox), TRUE);
+	gtk_box_prepend (GTK_BOX (tbar), bbox);
 
 		widget = gtk_button_new_with_mnemonic (_("_Skip"));
 		data->BT_sched_skip = widget;
-		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+		hbtk_box_prepend (GTK_BOX (bbox), widget);
 
 		widget = gtk_button_new_with_mnemonic(_("Edit & P_ost"));
 		data->BT_sched_editpost = widget;
-		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+		hbtk_box_prepend (GTK_BOX (bbox), widget);
 
 		//TRANSLATORS: Posting a scheduled transaction is the action to materialize it into its target account.
 		//TRANSLATORS: Before that action the automated transaction occurrence is pending and not yet really existing.
 		widget = gtk_button_new_with_mnemonic (_("_Post"));
 		data->BT_sched_post = widget;
-		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+		hbtk_box_prepend (GTK_BOX (bbox), widget);
 
 	//info icon
-	widget = gtk_image_new_from_icon_name (ICONNAME_INFO, GTK_ICON_SIZE_BUTTON);
+	widget = hbtk_image_new_from_icon_name_16 (ICONNAME_HB_QUICKTIPS);
 	data->IM_info = widget;
-	gtk_box_pack_start (GTK_BOX (tbar), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (tbar), widget);
 
 	//#1996505 add sum of selected
 	label = make_label(NULL, 0.5, 0.5);
 	gtk_widget_set_margin_end(GTK_WIDGET(label), SPACING_MEDIUM);
 	data->TX_selection = label;
-	gtk_box_pack_start (GTK_BOX (tbar), label, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (tbar), label);
 
 	//#1857636 add setting to input max due date to show
 	widget = hbtk_combo_box_new_with_data (NULL, CYA_FLT_SCHEDULED);
 	data->CY_sched_range = widget;
-	gtk_box_pack_end (GTK_BOX (tbar), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (tbar), widget);
+
+	//gmenu test (see test folder into gtk)
+GMenu *menu, *section;
+GtkWidget *image;
+
+	menu = g_menu_new ();
+
+	section = g_menu_new ();
+	g_menu_append_section (menu, NULL, G_MENU_MODEL(section));
+	g_menu_append (section, _("Copy to clipboard"), "actions.clipboard");
+	g_menu_append (section, _("Print..."), "actions.print");
+	g_object_unref (section);
+
+	GSimpleActionGroup *group = g_simple_action_group_new ();
+	data->action_group_acc = group;
+	g_action_map_add_action_entries (G_ACTION_MAP (group), actions, G_N_ELEMENTS (actions), data);
+
+	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_box_set_homogeneous(GTK_BOX(bbox), TRUE);
+	gtk_box_prepend (GTK_BOX (tbar), bbox);
+
+	widget = gtk_menu_button_new();
+	gtk_box_prepend (GTK_BOX (bbox), widget);
+	gtk_menu_button_set_direction (GTK_MENU_BUTTON(widget), GTK_ARROW_UP);
+	gtk_widget_set_halign (widget, GTK_ALIGN_END);
+	image = hbtk_image_new_from_icon_name_16 (ICONNAME_HB_BUTTON_MENU);
+	g_object_set (widget, "image", image,  NULL);
+
+	gtk_widget_insert_action_group (widget, "actions", G_ACTION_GROUP(group));
+	gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (widget), G_MENU_MODEL (menu));
 
 
 	//setup

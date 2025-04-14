@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -939,7 +939,7 @@ gint count = 0;
 						 && ( gentxn->julian <= (txn->date + ictx->opt_daygap) )
 						 && ( gentxn->julian >= (txn->date - ictx->opt_daygap) )
 						 //#2012999
-						 && ( hb_amount_equal(amount, txn->amount) )
+						 && ( hb_amount_cmp(amount, txn->amount) == 0 )
 						)
 						{
 							gentxn->lst_existing = g_list_append(gentxn->lst_existing, txn);
@@ -1374,7 +1374,7 @@ gint nsplit;
 			}
 		}
 		
-		newope->flags |= OF_ADDED;
+		newope->dspflags |= FLAG_TMP_ADDED;
 		
 		da_transaction_set_flag(newope);
 
@@ -1490,6 +1490,10 @@ guint nbofxtxn = 0;
 						//#2000480 avoid insert null txn
 						if( dtxn != NULL )
 						{
+							//#1875100 add pending
+							if(ictx->set_pending == TRUE)
+								dtxn->flags |= OF_ISIMPORT;
+
 							txnlist = g_list_prepend(txnlist, dtxn);					
 						}
 						da_transaction_free(txn);

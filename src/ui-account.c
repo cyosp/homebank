@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -19,10 +19,12 @@
 
 #include "homebank.h"
 #include "hb-account.h"
+
 #include "ui-account.h"
 #include "ui-currency.h"
 #include "ui-dialogs.h"
 #include "ui-group.h"
+#include "ui-widgets.h"
 
 /****************************************************************************/
 /* Debug macros                                                             */
@@ -389,15 +391,15 @@ GtkEntryCompletion *completion;
 	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(mainbox)), GTK_STYLE_CLASS_LINKED);
 	
 	entry = gtk_entry_new();
-	gtk_box_pack_start(GTK_BOX(mainbox), entry, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX(mainbox), entry);
 
 	menubutton = gtk_menu_button_new ();
 	//data->MB_template = menubutton;
-	image = gtk_image_new_from_icon_name ("pan-down-symbolic", GTK_ICON_SIZE_BUTTON);
+	image = hbtk_image_new_from_icon_name_16 ("pan-down-symbolic");
 	gtk_button_set_image(GTK_BUTTON(menubutton), image);
 	gtk_menu_button_set_direction (GTK_MENU_BUTTON(menubutton), GTK_ARROW_LEFT );
 	//gtk_widget_set_halign (menubutton, GTK_ALIGN_END);
-	gtk_box_pack_start(GTK_BOX(mainbox), menubutton, FALSE, FALSE, 0);
+	gtk_box_prepend(GTK_BOX(mainbox), menubutton);
 	
     completion = gtk_entry_completion_new ();
 
@@ -423,8 +425,7 @@ GtkEntryCompletion *completion;
 	//popover
 	box = gtk_box_new(GTK_ORIENTATION_VERTICAL, SPACING_MEDIUM);
 	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-	gtk_box_pack_start(GTK_BOX(box), scrollwin, TRUE, TRUE, 0);
-	//gtk_scrolled_window_set_min_content_height(GTK_SCROLLED_WINDOW(scrollwin), HB_MINHEIGHT_LIST);
+	hbtk_box_prepend (GTK_BOX(box), scrollwin);
 	treeview = gtk_tree_view_new_with_model (GTK_TREE_MODEL(store));
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
 	gtk_widget_show_all(box);
@@ -501,7 +502,7 @@ GtkTreeIter iter;
 gboolean valid;
 guint change = 0;
 
-	DB( g_print("(ui_acc_listview) toggle_to_filter\n") );
+	DB( g_print("[ui_acc_listview] toggle_to_filter\n") );
 
 	model = gtk_tree_view_get_model(treeview);
 	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
@@ -606,11 +607,11 @@ gchar *iconname = NULL;
 
 	gtk_tree_model_get(model, iter, LST_DEFACC_DATAS, &entry, -1);
 	if( entry->flags & AF_CLOSED )
-		iconname = ICONNAME_CHANGES_PREVENT;
+		iconname = ICONNAME_HB_ITEM_CLOSED;
 	else
 	{
 		if( !(entry->flags & AF_NOBUDGET) )
-			iconname = ICONNAME_HB_OPE_BUDGET;
+			iconname = ICONNAME_HB_ITEM_BUDGET;
 	}
 	g_object_set(renderer, "icon-name", iconname, NULL);
 }
@@ -663,53 +664,6 @@ gchar *string;
 
 
 /* = = = = = = = = = = = = = = = = */
-
-
-guint 
-ui_acc_listview_fill_keys(GtkTreeView *treeview, guint32 *keys, guint32 *kcur)
-{
-GtkTreeModel *model;
-GtkTreeIter	iter;
-gboolean valid, ismulti;
-guint count, lastcurr = GLOBALS->kcur;
-
-	count = 0;
-	ismulti = FALSE;
-	model = gtk_tree_view_get_model(GTK_TREE_VIEW(treeview));
-	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
-	while (valid)
-	{
-	Account *accitem;
-	gboolean toggled;
-
-		gtk_tree_model_get (model, &iter,
-			LST_DEFACC_TOGGLE, &toggled,
-			LST_DEFACC_DATAS, &accitem,
-			-1);
-
-		keys[accitem->key] = toggled;
-
-		DB( g_print(" store acc:%d, curr:%d, sel:%d multi:%d @%p\n", accitem->key, accitem->kcur, toggled, ismulti, &keys[accitem->key]) );
-		
-		//check if multiple currencies
-		if( toggled == TRUE )
-		{
-			if( count > 0 )
-			{
-				if( lastcurr != accitem->kcur )
-					ismulti = TRUE;
-			}
-			lastcurr = accitem->kcur;
-			count++;
-		}
-
-		/* Make iter point to the next row in the list store */
-		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
-	}
-
-	*kcur = (ismulti == TRUE) ? GLOBALS->kcur : lastcurr;
-	return count;
-}
 
 
 void
@@ -814,8 +768,7 @@ gboolean valid;
 gboolean toggle;
 gint qselect = hb_clicklabel_to_int(uri);
 
-	DB( g_print("(ui_acc_listview) quick select\n") );
-
+	DB( g_print("[ui_acc_listview] quick select\n") );
 
 	DB( g_print(" comboboxlink '%s' %d\n", uri, qselect) );
 
@@ -849,6 +802,8 @@ GtkTreeIter	iter;
 GList *lacc, *list;
 gboolean hastext = FALSE;
 gboolean insert = TRUE;
+
+	DB( g_print("[ui_acc_listview] populate\n") );
 
 	model = gtk_tree_view_get_model(GTK_TREE_VIEW(view));
 
@@ -913,6 +868,9 @@ GtkWidget *treeview;
 GtkCellRenderer		*renderer;
 GtkTreeViewColumn	*column;
 
+	DB( g_print("[ui_acc_listview] new\n") );
+
+
 	// create list store
 	store = gtk_list_store_new(NUM_LST_DEFACC,
 		G_TYPE_BOOLEAN,
@@ -953,10 +911,21 @@ GtkTreeViewColumn	*column;
 
 	}
 
-	//2028464 sort by pos/name
+	//column: icons
 	if( withtoggle == FALSE )
 	{
-		// column: position
+		column = gtk_tree_view_column_new();
+		renderer = gtk_cell_renderer_pixbuf_new ();
+		//gtk_cell_renderer_set_fixed_size(renderer, GLOBALS->lst_pixbuf_maxwidth, -1);
+		gtk_tree_view_column_pack_start(column, renderer, TRUE);
+		gtk_tree_view_column_set_cell_data_func(column, renderer, ui_acc_listview_icon_cell_data_function, GINT_TO_POINTER(LST_DEFACC_DATAS), NULL);
+		gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+	}
+
+	//2028464 sort by pos/name
+	// column: position
+	if( withtoggle == FALSE )
+	{
 		renderer = gtk_cell_renderer_text_new ();
 		//#2004631 date and column title alignement
 		g_object_set(renderer, "xalign", 1.0, NULL);
@@ -972,7 +941,7 @@ GtkTreeViewColumn	*column;
 		gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 	}
 
-	// column 2: name
+	// column: name
 	column = gtk_tree_view_column_new();
 	gtk_tree_view_column_set_title(column, _("Account"));
 	gtk_tree_view_column_set_sort_column_id (column, LST_DEFACC_SORT_NAME);
@@ -993,13 +962,6 @@ GtkTreeViewColumn	*column;
 
 	gtk_tree_view_column_pack_start(column, renderer, TRUE);
 	gtk_tree_view_column_set_cell_data_func(column, renderer, ui_acc_listview_name_cell_data_function, GINT_TO_POINTER(LST_DEFACC_DATAS), NULL);
-
-	if( withtoggle == FALSE )
-	{
-		renderer = gtk_cell_renderer_pixbuf_new ();
-		gtk_tree_view_column_pack_start(column, renderer, TRUE);
-		gtk_tree_view_column_set_cell_data_func(column, renderer, ui_acc_listview_icon_cell_data_function, GINT_TO_POINTER(LST_DEFACC_DATAS), NULL);
-	}
 
 	gtk_tree_view_column_set_resizable(column, TRUE);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
@@ -1034,7 +996,7 @@ ui_acc_manage_dialog_refilter(struct ui_acc_manage_data *data)
 {
 gchar *needle;
 
-	DB( g_print("(ui_acc_manage_dialog) refilter\n") );
+	DB( g_print("[ui-acc] refilter\n") );
 
 	needle = (gchar *)gtk_entry_get_text(GTK_ENTRY(data->ST_search));
 	ui_acc_listview_populate(data->LV_acc, ACC_LST_INSERT_NORMAL, needle);
@@ -1047,40 +1009,44 @@ gboolean active;
 gdouble value;
 Account *item;
 
-	DB( g_print("\n(ui_acc_manage_getlast)\n") );
+	DB( g_print("\n[ui-acc] getlast\n") );
 
 	DB( g_print(" -> for account id=%d\n", data->lastkey) );
 
 	item = da_acc_get(data->lastkey);
 	if(item != NULL)
-	{	
-		data->change++;
+	{
+	gchar *olddigest, *newdigest;
+	guint length;
+
+		//data->change++;
+		length = offsetof(Account, rdate);
+		olddigest = g_compute_checksum_for_data (G_CHECKSUM_MD5, (const guchar *)item, length);
 
 		item->type = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_type));
 
 		account_set_currency(item, ui_cur_combobox_get_key(GTK_COMBO_BOX(data->CY_curr)) );
 
-		g_free(item->bankname);
-		item->bankname = g_strdup(gtk_entry_get_text(GTK_ENTRY(data->ST_institution)));
+		hbtk_entry_replace_text(GTK_ENTRY(data->ST_institution), &item->bankname);
 
-		g_free(item->number);
-		item->number = g_strdup(gtk_entry_get_text(GTK_ENTRY(data->ST_number)));
+		hbtk_entry_replace_text(GTK_ENTRY(data->ST_number), &item->number);
 
 		item->kgrp = ui_grp_comboboxentry_get_key_add_new(GTK_COMBO_BOX(data->ST_group));
 
-		g_free(item->website);
-		item->website = g_strdup(gtk_entry_get_text(GTK_ENTRY(data->ST_website)));
+		hbtk_entry_replace_text(GTK_ENTRY(data->ST_website), &item->website);
 
 		GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (data->TB_notes));
 		GtkTextIter siter, eiter;
-		gchar *notes;
-		
 		gtk_text_buffer_get_iter_at_offset (buffer, &siter, 0);
 		gtk_text_buffer_get_end_iter(buffer, &eiter);
-		notes = gtk_text_buffer_get_text(buffer, &siter, &eiter, FALSE);
-		if(notes != NULL)
-			item->notes = g_strdup(notes);
-		
+		gchar *newnotes = gtk_text_buffer_get_text(buffer, &siter, &eiter, FALSE);
+		gint tmpcmp = hb_string_ascii_compare(item->notes, newnotes);
+		if( tmpcmp != 0 )
+		{
+			g_free(item->notes);
+			item->notes = g_strdup(newnotes);
+		}
+
 		item->flags &= ~(AF_CLOSED);
 		active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_closed));
 		if(active) item->flags |= AF_CLOSED;
@@ -1128,6 +1094,19 @@ Account *item;
 		item->karc= hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_template));
 		//active_id = gtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_template));
 		//item->karc = atoi(active_id);
+	
+		newdigest = g_compute_checksum_for_data (G_CHECKSUM_MD5, (const guchar *)item, length);
+		DB( g_print(" checksum: '%s'\n", olddigest) );
+		DB( g_print(" checksum: '%s'\n", newdigest) );
+
+		if (strcmp(olddigest, newdigest) )
+		{
+			data->change++;
+			DB( g_print(" > checksum differs\n") );
+		}
+
+		g_free (olddigest);
+		g_free (newdigest);
 	}
 
 }
@@ -1140,7 +1119,7 @@ struct ui_acc_manage_data *data;
 guint32 key;
 Currency *cur;
 
-	DB( g_print("\n(ui_acc_manage changed_curr_cb)\n") );
+	DB( g_print("\n[ui-acc] changed_curr_cb\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -1169,7 +1148,7 @@ GtkTreeIter			 iter;
 Account *item;
 //gchar idbuffer[12];
 
-	DB( g_print("\n(ui_acc_manage_set)\n") );
+	DB( g_print("\n[ui-acc] set\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
@@ -1251,24 +1230,21 @@ GtkTreeModel		 *model;
 GtkTreeIter			 iter;
 gboolean selected, sensitive, canup, candw;
 guint32 key;
-gint sort_column_id;
-GtkSortType sort_order;
 
-	DB( g_print("\n(ui_acc_manage_update)\n") );
+	DB( g_print("\n[ui-acc] update\n") );
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 	//window = gtk_widget_get_ancestor(GTK_WIDGET(treeview), GTK_TYPE_WINDOW);
 	//DB( g_print("(defpayee) widget=%08lx, window=%08lx, inst_data=%08lx\n", treeview, window, data) );
 
-	//if true there is a selected node
-	selected = gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_acc)), &model, &iter);
 	key = ui_acc_listview_get_selected_key(GTK_TREE_VIEW(data->LV_acc));
 
+	//if true there is a selected node
+	selected = gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_acc)), &model, &iter);
 	DB( g_print(" -> selected = %d  action = %d key = %d\n", selected, data->action, key) );
 
 
 	sensitive = (selected == TRUE) ? TRUE : FALSE;
-
 	gtk_widget_set_sensitive(data->notebook, sensitive);
 
 	sensitive = (selected == TRUE && data->action == 0) ? TRUE : FALSE;
@@ -1277,29 +1253,34 @@ GtkSortType sort_order;
 
 	canup = candw = selected;
 
-	model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_acc));
-	sort_column_id = GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID;
-	sort_order = GTK_SORT_DESCENDING;
-	gtk_tree_sortable_get_sort_column_id(GTK_TREE_SORTABLE(model), &sort_column_id, &sort_order);
-	DB( g_print(" sort is %d colid=%d order=%d (ok is %d %d)\n", valid, sort_column_id, sort_order, LST_DEFACC_SORT_POS, GTK_SORT_ASCENDING) );
-
-	if( !((sort_column_id == LST_DEFACC_SORT_POS) && (sort_order == GTK_SORT_ASCENDING)) )
-	{
-		canup = candw = FALSE;
-		DB( g_print(" sort is not by position ASC\n") );
-		goto next;
-	}
-
 	if( selected == TRUE )
 	{
-	Account *item;
+	GtkTreeIter *tmpIter;
+	gint sort_column_id;
+	GtkSortType sort_order;
 
-		gtk_tree_model_get(model, &iter, LST_DEFACC_DATAS, &item, -1);
-		
-		DB( g_print(" item pos is %d\n", item->pos) );
+		model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_acc));
+		DB( g_print(" model is %p %d\n", model, GTK_IS_LIST_STORE(model)) );
 
-		canup = (item->pos <= 1) ? FALSE : TRUE;
-		candw = (item->pos >= da_acc_length()) ? FALSE : TRUE;
+		sort_column_id = GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID;
+		sort_order = GTK_SORT_DESCENDING;
+		gtk_tree_sortable_get_sort_column_id(GTK_TREE_SORTABLE(model), &sort_column_id, &sort_order);
+		DB( g_print(" sort is colid=%d order=%d (ok is %d %d)\n", sort_column_id, sort_order, LST_DEFACC_SORT_POS, GTK_SORT_ASCENDING) );
+
+		if( !((sort_column_id == LST_DEFACC_SORT_POS) && (sort_order == GTK_SORT_ASCENDING)) )
+		{
+			canup = candw = FALSE;
+			DB( g_print(" sort is not by position ASC\n") );
+			goto next;
+		}
+
+		tmpIter = gtk_tree_iter_copy(&iter);
+		canup = gtk_tree_model_iter_previous(model, tmpIter);
+		gtk_tree_iter_free(tmpIter);
+
+		tmpIter = gtk_tree_iter_copy(&iter);
+		candw = gtk_tree_model_iter_next(model, tmpIter);
+		gtk_tree_iter_free(tmpIter);
 	}
 
 next:
@@ -1335,7 +1316,7 @@ gboolean hasprvnxt;
 Account *curitem, *prvnxtitem;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-	DB( g_print("\n[ui-acc-manage] up/down (data=%p)\n", data) );
+	DB( g_print("\n[ui-acc] up/down (data=%p)\n", data) );
 
 	selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_acc));
 	//if true there is a selected node
@@ -1375,7 +1356,7 @@ struct ui_acc_manage_data *data;
 Account *item;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-	DB( g_print("\n(ui_acc_manage_add) data=%p\n", data) );
+	DB( g_print("\n[ui-acc] add data=%p\n", data) );
 
 	gchar *name = dialog_get_name(_("Account name"), NULL, GTK_WINDOW(data->dialog));
 	if(name != NULL)
@@ -1419,7 +1400,7 @@ guint32 key;
 gint result;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-	DB( g_print("\n(ui_acc_manage_remove) data=%p\n", data) );
+	DB( g_print("\n[ui-acc] remove data=%p\n", data) );
 
 	key = ui_acc_listview_get_selected_key(GTK_TREE_VIEW(data->LV_acc));
 	if( key > 0 )
@@ -1493,7 +1474,7 @@ Account *item;
 guint32 key;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-	DB( g_print("\n(ui_acc_manage_rename) data=%p\n", data) );
+	DB( g_print("\n[ui-acc] rename data=%p\n", data) );
 
 	key = ui_acc_listview_get_selected_key(GTK_TREE_VIEW(data->LV_acc));
 	if( key > 0 )
@@ -1534,7 +1515,7 @@ Account 	*accitem;
 gboolean selected, active;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-	DB( g_print("\n(ui_acc_manage_toggled_nobudget) data=%p\n", data) );
+	DB( g_print("\n[ui-acc] toggled_nobudget data=%p\n", data) );
 
 	selected = gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_acc)), &model, &iter);
 
@@ -1567,7 +1548,7 @@ Account 	*accitem;
 gboolean selected, active;
 
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-	DB( g_print("\n(ui_acc_manage_toggled_closed) data=%p\n", data) );
+	DB( g_print("\n[ui-acc] toggled_closed data=%p\n", data) );
 
 	selected = gtk_tree_selection_get_selected(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_acc)), &model, &iter);
 
@@ -1617,7 +1598,7 @@ ui_acc_manage_sort_changed(GtkTreeSortable *sortable, gpointer user_data)
 {
 struct ui_acc_manage_data *data = user_data;
 
-	DB( g_printf("\n[ui-acc-manage] sort changed\n") );
+	DB( g_printf("\n[ui-acc] sort changed\n") );
 
 	ui_acc_manage_update(data->dialog, NULL);
 }
@@ -1631,45 +1612,20 @@ struct ui_acc_manage_data *data = user_data;
 */
 static gboolean ui_acc_manage_cleanup(struct ui_acc_manage_data *data, gint result)
 {
-GtkTreeModel *model;
-GtkTreeIter	iter;
-gboolean valid;
-guint32 i;
 guint32 key;
 gboolean doupdate = FALSE;
 
-	DB( g_print("\n(ui_acc_manage_cleanup) %p\n", data) );
+	DB( g_print("\n[ui-acc] cleanup %p\n", data) );
 
-		key = ui_acc_listview_get_selected_key(GTK_TREE_VIEW(data->LV_acc));
-		if(key > 0)
-		{
-			data->lastkey = key;
-			DB( g_print(" -> should first do a get for account %d\n", data->lastkey) );
-			ui_acc_manage_getlast(data);
-		}
+	key = ui_acc_listview_get_selected_key(GTK_TREE_VIEW(data->LV_acc));
+	if(key > 0)
+	{
+		data->lastkey = key;
+		DB( g_print(" -> should first do a get for account %d\n", data->lastkey) );
+		ui_acc_manage_getlast(data);
+	}
 
-		// test for change & store new position
-		model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_acc));
-		i=1; valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
-		while (valid)
-		{
-		Account *item;
-
-			gtk_tree_model_get(GTK_TREE_MODEL(model), &iter,
-				LST_DEFACC_DATAS, &item,
-				-1);
-
-			DB( g_print(" -> check acc %d, pos is %d, %s\n", i, item->pos, item->name) );
-
-			if(item->pos != i)
-				data->change++;
-
-			item->pos = i;
-
-			// Make iter point to the next row in the list store 
-			i++; valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
-		}
-
+	DB( g_print(" changes: %d\n", data->change) );
 	GLOBALS->changes_count += data->change;
 
 	group_delete_unused();
@@ -1683,7 +1639,7 @@ ui_acc_manage_search_changed_cb (GtkWidget *widget, gpointer user_data)
 {
 struct ui_acc_manage_data *data = user_data;
 
-	DB( g_printf("\n[ui_acc_manage_dialog] search_changed_cb\n") );
+	DB( g_printf("\n[ui-acc] search_changed_cb\n") );
 
 	ui_acc_manage_dialog_refilter(data);
 }
@@ -1697,7 +1653,7 @@ static void ui_acc_manage_setup(struct ui_acc_manage_data *data)
 GList *tmplist;
 GString *tpltitle;
 
-	DB( g_print("\n(ui_acc_manage_setup)\n") );
+	DB( g_print("\n[ui-acc] setup\n") );
 
 	DB( g_print(" init data\n") );
 
@@ -1731,7 +1687,7 @@ GString *tpltitle;
 	while (tmplist != NULL)
 	{
 	Archive *item = tmplist->data;
-		if( !(item->flags & OF_AUTO) )
+		if( !(item->rec_flags & TF_RECUR) )
 		{
 			da_archive_get_display_label(tpltitle, item);
 			hbtk_combo_box_text_append(GTK_COMBO_BOX(data->CY_template), item->key, tpltitle->str);
@@ -1781,7 +1737,7 @@ struct ui_acc_manage_data *data;
 	if( data->mapped_done == TRUE )
 		return FALSE;
 
-	DB( g_print("\n(ui_acc_manage_mapped)\n") );
+	DB( g_print("\n[ui-acc] mapped\n") );
 
 	ui_acc_manage_setup(data);
 	ui_acc_manage_update(data->LV_acc, NULL);
@@ -1802,6 +1758,8 @@ GtkWidget *dialog, *content, *mainbox, *vbox, *scrollwin, *notebook;
 GtkWidget *content_grid, *group_grid, *tbar, *bbox;
 GtkWidget *label, *widget, *treeview, *hpaned;
 gint w, h, dw, dh, row;
+
+	DB( g_print("\n[ui-acc] new\n") );
 
 	data = g_malloc0(sizeof(struct ui_acc_manage_data));
 	if(!data) return NULL;
@@ -1825,16 +1783,16 @@ gint w, h, dw, dh, row;
 	
 	//store our dialog private data
 	g_object_set_data(G_OBJECT(dialog), "inst_data", (gpointer)data);
-	DB( g_print("(ui_acc_manage_) dialog=%p, inst_data=%p\n", dialog, data) );
+	DB( g_print(" dialog=%p, inst_data=%p\n", dialog, data) );
 
 	//window contents
 	content = gtk_dialog_get_content_area(GTK_DIALOG (dialog));
 	mainbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
-	gtk_box_pack_start (GTK_BOX (content), mainbox, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (content), mainbox);
 	hb_widget_set_margin(GTK_WIDGET(mainbox), SPACING_LARGE);
 
 	hpaned = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
-	gtk_box_pack_start (GTK_BOX (mainbox), hpaned, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (mainbox), hpaned);
 
 	// set paned position
 	//w = w/PHI;
@@ -1850,7 +1808,7 @@ gint w, h, dw, dh, row;
 	gtk_widget_set_size_request(widget, HB_MINWIDTH_SEARCH, -1);
 	gtk_widget_set_halign(widget, GTK_ALIGN_END);
 	hb_widget_set_margins(GTK_WIDGET(widget), 0, 0, SPACING_MEDIUM, 0);
-	gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (vbox), widget);
 
 
  	scrollwin = make_scrolled_window(GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
@@ -1858,40 +1816,40 @@ gint w, h, dw, dh, row;
 	data->LV_acc = treeview;
 	gtk_widget_set_size_request(treeview, HB_MINWIDTH_LIST, -1);
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
-	gtk_box_pack_start (GTK_BOX (vbox), scrollwin, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (vbox), scrollwin);
 
 	tbar = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
-	gtk_box_pack_start (GTK_BOX (vbox), tbar, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (vbox), tbar);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (tbar), bbox);
 	
 		widget = make_image_button(ICONNAME_LIST_ADD, _("Add"));
 		data->BT_add = widget;
-		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend(GTK_BOX(bbox), widget);
 
 		widget = make_image_button(ICONNAME_LIST_DELETE, _("Delete"));
 		data->BT_rem = widget;
-		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend(GTK_BOX(bbox), widget);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (tbar), bbox);
 
 		widget = make_image_button(ICONNAME_LIST_EDIT, _("Rename"));
 		data->BT_edit = widget;
-		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend(GTK_BOX(bbox), widget);
 	
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (tbar), bbox);
 
 		widget = make_image_button(ICONNAME_LIST_MOVE_UP, _("Move up"));
 		data->BT_up = widget;
-		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend(GTK_BOX(bbox), widget);
 
 		widget = make_image_button(ICONNAME_LIST_MOVE_DOWN, _("Move down"));
 		data->BT_down = widget;
-		gtk_box_pack_start(GTK_BOX(bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend(GTK_BOX(bbox), widget);
 
 
 	

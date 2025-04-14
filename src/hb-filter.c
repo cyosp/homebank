@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -149,8 +149,9 @@ guint i, count;
 	flt->n_active = 0;
 	for(i=0;i<FLT_GRP_MAX;i++)
 	{
-		if( flt->option[i] == 1 )
-		flt->n_active++;	
+		//5.8.6 count -1 as well
+		if( flt->option[i] != 0 )
+			flt->n_active++;	
 	}
 
 	flt->n_item[FLT_GRP_ACCOUNT]  = count_garray(flt->gbacc);
@@ -798,7 +799,9 @@ GDateWeekday wday;
 	yfiscal = year;
 	if( range == FLT_RANGE_LAST_QUARTER || range == FLT_RANGE_THIS_QUARTER ||range == FLT_RANGE_NEXT_QUARTER ||
 		//#2000834    
-	    range == FLT_RANGE_LAST_YEAR || range == FLT_RANGE_THIS_YEAR ||range == FLT_RANGE_NEXT_YEAR
+	    range == FLT_RANGE_LAST_YEAR || range == FLT_RANGE_THIS_YEAR ||range == FLT_RANGE_NEXT_YEAR ||
+		//5.9 year to date
+		FLT_RANGE_TODATE_YEAR
 	  )
 	{
 		g_date_set_dmy(tmpdate, PREFS->fisc_year_day, PREFS->fisc_year_month, year);
@@ -952,6 +955,23 @@ GDateWeekday wday;
 		case FLT_RANGE_MISC_30DAYS:
 			flt->mindate = jtoday - 30;
 			flt->maxdate = jtoday + 30;		
+			break;
+
+		case FLT_RANGE_TODATE_YEAR:
+			g_date_set_dmy(tmpdate, PREFS->fisc_year_day, PREFS->fisc_year_month, yfiscal);
+			flt->mindate = g_date_get_julian(tmpdate);
+			flt->maxdate = jtoday;
+			break;
+
+		case FLT_RANGE_TODATE_MONTH:
+			g_date_set_dmy(tmpdate, 1, month, year);
+			flt->mindate = g_date_get_julian(tmpdate);
+			flt->maxdate = jtoday;
+			break;
+
+		case FLT_RANGE_TODATE_ALL:
+			filter_set_date_bounds(flt, kacc);
+			flt->maxdate = jtoday;
 			break;
 	}
 	g_date_free(tmpdate);
@@ -1652,14 +1672,21 @@ end:
 	/* force display */
 	if(!insert)
 	{
-		if( ((flt->forceadd == TRUE) && (txn->flags & OF_ADDED))
-		 || ((flt->forcechg == TRUE) && (txn->flags & OF_CHANGED))
+		if( ((flt->forceadd == TRUE) && (txn->dspflags & FLAG_TMP_ADDED))
+		 || ((flt->forcechg == TRUE) && (txn->dspflags & FLAG_TMP_EDITED))
 		  )
 		insert = 1;
 	}
 
+	//5.9 always show pending
+	if( txn->flags & (OF_ISIMPORT|OF_ISPAST) )
+	{
+		insert = TRUE;
+	}
+
 	//#1999186 pref void/remind to false do not work
-	if( txn->status == TXN_STATUS_REMIND )
+	//if( txn->status == TXN_STATUS_REMIND )
+	if( txn->flags & OF_REMIND )
 	{
 		insert = flt->forceremind;
 	}

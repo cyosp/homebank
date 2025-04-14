@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -19,6 +19,8 @@
 
 
 #include "homebank.h"
+
+#include "hb-xml.h"
 
 #include "hub-account.h"
 
@@ -41,12 +43,14 @@
 #include "ui-category.h"
 #include "ui-archive.h"
 #include "ui-assign.h"
+#include "ui-dialogs.h"
 #include "ui-budget.h"
 #include "ui-budget-tabview.h"
 #include "ui-pref.h"
 #include "ui-hbfile.h"
 #include "ui-transaction.h"
 #include "ui-tag.h"
+#include "ui-widgets.h"
 
 #include "rep-balance.h"
 #include "rep-budget.h"
@@ -193,7 +197,7 @@ gchar *version;
   };
 */
 
-	static const gchar *copyright = "Copyright \xc2\xa9 1995-2024 - Maxime DOYEN";
+	static const gchar *copyright = "Copyright \xc2\xa9 1995-2025 - Maxime DOYEN";
 
 
 
@@ -575,6 +579,7 @@ static void ui_mainwindow_action_addtransactions(void)
 static void ui_mainwindow_action_checkscheduled(void)
 {
 	ui_hub_scheduled_postall(GLOBALS->mainwindow, GINT_TO_POINTER(TRUE));
+	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_REFRESHALL));
 }
 
 static void ui_mainwindow_action_statistic(void)
@@ -707,14 +712,14 @@ gchar *pathfilename;
 	table = gtk_grid_new ();
 	gtk_grid_set_column_spacing (GTK_GRID (table), SPACING_MEDIUM);
 	hb_widget_set_margin(table, SPACING_MEDIUM);
-	gtk_box_pack_start (GTK_BOX (content_area), table, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (content_area), table);
 
 	//get our icon
 	pathfilename = g_build_filename(homebank_app_get_images_dir(), "homebank-icon.svg", NULL);
 	if (g_file_test (pathfilename, G_FILE_TEST_EXISTS) == TRUE)
 		widget = gtk_image_new_from_file((const gchar *)pathfilename);
 	else
-		widget = gtk_image_new_from_icon_name ("homebank", GTK_ICON_SIZE_DIALOG);
+		widget = hbtk_image_new_from_icon_name_32 ("homebank");
 	g_free(pathfilename);
 	gtk_grid_attach (GTK_GRID (table), widget, 0, 0, 1, 2);
 	
@@ -728,44 +733,44 @@ gchar *pathfilename;
 
 	
 	widget = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
-	gtk_box_pack_start (GTK_BOX (content_area), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (content_area), widget);
 
 	
 	mainvbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, SPACING_MEDIUM);
-	gtk_box_pack_start (GTK_BOX (content_area), mainvbox, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (content_area), mainvbox);
 	gtk_widget_set_halign (mainvbox, GTK_ALIGN_CENTER);
 	hb_widget_set_margin(mainvbox, SPACING_LARGE);
 
 	//label = make_label (_("What do you want to do:"), 0, 0);
 	//gimp_label_set_attributes(GTK_LABEL(label), PANGO_ATTR_WEIGHT, PANGO_WEIGHT_BOLD, -1);
-	//gtk_box_pack_start (GTK_BOX (mainvbox), label, FALSE, FALSE, 0);
+	//gtk_box_prepend (GTK_BOX (mainvbox), label);
 
 	widget = gtk_button_new_with_mnemonic(_("Open _last opened file"));
-	gtk_box_pack_start (GTK_BOX (mainvbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (mainvbox), widget);
 	g_signal_connect (widget, "clicked", G_CALLBACK (ui_mainwindow_action_help_welcome_cb), GINT_TO_POINTER(HB_WELCOME_OPENLAST));
 
 	widget = gtk_button_new_with_mnemonic(_("Create a _new file"));
-	gtk_box_pack_start (GTK_BOX (mainvbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (mainvbox), widget);
 	g_signal_connect (widget, "clicked", G_CALLBACK (ui_mainwindow_action_help_welcome_cb), GINT_TO_POINTER(HB_WELCOME_CREATENEW));
 
 	widget = gtk_button_new_with_mnemonic(_("_Open an existing file"));
-	gtk_box_pack_start (GTK_BOX (mainvbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (mainvbox), widget);
 	g_signal_connect (widget, "clicked", G_CALLBACK (ui_mainwindow_action_help_welcome_cb), GINT_TO_POINTER(HB_WELCOME_OPENEXISTING));
 
 	widget = gtk_button_new_with_mnemonic(_("Open the _example file"));
-	gtk_box_pack_start (GTK_BOX (mainvbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (mainvbox), widget);
 	g_signal_connect (widget, "clicked", G_CALLBACK (ui_mainwindow_action_help_welcome_cb), GINT_TO_POINTER(HB_WELCOME_OPENSAMPLE));
 
 	widget = gtk_button_new_with_mnemonic(_("Read HomeBank _Manual"));
-	gtk_box_pack_start (GTK_BOX (mainvbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (mainvbox), widget);
 	g_signal_connect (widget, "clicked", G_CALLBACK (ui_mainwindow_action_help_welcome_cb), GINT_TO_POINTER(HB_WELCOME_READMANUAL));
 	
 	widget = gtk_button_new_with_mnemonic(_("Configure _preferences"));
-	gtk_box_pack_start (GTK_BOX (mainvbox), widget, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (mainvbox), widget);
 	g_signal_connect (widget, "clicked", G_CALLBACK (ui_mainwindow_action_help_welcome_cb), GINT_TO_POINTER(HB_WELCOME_CONFIGPREF));
 
 	check = gtk_check_button_new_with_mnemonic (_("Show this window next time"));
-	gtk_box_pack_end (GTK_BOX (mainvbox), check, FALSE, FALSE, SPACING_SMALL);
+	gtk_box_append (GTK_BOX (mainvbox), check);
 
 	//init
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(check), PREFS->showwelcome);
@@ -1568,7 +1573,6 @@ static void
     }
   }
 
-
 //#2060159 store after every move
 static gboolean 
 ui_mainwindow_getgeometry(GtkWidget *widget, GdkEventConfigure *event, gpointer user_data)
@@ -1586,6 +1590,28 @@ struct WinGeometry *wg;
 		gtk_window_get_position(GTK_WINDOW(widget), &wg->l, &wg->t);
 		gtk_window_get_size(GTK_WINDOW(widget), &wg->w, &wg->h);
 	}
+
+	/*
+	gint lastw, lasth;
+	gint neww, newh;
+	lastw = wg->w;
+	lasth = wg->h;
+	gtk_window_get_size(GTK_WINDOW(widget), &neww, &newh);
+	if( lastw != neww || lasth != newh )
+	{
+	gint ppos;
+	gdouble rate;
+
+		//DB( g_print(" size changed\n") );
+		//width
+		ppos = gtk_paned_get_position(GTK_PANED(data->hpaned));
+		rate = (gdouble)ppos / (gdouble)lastw;
+		gtk_paned_set_position(GTK_PANED(data->hpaned), (rate * neww) );
+		//height
+		ppos = gtk_paned_get_position(GTK_PANED(data->vpaned));
+		rate = (gdouble)ppos / (gdouble)lasth;
+		gtk_paned_set_position(GTK_PANED(data->vpaned), (rate * newh) );
+	}*/
 
 	//DB( g_print(" window: l=%d, t=%d, w=%d, h=%d s=%d\n", wg->l, wg->t, wg->w, wg->h, wg->s) );
 
@@ -1758,6 +1784,12 @@ void ui_mainwindow_recent_add (struct hbfile_data *data, const gchar *path)
 	GError *error = NULL;
 
 	DB( g_print("\n[ui-mainwindow] recent_add\n") );
+
+	//#2043886 portable don't store to recent
+	#ifdef PORTABLE_APP
+		DB( g_print(" ignored in portabel app\n") );
+		return;
+	#endif
 
 	DB( g_print(" - file has .xhb suffix = %d\n", g_str_has_suffix (path, ".xhb") ) );
 
@@ -2137,24 +2169,24 @@ GtkWidget *window;
 	data->recent_manager = gtk_recent_manager_get_default ();
 
 	box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_start (GTK_BOX (mainvbox), box, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (mainvbox), box);
 
 	menubar = ui_mainwindow_menubar_create(data);
-	gtk_box_pack_start (GTK_BOX (box), menubar, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (box), menubar);
 
 #if HB_UNSTABLE_SHOW == TRUE
 	menubar = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_SMALL);
 	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(menubar)), GTK_STYLE_CLASS_MENUBAR);
-	gtk_box_pack_start (GTK_BOX (box), menubar, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (box), menubar);
 
 	widget = gtk_label_new("Release Candidate Version  ");
 	gimp_label_set_attributes (GTK_LABEL (widget), 
 		PANGO_ATTR_SCALE, PANGO_SCALE_SMALL, 
 		PANGO_ATTR_WEIGHT, PANGO_WEIGHT_BOLD,
 		-1);
-	gtk_box_pack_end (GTK_BOX (menubar), widget, FALSE, FALSE, 0);
-	widget = gtk_image_new_from_icon_name (ICONNAME_WARNING, GTK_ICON_SIZE_BUTTON);
-	gtk_box_pack_end (GTK_BOX (menubar), widget, FALSE, FALSE, 0);
+	gtk_box_append (GTK_BOX (menubar), widget);
+	widget = hbtk_image_new_from_icon_name_16 (ICONNAME_WARNING);
+	gtk_box_append (GTK_BOX (menubar), widget);
 	gtk_widget_set_tooltip_markup(GTK_WIDGET(menubar), 
 	   	"<b>Guidelines:</b>\n"
 		"- use only for TESTING or find BUGs\n"
@@ -2167,21 +2199,21 @@ GtkWidget *window;
 	widget = make_label(NULL, 1.0, 0.5);
 	gtk_widget_set_margin_end(widget, 12);
 	data->dbgchange = widget;
-	gtk_box_pack_end (GTK_BOX (box), widget, FALSE, FALSE, 0);
+	gtk_box_append (GTK_BOX (box), widget);
 #endif
 
 
 	toolbar = ui_mainwindow_toolbar_create(data);
 	data->toolbar = toolbar;
-	gtk_box_pack_start (GTK_BOX (mainvbox), toolbar, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (mainvbox), toolbar);
 	
 	/* Add the main area */
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-    gtk_box_pack_start (GTK_BOX (mainvbox), vbox, TRUE, TRUE, 0);
+    hbtk_box_prepend (GTK_BOX (mainvbox), vbox);
 
 	vpaned = gtk_paned_new(GTK_ORIENTATION_VERTICAL);
 	data->vpaned = vpaned;
-    gtk_box_pack_start (GTK_BOX (vbox), vpaned, TRUE, TRUE, 0);
+    hbtk_box_prepend (GTK_BOX (vbox), vpaned);
 
 	// top part
 	hpaned = gtk_paned_new(GTK_ORIENTATION_HORIZONTAL);
@@ -2199,10 +2231,10 @@ GtkWidget *window;
 		
 		widget = ui_hub_reptotal_create(data);
 		//gtk_widget_set_size_request (widget, -1, 100);
-		gtk_box_pack_start (GTK_BOX (box), widget, TRUE, TRUE, 0);
+		hbtk_box_prepend (GTK_BOX (box), widget);
 
 		widget = ui_hub_reptime_create(data);
-		gtk_box_pack_start (GTK_BOX (box), widget, TRUE, TRUE, 0);
+		hbtk_box_prepend (GTK_BOX (box), widget);
 
 
 	// bottom part
@@ -2211,13 +2243,13 @@ GtkWidget *window;
 	gtk_paned_pack2 (GTK_PANED(vpaned), box, TRUE, FALSE);
 
 	sidebar = gtk_stack_sidebar_new ();
-	gtk_box_pack_start (GTK_BOX (box), sidebar, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (box), sidebar);
 
 	stack = gtk_stack_new ();
 	//gtk_stack_set_transition_type (GTK_STACK (stack), GTK_STACK_TRANSITION_TYPE_SLIDE_UP_DOWN);
 	gtk_stack_sidebar_set_stack (GTK_STACK_SIDEBAR (sidebar), GTK_STACK (stack));
 	data->stack = stack;
-    gtk_box_pack_start (GTK_BOX (box), stack, TRUE, TRUE, 0);
+    hbtk_box_prepend (GTK_BOX (box), stack);
 	
 		page = ui_hub_scheduled_create(data);
 		gtk_stack_add_titled (GTK_STACK (stack), page, "sched", _("Scheduled"));

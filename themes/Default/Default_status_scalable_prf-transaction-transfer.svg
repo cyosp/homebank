@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="48px"
+   height="48px"
+   id="svg3987"
+   sodipodi:version="0.32"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="Default_status_scalable_prf-transaction-transfer.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   sodipodi:modified="true"
+   version="1.1"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title1060">Pref Transfer</title>
+  <defs
+     id="defs3989">
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5113"
+       id="linearGradient3564"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.9011423,0,0,0.8969812,257.78382,8.38298)"
+       x1="30.376583"
+       y1="11.133182"
+       x2="11.726276"
+       y2="41.418934" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient5113"
+       id="linearGradient3569"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(-0.9011423,0,0,0.8969812,293.96294,-1.2935445)"
+       x1="30.376583"
+       y1="11.133182"
+       x2="11.726276"
+       y2="41.418934" />
+    <linearGradient
+       gradientTransform="matrix(1.004639,0,0,1,3.832842,3.2105267)"
+       gradientUnits="userSpaceOnUse"
+       y2="41.418934"
+       x2="11.726276"
+       y1="11.133182"
+       x1="30.376583"
+       id="linearGradient5315"
+       xlink:href="#linearGradient5113"
+       inkscape:collect="always" />
+    <linearGradient
+       id="linearGradient5113"
+       inkscape:collect="always">
+      <stop
+         id="stop5115"
+         offset="0"
+         style="stop-color:white;stop-opacity:1;" />
+      <stop
+         id="stop5117"
+         offset="1"
+         style="stop-color:white;stop-opacity:0;" />
+    </linearGradient>
+    <linearGradient
+       y2="41.418934"
+       x2="11.726276"
+       y1="11.133182"
+       x1="30.376583"
+       gradientTransform="matrix(-1.004639,0,0,1,44.167156,-7.5773521)"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient3149"
+       xlink:href="#linearGradient5113"
+       inkscape:collect="always" />
+    <linearGradient
+       id="linearGradient5105"
+       inkscape:collect="always">
+      <stop
+         id="stop5107"
+         offset="0"
+         style="stop-color:black;stop-opacity:1;" />
+      <stop
+         id="stop5109"
+         offset="1"
+         style="stop-color:black;stop-opacity:0;" />
+    </linearGradient>
+    <radialGradient
+       r="8.0625"
+       fy="19.03125"
+       fx="11.25"
+       cy="19.03125"
+       cx="11.25"
+       gradientTransform="matrix(1,0,0,0.282946,0,13.64644)"
+       gradientUnits="userSpaceOnUse"
+       id="radialGradient4354"
+       xlink:href="#linearGradient5105"
+       inkscape:collect="always" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="7"
+     inkscape:cx="16.357143"
+     inkscape:cy="24"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:grid-bbox="true"
+     inkscape:document-units="px"
+     inkscape:window-width="1920"
+     inkscape:window-height="1003"
+     inkscape:window-x="1440"
+     inkscape:window-y="0"
+     inkscape:showpageshadow="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata3992">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/GPL/2.0/" />
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Maxime DOYEN</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:source>https://www.gethomebank.org</dc:source>
+        <dc:title>Pref Transfer</dc:title>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/GPL/2.0/">
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/Reproduction" />
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/Distribution" />
+        <cc:requires
+           rdf:resource="http://web.resource.org/cc/Notice" />
+        <cc:permits
+           rdf:resource="http://web.resource.org/cc/DerivativeWorks" />
+        <cc:requires
+           rdf:resource="http://web.resource.org/cc/ShareAlike" />
+        <cc:requires
+           rdf:resource="http://web.resource.org/cc/SourceCode" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer">
+    <path
+       style="font-variation-settings:normal;vector-effect:none;fill:#fcaf3e;fill-opacity:1;stroke:#ce5c00;stroke-width:2.56;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000"
+       d="m 13.994597,10.540449 c -3.383747,0 -6.1100009,2.726252 -6.1100009,6.11 v 15.939999 c 0,3.383747 2.7262539,6.110001 6.1100009,6.110001 h 2.704998 l -1.134999,1.134999 3.620002,3.620001 3.619998,-3.620001 3.620002,-3.619999 -3.620002,-3.625001 -3.619998,-3.619999 -3.620002,3.619999 1.009999,1.015002 c -3.481249,-0.07314 -3.604999,-0.648082 -3.604999,-4.88 v -8.210002 c 0,-4.510155 0.07122,-4.863404 3.99,-4.89 v -5.084999 z"
+       id="path2843" />
+    <path
+       style="font-variation-settings:normal;vector-effect:none;fill:#8ae234;fill-opacity:1;stroke:#4e9a06;stroke-width:2.56;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000"
+       d="m 30.484596,5.6754479 -3.619998,3.6200013 -3.620002,3.6199988 3.620002,3.620001 3.619998,3.624999 3.620002,-3.624999 -0.890003,-0.89 c 2.916224,0.101888 2.865001,0.749118 2.865001,4.869999 v 8.210002 c 0,4.488883 -0.21353,4.85996 -3.92,4.889999 v 5.085 h 2.894999 c 3.383747,0 6.110001,-2.726254 6.110001,-6.110001 V 16.650449 c 0,-3.383748 -2.726254,-6.11 -6.110001,-6.11 h -2.195 l 1.245003,-1.2449998 z"
+       id="rect2566" />
+  </g>
+</svg>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   id="svg7384"
+   height="16"
+   width="16"
+   version="1.1"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="hicolor_actions_scalable_hb-ope-herit-symbolic.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title1154">Txn Herit</title>
+  <defs
+     id="defs12" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1003"
+     id="namedview10"
+     showgrid="true"
+     inkscape:zoom="32"
+     inkscape:cx="6.546875"
+     inkscape:cy="10.71875"
+     inkscape:window-x="1440"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg7384"
+     inkscape:snap-global="false"
+     inkscape:pagecheckerboard="0"
+     inkscape:showpageshadow="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid13" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata90">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Maxime DOYEN</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:source>https://www.gethomebank.org</dc:source>
+        <dc:title>Txn Herit</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-weight:normal;font-size:12.5px;line-height:25px;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     x="11.074011"
+     y="12.476451"
+     id="text853" />
+  <path
+     id="path2"
+     style="fill:#bebebe;stroke-width:0.0175"
+     d="M 3.4003906 1 C 3.0153906 1 2.686276 1.1379427 2.4121094 1.4121094 C 2.1379428 1.686276 2 2.0153906 2 2.4003906 L 2 12.199219 C 2 12.584219 2.1379428 12.915286 2.4121094 13.189453 C 2.686276 13.463619 3.0153906 13.599609 3.4003906 13.599609 L 8.0722656 13.599609 C 7.9672656 13.38961 7.8766146 13.168881 7.8007812 12.935547 C 7.7249479 12.702214 7.6697656 12.455885 7.6347656 12.199219 L 3.4003906 12.199219 L 3.4003906 11.5 L 3.4003906 6.6523438 L 3.4003906 6.5996094 L 3.4003906 2.4003906 L 13.199219 2.4003906 L 13.199219 6.6523438 C 13.444219 6.6873437 13.684635 6.742526 13.917969 6.8183594 C 14.151302 6.8941927 14.377943 6.9848438 14.599609 7.0898438 L 14.599609 2.4003906 C 14.599609 2.0153906 14.463619 1.686276 14.189453 1.4121094 C 13.915286 1.1379427 13.584219 1 13.199219 1 L 3.4003906 1 z M 4.8007812 3.8007812 L 4.8007812 5.1992188 L 11.800781 5.1992188 L 11.800781 3.8007812 L 4.8007812 3.8007812 z M 1.2226562 5 C 0.88654524 5 0.59872668 5.1200224 0.359375 5.359375 C 0.12002331 5.5987268 0 5.8865453 0 6.2226562 L 1.2226562 6.2226562 L 1.2226562 5 z M 4.8007812 6.5996094 L 4.8007812 8 L 9.0703125 8 C 9.4436458 7.65 9.8594791 7.3583333 10.320312 7.125 C 10.781146 6.8916667 11.275781 6.7340104 11.800781 6.6523438 L 11.800781 6.5996094 L 4.8007812 6.5996094 z M 0 7.4453125 L 0 8.6660156 L 1.2226562 8.6660156 L 1.2226562 7.4453125 L 0 7.4453125 z M 12.5 8 C 11.531667 8 10.705938 8.3409375 10.023438 9.0234375 C 9.3409374 9.7059382 9 10.531667 9 11.5 C 9 12.468333 9.3409374 13.294062 10.023438 13.976562 C 10.705938 14.659063 11.531667 15 12.5 15 C 13.468333 15 14.294063 14.659063 14.976562 13.976562 C 15.659063 13.294062 16 12.468333 16 11.5 C 16 10.531667 15.659063 9.7059382 14.976562 9.0234375 C 14.294063 8.3409375 13.468333 8 12.5 8 z M 4.8007812 9.4003906 L 4.8007812 10.800781 L 7.6523438 10.800781 C 7.6873437 10.555782 7.742526 10.315365 7.8183594 10.082031 C 7.8941927 9.8486973 7.9789323 9.6220573 8.0722656 9.4003906 L 4.8007812 9.4003906 z M 12.150391 9.4003906 L 12.849609 9.4003906 L 12.849609 11.150391 L 14.599609 11.150391 L 14.599609 11.849609 L 12.849609 11.849609 L 12.849609 13.599609 L 12.150391 13.599609 L 12.150391 11.849609 L 10.400391 11.849609 L 10.400391 11.150391 L 12.150391 11.150391 L 12.150391 9.4003906 z M 0 9.8886719 L 0 11.111328 L 1.2226562 11.111328 L 1.2226562 9.8886719 L 0 9.8886719 z M 0 12.333984 L 0 13.554688 L 1.2226562 13.554688 L 1.2226562 12.333984 L 0 12.333984 z M 0 14.777344 C 3.7007434e-17 15.113456 0.12002331 15.401272 0.359375 15.640625 C 0.59872668 15.879971 0.88654524 16 1.2226562 16 L 1.2226562 14.777344 L 0 14.777344 z M 2.4453125 14.777344 L 2.4453125 16 L 3.6660156 16 L 3.6660156 14.777344 L 2.4453125 14.777344 z M 4.8886719 14.777344 L 4.8886719 16 L 6.1113281 16 L 6.1113281 14.777344 L 4.8886719 14.777344 z M 7.3339844 14.777344 L 7.3339844 16 L 8.5546875 16 L 8.5546875 14.777344 L 7.3339844 14.777344 z M 9.7773438 14.777344 L 9.7773438 16 C 10.113454 16 10.401273 15.879977 10.640625 15.640625 C 10.879978 15.401272 11 15.113456 11 14.777344 L 9.7773438 14.777344 z " />
+</svg>

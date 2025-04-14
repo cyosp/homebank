@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -34,6 +34,7 @@
 
 /* our global datas */
 extern struct HomeBank *GLOBALS;
+extern struct Preferences *PREFS;
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
@@ -619,6 +620,7 @@ da_cat_debug_list(void)
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
+
 gboolean
 category_key_budget_active(guint32 key)
 {
@@ -629,6 +631,29 @@ gboolean retval = FALSE;
 		retval = TRUE;
 
 	return retval;
+}
+
+
+gboolean
+category_key_unbudgeted(guint32 key)
+{
+Category *catitem = da_cat_get(key);
+
+	if( catitem == NULL )
+		return FALSE;
+
+	//#2101100 exclude subcat from unbudgeted
+	if( PREFS->budg_unexclsub == TRUE )
+	{
+		if( catitem->parent > 0 )
+		{
+			catitem = da_cat_get(catitem->parent);
+			if( catitem == NULL )
+				return FALSE;
+		}
+	}
+
+	return (catitem->flags & (GF_BUDGET|GF_FORCED)) ? FALSE : TRUE;
 }
 
 
@@ -665,7 +690,8 @@ gint count = 0;
 
 		if(entry->nb_use_all <= 0 && entry->key > 0)
 		{
-			da_cat_delete (entry->key);
+			//da_cat_delete (entry->key);
+			g_hash_table_remove(GLOBALS->h_cat, &entry->key);
 			count++;
 		}
 		list = g_list_next(list);
@@ -850,7 +876,7 @@ guint i, nbsplit;
 			if( category_move_match(txnitem->kcat, srckey, dosubcat) )
 			{
 				txnitem->kcat = newkey;
-				txnitem->flags |= OF_CHANGED;
+				txnitem->dspflags |= FLAG_TMP_EDITED;
 			}
 
 			// move split category #1340142
@@ -864,7 +890,7 @@ guint i, nbsplit;
 				if( category_move_match(split->kcat, srckey, dosubcat) )
 				{
 					split->kcat = newkey;
-					txnitem->flags |= OF_CHANGED;
+					txnitem->dspflags |= FLAG_TMP_EDITED;
 				}
 			}
 
@@ -886,7 +912,6 @@ guint i, nbsplit;
 		if( category_move_match(arcitem->kcat, srckey, dosubcat) )
 		{
 			arcitem->kcat = newkey;
-			arcitem->flags |= OF_CHANGED;
 		}
 
 		//#2081379 handle split as well
@@ -900,7 +925,7 @@ guint i, nbsplit;
 			if( category_move_match(split->kcat, srckey, dosubcat) )
 			{
 				split->kcat = newkey;
-				arcitem->flags |= OF_CHANGED;
+				arcitem->dspflags |= FLAG_TMP_EDITED;
 			}
 		}
 

@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -24,6 +24,7 @@
 #include "dsp-mainwindow.h"
 #include "list-account.h"
 
+#include "ui-widgets.h"
 
 /****************************************************************************/
 /* Debug macros                                                             */
@@ -565,7 +566,7 @@ GtkWidget *hub, *label, *widget, *scrollwin, *treeview, *tbar, *bbox, *image;
 	hb_widget_set_margins(GTK_WIDGET(hub), 0, SPACING_SMALL, SPACING_SMALL, SPACING_SMALL);
 
 	scrollwin = make_scrolled_window(GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_box_pack_start (GTK_BOX (hub), scrollwin, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (hub), scrollwin);
 	treeview = (GtkWidget *)lst_accview_new();
 	data->LV_acc = treeview;
 	gtk_scrolled_window_set_child (GTK_SCROLLED_WINDOW(scrollwin), treeview);
@@ -573,10 +574,10 @@ GtkWidget *hub, *label, *widget, *scrollwin, *treeview, *tbar, *bbox, *image;
 	//list toolbar
 	tbar = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, SPACING_MEDIUM);
 	gtk_style_context_add_class (gtk_widget_get_style_context (tbar), GTK_STYLE_CLASS_INLINE_TOOLBAR);
-	gtk_box_pack_start (GTK_BOX (hub), tbar, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (hub), tbar);
 
 	label = make_label_group(_("Your accounts"));
-	gtk_box_pack_start (GTK_BOX (tbar), label, FALSE, FALSE, 0);
+	gtk_box_prepend (GTK_BOX (tbar), label);
 
 	//gmenu test (see test folder into gtk)
 GMenu *menu, *section;
@@ -606,35 +607,35 @@ GMenu *menu, *section;
 	g_action_map_add_action_entries (G_ACTION_MAP (group), actions, G_N_ELEMENTS (actions), data);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_end (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
+	gtk_box_append (GTK_BOX (tbar), bbox);
 
 		widget = gtk_menu_button_new();
-		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (bbox), widget);
 		gtk_menu_button_set_direction (GTK_MENU_BUTTON(widget), GTK_ARROW_UP);
 		gtk_widget_set_halign (widget, GTK_ALIGN_END);
-		image = gtk_image_new_from_icon_name (ICONNAME_EMBLEM_SYSTEM, GTK_ICON_SIZE_MENU);
+		image = hbtk_image_new_from_icon_name_16 (ICONNAME_EMBLEM_SYSTEM);
 		g_object_set (widget, "image", image,  NULL);
 
 		gtk_widget_insert_action_group (widget, "actions", G_ACTION_GROUP(group));
 		gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (widget), G_MENU_MODEL (menu));
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_end (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
+	gtk_box_append (GTK_BOX (tbar), bbox);
 	
 		widget = make_image_button(ICONNAME_HB_BUTTON_EXPAND, _("Expand all"));
 		data->BT_expandall = widget;
-		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (bbox), widget);
 
 		widget = make_image_button(ICONNAME_HB_BUTTON_COLLAPSE, _("Collapse all"));
 		data->BT_collapseall = widget;
-		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (bbox), widget);
 
 	bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_box_pack_end (GTK_BOX (tbar), bbox, FALSE, FALSE, 0);
+	gtk_box_append (GTK_BOX (tbar), bbox);
 	
 		widget = make_image_button(ICONNAME_HB_BUTTON_BROWSER, _("Browse Website"));
 		data->BT_browse = widget;
-		gtk_box_pack_start (GTK_BOX (bbox), widget, FALSE, FALSE, 0);
+		gtk_box_prepend (GTK_BOX (bbox), widget);
 
 	g_signal_connect (G_OBJECT (data->BT_expandall  ), "clicked"      , G_CALLBACK (ui_hub_account_expand_all), NULL);
 	g_signal_connect (G_OBJECT (data->BT_collapseall), "clicked"      , G_CALLBACK (ui_hub_account_collapse_all), NULL);

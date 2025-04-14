@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -37,39 +37,39 @@
 #include <glib/gstdio.h>
 #include <gtk/gtk.h>
 
+
+#include "hb-types.h"
+
 #include "enums.h"
 #include "icon-names.h"
 #include "hb-preferences.h"
 
-#include "hb-transaction.h"
-#include "hb-currency.h"
-#include "hb-group.h"
 #include "hb-account.h"
 #include "hb-archive.h"
 #include "hb-assign.h"
 #include "hb-category.h"
+#include "hb-filter.h"
+#include "hb-payee.h"
+#include "hb-tag.h"
+#include "hb-transaction.h"
+
+#include "hb-currency.h"
 #include "hb-encoding.h"
 #include "hb-export.h"
-#include "hb-filter.h"
+#include "hb-group.h"
+#include "hb-hbfile.h"
 #include "hb-import.h"
 #include "hb-misc.h"
-#include "hb-payee.h"
 #include "hb-report.h"
-#include "hb-tag.h"
-#include "hb-hbfile.h"
-#include "hb-xml.h"
 
-#include "ui-dialogs.h"
-#include "ui-pref.h"
-#include "ui-widgets.h"
 
 #define _(str) gettext (str)
 #define gettext_noop(str) (str)
 #define N_(str) gettext_noop (str)
 
+
 /* = = = = = = = = = = = = = = = = */
-/* = = = = = = = = = = = = = = = = = = = = = = = = */
-/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+
 
 #define HB_PRIV_FUNC		FALSE
 #define HB_PRIV_FORCE_ENUS	FALSE
@@ -80,14 +80,14 @@
 
 
 #define HOMEBANK_MAJOR	5
-#define HOMEBANK_MINOR	8
-#define HOMEBANK_MICRO	6
+#define HOMEBANK_MINOR	9
+#define HOMEBANK_MICRO	0
 
-#define HB_VERSION		"5.8.6"
+#define HB_VERSION		"5.9.0"
 #define HB_VERSION_NUM	(HOMEBANK_MAJOR*10000) + (HOMEBANK_MINOR*100) + HOMEBANK_MICRO
 
-#define FILE_VERSION		1.5
-#define PREF_VERSION		586
+#define FILE_VERSION		1.6
+#define PREF_VERSION		590
 
 #if HB_UNSTABLE == FALSE
 	#define	PROGNAME		"HomeBank"
@@ -241,6 +241,7 @@ struct HomeBank
 	
 	GDBusProxy		*settings_portal;
 	ColorScheme		color_scheme;
+	gboolean		theme_is_dark;
 
 };
 

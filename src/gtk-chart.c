@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -24,6 +24,8 @@
 #include <gtk/gtk.h>
 
 #include "homebank.h"
+#include "ui-widgets.h"
+
 #include "gtk-chart-colors.h"
 #include "gtk-chart.h"
 
@@ -3562,7 +3564,7 @@ GtkWidget *widget, *vbox, *frame, *overlay, *label;
 
 	frame = gtk_frame_new(NULL);
     gtk_frame_set_shadow_type (GTK_FRAME(frame), GTK_SHADOW_ETCHED_IN);
-    gtk_box_pack_start (GTK_BOX (widget), frame, TRUE, TRUE, 0);
+    hbtk_box_prepend (GTK_BOX (widget), frame);
 
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_frame_set_child(GTK_FRAME(frame), vbox);
@@ -3577,7 +3579,7 @@ GtkWidget *widget, *vbox, *frame, *overlay, *label;
 	gtk_widget_show(chart->drawarea);
 
 	gtk_overlay_set_child (GTK_OVERLAY(overlay), chart->drawarea);
-	gtk_box_pack_start (GTK_BOX (vbox), overlay, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (vbox), overlay);
 
 	//scrollbar
     chart->adjustment = GTK_ADJUSTMENT(gtk_adjustment_new (0.0, 0.0, 1.0, 1.0, 1.0, 1.0));
@@ -3585,7 +3587,7 @@ GtkWidget *widget, *vbox, *frame, *overlay, *label;
 	//5.7 add
 	gtk_style_context_add_class (gtk_widget_get_style_context (chart->scrollbar), GTK_STYLE_CLASS_BOTTOM);
 	//gtk_style_context_add_class (gtk_widget_get_style_context (chart->scrollbar), "overlay-indicator");
-    gtk_box_pack_start (GTK_BOX (vbox), chart->scrollbar, FALSE, TRUE, 0);
+    gtk_box_append (GTK_BOX (vbox), chart->scrollbar);
 	//gtk_widget_show(chart->scrollbar);
 
 	//overlay

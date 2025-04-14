@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   id="svg7384"
+   height="16"
+   width="16"
+   version="1.1"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="hicolor_actions_scalable_hb-life-energy-symbolic.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title1162">Life Energy</title>
+  <defs
+     id="defs12">
+    <linearGradient
+       id="linearGradient5606"
+       inkscape:swatch="solid">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop5608" />
+    </linearGradient>
+    <filter
+       style="color-interpolation-filters:sRGB"
+       id="filter7554">
+      <feBlend
+         mode="darken"
+         in2="BackgroundImage"
+         id="feBlend7556" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB"
+       id="filter7554-5">
+      <feBlend
+         mode="darken"
+         in2="BackgroundImage"
+         id="feBlend7556-6" />
+    </filter>
+    <filter
+       id="filter7554-1"
+       style="color-interpolation-filters:sRGB">
+      <feBlend
+         id="feBlend7556-8"
+         in2="BackgroundImage"
+         mode="darken" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1003"
+     id="namedview10"
+     showgrid="true"
+     inkscape:zoom="67.25"
+     inkscape:cx="6.8773234"
+     inkscape:cy="8.9516729"
+     inkscape:window-x="1440"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg7384"
+     inkscape:pagecheckerboard="0"
+     inkscape:showpageshadow="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3219" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata90">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Maxime DOYEN</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:source>https://www.gethomebank.org</dc:source>
+        <dc:title>Life Energy</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <path
+     id="path142"
+     style="fill:#bebebe;stroke-width:0.02"
+     d="m 3,14.94922 c 0,0.226666 0.077135,0.416978 0.2304688,0.570311 C 3.383802,15.672865 3.5741146,15.75 3.8007812,15.75 h 8.3980468 c 0.226666,0 0.416979,-0.07714 0.570312,-0.230468 0.153334,-0.153334 0.230469,-0.343646 0.230469,-0.570312 V 12.750001 H 11.4 v 1.400391 H 4.5996094 V 2.949219 H 11.4 v 1.226562 h 1.599609 v -2.02539 c 0,-0.226667 -0.07714,-0.41698 -0.230469,-0.570313 C 12.615807,1.426745 12.425494,1.349609 12.198828,1.349609 H 9.5994141 V 0.25 H 6.4001953 V 1.349609 H 3.8007812 c -0.2266667,0 -0.4169792,0.07714 -0.5703124,0.230469 C 3.0771354,1.733411 3,1.923724 3,2.150391 Z"
+     sodipodi:nodetypes="ssssssccccccccsssccccssss" />
+  <path
+     d="M 7.9888171,10.963621 C 7.6799104,10.654657 7.4379338,10.297632 7.2628871,9.8925464 7.0878404,9.4874624 7.000317,9.0686461 7.000317,8.6360975 7.000317,8.2035482 7.0826919,7.7761487 7.2474416,7.353899 7.4121919,6.931649 7.6799108,6.535146 8.0505983,6.16439 8.2908594,5.9240852 8.5877529,5.7181097 8.9412787,5.5464634 9.2948046,5.3748171 9.713544,5.2392166 10.197497,5.1396618 c 0.483954,-0.099555 1.036553,-0.1596311 1.657797,-0.1802286 0.621245,-0.020597 1.316285,0.00343 2.085118,0.072091 0.05492,0.7277802 0.07208,1.3972007 0.05147,2.0082614 -0.02059,0.6110612 -0.07722,1.162046 -0.169899,1.6529545 -0.09267,0.4909085 -0.223099,0.9200242 -0.391282,1.2873473 -0.168182,0.3673226 -0.375835,0.6745696 -0.62296,0.9217406 -0.363824,0.36389 -0.749957,0.629941 -1.158399,0.798154 -0.408443,0.168214 -0.825466,0.252321 -1.251071,0.252321 -0.4461977,0 -0.8820985,-0.08754 -1.3077025,-0.262619 -0.4256007,-0.175079 -0.7928543,-0.4171 -1.101761,-0.726063 z M 9.242,10.69842 c 0.1990733,0.11672 0.3033625,0.200827 0.5127325,0.25232 0.209369,0.05149 0.4238875,0.07684 0.6435545,0.07684 0.315771,0 0.628109,-0.06256 0.937014,-0.18958 0.308907,-0.127018 0.604085,-0.3315 0.885533,-0.613 0.123563,-0.123584 0.248841,-0.196853 0.375836,-0.4199931 C 12.723665,9.5818664 12.733327,9.290068 12.826,8.9296117 12.918671,8.5691542 12.988948,8.1331723 13.037,7.621666 13.085053,7.1101602 13.092327,6.6011828 13.058,5.894 12.721633,5.8802687 12.44221,5.8745673 12.020037,5.878 11.597864,5.8814333 11.177408,5.914208 10.758669,5.976 10.339933,6.0377927 9.9417888,6.137683 9.5642365,6.275 9.186687,6.4123171 8.8777817,6.6006952 8.6375206,6.841 8.3286139,7.1499631 8.2156977,7.3556139 8.099,7.6577116 7.9823018,7.9598087 7.924,8.2516074 7.924,8.5331078 7.924,8.9381927 8.001546,9.2935001 8.156,9.59903 8.3104534,9.9045613 8.4453024,10.119119 8.562,10.242704 8.8503126,9.6934359 9.1317712,9.0666397 9.6054275,8.562 10.079084,8.0573601 10.631683,7.743535 11.263224,7.4208401 10.768974,7.8533888 10.338221,8.5421652 9.9709662,9.088 9.6037111,9.6338359 9.427344,9.97064 9.242,10.69842 Z"
+     id="path151"
+     style="fill:#bebebe;stroke-width:0.0117678"
+     sodipodi:nodetypes="cssssssscccssssscccssssssscssssssscscsc" />
+</svg>

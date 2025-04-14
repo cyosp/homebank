@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -24,7 +24,7 @@
 //for the record, quicken is limited to 250
 #define TXN_MAX_SPLIT 62
 
-typedef struct _split Split;
+#include "hb-types.h"
 
 
 struct _split
@@ -46,6 +46,7 @@ void da_splits_sort(GPtrArray *splits);
 guint da_splits_length(GPtrArray *splits);
 gboolean da_splits_delete(GPtrArray *splits, Split *item);
 void da_splits_append(GPtrArray *splits, Split *item);
+Split *da_split_duplicate(Split *src);
 
 Split *da_splits_get(GPtrArray *splits, guint index);
 GPtrArray *da_splits_clone(GPtrArray *src_splits);

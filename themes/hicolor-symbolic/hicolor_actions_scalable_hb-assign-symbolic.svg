@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="16"
+   height="16"
+   id="svg3869"
+   version="1.1"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="hicolor_actions_scalable_hb-assign-symbolic.svg"
+   xml:space="preserve"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"><title
+     id="title1066">Assign</title><defs
+     id="defs3871"><style
+       type="text/css"
+       id="current-color-scheme">
+      .ColorScheme-Text {
+        color:#4d4d4d;
+      }
+      .ColorScheme-Background {
+        color:#eff0f1;
+      }
+      .ColorScheme-Highlight {
+        color:#3daee9;
+      }
+      .ColorScheme-ViewText {
+        color:#31363b;
+      }
+      .ColorScheme-ViewBackground {
+        color:#fcfcfc;
+      }
+      .ColorScheme-ViewHover {
+        color:#93cee9;
+      }
+      .ColorScheme-ViewFocus{
+        color:#3daee9;
+      }
+      .ColorScheme-ButtonText {
+        color:#31363b;
+      }
+      .ColorScheme-ButtonBackground {
+        color:#eff0f1;
+      }
+      .ColorScheme-ButtonHover {
+        color:#93cee9;
+      }
+      .ColorScheme-ButtonFocus{
+        color:#3daee9;
+      }
+      </style><inkscape:path-effect
+       effect="bspline"
+       id="path-effect1616"
+       is_visible="true"
+       lpeversion="1"
+       weight="33.333333"
+       steps="2"
+       helper_size="0"
+       apply_no_weight="true"
+       apply_with_weight="true"
+       only_selected="false" /><linearGradient
+       id="linearGradient3241-3"><stop
+         style="stop-color:#1b1f20;stop-opacity:1;"
+         offset="0"
+         id="stop3243-6" /><stop
+         style="stop-color:#babdb6;stop-opacity:1"
+         offset="1"
+         id="stop3245-7" /></linearGradient><linearGradient
+       id="linearGradient3220"><stop
+         style="stop-color:#2e3436;stop-opacity:1"
+         offset="0"
+         id="stop3222" /><stop
+         id="stop3228"
+         offset="0.64444447"
+         style="stop-color:#888a85;stop-opacity:1;" /><stop
+         style="stop-color:#555753;stop-opacity:1"
+         offset="1"
+         id="stop3224" /></linearGradient><linearGradient
+       id="linearGradient3338"><stop
+         style="stop-color:#eeeeec;stop-opacity:1"
+         offset="0"
+         id="stop3340" /><stop
+         id="stop3346"
+         offset="0.78888887"
+         style="stop-color:#ffffff;stop-opacity:1;" /><stop
+         style="stop-color:#eeeeec;stop-opacity:1"
+         offset="1"
+         id="stop3342" /></linearGradient><linearGradient
+       id="linearGradient5195"><stop
+         id="stop5199"
+         offset="0"
+         style="stop-color:#fef6b3;stop-opacity:1;" /><stop
+         id="stop5205"
+         offset="0.58336526"
+         style="stop-color:#dbc40b;stop-opacity:1" /><stop
+         id="stop5197"
+         offset="1"
+         style="stop-color:#fff48f;stop-opacity:1;" /></linearGradient></defs><sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="33.410795"
+     inkscape:cx="10.041665"
+     inkscape:cy="6.7942113"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1920"
+     inkscape:window-height="1003"
+     inkscape:window-x="1440"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:showpageshadow="false"
+     inkscape:snap-bbox="true"
+     inkscape:object-nodes="true"
+     inkscape:snap-global="false"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"><inkscape:grid
+       type="xygrid"
+       id="grid4132" /></sodipodi:namedview><metadata
+     id="metadata3874"><rdf:RDF><cc:Work
+         rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:creator><cc:Agent><dc:title>Maxime DOYEN</dc:title></cc:Agent></dc:creator><dc:source>https://www.gethomebank.org</dc:source><dc:title>Assign</dc:title></cc:Work></rdf:RDF></metadata><g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-326,-540.3622)"><path
+       d="m 329.3952,548.82063 -0.58419,-1.28866 -1.28867,-0.5842 1.28867,-0.5842 0.58419,-1.28866 0.5842,1.28866 1.28867,0.5842 -1.28867,0.5842 z m 2.72242,-1.87727 -0.84936,-1.87356 -1.87356,-0.84934 1.87356,-0.84937 0.84936,-1.87356 0.84935,1.87356 1.87356,0.84937 -1.87356,0.84934 z m 7.98559,1.22471 -0.38348,-0.84591 -0.84592,-0.38348 0.84592,-0.38348 0.38348,-0.84591 0.38347,0.84591 0.84592,0.38348 -0.84592,0.38348 z m -11.39894,7.3046 -1.60738,-1.6074 c -0.1395,-0.1395 -0.2156,-0.3012 -0.22827,-0.4851 -0.0127,-0.18389 0.0634,-0.35828 0.22827,-0.52314 l 11.13714,-11.29962 c 0.15109,-0.1533 0.33608,-0.22829 0.55167,-0.22829 0.2156,0 0.39949,0.0761 0.55168,0.22829 l 1.51226,1.51229 c 0.15219,0.1522 0.22828,0.33609 0.22828,0.55166 0,0.2156 -0.0772,0.39841 -0.22828,0.55169 l -11.13714,11.29962 c -0.15108,0.15329 -0.32022,0.22829 -0.50411,0.22829 -0.18389,0 -0.35193,-0.0761 -0.50412,-0.22829 z m 8.43753,-9.08466 2.73092,-2.89309 -0.9796,-0.97962 -2.73092,2.89308 z m -1.70035,-2.90579 -0.38348,-0.84592 -0.84592,-0.38347 0.84592,-0.38347 0.38348,-0.84591 0.38348,0.84591 0.84591,0.38347 -0.84591,0.38347 z"
+       id="path90"
+       style="fill:#bebebe;stroke-width:0.380467"
+       sodipodi:nodetypes="cccccccccccccccccccccccccccscccssccssssscccccccccccccc" /></g></svg>

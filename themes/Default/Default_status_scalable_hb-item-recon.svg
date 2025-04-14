@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="16"
+   height="16"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   version="1.0"
+   sodipodi:docname="Default_status_scalable_hb-item-recon.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title1167">Item Reconciled</title>
+  <defs
+     id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 494.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 494.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 318.78739 : 1"
+       id="perspective10" />
+    <linearGradient
+       id="linearGradient1731">
+      <stop
+         id="stop1733"
+         offset="0"
+         style="stop-color:#babdb6;stop-opacity:1;" />
+      <stop
+         id="stop1735"
+         offset="1"
+         style="stop-color:#888a8f;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient117665-6">
+      <stop
+         id="stop117669-4"
+         offset="0"
+         style="stop-color:#000000;stop-opacity:0;" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0;"
+         offset="0.5"
+         id="stop117681-6" />
+      <stop
+         id="stop117667-5"
+         offset="1"
+         style="stop-color:#000000;stop-opacity:1;" />
+    </linearGradient>
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath117661-0">
+      <circle
+         id="path117663-4"
+         style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate"
+         cx="104"
+         cy="107"
+         r="52" />
+    </clipPath>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     gridtolerance="10000"
+     guidetolerance="10"
+     objecttolerance="10"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="33.234019"
+     inkscape:cx="8.3498779"
+     inkscape:cy="9.1773433"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1003"
+     inkscape:window-x="1440"
+     inkscape:window-y="0"
+     inkscape:pagecheckerboard="true"
+     inkscape:window-maximized="1"
+     inkscape:showpageshadow="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid143" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Maxime DOYEN</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:source>https://www.gethomebank.org</dc:source>
+        <dc:title>Item Reconciled</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       id="path119836"
+       style="color:#000000;fill:#4e9a06;stroke-width:1;-inkscape-stroke:none"
+       d="M 7.9064267,0 C 3.5466258,0 0,3.5351137 0,7.8807614 c -2.033081e-7,4.3456476 3.5466257,7.8807606 7.9064267,7.8807606 4.3598013,0 7.9064263,-3.535113 7.9064263,-7.8807606 0,-0.4190155 -0.03357,-0.8298674 -0.09706,-1.231369 l -1.052278,1.1654028 c 2.13e-4,0.022074 0.0023,0.043842 0.0023,0.065967 0,3.7279978 -3.019149,6.7373468 -6.7592887,6.7373468 -3.7401392,0 -6.7592891,-3.009349 -6.7592888,-6.7373468 0,-3.7279971 3.0191497,-6.7373473 6.7592888,-6.7373473 1.2959786,0 2.5046267,0.3621539 3.5318607,0.9894929 L 11.97662,1.5348141 C 12.05631,1.4465781 12.141058,1.3654886 12.228108,1.2885403 10.984673,0.47588079 9.5011963,0 7.9064267,0 Z" />
+    <g
+       id="g5546"
+       transform="matrix(1.1294895,0,0,1.1258231,-1.1401497,-1.1442869)"
+       style="stroke-width:0.886797">
+      <path
+         d="M 4.4999885,8.4154194 7.3135351,11.229042 13.644016,4.194985"
+         id="path161"
+         sodipodi:nodetypes="ccc"
+         style="fill:none;fill-rule:evenodd;stroke:#4e9a06;stroke-width:3.10376;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <path
+         d="M 4.4999885,8.4154194 7.3135351,11.229042 13.644016,4.194985"
+         id="path163"
+         sodipodi:nodetypes="ccc"
+         style="fill:none;fill-rule:evenodd;stroke:#8ae234;stroke-width:1.24752;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+      <path
+         d="m 13.534113,3.4915759 c -0.163366,0.028801 -0.311294,0.1144706 -0.41764,0.241801 L 7.2915515,10.195907 5.0055523,7.9098472 c -0.2792136,-0.2792214 -0.7319138,-0.2792214 -1.0111274,0 -0.2360947,0.2361011 -0.2511044,0.5828629 -0.087898,0.8572742 0.029799,-0.0501 0.044799,-0.1107606 0.087898,-0.1538707 0.2792137,-0.2792214 0.7319138,-0.2792214 1.0111274,0 L 7.2915515,10.899322 13.116473,4.4367804 c 0.106346,-0.1273206 0.254274,-0.212961 0.41764,-0.241801 0.289043,-0.0479 0.578906,0.077401 0.725364,0.3297215 0.111227,-0.206401 0.116098,-0.4692423 0,-0.6814233 -0.143508,-0.2622713 -0.43043,-0.400542 -0.725364,-0.3517017 z"
+         id="path165"
+         style="display:inline;opacity:0.555985;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.77358;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;enable-background:new" />
+    </g>
+  </g>
+</svg>

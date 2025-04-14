@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -450,6 +450,21 @@ void cairo_user_set_rgbcol_over(cairo_t *cr, struct rgbcol *col, gboolean over)
 	else
 		cairo_set_source_rgb(cr, COLTOCAIRO(col->r), COLTOCAIRO(col->g), COLTOCAIRO(col->b));
 }
+
+
+void colorsheme_col8_to_rgba(struct rgbcol *col8, GdkRGBA *rgba)
+{
+
+	DB( g_print(" set %d %d %d\n", col8->r, col8->g, col8->b) );
+
+	rgba->red   = COLTOCAIRO((double)col8->r);
+	rgba->green = COLTOCAIRO((double)col8->g);
+	rgba->blue  = COLTOCAIRO((double)col8->b);
+	rgba->alpha = 1.0;
+	DB( g_print(" set %f %f %f\n", rgba->red, rgba->green, rgba->blue) );
+
+}
+
 
 
 void colorscheme_init(GtkColorScheme *scheme, gint index)

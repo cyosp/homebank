@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -91,6 +91,8 @@ static void da_datacol_free(DataCol *col)
 		g_free(col->label);
 		g_free(col->xlabel);
 		g_free(col->misclabel);
+		//5.9 leak
+		g_free(col);
 	}
 }
 
@@ -110,6 +112,8 @@ static void da_datarow_free(DataRow *row)
 		g_free(row->misclabel);
 		g_free(row->colexp);
 		g_free(row->colinc);
+		//5.9 leak
+		g_free(row);
 	}
 }
 
@@ -122,9 +126,15 @@ DataRow *row;
 	if(!row)
 		return NULL;
 
-	row->nbcols = nbcol;
 	row->colexp = g_malloc0((nbcol) * sizeof(gdouble));
 	row->colinc = g_malloc0((nbcol) * sizeof(gdouble));
+	row->nbcols = nbcol;
+	//5.9 check
+	if( !row->colexp || !row->colinc )
+	{
+		da_datarow_free(row);
+		return NULL;
+	}
 	return row;
 }
 
@@ -160,6 +170,7 @@ guint i;
 
 		DB1( g_print(" free total datarow\n") );
 		da_datarow_free(dt->totrow);
+		dt->totrow = NULL;
 
 		DB1( g_print(" free keyindex\n") );
 		g_free(dt->keyindex);
@@ -175,11 +186,13 @@ guint i;
 
 static DataTable *da_datatable_malloc(gint grpby, gint intvl, Filter *flt)
 {
-DataTable *dt = g_malloc0(sizeof(DataTable));
+DataTable *dt;
+gboolean okcols, okrows;
 guint i;
 
 	DB1( g_print("\n[report] da_datatable_malloc: %p\n", dt) );
 	
+	dt = g_malloc0(sizeof(DataTable));
 	if(!dt)
 		return NULL;
 
@@ -193,32 +206,52 @@ guint i;
 
 	DB1( g_print(" alloc %d keyindex\n", dt->nbkeys) );
 	dt->keyindex = g_malloc0(dt->nbkeys * sizeof(gpointer));
+	//ordered list to insert cat before subcat
+	DB1( g_print(" alloc %d keylist\n", dt->nbrows) );
+	dt->keylist = g_malloc0( dt->nbrows * sizeof(guint32) );
 
-	DB1( g_print(" alloc %d rows\n", dt->nbrows) );
+	DB1( g_print(" alloc %d row vector\n", dt->nbrows) );
 	dt->rows = g_malloc0(dt->nbrows * sizeof(gpointer));
+
+	DB1( g_print(" alloc %d col vector\n", dt->nbcols) );
+	dt->cols = g_malloc0(dt->nbcols * sizeof(gpointer));
+
+	DB1( g_print(" alloc 1 total row\n") );
+	dt->totrow = da_datarow_malloc(dt->nbcols);
+
+	//5.9 check
+	if( !dt->keyindex || !dt->keylist || !dt->rows || !dt->cols || !dt->totrow )
+	{
+		da_datatable_free(dt);
+		return NULL;
+	}
+
+	okcols = okrows = TRUE;
+	DB1( g_print(" alloc %d rows\n", dt->nbrows) );
 	for(i=0;i<dt->nbrows;i++)
 	{
 	DataRow *dr = da_datarow_malloc(dt->nbcols);
 
-		//dr->label = ;
-		//dr.pos = ;
+		//5.9 check
+		if( !dr ) { okcols = FALSE; break; }
 		dt->rows[i] = dr;
 	}
 
-	DB1( g_print(" alloc total row\n") );
-	dt->totrow = da_datarow_malloc(dt->nbcols);
-
 	DB1( g_print(" alloc %d cols\n", dt->nbcols) );
-	dt->cols = g_malloc0(dt->nbcols * sizeof(gpointer));
 	for(i=0;i<dt->nbcols;i++)
 	{
 	DataCol *dc = da_datacol_malloc();
+
+		//5.9 check
+		if( !dc ) { okrows = FALSE; break; }
 		dt->cols[i] = dc;
 	}
 
-	//ordered list to insert cat before subcat
-	DB1( g_print(" alloc %d keylist\n", dt->nbrows) );
-	dt->keylist = g_malloc0( dt->nbrows * sizeof(guint32) );
+	if( !okcols || !okrows )
+	{
+		da_datatable_free(dt);
+		return NULL;
+	}
 
 	return dt;
 }
@@ -926,7 +959,7 @@ static void datatable_add(DataTable *dt, guint32 key, guint32 col, gdouble amoun
 {
 DataRow *dr;
 
-	if( hb_amount_equal(amount, 0.0) == TRUE )
+	if( hb_amount_cmp(amount, 0.0) == 0 )
 		return;
 
 	dr = report_data_get_row(dt, key); 
@@ -1069,13 +1102,12 @@ GList *lnk_txn;
 		
 			//5.5 forgot to filter...
 			//#1886123 include remind based on user prefs
-			if( (txn->status == TXN_STATUS_REMIND) && (PREFS->includeremind == FALSE) )
+			if( !transaction_is_balanceable(txn) )
 				goto next_txn;
 				
-			if( !( txn->status == TXN_STATUS_VOID ) )
 			//enable filters : make no sense or not
 			//if( (filter_txn_match(flt, txn) == 1) )
-			{
+			//{
 				pos = report_items_get_key(grpby, flt->mindate, txn);
 
 				amount = report_txn_amount_get(flt, txn);
@@ -1087,7 +1119,7 @@ GList *lnk_txn;
 					txnsign = datatable_data_get_txnsign(dt, txn->kcat, amount);
 					datatable_add(dt, pos, 0, amount, txnsign, TRUE);
 				}
-			}
+			//}
 		next_txn:
 			lnk_txn = g_list_next(lnk_txn);
 		}
@@ -1326,7 +1358,7 @@ GDate *post_date;
 					curdate = scheduled_date_get_next_post(post_date, arc, curdate);
 					nbinsert++;
 					// break if over limit
-					if( (arc->flags & OF_LIMIT) && (nbinsert >= arc->limit) )
+					if( (arc->rec_flags & TF_LIMIT) && (nbinsert >= arc->limit) )
 						break;
 				}
 			}
@@ -1656,11 +1688,22 @@ gint nbintvl = 0;
 
 	g_date_free(date2);
 	g_date_free(date1);
-	
+
+	//5.9 check
+	if( nbintvl < 0 )
+	{
+		g_warning("report: intvl<0");
+
+		#if MYDEBUG
+		hb_print_date(jfrom, NULL);
+		hb_print_date(jto, NULL);
+		#endif
+
+		nbintvl = 0;
+	}
+
 	return 1 + nbintvl;
 }
-
-
 
 
 //used in list-report / rep- balance/budget/time 

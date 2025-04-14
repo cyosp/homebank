@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -660,7 +660,7 @@ guint count = 0;
 		rawjson = g_strdup(g_bytes_get_data(body, NULL));
 		hb_string_inline(rawjson);
 
-		DB( g_printf("\nbody: '%s'\n", rawjson ) );
+		DB( g_printf(" body: '%s'\n", rawjson ) );
 
 		//get date
 		p = g_strstr_len(rawjson, -1, "\"date\"");
@@ -669,7 +669,7 @@ guint count = 0;
 			strncpy(strbuf, p+8, 10);
 			strbuf[10]='\0';
 			date = hb_date_get_julian(strbuf, PRF_DATEFMT_YMD);
-			DB( g_printf("\n-date: %.10s %d\n", strbuf, date) );
+			DB( g_printf(" date: %.10s %d\n", strbuf, date) );
 		}
 
 		//get rates
@@ -683,7 +683,7 @@ guint count = 0;
 				strncpy(isocode, strbuf, 3);
 				isocode[3]='\0';
 				rate = g_ascii_strtod(strbuf+4, NULL);
-				DB( g_printf("\npair: '%s' '%s' %f\n", strbuf, isocode, rate ) );
+				DB( g_printf(" pair: '%s' > '%s' %f\n", strbuf, isocode, rate ) );
 
 				if( currency_rate_update(isocode, rate, date) )
 					count++;
@@ -765,7 +765,7 @@ gboolean retval = TRUE;
 	DB( g_printf("\n[currency] sync online\n") );
 
 	query = api_fixerio_query_build();
-	DB( g_printf("query: '%s'\n", query) );
+	DB( g_printf(" query: '%s'\n", query) );
 
 	/*
 	//test API
@@ -786,9 +786,9 @@ gboolean retval = TRUE;
 		//DB( g_print("status_code: %d %d\n", msg->status_code, SOUP_STATUS_IS_SUCCESSFUL(msg->status_code) ) );
 		body = soup_session_send_and_read (session, msg, NULL, error);
 		status = soup_message_get_status (msg);
-		DB( g_print("status_code: %d %d\n", status, SOUP_STATUS_IS_SUCCESSFUL(status) ) );
-		DB( g_print("reason: '%s'\n", soup_message_get_reason_phrase(msg)) );
-		DB( g_print("datas: '%s'\n", (gchar *)g_bytes_get_data(body, NULL)) );
+		DB( g_print(" status_code: %d %d\n", status, SOUP_STATUS_IS_SUCCESSFUL(status) ) );
+		DB( g_print(" reason: '%s'\n", soup_message_get_reason_phrase(msg)) );
+		DB( g_print(" datas: '%s'\n", (gchar *)g_bytes_get_data(body, NULL)) );
 
 		if( node != NULL )
 		{

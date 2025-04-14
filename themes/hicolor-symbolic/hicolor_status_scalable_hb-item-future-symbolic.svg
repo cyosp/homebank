@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="16"
+   height="16"
+   viewBox="0 0 4.2333332 4.233333"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="hicolor_status_scalable_hb-item-future-symbolic.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title1049">Item Future</title>
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="22.4"
+     inkscape:cx="8.8169643"
+     inkscape:cy="5.8482143"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1003"
+     inkscape:window-x="1440"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:pagecheckerboard="0"
+     inkscape:snap-global="false"
+     units="px"
+     width="16px"
+     inkscape:showpageshadow="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid10" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Item Future</dc:title>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Maxime DOYEN</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:source>https://www.gethomebank.org</dc:source>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-273)">
+    <path
+       d="m 2.7081604,276.91074 v -0.29331 h 1.0461124 v -2.102 H 0.82124748 v 1.07544 H 0.52794492 v -2.00424 q 0,-0.11733 0.0879907,-0.2053 0.0879908,-0.088 0.20531178,-0.088 H 1.1389919 V 273 h 0.3177445 v 0.2933 H 3.1187838 V 273 h 0.3177445 v 0.2933 h 0.3177445 q 0.1173215,0 0.2053119,0.088 0.08799,0.088 0.08799,0.20531 v 3.0308 q 0,0.11734 -0.08799,0.2053 -0.08799,0.088 -0.2053119,0.088 z m -1.2025405,0.32262 -0.2053117,-0.2053 0.5523865,-0.55729 H 0.18575867 v -0.2933 H 1.8526947 l -0.5523865,-0.55727 0.2053117,-0.20531 0.9092378,0.90924 z M 0.82124748,274.22212 H 3.7542728 v -0.63549 H 0.82124748 Z m 0,0 v -0.63549 z"
+       id="path112"
+       style="fill:#bebebe;stroke-width:0.0977675" />
+  </g>
+</svg>

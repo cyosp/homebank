@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -38,6 +38,9 @@
 #else
 #define DB(x);
 #endif
+
+//keypress
+#define	DBK(x)	//(x);
 
 
 enum {
@@ -160,6 +163,8 @@ gint i;
 
 	g_date_strftime (buf, 127, "%x", &d);
 
+	DB( g_print(" dmy'04/07/1976' > '%s'\n", buf ));
+
 	hb_date_fill_parse_tokens (buf, &testpt);
 
 	using_twodigit_years = FALSE;
@@ -192,82 +197,66 @@ gint i;
 }
 
 
-static void
-hb_date_parse_token_reorder(GDateParseTokens *pt, GDateDay *nday, GDateMonth *nmonth, GDateYear *nyear)
-{
-	//DMY
-	if( dmy_order[0] == G_DATE_DAY )
-	{
-		*nday   = pt->n[0];
-		*nmonth = pt->n[1];
-		*nyear  = pt->n[2];
-	}
-	else
-	//MDY
-	if( dmy_order[0] == G_DATE_MONTH )
-	{
-		*nmonth = pt->n[0];
-		*nday   = pt->n[1];
-		*nyear  = pt->n[2];
-	}
-	else
-	//YMD
-	if( dmy_order[0] == G_DATE_YEAR )
-	{
-		*nyear  = pt->n[0];
-		*nmonth = pt->n[1];
-		*nday   = pt->n[2];
-	}
-
-	DB( g_print(" token converted dmy: %02d %02d %04d\n", *nday, *nmonth, *nyear) );
-
-}
-
-
 static void 
 hb_date_parse_tokens(GDate *date, const gchar *str)
 {
-GDateParseTokens pt;
 GDate tokendate;
-GDateDay nday;
-GDateMonth nmonth;
-GDateYear nyear;
-gboolean tokened = FALSE;
+gchar **num_array = NULL;
+gint num_ints;	
 
-	// initialize with today's date
-	g_date_set_time_t(&tokendate, time(NULL));
-	nday   = g_date_get_day(&tokendate);
-	nmonth = g_date_get_month(&tokendate);
-	nyear  = g_date_get_year(&tokendate);
+	num_array = g_strsplit_set(str, " /-.", -1);
+	num_ints = g_strv_length( num_array );
 
-	hb_date_fill_parse_tokens(str, &pt);
-	DB( g_print(" token raw %d values: %d %d %d\n", pt.num_ints, pt.n[0], pt.n[1], pt.n[2]) );
+	DB( g_print(" num ints: %d\n", num_ints) );
+
+	//invalid date
+	g_date_clear(&tokendate, 1);
 
 	//user input day/month or month/day
-	if( pt.num_ints == 2 )
+	if( num_ints == 2 )
 	{
-		hb_date_parse_token_reorder(&pt, &nday, &nmonth, &nyear);
+	gint num1 = atoi(num_array[0]);
+	gint num2 = atoi(num_array[1]);
 
-		g_date_set_day(&tokendate, nday);
-		g_date_set_month(&tokendate, nmonth);
-		tokened = TRUE;
+		if( num1 > 0 && num2 > 0 )
+		{
+			g_date_set_time_t(&tokendate, time(NULL));
+			//DMY
+			if( dmy_order[0] == G_DATE_DAY )
+			{
+				g_date_set_day(&tokendate, num1);
+				g_date_set_month(&tokendate, num2);
+				DB( g_print(" set d/m: %d %d\n", num1, num2) );
+			}
+			else
+			if( dmy_order[0] == G_DATE_MONTH )
+			{
+				g_date_set_month(&tokendate, num1);
+				g_date_set_day(&tokendate, num2);
+				DB( g_print(" set m/d: %d %d\n", num1, num2) );
+			}	
+		}
 	}
 	else
 	//user input day
-	if( pt.num_ints == 1 )
+	if( num_ints == 1 )
 	{
-		nday = pt.n[0];
-		g_date_set_day(&tokendate, nday);
-		tokened = TRUE;
+		g_date_set_time_t(&tokendate, time(NULL));
+		g_date_set_day(&tokendate, atoi(num_array[0]));
+		DB( g_print(" set d: %d\n", atoi(num_array[0])) );
 	}
+	g_strfreev(num_array);
 
 	//update output date if tokendate is valid 
-	if( tokened == TRUE && g_date_valid(&tokendate) )
+	if( g_date_valid(&tokendate) )
 	{
 		g_date_set_julian(date, g_date_get_julian(&tokendate));
 	}
 	else
+	{
 		g_date_clear(date, 1);
+		DB( g_print(" quick set fail\n") );
+	}
 }
 
 
@@ -326,10 +315,11 @@ const gchar *str;
 	DB( g_print("\n[dateentry] '%s' parse date\n", (gchar *)gtk_widget_get_name(GTK_WIDGET(self))) );
 
 	str = gtk_entry_get_text (GTK_ENTRY (priv->entry));
-	DB( g_print(" inputstr='%s'\n", str) );
+	DB( g_print(" rawstr '%s'\n", str) );
 
 	//1) give a try to tokens = day, day/month, month/day
 	hb_date_parse_tokens(priv->date, str);
+	DB( g_print(" 1/ quick parsed :: valid=%d\n", g_date_valid(priv->date)) );
 
 	//2) invalid: glib failover
 	if(!g_date_valid(priv->date))
@@ -337,10 +327,11 @@ const gchar *str;
 		//2) we parse the string according to the locale
 		g_date_set_parse (priv->date, str);
 
-		DB( g_print(" 1/ glib parsed :: valid=%d\n", g_date_valid(priv->date)) );
+		DB( g_print(" 2/ glib parsed :: valid=%d > %d %d %d\n", g_date_valid(priv->date),
+			g_date_get_day(priv->date), g_date_get_month(priv->date), g_date_get_year(priv->date) ) );
 
 		//#1956185 adjust for 2 digits year, note: IBM is windowing 40, not 60
-		if( g_date_valid(priv->date) == TRUE )
+		if( using_twodigit_years == TRUE && g_date_valid(priv->date) == TRUE )
 		{
 			if( g_date_get_year(priv->date) < 1970 )
 			{
@@ -491,13 +482,13 @@ GdkModifierType state;
 guint keyval;
 guint action;
 
-	DB( g_print("\n[dateentry] '%s' entry key pressed", (gchar *)gtk_widget_get_name(GTK_WIDGET(dateentry))) );
+	DBK( g_print("\n[dateentry] '%s' entry key pressed", (gchar *)gtk_widget_get_name(GTK_WIDGET(dateentry))) );
 
 	gdk_event_get_keyval(event, &keyval);
 	gdk_event_get_state (event, &state);
 
-	DB( g_print(" state: %s %s\n", (state & GDK_SHIFT_MASK) ? "shift" : "", (state & GDK_CONTROL_MASK) ? "ctrl" : "" ) );
-	DB( g_print(" keyval: %s %s\n", (keyval == GDK_KEY_Up) ? "up" : "",  (keyval == GDK_KEY_Down) ? "down" : "") );
+	DBK( g_print(" state: %s %s\n", (state & GDK_SHIFT_MASK) ? "shift" : "", (state & GDK_CONTROL_MASK) ? "ctrl" : "" ) );
+	DBK( g_print(" keyval: %s %s\n", (keyval == GDK_KEY_Up) ? "up" : "",  (keyval == GDK_KEY_Down) ? "down" : "") );
 
 	if( (gdk_event_get_event_type(event) != GDK_KEY_PRESS) )
 		return FALSE;
@@ -514,7 +505,7 @@ guint action;
 		action |= (state & GDK_CONTROL_MASK) ? 4 : 0;
 		action |= (keyval == GDK_KEY_Down)   ? 1 : 0;
 
-		DB( g_print(" action: %d\n", action) );
+		DBK( g_print(" action: %d\n", action) );
 
 		switch(action)
 		{
@@ -541,7 +532,7 @@ gtk_date_entry_cb_entry_activate(GtkWidget *gtkentry, gpointer user_data)
 {
 GtkDateEntry *dateentry = user_data;
 
-	DB( g_print("\n[dateentry] '%s' entry_activate\n", (gchar *)gtk_widget_get_name(GTK_WIDGET(dateentry))) );
+	DB( g_print("\n- - - - - - - -\n[dateentry] '%s' entry_activate\n", (gchar *)gtk_widget_get_name(GTK_WIDGET(dateentry))) );
 
 	parse_date(dateentry);
 	//5.8 done in parse_date
@@ -554,7 +545,7 @@ gtk_date_entry_cb_entry_focus_out(GtkWidget *widget, GdkEventFocus *event, gpoin
 {
 GtkDateEntry *dateentry = user_data;
 
-	DB( g_print("\n[dateentry] entry focus-out-event %d\n", gtk_widget_is_focus(GTK_WIDGET(dateentry))) );
+	DB( g_print("\n- - - - - - - -\n[dateentry] entry focus-out-event %d\n", gtk_widget_is_focus(GTK_WIDGET(dateentry))) );
 
 	parse_date(dateentry);
 	//5.8 done in parse_date
@@ -697,12 +688,12 @@ GtkWidget *vbox;
 	//todo: see if really useful
 	gtk_entry_set_width_chars(GTK_ENTRY(priv->entry), 16);
 	gtk_entry_set_max_width_chars(GTK_ENTRY(priv->entry), 16);
-	gtk_box_pack_start (GTK_BOX (dateentry), priv->entry, TRUE, TRUE, 0);
+	hbtk_box_prepend (GTK_BOX (dateentry), priv->entry);
 
 	priv->button = gtk_button_new ();
-	priv->arrow = gtk_image_new_from_icon_name ("pan-down-symbolic", GTK_ICON_SIZE_BUTTON);
+	priv->arrow = hbtk_image_new_from_icon_name_16 ("pan-down-symbolic");
 	gtk_button_set_image(GTK_BUTTON(priv->button), priv->arrow);
-	gtk_box_pack_end (GTK_BOX (dateentry), priv->button, FALSE, FALSE, 0);
+	gtk_box_append (GTK_BOX (dateentry), priv->button);
 
 	priv->popover = gtk_popover_new (priv->button);
 	gtk_popover_set_position(GTK_POPOVER(priv->popover), GTK_POS_BOTTOM);
@@ -715,10 +706,10 @@ GtkWidget *vbox;
 	gtk_widget_set_margin_bottom (vbox, 10);
 
 	priv->calendar = gtk_calendar_new ();
-	gtk_box_pack_start(GTK_BOX(vbox), priv->calendar, FALSE, FALSE, 0);
+	gtk_box_prepend(GTK_BOX(vbox), priv->calendar);
 
 	priv->BT_today = gtk_button_new_with_mnemonic ( gettext("_Today"));
-	gtk_box_pack_start(GTK_BOX(vbox), priv->BT_today, FALSE, FALSE, 0);
+	gtk_box_prepend(GTK_BOX(vbox), priv->BT_today);
 	
 	gtk_widget_show_all (GTK_WIDGET(dateentry));
 

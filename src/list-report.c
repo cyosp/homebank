@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -185,7 +185,7 @@ gchar buf[16], *retval = "";
 					break;		
 			}
 
-			if( !hb_amount_equal(rate, 0.0) )
+			if( hb_amount_cmp(rate, 0.0) != 0 )
 			{
 				g_snprintf(buf, sizeof(buf), "%.2f %%", rate);
 				retval = buf;
@@ -732,7 +732,7 @@ gint pos;
 		}
 
 		value = exp + inc;
-		if( hb_amount_compare(value, 0.0) != 0 )
+		if( hb_amount_cmp(value, 0.0) != 0 )
 		{
 			dodisplay = TRUE;
 			if(colid==LST_REP_COLID_AVERAGE)
@@ -744,7 +744,7 @@ gint pos;
 			if( pos == LST_REPORT_POS_TOTAL )
 			{
 				weight = PANGO_WEIGHT_BOLD;
-				if( hb_amount_compare(exp, 0.0) != 0 ) // test exp is enough
+				if( hb_amount_cmp(exp, 0.0) != 0 ) // test exp is enough
 					dodisplay = TRUE;
 			}
 		}
@@ -841,17 +841,17 @@ DataRow *dr1, *dr2;
 				case LST_REP_COLID_AVERAGE:
 					val1 = (dr1->rowexp + dr1->rowinc) / dr1->nbcols;
 					val2 = (dr2->rowexp + dr2->rowinc) / dr2->nbcols;
-					retval = hb_amount_compare(val1, val2);
+					retval = hb_amount_cmp(val1, val2);
 					break;
 				case LST_REP_COLID_TOTAL:
 					val1 = (dr1->rowexp + dr1->rowinc);
 					val2 = (dr2->rowexp + dr2->rowinc);
-					retval = hb_amount_compare(val1, val2);
+					retval = hb_amount_cmp(val1, val2);
 					break;
 				default:
 					val1 = dr1->colexp[csid] + dr1->colinc[csid];
 					val2 = dr2->colexp[csid] + dr2->colinc[csid];
-					retval = hb_amount_compare(val1, val2);
+					retval = hb_amount_cmp(val1, val2);
 					break;					
 			}
 		}

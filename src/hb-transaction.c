@@ -1,5 +1,5 @@
 /*  HomeBank -- Free, easy, personal accounting for everyone.
- *  Copyright (C) 1995-2024 Maxime DOYEN
+ *  Copyright (C) 1995-2025 Maxime DOYEN
  *
  *  This file is part of HomeBank.
  *
@@ -22,6 +22,10 @@
 #include "hb-transaction.h"
 #include "hb-tag.h"
 #include "hb-split.h"
+
+//TODO: move this
+#include "ui-dialogs.h"
+
 
 /****************************************************************************/
 /* Debug macro								    */
@@ -625,14 +629,17 @@ Account *acc;
 	{
 		child = transaction_xfer_child_new_from_txn(stxn);
 
-		stxn->flags |= (OF_CHANGED | OF_INTXFER);
-		child->flags |= (OF_ADDED | OF_INTXFER);
+		stxn->flags |= (OF_INTXFER);
+		child->flags |= (OF_INTXFER);
+
+		stxn->dspflags |= (FLAG_TMP_EDITED);
+		child->dspflags |= (FLAG_TMP_ADDED);
 
 		/* update acc flags */
 		acc = da_acc_get( child->kacc );
 		if(acc != NULL)
 		{
-			acc->flags |= AF_ADDED;
+			acc->dspflags |= FLAG_ACC_TMP_ADDED;
 
 			//strong link
 			guint maxkey = da_transaction_get_max_kxfer();
@@ -819,7 +826,7 @@ Transaction *child = NULL;
 				transaction_xfer_change_to_normal(ope);
 				da_transaction_set_flag(ope);				
 			}
-			ope->flags &= ~(OF_CHANGED);
+			ope->dspflags &= ~(FLAG_TMP_EDITED);
 			break;
 	}
 
@@ -887,13 +894,16 @@ Account *dstacc;
 
 	DB( g_print("\n[transaction] xfer_change_to_child\n") );
 
-	stxn->flags  |= (OF_CHANGED | OF_INTXFER);
-	child->flags |= (OF_CHANGED | OF_INTXFER);
+	stxn->flags  |= (OF_INTXFER);
+	child->flags |= (OF_INTXFER);
+
+	stxn->dspflags  |= (FLAG_TMP_EDITED);
+	child->dspflags |= (FLAG_TMP_EDITED);
 
 	/* update acc flags */
 	dstacc = da_acc_get( child->kacc);
 	if(dstacc != NULL)
-		dstacc->flags |= AF_CHANGED;
+		dstacc->dspflags |= FLAG_ACC_TMP_EDITED;
 
 	//strong link
 	guint maxkey = da_transaction_get_max_kxfer();
@@ -937,7 +947,7 @@ Account *acc;
 	/* update acc flags */
 	acc = da_acc_get( child->kacc);
 	if(acc != NULL)
-		acc->flags |= AF_CHANGED;
+		acc->dspflags |= FLAG_ACC_TMP_EDITED;
 
 	account_balances_sub (child);
 
@@ -950,7 +960,7 @@ Account *acc;
 	if( PREFS->xfer_syncstat == TRUE )
 	{
 		child->status = s_txn->status;
-		child->flags |= OF_CHANGED;
+		child->dspflags |= FLAG_TMP_EDITED;
 	}	
 
 	//#1673260 enable different currency
@@ -966,7 +976,7 @@ Account *acc;
 		child->xferamount = s_txn->amount;
 	}
 
-	child->flags	= child->flags | OF_CHANGED;
+	child->dspflags |= FLAG_TMP_EDITED;
 	//#1295877 flag update to avoid bad column display
 	child->flags &= ~(OF_INCOME);
 	if( child->amount > 0 )
@@ -1032,7 +1042,7 @@ Transaction *dst;
 			GLOBALS->deltxn_list = g_slist_prepend(GLOBALS->deltxn_list, dst);
 
 			//#1691992
-			acc->flags |= AF_CHANGED;
+			acc->dspflags |= FLAG_ACC_TMP_EDITED;
 		}
 	}
 	
@@ -1100,7 +1110,8 @@ gchar *retval = "";
 		retval = "R";
 	else
 	//#2051307 5.7.4 allow remind 
-	if(txn->status == TXN_STATUS_REMIND)
+	//if(txn->status == TXN_STATUS_REMIND)
+	if(txn->flags & OF_REMIND)
 		retval = "?";
 	else
 	if(txn->status == TXN_STATUS_VOID)
@@ -1112,15 +1123,17 @@ gchar *retval = "";
 
 gboolean transaction_is_balanceable(Transaction *ope)
 {
-gboolean retval = TRUE;
-
-	if( (ope->status == TXN_STATUS_VOID) )
-		retval = FALSE;
+	//#1875100/#2061227
+	if( ope->flags & (OF_ISIMPORT|OF_ISPAST) )
+		return FALSE;
 	//#1812598
-	else if( (ope->status == TXN_STATUS_REMIND) && (PREFS->includeremind == FALSE) )
-		retval = FALSE;
+	//if( (ope->status == TXN_STATUS_REMIND) && (PREFS->includeremind == FALSE) )
+	if( (ope->flags & OF_REMIND) && (PREFS->includeremind == FALSE) )
+		return FALSE;
+	if( (ope->status == TXN_STATUS_VOID) )
+		return FALSE;
 
-	   return retval;
+	return TRUE;
 }
 
 
@@ -1140,7 +1153,7 @@ Account *acc;
 	}
 	
 	g_queue_remove(acc->txn_queue, ope);
-	acc->flags |= AF_CHANGED;
+	acc->dspflags |= FLAG_ACC_TMP_EDITED;
 	//#1419304 we keep the deleted txn to a trash stack	
 	//da_transaction_free(entry);
 	//g_trash_stack_push(&GLOBALS->txn_stk, ope);
@@ -1159,7 +1172,7 @@ Account *acc;
 	if(acc == NULL)
 		return;	
 
-	acc->flags |= AF_CHANGED;
+	acc->dspflags |= FLAG_ACC_TMP_EDITED;
 	
 	//#1581863 store reconciled date
 	if( saverecondate == TRUE )
@@ -1241,11 +1254,12 @@ gboolean do_add;
 			}
 		}
 
-		acc->flags |= AF_ADDED;
+		acc->dspflags |= FLAG_ACC_TMP_ADDED;
 
 		DB( g_print(" + add normal %p to acc %d\n", newope, acc->key) );
 		//da_transaction_append(newope);
 		da_transaction_insert_sorted(newope);
+		newope->dspflags |= FLAG_TMP_ADDED;
 
 		account_balances_add(newope);
 
@@ -1260,6 +1274,18 @@ gboolean do_add;
 		//#1581863 store reconciled date
 		if( newope->status == TXN_STATUS_RECONCILED )
 			acc->rdate = GLOBALS->today;
+
+		//#2061227 flag txn to be reviewed if too old
+		if( ( PREFS->safe_pend_recon == TRUE && (acc->rdate > 0 && newope->date < acc->rdate) )
+		 ||	( PREFS->safe_pend_past == TRUE && (newope->date < (GLOBALS->today - PREFS->safe_pend_past_days)) )
+		)
+		{
+			DB( g_print(" flag as in past to approve\n") );
+			newope->flags |= OF_ISPAST;
+			//TODO: move this
+			acc->nb_pending++;
+			acc->flags |= AF_HASNOTICE;
+		}
 	}
 	else
 	{
@@ -1291,10 +1317,10 @@ Account *oacc, *nacc;
 			g_queue_push_tail(nacc->txn_queue, txn);
 			txn->kacc = nacc->key;
 			txn->kcur = nacc->kcur;
-			nacc->flags |= AF_CHANGED;
+			nacc->dspflags |= FLAG_ACC_TMP_EDITED;
 			account_balances_add(txn);
 			//#1865083 src acc also changed (balance)
-			oacc->flags |= AF_CHANGED;
+			oacc->dspflags |= FLAG_ACC_TMP_EDITED;
 			return TRUE;
 		}
 		else
@@ -1323,7 +1349,7 @@ gboolean retval = FALSE;
 	if( ( stxn->kcur == dtxn->kcur )
 		&& ( dtxn->date <= (stxn->date + daygap) )
 		&& ( dtxn->date >= (stxn->date - daygap) )
-		&& ( hb_amount_equal(stxn->amount, dtxn->amount) )
+		&& ( hb_amount_cmp(stxn->amount, dtxn->amount) == 0 )
 	 	//5.8 removed memo, later propose option
 		//&& (hb_string_compare(stxn->memo, dtxn->memo) == 0)
 		//todo: later propose option category/payee
@@ -1335,6 +1361,60 @@ gboolean retval = FALSE;
 }
 
 
+void transaction_check_chkcatsign_unmark(Account *acc)
+{
+GList *lnk_txn;
+
+	lnk_txn = g_queue_peek_tail_link(acc->txn_queue);
+	while (lnk_txn != NULL)
+	{
+	Transaction *stxn = lnk_txn->data;
+
+		stxn->dspflags &= ~(FLAG_TMP_CHKSIGN);
+		lnk_txn = g_list_previous(lnk_txn);
+	}
+}
+
+
+gint transaction_check_chkcatsign_mark(Account *acc)
+{
+GList *lnk_txn;
+gint count = 0;
+
+	//mark category sign
+	lnk_txn = g_queue_peek_tail_link(acc->txn_queue);
+	while (lnk_txn != NULL)
+	{
+	Transaction *txn = lnk_txn->data;
+
+		DB( g_print("------\n eval src: %d, '%s', '%s', %.2f\n", stxn->date, stxn->number, stxn->memo, stxn->amount) );
+
+		if( (txn->flags & OF_INTXFER) == FALSE )
+		{
+			txn->dspflags &= ~(FLAG_TMP_CHKSIGN);
+			if(txn->amount != 0.0)
+			{
+			gint type  = (txn-> amount > 0) ? 1 : -1;
+			Category *cat = da_cat_get(txn->kcat);
+
+				if( cat != NULL && (category_type_get(cat) != type) )
+				{
+					txn->dspflags |= FLAG_TMP_CHKSIGN;
+					count++;
+				}
+			}
+		}
+		lnk_txn = g_list_previous(lnk_txn);
+	}
+
+	DB( g_print(" - found: %d\n", count ) );
+
+	return count;
+}
+
+
+
+
 void transaction_similar_unmark(Account *acc)
 {
 GList *lnk_txn;
@@ -1344,7 +1424,7 @@ GList *lnk_txn;
 	{
 	Transaction *stxn = lnk_txn->data;
 
-		stxn->dspflags &= ~(TXN_DSPFLG_DUPSRC|TXN_DSPFLG_DUPDST);
+		stxn->dspflags &= ~(FLAG_TMP_DUPSRC|FLAG_TMP_DUPDST);
 		stxn->dupgid = 0;
 		//stxn->marker = TXN_MARK_NONE;
 		lnk_txn = g_list_previous(lnk_txn);
@@ -1414,14 +1494,14 @@ gchar tmpgid = 1;
 			}
 				
 			//if( dtxn->marker == TXN_MARK_NONE )
-			if( (dtxn->dspflags & (TXN_DSPFLG_DUPSRC|TXN_DSPFLG_DUPDST)) == 0 )
+			if( (dtxn->dspflags & (FLAG_TMP_DUPSRC|FLAG_TMP_DUPDST)) == 0 )
 			{
 				if( transaction_similar_match(stxn, dtxn, daygap) )
 				{
 					//stxn->marker = TXN_MARK_DUPSRC;
 					//dtxn->marker = TXN_MARK_DUPDST;
-					stxn->dspflags |= TXN_DSPFLG_DUPSRC;
-					dtxn->dspflags |= TXN_DSPFLG_DUPDST;
+					stxn->dspflags |= FLAG_TMP_DUPSRC;
+					dtxn->dspflags |= FLAG_TMP_DUPDST;
 					stxn->dupgid = tmpgid;
 					dtxn->dupgid = tmpgid;
 					DB( g_print(" = dtxn marker=%d\n", dtxn->dspflags) );
@@ -1439,7 +1519,7 @@ gchar tmpgid = 1;
 	
 		DB( g_print(" = stxn marker=%d\n", stxn->dspflags) );
 		//if( stxn->marker == TXN_MARK_DUPSRC )
-		if( stxn->dspflags & TXN_DSPFLG_DUPSRC )
+		if( stxn->dspflags & FLAG_TMP_DUPSRC )
 		{
 			tmpgid++;
 			nbdup++;
