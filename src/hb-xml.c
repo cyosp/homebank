@@ -50,7 +50,7 @@ static void homebank_upgrade_to_v02(void)
 GList *lst_acc, *lnk_acc;
 GList *list;
 GHashTable *h_old_acc;
-
+	
 
 	DB( g_print("\n[hb-xml] homebank_upgrade_to_v02\n") );
 
@@ -262,7 +262,7 @@ GList *list;
 	while (lnk_acc != NULL)
 	{
 	Account *acc = lnk_acc->data;
-
+	
 		list = g_queue_peek_head_link(acc->txn_queue);
 		while (list != NULL)
 		{
@@ -271,7 +271,7 @@ GList *list;
 			entry->status = TXN_STATUS_NONE;
 			if(entry->flags & OLDF_VALID)
 				entry->status = TXN_STATUS_RECONCILED;
-			else
+			else 
 				if(entry->flags & OLDF_REMIND)
 					entry->status = TXN_STATUS_REMIND;
 
@@ -301,7 +301,7 @@ GList *list;
 		entry->status = TXN_STATUS_NONE;
 		if(entry->flags & OLDF_VALID)
 			entry->status = TXN_STATUS_RECONCILED;
-		else
+		else 
 			if(entry->flags & OLDF_REMIND)
 				entry->status = TXN_STATUS_REMIND;
 
@@ -368,7 +368,7 @@ guint32 newkey;
 	while (list != NULL)
 	{
 	Archive *item = list->data;
-
+		
 		item->key = newkey++;
 		list = g_list_next(list);
 	}
@@ -390,7 +390,7 @@ GList *list;
 	while (lnk_acc != NULL)
 	{
 	Account *acc = lnk_acc->data;
-
+	
 		list = g_queue_peek_head_link(acc->txn_queue);
 		while (list != NULL)
 		{
@@ -405,13 +405,13 @@ GList *list;
 		}
 		lnk_acc = g_list_next(lnk_acc);
 	}
-	g_list_free(lst_acc);
+	g_list_free(lst_acc);	
 
 	list = g_list_first(GLOBALS->arc_list);
 	while (list != NULL)
 	{
 	Archive *item = list->data;
-
+		
 		if( item->paymode == OLDPAYMODE_INTXFER )
 		{
 			item->flags |= OF_INTXFER;
@@ -429,8 +429,8 @@ GList *list;
 		item->pos  = item->key;
 		list = g_list_next(list);
 	}
-	g_list_free(lasg);
-
+	g_list_free(lasg);	
+	
 }
 
 
@@ -445,7 +445,7 @@ gint oldsmode, smode;
 	smode = 0;
 	switch(oldsmode)
 	{
-		case 0:
+		case 0: 
 			smode = ARC_POSTMODE_PAYOUT;
 			break;
 		case 1:
@@ -480,7 +480,7 @@ GList *lrul, *list;
 	while (lnk_acc != NULL)
 	{
 	Account *acc = lnk_acc->data;
-
+	
 		list = g_queue_peek_head_link(acc->txn_queue);
 		while (list != NULL)
 		{
@@ -497,7 +497,7 @@ GList *lrul, *list;
 			}
 
 			da_transaction_consistency(entry);
-
+			
 			list = g_list_next(list);
 		}
 		lnk_acc = g_list_next(lnk_acc);
@@ -609,7 +609,7 @@ static void hb_xml_append_txt_crlf(GString *gstring, gchar *attrname, gchar *val
 	{
 	gssize length;
 	GString *escaped;
-
+		
 		//gchar *escaped = g_markup_escape_text(value, -1);
 		length = strlen (value);
 		escaped = g_string_sized_new (length);
@@ -623,7 +623,7 @@ static void hb_xml_append_int0(GString *gstring, gchar *attrname, guint32 value)
 {
 	g_string_append_printf(gstring, " %s=\"%d\"", attrname, value);
 }
-
+	
 static void hb_xml_append_int(GString *gstring, gchar *attrname, guint32 value)
 {
 	if(value != 0)
@@ -729,7 +729,7 @@ gint i, len;
 			}
 			g_strfreev(bol_array);
 			break;
-
+		
 		case FLT_GRP_ACCOUNT:
 			flt->option[group] = atoi(str_array[0]);
 			filter_group_import_keys(flt, FLT_GRP_ACCOUNT, str_array[1]);
@@ -749,7 +749,7 @@ gint i, len;
 			flt->option[group] = atoi(str_array[0]);
 			filter_group_import_keys(flt, FLT_GRP_TAG, str_array[1]);
 			break;
-
+			
 		case FLT_GRP_STATUS:
 			flt->option[group] = atoi(str_array[0]);
 			bol_array = g_strsplit (str_array[1], ",", -1);
@@ -839,7 +839,7 @@ guint i;
 					retval = g_strdup_printf("%d|%d,%d,%d", flt->option[group], FLT_RANGE_MISC_CUSTOM, flt->mindate, flt->maxdate);
 				else
 					retval = g_strdup_printf("%d|%d", flt->option[group], flt->range);
-
+				
 				DB( g_printf(" date > '%s'\n", retval) );
 			}
 			break;
@@ -917,7 +917,7 @@ guint i;
 			{
 				node = g_string_sized_new(30);
 				g_string_append_printf(node, "%d|", flt->option[group]);
-
+		
 				g_string_append_printf(node, "%d,", flt->sta_non);
 				g_string_append_printf(node, "%d,", flt->sta_clr);
 				g_string_append_printf(node, "%d" , flt->sta_rec);
@@ -1133,12 +1133,12 @@ gint i;
 		     if(!strcmp (attribute_names[i], "title"       )) { g_free(GLOBALS->owner); GLOBALS->owner = g_strdup(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "curr"        )) { GLOBALS->kcur = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "car_category")) { GLOBALS->vehicle_category = atoi(attribute_values[i]); }
-
+		
 		else if(!strcmp (attribute_names[i], "auto_smode"  )) { GLOBALS->auto_smode = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "auto_weekday")) { GLOBALS->auto_weekday = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "auto_nbmonths")) { GLOBALS->auto_nbmonths = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "auto_nbdays" )) { GLOBALS->auto_nbdays = atoi(attribute_values[i]); }
-
+		
 		else if(!strcmp (attribute_names[i], "earnbyh"     )) { GLOBALS->lifen_earnbyh = g_ascii_strtod(attribute_values[i], NULL); }
 	}
 }
@@ -1318,7 +1318,6 @@ gint i;
 			}
 		}
 		else if(!strcmp (attribute_names[i], "nextdate"   )) { entry->nextdate = atoi(attribute_values[i]); }
-		else if(!strcmp (attribute_names[i], "endmonth"   )) { entry->endmonth = atoi(attribute_values[i]) == 0 ? FALSE : TRUE; }
 		else if(!strcmp (attribute_names[i], "every"      )) { entry->every = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "unit"       )) { entry->unit = atoi(attribute_values[i]); }
 		else if(!strcmp (attribute_names[i], "limit"      )) { entry->limit = atoi(attribute_values[i]); }
@@ -1397,9 +1396,9 @@ gint i;
 			entry->flags |= OF_SPLIT; //Flag that Splits are active
 		}
 	}
-
+	
 	//all attribute loaded: append
-	// for perf reason we use prepend here, the list will be reversed later
+	// for perf reason we use prepend here, the list will be reversed later 
 	da_transaction_prepend(entry);
 }
 
@@ -1455,7 +1454,7 @@ ParseContext *ctx = user_data;
 			}
 		}
 		break;
-
+			
 		case 'c':
 		{
 			if(!strcmp (element_name, "cat"))
@@ -1544,7 +1543,7 @@ gchar *v_buffer;
 	DB( g_print("- id line: --(%.50s)\n\n", v_buffer) );
 
 	ctx->file_version = g_ascii_strtod(v_buffer+13, NULL);	/* a little hacky, but works ! */
-	if( ctx->file_version == 0.0 )
+	if( ctx->file_version == 0.0 ) 
 		ctx->file_version = 0.1;
 	else if( ctx->file_version == 5.0 ) //was a mistake
 		ctx->file_version = 1.0;
@@ -1554,7 +1553,7 @@ gchar *v_buffer;
 	{
 		//TODO: beware here of we display all the file...
 		DB( g_print(" d=%.25s)\n\n", v_buffer) );
-
+	
 		ctx->data_version = atoi(v_buffer+3);
 	}
 	return TRUE;
@@ -1590,7 +1589,7 @@ gboolean rc, dosanity;
 	{
 		if( hb_xml_get_version(&ctx, buffer) == FALSE )
 			return XML_FILE_ERROR;
-
+		
 		if( ctx.file_version > FILE_VERSION )
 			return XML_VERSION_ERROR;
 
@@ -1611,7 +1610,7 @@ gboolean rc, dosanity;
 			g_print("failed: %s\n", error->message);
 			g_error_free (error);
 		}
-
+			
 		if( rc == FALSE )
 		{
 			error = NULL;
@@ -1651,7 +1650,7 @@ gboolean rc, dosanity;
 				hbfile_sanity_check();
 			}
 			if( ctx.file_version <= 0.7 )	// <= 4.5
-			{
+			{	
 				homebank_upgrade_to_v08();
 			}
 			if( ctx.file_version <= 0.8 )	// <= 4.6
@@ -1668,12 +1667,12 @@ gboolean rc, dosanity;
 				homebank_upgrade_to_v11();
 				dosanity = TRUE;
 			}
-		}
+		}			
 
 		//starting 5.0.4 data upgrade is done without changing file_version
 		//file version is changed only when the structure change
 		//don't start number below with 0 to avoid octal interpretation
-		if( ctx.data_version <= 50005 )	// <= 5.0.5
+		if( ctx.data_version <= 50005 )	// <= 5.0.5 
 		{
 			dosanity = TRUE;
 		}
@@ -1686,7 +1685,7 @@ gboolean rc, dosanity;
 		{
 			homebank_upgrade_to_v12_7();
 		}
-		if( ctx.file_version < 1.3 )	// <= 5.2
+		if( ctx.file_version < 1.3 )	// <= 5.2 
 		{
 			homebank_upgrade_to_v13();
 			dosanity = TRUE;
@@ -1696,26 +1695,26 @@ gboolean rc, dosanity;
 			//fix payee defaut payment to int xfer from 5.1
 			dosanity = TRUE;
 		}
-		if( ctx.file_version < 1.4 )	// <= 5.3
+		if( ctx.file_version < 1.4 )	// <= 5.3 
 		{
 			homebank_upgrade_to_v14();
 			dosanity = TRUE;
 		}
-		if( ctx.data_version < 50402 )
+		if( ctx.data_version < 50402 ) 
 		{
 			//fix income txn flag that may be incorrect (multiple edit)
 			dosanity = TRUE;
 		}
-		if( ctx.data_version < 50600 )
+		if( ctx.data_version < 50600 ) 
 		{
 			homebank_upgrade_to_v14_12();
 		}
-		if( ctx.data_version < 50604 )
+		if( ctx.data_version < 50604 ) 
 		{
 			//#2018414 tag name replace any space by -
 			dosanity = TRUE;
 		}
-
+			
 		// next ?
 
 
@@ -1747,7 +1746,7 @@ GError *error = NULL;
 	node = g_string_sized_new(255);
 
 	g_string_assign(node, "<properties");
-
+	
 	hb_xml_append_txt(node, "title", title);
 	hb_xml_append_int(node, "curr", GLOBALS->kcur);
 	hb_xml_append_int(node, "car_category", GLOBALS->vehicle_category);
@@ -1832,7 +1831,7 @@ GError *error = NULL;
 		item->flags &= ~(AF_ADDED|AF_CHANGED);	//delete flag
 
 		g_string_assign(node, "<account");
-
+		
 		hb_xml_append_int(node, "key", item->key);
 		hb_xml_append_int(node, "flags", item->flags);
 		hb_xml_append_int(node, "pos", item->pos);
@@ -1943,11 +1942,11 @@ GError *error = NULL;
 		if(item->key != 0)
 		{
 			g_string_assign(node, "<cat");
-
+		
 			hb_xml_append_int(node, "key", item->key);
 			hb_xml_append_int(node, "parent", item->parent);
 			hb_xml_append_int(node, "flags", item->flags);
-			hb_xml_append_txt(node, "name", item->name);
+			hb_xml_append_txt(node, "name", item->name);	
 
 			for(i=0;i<=12;i++)
 			{
@@ -1958,7 +1957,7 @@ GError *error = NULL;
 			}
 
 			g_string_append(node, "/>\n");
-
+			
 			error = NULL;
 			g_io_channel_write_chars(io, node->str, -1, NULL, &error);
 
@@ -2004,7 +2003,7 @@ GError *error = NULL;
 			error = NULL;
 			g_io_channel_write_chars(io, tmpstr, -1, NULL, &error);
 			g_free(tmpstr);
-
+			
 			if(error)
 			{
 				retval = XML_IO_ERROR;
@@ -2038,7 +2037,7 @@ GError *error = NULL;
 		if(item->key != 0)
 		{
 			g_string_assign(node, "<flt");
-
+		
 			hb_xml_append_int(node, "key", item->key);
 			//hb_xml_append_int(node, "parent", item->parent);
 			//hb_xml_append_int(node, "flags", item->flags);
@@ -2057,7 +2056,7 @@ GError *error = NULL;
 			hb_xml_append_txt(node, "name", item->name);
 
 			g_string_append(node, "/>\n");
-
+			
 			error = NULL;
 			g_io_channel_write_chars(io, node->str, -1, NULL, &error);
 
@@ -2101,7 +2100,7 @@ GError *error = NULL;
 			error = NULL;
 			g_io_channel_write_chars(io, tmpstr, -1, NULL, &error);
 			g_free(tmpstr);
-
+			
 			if(error)
 			{
 				retval = XML_IO_ERROR;
@@ -2127,7 +2126,7 @@ GError *error = NULL;
 gchar *tagstr;
 
 	node = g_string_sized_new(255);
-
+	
 	lasg = list = assign_glist_sorted(HB_GLIST_SORT_KEY);
 	while (list != NULL)
 	{
@@ -2145,7 +2144,7 @@ gchar *tagstr;
 		hb_xml_append_int(node, "pos"     , item->pos);
 		hb_xml_append_int(node, "field"   , item->field);
 		hb_xml_append_txt(node, "name"    , item->search);
-		hb_xml_append_txt(node, "notes"   , item->notes);
+		hb_xml_append_txt(node, "notes"   , item->notes);	
 		hb_xml_append_int(node, "payee"   , item->kpay);
 		hb_xml_append_int(node, "category", item->kcat);
 		hb_xml_append_int(node, "paymode" , item->paymode);
@@ -2154,7 +2153,7 @@ gchar *tagstr;
 		hb_xml_append_txt(node, "tags", tagstr);
 
 		g_string_append(node, "/>\n");
-
+		
 		error = NULL;
 		g_io_channel_write_chars(io, node->str, -1, NULL, &error);
 
@@ -2211,10 +2210,9 @@ GError *error = NULL;
 		hb_xml_append_int(node, "payee", item->kpay);
 		hb_xml_append_int(node, "category", item->kcat);
 		hb_xml_append_txt(node, "wording", item->memo);
-		hb_xml_append_txt(node, "info", item->number);
-		hb_xml_append_txt(node, "tags", tagstr);
+		hb_xml_append_txt(node, "info", item->number);	
+		hb_xml_append_txt(node, "tags", tagstr);	
 		hb_xml_append_int(node, "nextdate", item->nextdate);
-		hb_xml_append_int(node, "endmonth", item->endmonth ? 1 : 0);
 		hb_xml_append_int(node, "every", item->every);
 		hb_xml_append_int(node, "unit", item->unit);
 		hb_xml_append_int(node, "limit", item->limit);
@@ -2224,7 +2222,7 @@ GError *error = NULL;
 		if(da_splits_length(item->splits) > 0)
 		{
 		gchar *cats, *amounts, *memos;
-
+		
 			da_splits_tostring(item->splits, &cats, &amounts, &memos);
 			g_string_append_printf(node, " scat=\"%s\"", cats);
 			g_string_append_printf(node, " samt=\"%s\"", amounts);
@@ -2240,7 +2238,7 @@ GError *error = NULL;
 		}
 
 		g_string_append(node, "/>\n");
-
+		
 		g_free(tagstr);
 
 		error = NULL;
@@ -2288,7 +2286,7 @@ GError *error = NULL;
 			tagstr = tags_tostring(item->tags);
 
 			g_string_assign(node, "<ope");
-
+		
 			hb_xml_append_int(node, "date", item->date);
 			hb_xml_append_amt(node, "amount", item->amount);
 			hb_xml_append_int(node, "account", item->kacc);
@@ -2302,15 +2300,15 @@ GError *error = NULL;
 			hb_xml_append_int(node, "flags", item->flags);
 			hb_xml_append_int(node, "payee", item->kpay);
 			hb_xml_append_int(node, "category", item->kcat);
-			hb_xml_append_txt(node, "wording", item->memo);
-			hb_xml_append_txt(node, "info", item->number);
-			hb_xml_append_txt(node, "tags", tagstr);
+			hb_xml_append_txt(node, "wording", item->memo);	
+			hb_xml_append_txt(node, "info", item->number);	
+			hb_xml_append_txt(node, "tags", tagstr);	
 			hb_xml_append_int(node, "kxfer", item->kxfer);
 
 			if(da_splits_length(item->splits) > 0)
 			{
 			gchar *cats, *amounts, *memos;
-
+		
 				da_splits_tostring(item->splits, &cats, &amounts, &memos);
 				g_string_append_printf(node, " scat=\"%s\"", cats);
 				g_string_append_printf(node, " samt=\"%s\"", amounts);
@@ -2328,10 +2326,10 @@ GError *error = NULL;
 			g_string_append(node, "/>\n");
 
 			g_free(tagstr);
-
+		
 			error = NULL;
 			g_io_channel_write_chars(io, node->str, -1, NULL, &error);
-
+		
 			if(error)
 			{
 				retval = XML_IO_ERROR;
@@ -2340,7 +2338,7 @@ GError *error = NULL;
 
 			list = g_list_next(list);
 		}
-
+		
 		lnk_acc = g_list_next(lnk_acc);
 	}
 	g_list_free(lst_acc);

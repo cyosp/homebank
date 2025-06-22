@@ -30,8 +30,6 @@
 #include "list-scheduled.h"
 #include "gtk-dateentry.h"
 
-#include "hb-date-helper.h"
-
 /****************************************************************************/
 /* Debug macros                                                             */
 /****************************************************************************/
@@ -120,8 +118,6 @@ gboolean selected, sensitive;
 	gtk_widget_set_sensitive(data->LB_next, sensitive);
 	gtk_widget_set_sensitive(data->PO_next, sensitive);
 
-	gtk_widget_set_sensitive(data->CM_endmonth, sensitive);
-
 	gtk_widget_set_sensitive(data->LB_every, sensitive);
 	gtk_widget_set_sensitive(data->NB_every, sensitive);
 
@@ -181,10 +177,6 @@ gboolean selected, sensitive;
 		if(sensitive)
 			arcitem->flags |= OF_AUTO;
 	}
-
-    if(gtk_switch_get_active(GTK_SWITCH(data->CM_endmonth))) {
-		gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_next), getJulianDateEndOfMonth(data->PO_next));
-    }
 
 	ui_arc_manage_update(widget, user_data);
 
@@ -465,7 +457,6 @@ Archive *item;
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_every), item->every);
 		hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_unit), item->unit);
 		gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_next), item->nextdate);
-		gtk_switch_set_active(GTK_SWITCH(data->CM_endmonth), item->endmonth ? 1 : 0);
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(data->CM_limit), (item->flags & OF_LIMIT) ? 1 : 0);
 		DB( g_print(" nb_limit = %d %g\n", item->limit, (gdouble)item->limit) );
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(data->NB_limit), (gdouble)item->limit);
@@ -501,8 +492,6 @@ gboolean active;
 		item->every   = gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(data->NB_every));
 		item->unit    = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_unit));
 		item->nextdate	= gtk_date_entry_get_date(GTK_DATE_ENTRY(data->PO_next));
-
-		item->endmonth	= gtk_switch_get_active(GTK_SWITCH(data->CM_endmonth));
 
 		active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_limit));
 		if(active == 1) item->flags |= OF_LIMIT;
@@ -638,12 +627,6 @@ gboolean doupdate = FALSE;
 	return doupdate;
 }
 
-static gboolean ui_arc_manage_cb_date_changed(GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
-{
-    struct ui_arc_manage_data *data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
-    gtk_switch_set_active(GTK_SWITCH(data->CM_endmonth), gtk_date_entry_get_date(GTK_DATE_ENTRY(data->PO_next)) == getJulianDateEndOfMonth(data->PO_next) ? 1 : 0);
-}
-
 
 static void
 ui_arc_manage_setup(struct ui_arc_manage_data *data)
@@ -688,10 +671,7 @@ ui_arc_manage_setup(struct ui_arc_manage_data *data)
 	g_signal_connect (data->PO_schedule, "closed", G_CALLBACK (ui_arc_manage_cb_popover_closed), NULL);
 
 	g_signal_connect (data->CM_auto,  "notify::active", G_CALLBACK (ui_arc_manage_cb_schedule_changed), NULL);
-	g_signal_connect (data->CM_endmonth,  "notify::active", G_CALLBACK (ui_arc_manage_cb_schedule_changed), NULL);
 	g_signal_connect (data->CM_limit, "toggled", G_CALLBACK (ui_arc_manage_cb_schedule_changed), NULL);
-
-	g_signal_connect (data->PO_next, "changed", G_CALLBACK (ui_arc_manage_cb_date_changed), NULL);
 
 	if(data->ext_arc != NULL)
 		ui_arc_listview_select_by_pointer(GTK_TREE_VIEW(data->LV_arc), data->ext_arc);
@@ -748,14 +728,6 @@ gint row;
 	widget = gtk_date_entry_new(label);
 	data->PO_next = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
-
-    row++;
-    label = gtk_label_new_with_mnemonic (_("End of month:"));
-    gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 1, 1);
-    widget = gtk_switch_new();
-    data->CM_endmonth = widget;
-    gtk_widget_set_halign(widget, GTK_ALIGN_START);
-    gtk_grid_attach (GTK_GRID (group_grid), widget, 1, row, 1, 1);
 
 	row++;
 	label = make_label_widget(_("Ever_y:"));

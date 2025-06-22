@@ -2243,10 +2243,6 @@ msgstr ""
 msgid "Next _date:"
 msgstr "Prochaine _date :"
 
-#: ../src/ui-archive.c
-msgid "End of month:"
-msgstr "Fin du mois :"
-
 #: ../src/ui-archive.c:733
 msgid "Ever_y:"
 msgstr "To_us les :"
