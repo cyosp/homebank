@@ -1,6 +1,13 @@
 Release notes
 -------------
 
+##### 5.9.0.1 ⑂ CYOSP (2025-06-22)
+* Import 5.9 release
+* Revert: Fix: Segmentation fault on "Manage scheduled/template transactions" window
+  * Code has changed in 5.9
+* Revert: Add switch to schedule a transaction at end of month
+  * Feature implemented in 5.9
+
 ##### 5.8.6.1 ⑂ CYOSP (2025-04-14)
 * Import 5.8.6 release
 
