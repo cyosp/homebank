@@ -923,9 +923,6 @@ gint w, h, dw, dh, row;
 	//store our dialog private data
 	DB( g_print(" window=%p\n", dialog) );
 
-    g_signal_connect (dialog, "destroy",
-			G_CALLBACK (gtk_widget_destroyed), &dialog);
-
 	//set a nice dialog size
 	gtk_window_get_size(GTK_WINDOW(parent), &w, &h);
 	dh = (h/PHI);

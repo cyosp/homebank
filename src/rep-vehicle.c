@@ -908,7 +908,7 @@ struct WinGeometry *wg;
 
 	//enable define windows
 	GLOBALS->define_off--;
-	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
+	ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
 
 	//unref window to our open window list
 	GLOBALS->openwindows = g_slist_remove(GLOBALS->openwindows, widget);
@@ -948,7 +948,7 @@ gint row, col;
 
 	//disable define windows
 	GLOBALS->define_off++;
-	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
+	ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
 
     /* create window, etc */
     window = gtk_window_new (GTK_WINDOW_TOPLEVEL);

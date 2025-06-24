@@ -145,6 +145,8 @@ gboolean account_has_website(Account *item);
 gboolean account_exists(gchar *name);
 gboolean account_rename(Account *item, gchar *newname);
 void account_set_currency(Account *item, guint32 kcur);
+
+void account_flags_eval(Account *item);
 void account_compute_balances(gboolean init);
 gboolean account_balances_add(Transaction *txn);
 gboolean account_balances_sub(Transaction *txn);

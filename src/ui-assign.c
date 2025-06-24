@@ -1961,7 +1961,6 @@ gint w, h, dw, dh;
 		gtk_box_prepend(GTK_BOX(bbox), widget);
 
 	// connect dialog signals
-	g_signal_connect (dialog, "destroy", G_CALLBACK (gtk_widget_destroyed), &dialog);
 	g_signal_connect (dialog, "map-event", G_CALLBACK (ui_asg_manage_mapped), &dialog);
 	g_signal_connect (dialog, "key-press-event", G_CALLBACK (ui_asg_manage_cb_on_key_press), (gpointer)data);
 

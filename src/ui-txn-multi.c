@@ -398,7 +398,8 @@ guint changes;
 			//guint32 dstkey = ui_acc_comboboxentry_get_key(GTK_COMBO_BOX(data->PO_accto));
 			guint32 dstkey = ui_acc_entry_popover_get_key(GTK_BOX(data->PO_accto));
 
-				if( dstkey > 0 )
+				//5.9.1 forbid split to go xfer
+				if( (dstkey > 0) && !(txn->flags & (OF_SPLIT)) )
 				{
 					txn->kxferacc = dstkey;
 					transaction_xfer_search_or_add_child(GTK_WINDOW(data->dialog), FALSE, txn, dstkey);

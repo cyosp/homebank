@@ -94,6 +94,9 @@ GtkWidget *make_image_button(gchar *icon_name, gchar *tooltip_text);
 GtkWidget *make_image_toggle_button(gchar *icon_name, gchar *tooltip_text);
 GtkWidget *make_image_radio_button(gchar *icon_name, gchar *tooltip_text);
 
+GtkWidget *make_image_button2(gchar *icon_name, gchar *tooltip_text);
+GtkWidget *make_image_toggle_button2(gchar *icon_name, gchar *tooltip_text);
+
 GtkWidget *make_tb(void);
 GtkWidget *make_tb_separator(void);
 GtkWidget *make_tb_image_button(gchar *icon_name, gchar *tooltip_text);

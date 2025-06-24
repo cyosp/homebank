@@ -39,19 +39,21 @@ extern struct HomeBank *GLOBALS;
 extern struct Preferences *PREFS;
 
 
-static void lst_report_to_string_row(GString *node, gint src, gboolean clipboard, GtkTreeModel *model, GtkTreeIter *iter)
+static void lst_report_to_string_row(GString *node, ToStringMode mode, gint src, GtkTreeModel *model, GtkTreeIter *iter)
 {
-const gchar *format;
 guint32 key;
-gchar *name;
-gdouble exp, inc, bal;
+gchar sep, *name;
+gdouble values[4];
+
+
+	sep = (mode == HB_STRING_EXPORT) ? ';' : '\t';
 
 	gtk_tree_model_get (model, iter,
 		LST_REPORT_KEY    , &key,
-		LST_REPORT_LABEL   , &name,
-		LST_REPORT_EXPENSE, &exp,
-		LST_REPORT_INCOME , &inc,
-		LST_REPORT_TOTAL, &bal,
+		LST_REPORT_LABEL  , &name,
+		LST_REPORT_EXPENSE, &values[0],
+		LST_REPORT_INCOME , &values[1],
+		LST_REPORT_TOTAL  , &values[2],
 		-1);
 
 	//#2033298 we get fullname for export
@@ -61,19 +63,28 @@ gdouble exp, inc, bal;
 		if( catitem != NULL )
 		{
 			g_free(name);
-			name = g_strdup(catitem->fullname);
+			name = g_strdup( (catitem->key == 0) ? _("(no category)") : catitem->fullname );
 		}
 	}
 
-	format = (clipboard == TRUE) ? "%s\t%.2f\t%.2f\t%.2f\n" : "%s;%.2f;%.2f;%.2f\n";
-	g_string_append_printf(node, format, name, exp, inc, bal);
+	//format = (mode == HB_STRING_EXPORT) ? "%s;%.2f;%.2f;%.2f\n" : "%s\t%.2f\t%.2f\t%.2f\n";
+	//g_string_append_printf(node, format, name, exp, inc, bal);
+
+	g_string_append(node, name);
+
+	for(guint i=0;i<3;i++)
+	{
+		g_string_append_c(node, sep);
+		_format_decimal(node, mode, values[i]);
+	}
+	g_string_append_c(node, '\n');
 
 	//leak
 	g_free(name);
 }
 
 
-GString *lst_report_to_string(GtkTreeView *treeview, gint src, gchar *title, gboolean clipboard)
+GString *lst_report_to_string(ToStringMode mode, GtkTreeView *treeview, gint src, gchar *title)
 {
 GString *node;
 GtkTreeModel *model;
@@ -86,21 +97,21 @@ const gchar *format;
 	node = g_string_new(NULL);
 
 	// header
-	format = (clipboard == TRUE) ? "%s\t%s\t%s\t%s\n" : "%s;%s;%s;%s\n";
+	format = (mode == HB_STRING_EXPORT) ? "%s;%s;%s;%s\n" : "%s\t%s\t%s\t%s\n";
 	g_string_append_printf(node, format, (title == NULL) ? _("Result") : title, _("Expense"), _("Income"), _("Total"));
 
 	model = gtk_tree_view_get_model(treeview);
 	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
 	while (valid)
 	{
-		lst_report_to_string_row(node, src, clipboard, model, &iter);
+		lst_report_to_string_row(node, mode, src, model, &iter);
 		
 		if( gtk_tree_model_iter_has_child(model, &iter) )
 		{
 			valid = gtk_tree_model_iter_children(model, &child, &iter);
 			while (valid)
 			{
-				lst_report_to_string_row(node, src, clipboard, model, &child);
+				lst_report_to_string_row(node, mode, src, model, &child);
 				
 				valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &child);
 			}		
@@ -515,13 +526,14 @@ GtkWidget *treeview;
 */
 
 
-static void lst_rep_time_to_string_row(GString *node, gint src, gchar sep, GtkTreeModel *model, GtkTreeIter *iter)
+static void lst_rep_time_to_string_row(GString *node, ToStringMode mode, gint src, GtkTreeModel *model, GtkTreeIter *iter)
 {
-guint i;
 guint32 key;
-gchar *name;
+gchar sep, *name;
 DataRow *dr;
 gdouble value;
+
+	sep = (mode == HB_STRING_EXPORT) ? ';' : '\t';
 
 	gtk_tree_model_get (model, iter,
 		LST_REPORT2_KEY,   &key,
@@ -536,31 +548,33 @@ gdouble value;
 		if( catitem != NULL )
 		{
 			g_free(name);
-			name = g_strdup(catitem->fullname);
+			name = g_strdup( (catitem->key == 0) ? _("(no category)") : catitem->fullname );
 		}
 	}
 
 	g_string_append(node, name);
 	g_string_append_c(node, sep);
 
+	//hb_strfmongc(buf, G_ASCII_DTOSTR_BUF_SIZE-1, values[i]);
+
 	//iterate row cells
-	for( i=0 ; i < dr->nbcols ; i++ )
+	for(guint i=0 ; i < dr->nbcols ; i++ )
 	{
 		value = da_datarow_get_cell_sum(dr, i);
 		DB( g_print(" %2d %.2f\n", i, value) );
-		g_string_append_printf(node, "%.2f", value);
+		_format_decimal(node, mode, value);
 		if( i < dr->nbcols )
 			g_string_append_c(node, sep);
 	}
 
 	//average
 	value = (dr->rowexp + dr->rowinc) / dr->nbcols;
-	g_string_append_printf(node, "%.2f", value);
+	_format_decimal(node, mode, value);
 	g_string_append_c(node, sep);
 
 	//total
 	value = (dr->rowexp + dr->rowinc);
-	g_string_append_printf(node, "%.2f", value);
+	_format_decimal(node, mode, value);
 
 	//newline
 	g_string_append_c(node, '\n');
@@ -570,7 +584,7 @@ gdouble value;
 }
 
 
-GString *lst_rep_time_to_string(GtkTreeView *treeview, gint src, gchar *title, gboolean clipboard)
+GString *lst_rep_time_to_string(ToStringMode mode, GtkTreeView *treeview, gint src, gchar *title)
 {
 GString *node;
 GtkTreeModel *model;
@@ -583,7 +597,7 @@ gchar sep;
 
 	node = g_string_new(NULL);
 
-	sep = (clipboard == TRUE) ? '\t' : ';';
+	sep = (mode == HB_STRING_EXPORT) ? ';' : '\t';
 
 	// header (nbcols-1 for empty column)
 	nbcols = gtk_tree_view_get_n_columns (treeview) - 1;
@@ -608,13 +622,13 @@ gchar sep;
 	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
 	while (valid)
 	{
-		lst_rep_time_to_string_row(node, src, sep, model, &iter);
+		lst_rep_time_to_string_row(node, mode, src, model, &iter);
 		if( gtk_tree_model_iter_has_child(model, &iter) )
 		{
 			valid = gtk_tree_model_iter_children(model, &child, &iter);
 			while (valid)
 			{
-				lst_rep_time_to_string_row(node, src, sep, model, &child);
+				lst_rep_time_to_string_row(node, mode, src, model, &child);
 				valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &child);
 			}		
 		}

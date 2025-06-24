@@ -1385,7 +1385,6 @@ gint w, h, dw, dh, row;
 
 
 	// connect dialog signals
-	g_signal_connect (dialog, "destroy", G_CALLBACK (gtk_widget_destroyed), &dialog);
 	g_signal_connect (dialog, "map-event", G_CALLBACK (ui_tag_manage_mapped), &dialog);
 
 	// show & run dialog

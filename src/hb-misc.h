@@ -53,6 +53,9 @@ gchar *hb_str_formatd(gchar *outstr, gint outlen, gchar *buf1, Currency *cur, gb
 void hb_strfmon(gchar *outstr, gint outlen, gdouble value, guint32 kcur, gboolean minor);
 void hb_strfmon_int(gchar *outstr, gint outlen, gdouble value, guint32 kcur, gboolean minor);
 void hb_strfnum(gchar *outstr, gint outlen, gdouble value, guint32 kcur, gboolean minor);
+void hb_strfmongc(gchar *outstr, gint outlen, gdouble value);
+
+void _format_decimal(GString *node, ToStringMode mode, gdouble value);
 
 void hb_strlifeenergy(gchar *outstr, gint outlen, gdouble value, guint32 kcur, gboolean minor);
 

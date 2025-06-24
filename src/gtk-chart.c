@@ -2530,7 +2530,7 @@ GdkRGBA color;
 
 static gboolean
 drawarea_configure_event_callback (GtkWidget         *widget,
-                          GdkEventConfigure *event,
+                          GdkEvent *event,
                           gpointer           user_data)
 {
 GtkChart *chart = GTK_CHART(user_data);

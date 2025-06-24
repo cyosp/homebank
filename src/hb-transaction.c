@@ -1121,6 +1121,18 @@ gchar *retval = "";
 }
 
 
+gint transaction_get_type(Transaction *txn)
+{
+	//TRANSFER has priority on INCOME
+	if(txn->flags & OF_INTXFER)
+		return TXN_TYPE_INTXFER;
+	else
+	if(txn->flags & OF_INCOME)
+		return TXN_TYPE_INCOME;
+	return TXN_TYPE_EXPENSE;
+}
+
+
 gboolean transaction_is_balanceable(Transaction *ope)
 {
 	//#1875100/#2061227
@@ -1261,6 +1273,18 @@ gboolean do_add;
 		da_transaction_insert_sorted(newope);
 		newope->dspflags |= FLAG_TMP_ADDED;
 
+		//#2061227 flag txn to be reviewed if too old
+		//#2107649 do it before eval balance
+		if( ( PREFS->safe_pend_recon == TRUE && (acc->rdate > 0 && newope->date < acc->rdate) )
+		 ||	( PREFS->safe_pend_past == TRUE && (newope->date < (GLOBALS->today - PREFS->safe_pend_past_days)) )
+		)
+		{
+			DB( g_print(" flag as in past to approve\n") );
+			newope->flags |= OF_ISPAST;
+			acc->nb_pending++;
+			account_flags_eval(acc);
+		}
+
 		account_balances_add(newope);
 
 		if(newope->flags & OF_INTXFER)
@@ -1275,17 +1299,6 @@ gboolean do_add;
 		if( newope->status == TXN_STATUS_RECONCILED )
 			acc->rdate = GLOBALS->today;
 
-		//#2061227 flag txn to be reviewed if too old
-		if( ( PREFS->safe_pend_recon == TRUE && (acc->rdate > 0 && newope->date < acc->rdate) )
-		 ||	( PREFS->safe_pend_past == TRUE && (newope->date < (GLOBALS->today - PREFS->safe_pend_past_days)) )
-		)
-		{
-			DB( g_print(" flag as in past to approve\n") );
-			newope->flags |= OF_ISPAST;
-			//TODO: move this
-			acc->nb_pending++;
-			acc->flags |= AF_HASNOTICE;
-		}
 	}
 	else
 	{
@@ -1311,9 +1324,21 @@ Account *oacc, *nacc;
 	nacc = da_acc_get(nkacc);
 	if( oacc && nacc )
 	{
+		//#2109854 manage pending
+		if( txn->flags & (OF_ISPAST | OF_ISIMPORT) )
+		{
+			if( oacc->nb_pending > 0 )
+				oacc->nb_pending--;
+			account_flags_eval(oacc);
+			nacc->nb_pending--;
+			account_flags_eval(nacc);
+		}
+
 		account_balances_sub(txn);
+		//remove from old
 		if( g_queue_remove(oacc->txn_queue, txn) )
 		{
+			//add to new
 			g_queue_push_tail(nacc->txn_queue, txn);
 			txn->kacc = nacc->key;
 			txn->kcur = nacc->kcur;
@@ -1387,7 +1412,7 @@ gint count = 0;
 	{
 	Transaction *txn = lnk_txn->data;
 
-		DB( g_print("------\n eval src: %d, '%s', '%s', %.2f\n", stxn->date, stxn->number, stxn->memo, stxn->amount) );
+		DB( g_print("------\n eval src: %d, '%s', '%s', %.2f\n", txn->date, txn->number, txn->memo, txn->amount) );
 
 		if( (txn->flags & OF_INTXFER) == FALSE )
 		{

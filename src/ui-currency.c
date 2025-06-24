@@ -1828,7 +1828,6 @@ gint crow, row, w, h, dw, dh;
 		gtk_box_prepend(GTK_BOX(bbox), widget);
 
 	// connect dialog signals
-	g_signal_connect (dialog, "destroy", G_CALLBACK (gtk_widget_destroyed), &dialog);
 	g_signal_connect (dialog, "map-event", G_CALLBACK (ui_cur_manage_mapped), &dialog);
 
 	// show & run dialog

@@ -799,9 +799,10 @@ GDateWeekday wday;
 	yfiscal = year;
 	if( range == FLT_RANGE_LAST_QUARTER || range == FLT_RANGE_THIS_QUARTER ||range == FLT_RANGE_NEXT_QUARTER ||
 		//#2000834    
-	    range == FLT_RANGE_LAST_YEAR || range == FLT_RANGE_THIS_YEAR ||range == FLT_RANGE_NEXT_YEAR ||
+	    range == FLT_RANGE_LAST_YEAR || range == FLT_RANGE_THIS_YEAR || range == FLT_RANGE_NEXT_YEAR ||
 		//5.9 year to date
-		FLT_RANGE_TODATE_YEAR
+		//#2107704 missed range == ...
+		range == FLT_RANGE_TODATE_YEAR
 	  )
 	{
 		g_date_set_dmy(tmpdate, PREFS->fisc_year_day, PREFS->fisc_year_month, year);

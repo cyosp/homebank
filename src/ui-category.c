@@ -2565,7 +2565,6 @@ gint w, h, dw, dh, row;
 
 
 	// connect dialog signals
-    g_signal_connect (dialog, "destroy", G_CALLBACK (gtk_widget_destroyed), &dialog);
 	g_signal_connect (dialog, "map-event", G_CALLBACK (ui_cat_manage_mapped), &dialog);
 	g_signal_connect (dialog, "key-press-event", G_CALLBACK (ui_cat_manage_dialog_cb_on_key_press), (gpointer)data);
 

@@ -1512,6 +1512,7 @@ gint crow, row;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 1, row, 1, 1);
 	widget = make_label_left(NULL);
 	data->LB_date = widget;
+	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(widget)), GTK_STYLE_CLASS_DIM_LABEL);
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
 	row++;
@@ -1886,6 +1887,7 @@ gint crow, row;
 	if( GLOBALS->color_scheme == PREFER_LIGHT )
 		txt = _("System prefer light");
 	label = make_label_left(txt);
+	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET(label)), GTK_STYLE_CLASS_DIM_LABEL);
 	gtk_grid_attach (GTK_GRID (group_grid), label, 2, row, 1, 1);
 
 	row++;
@@ -2563,8 +2565,6 @@ GtkWidget *hbox, *vbox, *scrollwin, *widget, *notebook, *page, *image, *label;
 
 
 	//connect all our signals
-	g_signal_connect (window, "destroy", G_CALLBACK (gtk_widget_destroyed), &window);
-
 
 	g_signal_connect (data->CY_icontheme, "changed", G_CALLBACK (defpref_icons_changed_cb), NULL);
 	g_signal_connect (data->CM_iconsymbolic, "toggled", G_CALLBACK (defpref_icons_changed_cb), NULL);
@@ -2671,7 +2671,7 @@ GtkWidget *hbox, *vbox, *scrollwin, *widget, *notebook, *page, *image, *label;
 
 				defpref_get(data);
 				homebank_pref_save();
-				ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_VISUAL));
+				ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_VISUAL));
 
 				DB( g_print("old='%s' new='%s'\n", old_lang, PREFS->language) );
 				

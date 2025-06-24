@@ -1847,7 +1847,7 @@ gint w, h, dw, dh, row;
 
 	//menubutton
 	widget = gtk_menu_button_new();
-	image = gtk_image_new_from_icon_name (ICONNAME_HB_BUTTON_MENU, GTK_ICON_SIZE_MENU);
+	image = hbtk_image_new_from_icon_name_16 (ICONNAME_HB_BUTTON_MENU);
 	g_object_set (widget, "image", image,  NULL);
 	gtk_widget_set_halign (widget, GTK_ALIGN_END);
 	gtk_box_append(GTK_BOX (bbox), widget);
@@ -1926,7 +1926,6 @@ gint w, h, dw, dh, row;
 	
 	
 	// connect dialog signals
-	g_signal_connect (dialog, "destroy", G_CALLBACK (gtk_widget_destroyed), &dialog);
 	g_signal_connect (dialog, "map-event", G_CALLBACK (ui_pay_manage_mapped), &dialog);
 	g_signal_connect (dialog, "key-press-event", G_CALLBACK (ui_pay_manage_dialog_cb_on_key_press), (gpointer)data);
 	

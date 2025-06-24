@@ -166,6 +166,7 @@ Transaction *transaction_add(GtkWindow *parent, gboolean addmode, Transaction *o
 
 gchar *transaction_get_status_string(Transaction *txn);
 gboolean transaction_is_balanceable(Transaction *ope);
+gint transaction_get_type(Transaction *txn);
 gboolean transaction_acc_move(Transaction *txn, guint32 okacc, guint32 nkacc);
 
 Transaction *transaction_xfer_child_new_from_txn(Transaction *txn);

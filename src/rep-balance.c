@@ -52,7 +52,7 @@ extern struct Preferences *PREFS;
 /* prototypes */
 static GtkWidget *lst_repbal_create(void);
 static void lst_repbal_set_cur(GtkTreeView *treeview, guint32 kcur);
-static GString *lst_repbal_to_string(GtkTreeView *treeview, gchar *title, gboolean isclipboard);
+static GString *lst_repbal_to_string(ToStringMode mode, GtkTreeView *treeview, gchar *title);
 
 
 //extern gchar *CYA_REPORT_MODE[];
@@ -671,7 +671,7 @@ gchar *title, *name;
 	
 		title = repbalance_compute_title(tmpintvl);
 	
-		node = lst_repbal_to_string(GTK_TREE_VIEW(data->LV_report), title, TRUE);
+		node = lst_repbal_to_string(HB_STRING_PRINT, GTK_TREE_VIEW(data->LV_report), title);
 
 		hb_print_listview(GTK_WINDOW(data->window), node->str, NULL, title, name, FALSE);
 
@@ -1120,7 +1120,7 @@ struct WinGeometry *wg;
 
 	//enable define windows
 	GLOBALS->define_off--;
-	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
+	ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
 
 	//unref window to our open window list
 	GLOBALS->openwindows = g_slist_remove(GLOBALS->openwindows, widget);
@@ -1158,7 +1158,7 @@ gint row;
 
 	//disable define windows
 	GLOBALS->define_off++;
-	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
+	ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
 
     /* create window, etc */
     window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -1424,18 +1424,17 @@ gint row;
 
 
 
-static GString *lst_repbal_to_string(GtkTreeView *treeview, gchar *title, gboolean isclipboard)
+static GString *lst_repbal_to_string(ToStringMode mode, GtkTreeView *treeview, gchar *title)
 {
 GString *node;
 GtkTreeModel *model;
 GtkTreeIter	iter;
 gboolean valid;
-char strbuf[G_ASCII_DTOSTR_BUF_SIZE];
 gchar sep;
 
 	node = g_string_new(NULL);
 
-	sep = (isclipboard == TRUE) ? '\t' : ';';
+	sep = (mode == HB_STRING_EXPORT) ? ';' : '\t';
 	
 	// header
 	g_string_append (node, _("Date") );	
@@ -1445,40 +1444,32 @@ gchar sep;
 	g_string_append (node, _("Income") );	
 	g_string_append_c (node, sep );
 	g_string_append (node, _("Balance") );
-
 	g_string_append (node, "\n" );
 	
 	// lines
-
 	model = gtk_tree_view_get_model(treeview);
 	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
 	while (valid)
 	{
 	gchar *intvlname;
-	gdouble expense, income, balance;
+	gdouble values[4];
 
 		gtk_tree_model_get (model, &iter,
 			LST_OVER_LABEL, &intvlname,
-			LST_OVER_EXPENSE, &expense,
-			LST_OVER_INCOME , &income,
-			LST_OVER_TOTAL, &balance,
+			LST_OVER_EXPENSE, &values[0],
+			LST_OVER_INCOME,  &values[1],
+			LST_OVER_TOTAL,   &values[2],
 			-1);
 
 		g_string_append (node, intvlname );	
-		g_string_append_c (node, sep );
 
-		g_snprintf(strbuf, sizeof (strbuf), "%.2f", expense);
-		g_string_append (node, strbuf );
-		g_string_append_c (node, sep );
-		
-		g_snprintf(strbuf, sizeof (strbuf), "%.2f", income);
-		g_string_append (node, strbuf );
-		g_string_append_c (node, sep );
+		for(guint i=0;i<3;i++)
+		{
+			g_string_append_c(node, sep);
+			_format_decimal(node, mode, values[i]);
+		}
+		g_string_append_c(node, '\n');
 
-		g_snprintf(strbuf, sizeof (strbuf), "%.2f", balance);
-		g_string_append (node, strbuf );
-
-		g_string_append (node, "\n" );
 		//leak
 		g_free(intvlname);
 

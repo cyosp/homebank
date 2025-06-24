@@ -425,6 +425,35 @@ gdouble monval;
 }
 
 
+void hb_strfmongc(gchar *outstr, gint outlen, gdouble value)
+{
+gchar formatd_buf[outlen];
+Currency *cur = hb_strfmon_check(outstr, GLOBALS->kcur);
+
+	if(cur != NULL)
+	{
+	gdouble monval = hb_amount_round(value, cur->frac_digits);
+		g_ascii_formatd(formatd_buf, outlen, cur->format, monval);
+		hb_str_formatd(outstr, outlen, formatd_buf, cur, FALSE);
+	}
+}
+
+
+void _format_decimal(GString *node, ToStringMode mode, gdouble value)
+{
+	if(mode == HB_STRING_PRINT)
+	{
+	gchar buf[G_ASCII_DTOSTR_BUF_SIZE];
+
+		hb_strfmongc(buf, G_ASCII_DTOSTR_BUF_SIZE-1, value);
+		g_string_append(node, buf);
+	}
+	else
+		g_string_append_printf(node, "%.2f", value);
+}
+
+
+
 void hb_strlifeenergy(gchar *outstr, gint outlen, gdouble value, guint32 kcur, gboolean minor)
 {
 gchar buf_energy[16];

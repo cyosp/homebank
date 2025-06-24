@@ -77,11 +77,11 @@ GtkTreeStore *lst_report_new(void);
 GtkWidget *lst_report_create(void);
 void lst_report_add_columns(GtkTreeView *treeview, GtkTreeModel *model);
 gboolean lst_report_get_top_level (GtkTreeModel *liststore, guint32 key, GtkTreeIter *return_iter);
-GString *lst_report_to_string(GtkTreeView *treeview, gint src, gchar *title, gboolean clipboard);
+GString *lst_report_to_string(ToStringMode mode, GtkTreeView *treeview, gint src, gchar *title);
 
 
 gboolean lst_rep_time_get_top_level (GtkTreeModel *liststore, guint32 key, GtkTreeIter *return_iter);
-GString *lst_rep_time_to_string(GtkTreeView *treeview, gint src, gchar *title, gboolean clipboard);
+GString *lst_rep_time_to_string(ToStringMode mode, GtkTreeView *treeview, gint src, gchar *title);
 GtkWidget *lst_rep_time_createtype(GtkListStore *store);
 GtkTreeStore *lst_rep_time_new(void);
 GtkWidget *lst_rep_time_create(void);

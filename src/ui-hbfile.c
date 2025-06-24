@@ -381,11 +381,6 @@ gint crow, row;
 	data->PO_grp = widget;
 	gtk_grid_attach (GTK_GRID (group_grid), widget, 2, row, 1, 1);
 
-
-	//connect all our signals
-	g_signal_connect (dialog, "destroy", G_CALLBACK (gtk_widget_destroyed), &dialog);
-
-
 	gtk_widget_show_all (dialog);
 
 	//setup, init and show window

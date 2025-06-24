@@ -35,6 +35,7 @@
 extern struct HomeBank *GLOBALS;
 extern struct Preferences *PREFS;
 
+
 /* = = = = = = = = = = = = = = = = */
 
 
@@ -739,6 +740,19 @@ gboolean account_balances_add(Transaction *txn)
 }
 
 
+void account_flags_eval(Account *item)
+{
+	g_return_if_fail(item != NULL);
+
+	//#2109854 fix residual flag
+	item->flags &= ~(AF_HASNOTICE);
+	if( item->nb_pending > 0 )
+	{
+		item->flags |= AF_HASNOTICE;
+	}
+}
+
+
 //todo: optim called 2 times from dsp_mainwindow
 void account_compute_balances(gboolean init)
 {
@@ -786,8 +800,7 @@ GList *lnk_txn;
 			lnk_txn = g_list_next(lnk_txn);
 		}
 
-		if( acc->nb_pending > 0 )
-			acc->flags |= AF_HASNOTICE;
+		account_flags_eval(acc);
 
 		lnk_acc = g_list_next(lnk_acc);
 	}
