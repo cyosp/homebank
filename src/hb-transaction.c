@@ -959,6 +959,10 @@ Account *acc;
 	//#2019193 option the sync xfer status
 	if( PREFS->xfer_syncstat == TRUE )
 	{
+		//#2111359 remind status not synced
+		child->flags &= ~(OF_REMIND);
+		if(s_txn->flags & OF_REMIND)
+			child->flags |= OF_REMIND;
 		child->status = s_txn->status;
 		child->dspflags |= FLAG_TMP_EDITED;
 	}	

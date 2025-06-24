@@ -689,14 +689,17 @@ gushort lastday;
 	}
 
 	//#1556289
+	//#2112135 fix flags removal, secured decrease & remove nextdat=0
 	/* check limit, update and maybe break */
 	if(arc->rec_flags & TF_LIMIT)
 	{
-		arc->limit--;
-		if(arc->limit <= 0)
+		if( arc->limit >= 1 )
+			arc->limit--;
+		if( arc->limit == 0 )
 		{
-			arc->flags ^= (TF_LIMIT | TF_RECUR);	// invert flags
-			arc->nextdate = 0;
+			arc->rec_flags &= ~(TF_LIMIT | TF_RECUR);
+			arc->limit = 0;
+			//arc->nextdate = 0;
 		}
 	}
 
