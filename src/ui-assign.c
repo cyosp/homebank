@@ -147,13 +147,13 @@ gint retval = 0;
 			break;
 
 		case LST_DEFASG_SORT_TAGS:
-		gchar *t1, *t2;
-
-			t1 = tags_tostring(item1->tags);
-			t2 = tags_tostring(item2->tags);
+			{
+			gchar *t1 = tags_tostring(item1->tags);
+			gchar *t2 = tags_tostring(item2->tags);
 			retval = hb_string_utf8_compare(t1, t2);
 			g_free(t2);
 			g_free(t1);
+			}
 			break;
 
 		case LST_DEFASG_SORT_NOTES:

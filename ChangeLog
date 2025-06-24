@@ -1,4 +1,13 @@
 
+2025-06-04  Maxime DOYEN
+
+ Made 5.9.2 release
+
+* bugfix: #2112135 scheduled with limitation don't stop and goes erroneous data
+* bugfix: #2111663 variable scope issue in ui-assign.c
+* bugfix: #2111359 remind status not synced in transfers 
+
+
 2025-05-06  Maxime DOYEN
 
  Made 5.9.1 release

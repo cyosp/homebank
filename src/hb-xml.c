@@ -434,6 +434,33 @@ GList *list;
 }
 
 
+// migrate 5.9.2
+static void homebank_upgrade_to_v14_592(void)
+{
+GList *lst_acc;
+GList *list;
+
+	DB( g_print("\n[hb-xml] homebank_upgrade_to_v14_592\n") );
+
+	//##2112135 fix limit bad flag
+	list = g_list_first(GLOBALS->arc_list);
+	while (list != NULL)
+	{
+	Archive *item = list->data;
+
+		if( item->rec_flags & (TF_LIMIT) && ((item->limit >= 366) || item->nextdate >= HB_MAXDATE) )
+		{
+			DB( g_print(" fix arc limit %d\n", item->limit) );
+			item->rec_flags &= ~(TF_LIMIT | TF_RECUR);
+			item->limit = 0;
+			item->nextdate = GLOBALS->today;
+		}
+
+		list = g_list_next(list);
+	}
+}
+
+
 // migrate 5.9
 static void homebank_upgrade_to_v14_59(void)
 {
@@ -1792,6 +1819,10 @@ gboolean rc, dosanity;
 
 		if( ctx.data_version < 50900 )
 			homebank_upgrade_to_v14_59();
+
+		if( ctx.data_version == 50900 || ctx.data_version == 50901 )
+			//fix arc bad limit
+			homebank_upgrade_to_v14_592();
 
 		// next ?
 

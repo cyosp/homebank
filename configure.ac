@@ -2,9 +2,9 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.71])
-AC_INIT([homebank],[5.9.1])
+AC_INIT([homebank],[5.9.2])
 #AC_INIT([homebank],[x.x-rc])
-
+#AC_CONFIG_SRCDIR([config.h.in])
 AC_CONFIG_HEADERS(config.h)
 
 AM_INIT_AUTOMAKE([1.9 foreign])
@@ -88,12 +88,13 @@ AC_STRUCT_TM
 AC_C_VOLATILE
 
 # Checks for library functions.
-AC_CHECK_FUNCS([floor localeconv memset modf pow setlocale sqrt strcasecmp strtoul])
+AC_FUNC_STRTOD
+AC_CHECK_FUNCS([floor localeconv memmove memset modf pow setlocale sqrt strcasecmp strchr strstr strtol])
 
 # International support
 ALL_LINGUAS="af ar be bg br ca ckb cs cy da de el en_AU en_CA en_GB es et eu fa fi fr_CA fr gl he hr hu id is it ja ko lt lv ms nb nds nl oc pl pt_BR pt pt_PT ro ru si sl sq sr sv ta tr uk vi zh_CN zh_TW" 
 
-AM_GLIB_GNU_GETTEXT
+#AM_GLIB_GNU_GETTEXT
 
 GETTEXT_PACKAGE=$PACKAGE
 AC_SUBST(GETTEXT_PACKAGE)
@@ -101,22 +102,21 @@ AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["${GETTEXT_PACKAGE}"], [gettext domain])
 
 AC_CONFIG_FILES([
 Makefile
-src/Makefile 
-data/homebank.desktop.in
 data/Makefile
 data/datas/Makefile
+data/homebank.desktop.in
+doc/Makefile
+doc/images/Makefile
 images/Makefile
 mime/Makefile
 pixmaps/Makefile
+src/Makefile
+themes/Default/Makefile
 themes/Makefile
 themes/common-symbolic/Makefile
-themes/Default/Makefile
-themes/hicolor/Makefile
 themes/hicolor-symbolic/Makefile
-po/Makefile.in
-doc/Makefile
-doc/images/Makefile
-])
+themes/hicolor/Makefile
+po/Makefile.in])
 
 AC_OUTPUT
 

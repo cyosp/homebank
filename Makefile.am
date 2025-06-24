@@ -36,4 +36,13 @@ uninstall-hook:
 	-rm -rf $(datadir)/homebank
 	-rm -rf $(datadir)/appdata/homebank.appdata.xml
 
+
 #-rmdir $(datadir)/homebank
+
+# clean file created with automake
+#clean-local:
+#	@rm -rf autom4te.cache/
+#	@rm aclocal.m4 compile configure depcomp install-sh missing
+
+# clean file created with configure
+#distclean:
