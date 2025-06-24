@@ -135,7 +135,7 @@ gboolean result;
 				ui_hub_account_compute(GLOBALS->mainwindow, NULL);
 
 			//#1830880 update mainwindow
-			ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE));
+			ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE));
 			
 		}
 

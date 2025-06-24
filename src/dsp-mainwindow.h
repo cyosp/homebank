@@ -150,14 +150,14 @@ enum {
 
 
 //temporary ?
-void ui_mainwindow_defarchive(Archive *arc);
+void ui_wallet_defarchive(Archive *arc);
 
 
-GtkWidget *create_hbfile_window(GtkWidget *do_widget);
-void ui_mainwindow_populate_accounts(GtkWidget *widget, gpointer user_data);
-void ui_mainwindow_open_check(GtkWidget *widget, gchar *filepath);
-void ui_mainwindow_open_internal(GtkWidget *widget, gpointer user_data);
-void ui_mainwindow_update(GtkWidget *widget, gpointer user_data);
-gint ui_mainwindow_action_help_welcome(void);
+GtkWidget *ui_wallet_window_new(GtkWidget *do_widget);
+void ui_wallet_populate_accounts(GtkWidget *widget, gpointer user_data);
+void ui_wallet_open_check(GtkWidget *widget, gchar *filepath);
+void ui_wallet_open_internal(GtkWidget *widget, gpointer user_data);
+void ui_wallet_update(GtkWidget *widget, gpointer user_data);
+gint ui_wallet_action_help_welcome(void);
 
 #endif /* __HB_MANWINDOW_GTK_H__ */

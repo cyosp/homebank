@@ -67,7 +67,7 @@ static void ui_chart_progress_destroy         (GtkWidget     *chart);
 						  const GValue      *value,
 						  GParamSpec        *pspec);*/
 
-static gboolean drawarea_configure_event_callback (GtkWidget *widget, GdkEventConfigure *event, gpointer user_data);
+static gboolean drawarea_configure_event_callback (GtkWidget *widget, GdkEvent *event, gpointer user_data);
 static gboolean drawarea_draw_callback(GtkWidget *widget, cairo_t *cr, gpointer user_data);
 static void drawarea_style_changed_callback(GtkWidget *widget, gpointer   user_data);
 static gboolean drawarea_scroll_event_callback( GtkWidget *widget, GdkEvent *event, gpointer user_data);
@@ -987,7 +987,7 @@ cairo_t *cr;
 
 static gboolean
 drawarea_configure_event_callback (GtkWidget         *widget,
-                          GdkEventConfigure *event,
+                          GdkEvent *event,
                           gpointer           user_data)
 {
 ChartProgress *chart = GTK_CHARTPROGRESS(user_data);

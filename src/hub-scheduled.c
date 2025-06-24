@@ -84,7 +84,7 @@ gint count;
 
 			//fix: don't open for total line
 			if( arc != NULL )
-				ui_mainwindow_defarchive(arc);
+				ui_wallet_defarchive(arc);
 
 		}
 
@@ -166,7 +166,7 @@ GList *selection, *list;
 	g_list_foreach(selection, (GFunc)gtk_tree_path_free, NULL);
 	g_list_free(selection);
 
-	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE|UF_REFRESHALL));
+	ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE|UF_REFRESHALL));
 
 }
 
@@ -218,7 +218,7 @@ GList *selection, *list;
 	g_list_foreach(selection, (GFunc)gtk_tree_path_free, NULL);
 	g_list_free(selection);
 
-	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE|UF_REFRESHALL));
+	ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE|UF_REFRESHALL));
 	
 }
 
@@ -258,7 +258,7 @@ GList *selection, *list;
 	g_list_foreach(selection, (GFunc)gtk_tree_path_free, NULL);
 	g_list_free(selection);
 	ui_hub_scheduled_populate(GLOBALS->mainwindow, NULL);
-	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
+	ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
 }
 
 
@@ -413,7 +413,7 @@ gint usermode = GPOINTER_TO_INT(user_data);
 		//#125534
 		if( count > 0 )
 		{
-			ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_REFRESHALL));
+			ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_REFRESHALL));
 		}
 		
 		if(count == 0)
@@ -507,7 +507,8 @@ GDate *date;
 		{
 			count++;
 			nbdays = arc->nextdate - maxpostdate;
-			nblate = scheduled_get_latepost_count(date, arc, GLOBALS->today);
+			//nblate = scheduled_get_latepost_count(date, arc, GLOBALS->today);
+			nblate = scheduled_get_latepost_count(date, arc, maxpostdate);
 
 			DB( g_print(" eval %d in [%d-%d] ? days %d late %d, memo='%s'\n", arc->nextdate, fltmindate, fltmaxdate, nbdays, nblate, arc->memo) );
 

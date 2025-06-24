@@ -541,7 +541,7 @@ GtkDateEntry *dateentry = user_data;
 
 
 static gboolean 
-gtk_date_entry_cb_entry_focus_out(GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
+gtk_date_entry_cb_entry_focus_out(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
 GtkDateEntry *dateentry = user_data;
 

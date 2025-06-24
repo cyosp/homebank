@@ -628,7 +628,7 @@ GtkWidget *label, *widget, *image;
 
 		gtk_menu_button_set_direction (GTK_MENU_BUTTON(widget), GTK_ARROW_UP);
 		gtk_widget_set_halign (widget, GTK_ALIGN_END);
-		image = gtk_image_new_from_icon_name (ICONNAME_EMBLEM_SYSTEM, GTK_ICON_SIZE_MENU);
+		image = hbtk_image_new_from_icon_name_16 (ICONNAME_EMBLEM_SYSTEM);
 		g_object_set (widget, "image", image,  NULL);
 
 	GSimpleActionGroup *group = g_simple_action_group_new ();

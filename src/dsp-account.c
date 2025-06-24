@@ -55,6 +55,9 @@ extern HbKvData CYA_FLT_TYPE[];
 extern HbKvData CYA_FLT_STATUS[];
 
 
+/* = = = = = = = = = = = = = = = = */
+
+
 static void
 _list_txn_selection_count_type(GtkTreeView *treeview, gint *nbrecon, gint *nbpending)
 {
@@ -638,7 +641,7 @@ GtkWidget *dialog;
 			if( data->acc != NULL )
 				data->acc->dspflags |= FLAG_ACC_TMP_EDITED;
 
-			ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE));
+			ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE));
 		}
 	}
 
@@ -779,20 +782,33 @@ gint flag, status;
 		while (lnk_txn != NULL)
 		{
 		Transaction *ope = lnk_txn->data;
+		gboolean insert = FALSE;
 
-			if(filter_txn_match(data->filter, ope) == 1)
+			//#1875100 skip any filter but pending
+			//#2109854 really show all txn (void were hidden)
+			if( status==FLT_STATUS_UNAPPROVED )
 			{
-				//#1600356 filter flag
-				if( flag == GRPFLAG_ANY || (ope->grpflg == flag) )
+				if( ope->flags & (OF_ISIMPORT|OF_ISPAST) )
+					insert = TRUE;
+			}
+			else
+			{
+				if( filter_txn_match(data->filter, ope) == 1 )
 				{
-					//#1875100 filter pending
-					if( status==FLT_STATUS_UNAPPROVED && !(ope->flags & (OF_ISIMPORT|OF_ISPAST)) )
-						goto next_txn;
-					//add to the list
-					g_ptr_array_add(data->gpatxn, (gpointer)ope);
+					//#1600356 filter flag
+					if( (flag == GRPFLAG_ANY) || (ope->grpflg == flag) )
+					{
+						insert = TRUE;
+					}
 				}
 			}
-		next_txn:
+
+			//add to the list
+			if( insert == TRUE )
+			{
+				g_ptr_array_add(data->gpatxn, (gpointer)ope);
+			}
+
 			lnk_txn = g_list_next(lnk_txn);
 		}
 	
@@ -1376,7 +1392,7 @@ struct hub_ledger_data *data;
 		hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_range), FLT_RANGE_MISC_CUSTOM);
 		g_signal_handler_unblock(data->CY_range, data->handler_id[HID_RANGE]);
 		
-		//ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE));
+		//ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE));
 		if(data->showall)
 			ui_flt_manage_header_sensitive(data->PO_hubfilter, NULL);
 	}
@@ -1523,7 +1539,7 @@ struct hub_ledger_data *data;
 
 
 static gboolean
-hub_ledger_cb_search_focus_in_event(GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
+hub_ledger_cb_search_focus_in_event(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
 struct hub_ledger_data *data;
 
@@ -1654,7 +1670,6 @@ guint changes = GLOBALS->changes_count;
 		
 			deftransaction_get(dialog, NULL);
 
-			//add_txn = transaction_add(GTK_WINDOW(data->window), TRUE, data->cur_ope);
 			add_txn = transaction_add(GTK_WINDOW(dialog), TRUE, data->cur_ope);
 			//2044601 if NULL xfer may have beed aborted
 			if( add_txn != NULL )
@@ -1689,7 +1704,7 @@ guint changes = GLOBALS->changes_count;
 
 	//refresh main
 	if( GLOBALS->changes_count > changes )
-		ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE));
+		ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE));
 }
 
 
@@ -1793,7 +1808,7 @@ gint result;
 
 	//refresh main
 	if( GLOBALS->changes_count > changes )
-		ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE));
+		ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE));
 
 }
 
@@ -1808,19 +1823,20 @@ struct hub_ledger_data *data = user_data;
 
 
 static void
-_helper_proceed_pending(struct hub_ledger_data *data, Transaction *txn)
+_helper_pending_sub(struct hub_ledger_data *data, Transaction *txn)
 {
 Account *acc = da_acc_get(txn->kacc);
 
-	if( acc->nb_pending > 0 )
-	{
-		acc->nb_pending--;
-	}
-	if( acc->nb_pending == 0 )
-		acc->flags &= ~(AF_HASNOTICE);
+	txn->flags &= ~(OF_ISIMPORT|OF_ISPAST);
 
-	if(data->nb_pending > 0)
+	g_return_if_fail(acc != NULL);
+
+	if( acc->nb_pending > 0 )
+		acc->nb_pending--;
+	if( data->nb_pending > 0 )
 		data->nb_pending--;
+
+	account_flags_eval(acc);
 }
 
 
@@ -1853,12 +1869,10 @@ guint changes = GLOBALS->changes_count;
 			{
 				DB( g_print(" approving txn '%s' %.2f\n", txn->memo, txn->amount) );
 				account_balances_sub(txn);
-				txn->flags &= ~(OF_ISIMPORT|OF_ISPAST);
+				//#1875100
+				_helper_pending_sub(data, txn);
 				account_balances_add(txn);
 				txn->dspflags |= FLAG_TMP_EDITED;
-				//todo: move this 
-				//#1875100
-				_helper_proceed_pending(data, txn);
 				GLOBALS->changes_count++;
 			}
 		}
@@ -1873,7 +1887,7 @@ guint changes = GLOBALS->changes_count;
 
 	//refresh main
 	if( GLOBALS->changes_count > changes )
-		ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE));
+		ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE));
 
 }
 
@@ -1962,7 +1976,7 @@ gint count, result;
 					// 2) manage pending
 					if( rem_txn->flags & (OF_ISIMPORT|OF_ISPAST) )
 					{
-						_helper_proceed_pending(data, rem_txn);
+						_helper_pending_sub(data, rem_txn);
 					}
 
 					// 3) remove datamodel
@@ -1984,7 +1998,7 @@ gint count, result;
 
 	//refresh main
 	if( GLOBALS->changes_count > changes )
-		ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE));
+		ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE));
 
 }
 
@@ -2093,7 +2107,7 @@ guint changes = GLOBALS->changes_count;
 	
 	//refresh main
 	if( GLOBALS->changes_count > changes )
-		ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE));
+		ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE));
 
 }
 
@@ -2140,7 +2154,7 @@ guint changes = GLOBALS->changes_count;
 	
 	//refresh main
 	if( GLOBALS->changes_count > changes )
-		ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE));
+		ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE));
 
 }
 
@@ -2188,7 +2202,7 @@ guint changes = GLOBALS->changes_count;
 
 	//refresh main
 	if( GLOBALS->changes_count > changes )
-		ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE));
+		ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE));
 
 }
 
@@ -2955,7 +2969,7 @@ gboolean lockrecon;
 
 	//refresh main
 	if( count > 0 )
-		ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE));
+		ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE));
 
 }
 
@@ -3076,10 +3090,9 @@ GMenuItem *menuitem = g_menu_item_new(label, action_name);
 }
 
 
-static GtkWidget *
+static GMenu *
 hub_ledger_popmenu_create2(struct hub_ledger_data *data)
 {
-GtkWidget *gtkmenu;
 GMenu *menu, *submenu, *section;
 
 	//g_menu_append (submenu, , "ldgr.");
@@ -3137,16 +3150,13 @@ GMenu *menu, *submenu, *section;
 	g_menu_append_section (menu, NULL, G_MENU_MODEL(section));
 	g_object_unref (section);
 
-	gtkmenu = gtk_menu_new_from_model(G_MENU_MODEL(menu));
-
-	return gtkmenu;
+	return menu;
 }
 
 
-static GtkWidget *
+static GMenu *
 hub_ledger_menubar_create2(struct hub_ledger_data *data)
 {
-GtkWidget *gtkmenu;
 GMenu *menubar, *menu;
 GMenuItem *menuitem;
 gboolean showall, closed;
@@ -3207,9 +3217,7 @@ gboolean showall, closed;
 		g_object_unref (menuitem);
 	}
 	
-	gtkmenu = gtk_menu_bar_new_from_model(G_MENU_MODEL(menubar));
-
-	return gtkmenu;
+	return menubar;
 }
 
 
@@ -3223,28 +3231,28 @@ GtkWidget *toolbar, *button, *bbox, *hbox, *widget, *label;
 	bbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_prepend (GTK_BOX (toolbar), bbox);
 
-		data->BT_up   = button = make_image_button(ICONNAME_HB_OPE_MOVUP, _("Move transaction up"));
+		data->BT_up   = button = make_image_button2(ICONNAME_HB_OPE_MOVUP, _("Move transaction up"));
 		gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "ldgr.txnup");
 		gtk_box_prepend (GTK_BOX (bbox), button);
 		
-		data->BT_down = button = make_image_button(ICONNAME_HB_OPE_MOVDW, _("Move transaction down"));
+		data->BT_down = button = make_image_button2(ICONNAME_HB_OPE_MOVDW, _("Move transaction down"));
 		gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "ldgr.txndw");
 		gtk_box_prepend (GTK_BOX (bbox), button);
 
 	bbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_prepend (GTK_BOX (toolbar), bbox);
 
-		data->BT_add   = button = make_image_button(ICONNAME_HB_OPE_ADD, _("Add a new transaction"));
+		data->BT_add   = button = make_image_button2(ICONNAME_HB_OPE_ADD, _("Add a new transaction"));
 		g_object_set(button, "label", _("Add"), "always-show-image", TRUE, NULL);
 		gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "ldgr.txnadd");
 		gtk_box_prepend (GTK_BOX (bbox), button);
 		
-		data->BT_herit = button = make_image_button(ICONNAME_HB_OPE_HERIT, _("Inherit from the active transaction"));
+		data->BT_herit = button = make_image_button2(ICONNAME_HB_OPE_HERIT, _("Inherit from the active transaction"));
 		g_object_set(button, "label", _("Inherit"), "always-show-image", TRUE, NULL);
 		gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "ldgr.txnherit");
 		gtk_box_prepend (GTK_BOX (bbox), button);
 		
-		data->BT_edit  = button = make_image_button(ICONNAME_HB_OPE_EDIT, _("Edit the active transaction"));
+		data->BT_edit  = button = make_image_button2(ICONNAME_HB_OPE_EDIT, _("Edit the active transaction"));
 		g_object_set(button, "label", _("Edit"), "always-show-image", TRUE, NULL);
 		gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "ldgr.txnedit");
 		gtk_box_prepend (GTK_BOX (bbox), button);
@@ -3252,19 +3260,19 @@ GtkWidget *toolbar, *button, *bbox, *hbox, *widget, *label;
 	bbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_box_prepend (GTK_BOX (toolbar), bbox);
 
-		data->BT_clear = button     = make_image_button(ICONNAME_HB_OPE_CLEARED, _("Toggle cleared for selected transaction(s)"));
+		data->BT_clear = button     = make_image_button2(ICONNAME_HB_OPE_CLEARED, _("Toggle cleared for selected transaction(s)"));
 		gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "ldgr.staclr");
 		gtk_box_prepend (GTK_BOX (bbox), button);
 		
-		data->BT_reconcile = button = make_image_button(ICONNAME_HB_OPE_RECONCILED, _("Toggle reconciled for selected transaction(s)"));
+		data->BT_reconcile = button = make_image_button2(ICONNAME_HB_OPE_RECONCILED, _("Toggle reconciled for selected transaction(s)"));
 		gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "ldgr.starec");
 		gtk_box_prepend (GTK_BOX (bbox), button);
 
-		data->BT_multiedit = button = make_image_button(ICONNAME_HB_OPE_MULTIEDIT, _("Edit multiple transaction"));
+		data->BT_multiedit = button = make_image_button2(ICONNAME_HB_OPE_MULTIEDIT, _("Edit multiple transaction"));
 		gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "ldgr.txnmedit");
 		gtk_box_prepend (GTK_BOX (bbox), button);
 
-		data->BT_delete    = button = make_image_button(ICONNAME_HB_OPE_DELETE, _("Delete selected transaction(s)"));
+		data->BT_delete    = button = make_image_button2(ICONNAME_HB_OPE_DELETE, _("Delete selected transaction(s)"));
 		gtk_actionable_set_action_name (GTK_ACTIONABLE (button), "ldgr.txndel");
 		gtk_box_prepend (GTK_BOX (bbox), button);
 
@@ -3294,12 +3302,12 @@ GtkWidget *toolbar, *button, *bbox, *hbox, *widget, *label;
 
 
 static gboolean 
-hub_ledger_window_getgeometry(GtkWidget *widget, GdkEventConfigure *event, gpointer user_data)
+hub_ledger_window_getgeometry(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
 //struct hub_ledger_data *data = user_data;
 struct WinGeometry *wg;
 
-	//DB( g_print("\n[hub-ledger] get geometry\n") );
+	DB( g_print("\n[hub-ledger] get geometry\n") );
 
 	//store position and size
 	wg = &PREFS->acc_wg;
@@ -3373,7 +3381,7 @@ struct hub_ledger_data *data;
 	//our global list has changed, so update the treeview
 	//TODO: find another way to signal
 	//do it on mainwindow focus??
-	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_TXNLIST+UF_REFRESHALL));
+	ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_TXNLIST+UF_REFRESHALL));
 
 	return FALSE;
 }
@@ -3390,7 +3398,7 @@ struct WinGeometry *wg;
 GtkWidget *window, *mainvbox, *intbox, *actionbox, *labelbox, *hbox;
 GtkWidget *menubar, *bar, *scrollwin, *treeview, *label, *widget;
 GActionGroup *actions;
-gint col;
+GMenu *gmenumodel;
 
 	DB( g_print("\n[hub-ledger] create_hub_ledger_window\n") );
 
@@ -3399,7 +3407,7 @@ gint col;
 
 	//disable define windows
 	GLOBALS->define_off++;
-	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
+	ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
 
 	/* setup TODO: to moove */
 	data->filter = da_flt_malloc();
@@ -3473,6 +3481,8 @@ gint col;
 	/* connect signal */
 	g_signal_connect (window, "destroy", G_CALLBACK (hub_ledger_window_destroy), (gpointer)data);
 	g_signal_connect (window, "delete-event", G_CALLBACK (hub_ledger_window_dispose), (gpointer)data);
+
+
 	g_signal_connect (window, "configure-event",	G_CALLBACK (hub_ledger_window_getgeometry), (gpointer)data);
 
 	g_signal_connect (window, "key-press-event", G_CALLBACK (hub_ledger_cb_on_key_press), (gpointer)data);
@@ -3482,7 +3492,12 @@ gint col;
 	gtk_window_set_child(GTK_WINDOW(window), mainvbox);
 
 	//1 - menubar
-	menubar = hub_ledger_menubar_create2(data);
+	gmenumodel = hub_ledger_menubar_create2(data);
+	#if( (GTK_MAJOR_VERSION < 4)  )
+		menubar = gtk_menu_bar_new_from_model(G_MENU_MODEL(gmenumodel));
+	#else
+		menubar = gtk_popover_menu_bar_new_from_model(G_MENU_MODEL(gmenumodel));
+	#endif
 	gtk_box_prepend (GTK_BOX (mainvbox), menubar);	
 
 	//2 - account txn notification
@@ -3557,7 +3572,7 @@ gint col;
 		data->CY_range = widget;
 		gtk_box_prepend (GTK_BOX (hbox), widget);
 
-		widget = make_image_toggle_button(ICONNAME_HB_OPE_FUTURE, NULL);
+		widget = make_image_toggle_button2(ICONNAME_HB_OPE_FUTURE, NULL);
 		data->CM_future = widget;
 		//#2008521 set more accurate tooltip
 		gchar *tt = g_strdup_printf(_("Toggle show %d days ahead"), PREFS->date_future_nbdays);
@@ -3587,22 +3602,22 @@ gint col;
 		}
 
 
-	widget = make_image_button(ICONNAME_HB_FILTER, _("Edit filter"));
+	widget = make_image_button2(ICONNAME_HB_FILTER, _("Edit filter"));
 	data->BT_filter = widget;
 	gtk_box_prepend (GTK_BOX (actionbox), widget);
 
 	//widget = gtk_button_new_with_mnemonic (_("Reset _filters"));
 	//widget = gtk_button_new_with_mnemonic (_("_Reset"));
-	widget = make_image_button(ICONNAME_HB_CLEAR, _("Clear filter"));
+	widget = make_image_button2(ICONNAME_HB_CLEAR, _("Clear filter"));
 	data->BT_reset = widget;
 	gtk_box_prepend (GTK_BOX (actionbox), widget);
 
 
-	widget = make_image_button(ICONNAME_HB_REFRESH, _("Refresh results"));
+	widget = make_image_button2(ICONNAME_HB_REFRESH, _("Refresh results"));
 	data->BT_refresh = widget;
 	gtk_box_prepend (GTK_BOX (actionbox), widget);
 
-	widget = make_image_toggle_button(ICONNAME_HB_LIFEENERGY, _("Toggle Life Energy"));
+	widget = make_image_toggle_button2(ICONNAME_HB_LIFEENERGY, _("Toggle Life Energy"));
 	data->BT_lifnrg = widget;
 	gtk_box_prepend (GTK_BOX (actionbox), widget);
 
@@ -3653,7 +3668,6 @@ gint col;
 	data->TX_balance[1] = widget;
 	gtk_box_prepend (GTK_BOX (labelbox), widget);
 
-	col++;
 	label = gtk_label_new(_("Today:"));
 	gtk_widget_set_margin_start(label, SPACING_MEDIUM);
 	gtk_box_prepend (GTK_BOX (labelbox), label);
@@ -3662,7 +3676,6 @@ gint col;
 	data->TX_balance[2] = widget;
 	gtk_box_prepend (GTK_BOX (labelbox), widget);
 
-	col++;
 	label = gtk_label_new(_("Future:"));
 	gtk_widget_set_margin_start(label, SPACING_MEDIUM);
 	gtk_box_prepend (GTK_BOX (labelbox), label);
@@ -3741,16 +3754,13 @@ gint col;
 	g_signal_connect (gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview)), "changed", G_CALLBACK (hub_ledger_selection), NULL);
 	g_signal_connect (GTK_TREE_VIEW(treeview), "row-activated", G_CALLBACK (hub_ledger_onRowActivated), GINT_TO_POINTER(2));
 
-	
 	//new GMenu
-	GtkWidget *popmenu = hub_ledger_popmenu_create2(data);
+	gmenumodel = hub_ledger_popmenu_create2(data);
+	GtkWidget *gtkmenu = gtk_menu_new_from_model(G_MENU_MODEL(gmenumodel));
 	//always attach to get sensitive gaction
-	gtk_menu_attach_to_widget(GTK_MENU(popmenu), treeview, NULL);
-	g_signal_connect (treeview, "button-press-event", G_CALLBACK (listview_context_cb),
-		// todo: here is not a GtkMenu but GtkImageMenuItem...
-		popmenu
-		//gtk_ui_manager_get_widget (ui, "/MenuBar")
-	);
+	gtk_menu_attach_to_widget(GTK_MENU(gtkmenu), treeview, NULL);
+	g_signal_connect (treeview, "button-press-event", G_CALLBACK (listview_context_cb), gtkmenu);
+
 
 	//setup, init and show window
 	wg = &PREFS->acc_wg;

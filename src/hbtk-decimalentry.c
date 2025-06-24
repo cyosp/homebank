@@ -25,9 +25,11 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
+#include "hb-types.h"
+#include "enums.h"
 #include "hbtk-decimalentry.h"
 //#include "hb-currency.h"
-//#include "hb-misc.h"
+#include "hb-misc.h"
 
 //TODO: move this after GTK4
 //#include "ui-widgets.h"
@@ -53,7 +55,9 @@ G_DEFINE_TYPE_WITH_CODE(HbtkDecimalEntry, hbtk_decimal_entry, GTK_TYPE_ENTRY, G_
 /* = = = = = = = = = = = = = = = = */
 
 
-static const gdouble fac[9] = { 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000 };
+static const gdouble fac[9] =
+{ 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000 };
+
 
 static double
 my_round(const gdouble d, guint digits)
@@ -66,8 +70,26 @@ gdouble out;
 }
 
 
+static gint
+_str_count_operator(gchar *text)
+{
+gint count = 0;
+gchar *s = text;
+
+	//sign only at 1st pos, then count others
+	if( *s=='+' || *s=='-' )
+		s++;
+	while( *s++ )
+	{
+		if( *s=='+' || *s=='-' || *s=='*' || *s=='/')
+			count++;
+	}
+	return count;
+}
+
+
 static gboolean
-my_is_decimal_str(const gchar* txt, guint digits)
+_str_is_decimal(const gchar* txt, guint digits)
 {
 const gchar *s;
 guint idx = 0, dccnt=0, npcnt=0, dpcnt=0;
@@ -86,15 +108,15 @@ gboolean retval = TRUE;
 		}
 
 		if( *s=='.' )
-			dccnt++;
+			dccnt++;	//decimal char
 
 		//count number parts
 		if( *s >= 0x30 && *s <= 0x39 )
 		{
 			if( dccnt == 0 )
-				npcnt++;
+				npcnt++;	//numeric part
 			else
-				dpcnt++;
+				dpcnt++;	//decimal part
 		}
 
 		s++; idx++;
@@ -164,7 +186,7 @@ gboolean tmpcalc = FALSE;
 			gchar *tmpbuf = g_strndup(remainder, (gsize)(s - remainder));
 
 				tmpcalc = TRUE;
-				tmpvalid = my_is_decimal_str(tmpbuf, digits);
+				tmpvalid = _str_is_decimal(tmpbuf, digits);
 				DB( g_print(" chknum: '%s' :: %d\n", tmpbuf, tmpvalid) );
 				nxtval = g_strtod(tmpbuf, NULL);
 				g_free(tmpbuf);
@@ -186,7 +208,7 @@ gboolean tmpcalc = FALSE;
 	if (*remainder)
 	{
 		//store rawnumber
-		tmpvalid = my_is_decimal_str(remainder, digits);
+		tmpvalid = _str_is_decimal(remainder, digits);
 		DB( g_print(" chknum: '%s' :: %d\n", remainder, tmpvalid) );
 		if(!tmpvalid)
 			goto abort;
@@ -210,10 +232,7 @@ abort:
 }
 
 
-
-
 /* = = = = = = = = = = = = = = = = */
-
 
 
 static void
@@ -308,62 +327,57 @@ hbtk_decimal_entry_insert_text_handler (GtkEntry *entry, gchar *nt, gint length,
 {
 HbtkDecimalEntry *decimalentry = HBTK_DECIMAL_ENTRY(entry);
 HbtkDecimalEntryPrivate *priv = decimalentry->priv;
-GtkEditable *editable = GTK_EDITABLE(entry);
 
 	DBI( g_print("\n[decimalentry] text-handler\n") );
 	DBI( g_print(" len:%d pos:%d nt:'%s' 0x%x\n", length, *position, nt, *nt) );
 
+	g_signal_handler_block(G_OBJECT (priv->entry), priv->hid_insert);
+
+	//most common: 1 char
 	if( (length == 1) )
 	{
 		//replace , by .
 		if(*nt == 0x2C)	
+		{ 
 			*nt = 0x2E;
-		if( (*nt < 0x2A) || (*nt > 0x39) )	//allow only: *+,-./0123456789
+		}
+		//allow only: *+,-./0123456789
+		if( (*nt < 0x2A) || (*nt > 0x39) )	
 			goto stop;
 
-		g_signal_handler_block(G_OBJECT (priv->entry), priv->hid_insert);
-		gtk_editable_insert_text (editable, nt, length, position);
-		g_signal_handler_unblock(G_OBJECT (priv->entry), priv->hid_insert);
+		//DBI( g_print(" insert char '%s'\n", nt) );
+		gtk_editable_insert_text (GTK_EDITABLE(priv->entry), nt, length, position);
 	}
+	//less common: pasted text
 	else
-	//sanitize pasted text
-	//old: if( (*nt & 0xFF) >= 0x7F)	//disable utf-8
 	{
-	gchar *s, *d, *cleantxt;
-	gsize cleanlen = 0;
-
-		s = nt;
-		d = cleantxt = g_strdup(nt);
-		while( *s )
+		//TODO: maybe manage pasted computing later
+		if( _str_count_operator(nt) > 0 )
 		{
-			// *=x2A +=x2B ,=x2C .=x2E -=x2D /=x2F 
-			//if( (*s >= 0x2A) && (*s <= 0x39) && (*s!=0x2C) )
-			if( (*s >= 0x2A) && (*s <= 0x39) )
-			{
-				//replace , by .
-				if( *s!=0x2C )
-					*d++ = *s;
-				else
-					*d++ = 0x2E;	
-				cleanlen++;
-			}
-			s++;
+			DBI( g_print(" insert bad computing '%s'\n", nt) );
+			gtk_editable_insert_text (GTK_EDITABLE(priv->entry), nt, length, position);
 		}
-		*s = 0;
-
-		DBI( g_print(" raw: '%s' > cln: '%s'\n", nt, cleantxt) );
-
-		g_signal_handler_block(G_OBJECT (priv->entry), priv->hid_insert);
-		gtk_editable_insert_text (editable, cleantxt, cleanlen, position);
-		g_signal_handler_unblock(G_OBJECT (priv->entry), priv->hid_insert);
-
-		g_free(cleantxt);
-	}
-
+		else
+		{
+			if( _str_is_decimal(nt, priv->digits) == FALSE )
+			{
+				DBI( g_print(" insert bad number '%s'\n", nt) );
+				gtk_editable_insert_text (GTK_EDITABLE(priv->entry), nt, length, position);
+			}
+			else
+			{
+			gchar *cleantxt = hb_string_dup_raw_amount_clean(nt, priv->digits);
+			gsize cleanlength = strlen(cleantxt);
+				DBI( g_print(" insert clean '%s'\n", cleantxt) );
+				gtk_editable_insert_text (GTK_EDITABLE(priv->entry), cleantxt, cleanlength, position);
+				g_free(cleantxt);
+			}
+		}
+	}		
 stop:
-	g_signal_stop_emission_by_name (G_OBJECT (editable), "insert-text");
+	g_signal_handler_unblock(G_OBJECT (priv->entry), priv->hid_insert);
+	g_signal_stop_emission_by_name (G_OBJECT (priv->entry), "insert-text");
 }
-
 
 
 static void
@@ -404,7 +418,7 @@ HbtkDecimalEntry *decimalentry = HBTK_DECIMAL_ENTRY(widget);
 
 
 static gboolean 
-hbtk_decimal_entry_cb_focus_out(GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
+hbtk_decimal_entry_cb_focus_out(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
 HbtkDecimalEntry *decimalentry = HBTK_DECIMAL_ENTRY(widget);
 
@@ -417,7 +431,7 @@ HbtkDecimalEntry *decimalentry = HBTK_DECIMAL_ENTRY(widget);
 
 
 static gboolean 
-hbtk_decimal_entry_cb_focus_in(GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
+hbtk_decimal_entry_cb_focus_in(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
 HbtkDecimalEntry *decimalentry = HBTK_DECIMAL_ENTRY(widget);
 HbtkDecimalEntryPrivate *priv = decimalentry->priv;

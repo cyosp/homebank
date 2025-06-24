@@ -183,9 +183,9 @@ gchar *title, *name;
 	
 		title = repstats_compute_title(tmpmode, tmpsrc, tmptype, tmpintvl);
 		if( tmpmode == 0 )
-			node = lst_report_to_string(GTK_TREE_VIEW(data->LV_report), tmpsrc, hbtk_get_label(CYA_REPORT_SRC, tmpsrc), TRUE);
+			node = lst_report_to_string(HB_STRING_PRINT, GTK_TREE_VIEW(data->LV_report), tmpsrc, hbtk_get_label(CYA_REPORT_SRC, tmpsrc));
 		else
-			node = lst_rep_time_to_string(GTK_TREE_VIEW(data->LV_report2), tmpsrc, NULL, TRUE);
+			node = lst_rep_time_to_string(HB_STRING_PRINT, GTK_TREE_VIEW(data->LV_report2), tmpsrc, NULL);
 
 		hb_print_listview(GTK_WINDOW(data->window), node->str, NULL, title, name, FALSE);
 
@@ -606,9 +606,9 @@ gint tmpmode, tmpsrc;
 	}*/
 
 	if( tmpmode == 0 )
-		node = lst_report_to_string(GTK_TREE_VIEW(data->LV_report), tmpsrc, title, TRUE);
+		node = lst_report_to_string(HB_STRING_CLIPBOARD, GTK_TREE_VIEW(data->LV_report), tmpsrc, title);
 	else
-		node = lst_rep_time_to_string(GTK_TREE_VIEW(data->LV_report2), tmpsrc, title, TRUE);
+		node = lst_rep_time_to_string(HB_STRING_CLIPBOARD, GTK_TREE_VIEW(data->LV_report2), tmpsrc, title);
 
 	clipboard = gtk_clipboard_get_default(gdk_display_get_default());
 	gtk_clipboard_set_text(clipboard, node->str, node->len);
@@ -656,9 +656,9 @@ gint tmpmode, tmpsrc;
 			}*/
 
 			if( tmpmode == 0 )
-				node = lst_report_to_string(GTK_TREE_VIEW(data->LV_report), tmpsrc, title, FALSE);
+				node = lst_report_to_string(HB_STRING_EXPORT, GTK_TREE_VIEW(data->LV_report), tmpsrc, title);
 			else
-				node = lst_rep_time_to_string(GTK_TREE_VIEW(data->LV_report2), tmpsrc, title, FALSE);
+				node = lst_rep_time_to_string(HB_STRING_EXPORT, GTK_TREE_VIEW(data->LV_report2), tmpsrc, title);
 
 			g_io_channel_write_chars(io, node->str, -1, NULL, NULL);
 			g_io_channel_unref (io);
@@ -920,9 +920,17 @@ gboolean is_subcat = FALSE;
 
 
 static gboolean
-reptime_list_click_func ( GtkWidget *widget, GdkEventButton *ev, gpointer user_data )
+reptime_list_click_func ( GtkWidget *widget, GdkEvent *event, gpointer user_data )
 {
-	if (ev->type == GDK_BUTTON_PRESS)
+GdkEventType type;
+guint button = 0;
+gdouble win_x, win_y;
+
+	type = gdk_event_get_event_type(event);
+	gdk_event_get_button(event, &button);
+	gdk_event_get_coords(event, &win_x, &win_y);
+
+	if (type == GDK_BUTTON_PRESS)
 	{
 	struct repstats_data *data;
 	GtkTreeModel *model;
@@ -934,7 +942,7 @@ reptime_list_click_func ( GtkWidget *widget, GdkEventButton *ev, gpointer user_d
 
 		DB( g_print(" capture row/col\n") );
 		data->sel_colid = -1;
-		if( gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(widget), ev->x, ev->y, &path, &column, NULL, NULL) )
+		if( gtk_tree_view_get_path_at_pos(GTK_TREE_VIEW(widget), win_x, win_y, &path, &column, NULL, NULL) )
 		{
 			data->sel_colid = gtk_tree_view_column_get_sort_column_id (column);
 
@@ -2010,7 +2018,7 @@ struct WinGeometry *wg;
 
 	//enable define windows
 	GLOBALS->define_off--;
-	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
+	ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
 
 	//unref window to our open window list
 	GLOBALS->openwindows = g_slist_remove(GLOBALS->openwindows, widget);
@@ -2052,7 +2060,7 @@ gint row;
 
 	//disable define windows
 	GLOBALS->define_off++;
-	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
+	ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
 
     /* create window, etc */
     window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -2195,10 +2203,10 @@ gint row;
 		bbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 		gtk_style_context_add_class (gtk_widget_get_style_context (bbox), GTK_STYLE_CLASS_LINKED);
 		gtk_box_append (GTK_BOX (fbox), bbox);
-		widget = make_image_button(ICONNAME_HB_FILTER, _("Edit filter"));
+		widget = make_image_button2(ICONNAME_HB_FILTER, _("Edit filter"));
 		data->BT_filter = widget;
 		gtk_box_prepend (GTK_BOX (bbox), widget);
-		widget = make_image_button(ICONNAME_HB_CLEAR, _("Clear filter"));
+		widget = make_image_button2(ICONNAME_HB_CLEAR, _("Clear filter"));
 		data->BT_reset = widget;
 		gtk_box_prepend (GTK_BOX (bbox), widget);
 

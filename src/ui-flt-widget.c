@@ -464,7 +464,7 @@ GMenu *menu, *section;
 	button = gtk_menu_button_new();
 	gtk_menu_button_set_direction (GTK_MENU_BUTTON(button), GTK_ARROW_DOWN);
 	gtk_widget_set_halign (button, GTK_ALIGN_END);
-	image = gtk_image_new_from_icon_name (ICONNAME_HB_BUTTON_MENU, GTK_ICON_SIZE_MENU);
+	image = hbtk_image_new_from_icon_name_16 (ICONNAME_HB_BUTTON_MENU);
 	g_object_set (button, "image", image,  NULL);
 
 	gtk_widget_insert_action_group (button, "favfltactions", G_ACTION_GROUP(group));

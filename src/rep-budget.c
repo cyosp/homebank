@@ -69,10 +69,10 @@ extern HbKvData CYA_KIND[];
 /* = = = = = = = = = = = = = = = = */
 
 
-static void lst_repbud_to_string_line(GString *node, gint mode, const gchar *format, GtkTreeModel *model, GtkTreeIter *iter)
+static void lst_repbud_to_string_row(GString *node, ToStringMode mode, HbRepBudMode uimode, GtkTreeModel *model, GtkTreeIter *iter)
 {
 guint32 key;
-gchar *name, *status;
+gchar sep, *name, *status;
 gdouble spent, budget, result;
 gint fulfilled;
 
@@ -87,20 +87,35 @@ gint fulfilled;
 		-1);
 
 	//#2033298 we get fullname for export
-	if( mode == REP_BUD_MODE_TOTAL )
+	if( uimode == REP_BUD_MODE_TOTAL )
 	{
 	Category *catitem = da_cat_get(key);
 
 		if( catitem != NULL )
 		{
 			g_free(name);
-			name = g_strdup(catitem->fullname);
+			name = g_strdup( (catitem->key == 0) ? _("(no category)") : catitem->fullname );
 		}
 	}
 
 	//2023696 add unbudgeted
 	if( key != LST_BUDGET_POS_UNBUDGETED )
-		g_string_append_printf(node, format, name, spent, budget, fulfilled, result, status);
+	{
+		sep = (mode == HB_STRING_EXPORT) ? ';' : '\t';
+
+		g_string_append (node, name );
+		g_string_append_c(node, sep);
+		_format_decimal(node, mode, spent);
+		g_string_append_c(node, sep);
+		_format_decimal(node, mode, budget);
+		g_string_append_c(node, sep);
+		g_string_append_printf(node, "%d %%", fulfilled);
+		g_string_append_c(node, sep);
+		_format_decimal(node, mode, result);
+		g_string_append_c(node, sep);
+		g_string_append (node, status );
+		g_string_append_c(node, '\n');
+	}
 
 	//leak
 	g_free(name);
@@ -108,33 +123,41 @@ gint fulfilled;
 }
 
 
-static GString *lst_repbud_to_string(GtkTreeView *treeview, gint mode, gchar *title, gboolean clipboard)
+static GString *lst_repbud_to_string(ToStringMode mode, GtkTreeView *treeview, HbRepBudMode uimode, gchar *title, gboolean clipboard)
 {
 GString *node;
 GtkTreeModel *model;
 GtkTreeIter	iter, child;
 gboolean valid;
-const gchar *format;
+gchar sep;
 
 	node = g_string_new(NULL);
+	sep = (mode == HB_STRING_EXPORT) ? ';' : '\t';
 
 	// header
-	format = (clipboard == TRUE) ? "%s\t%s\t%s\t%s\t%s\t\n" : "%s;%s;%s;%s;%s;\n";
-	g_string_append_printf(node, format, (title == NULL) ? _("Category") : title, _("Spent"), _("Budget"), _("Fulfilled"), _("Result"));
+	g_string_append (node, (title == NULL) ? _("Category") : title );
+	g_string_append_c (node, sep );
+	g_string_append (node, _("Spent") );
+	g_string_append_c (node, sep );
+	g_string_append (node, _("Budget") );
+	g_string_append_c (node, sep );
+	g_string_append (node, _("Fulfilled") );
+	g_string_append_c (node, sep );
+	g_string_append (node, _("Result") );
+	g_string_append_c (node, sep );
+	g_string_append_c(node, '\n');
 
 	// lines
-	format = (clipboard == TRUE) ? "%s\t%.2f\t%.2f\t%d %%\t%.2f\t%s\n" : "%s;%.2f;%.2f;%d %%;%.2f;%s\n";
-
 	model = gtk_tree_view_get_model(treeview);
 	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
 	while (valid)
 	{
-		lst_repbud_to_string_line(node, mode, format, model, &iter);
+		lst_repbud_to_string_row(node, mode, uimode, model, &iter);
 		// children ?
 		valid = gtk_tree_model_iter_children (GTK_TREE_MODEL(model), &child, &iter);
 		while (valid)
 		{
-			lst_repbud_to_string_line(node, mode, format, model, &child);
+			lst_repbud_to_string_row(node, mode, uimode, model, &child);
 			valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &child);
 		}
 		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(model), &iter);
@@ -542,7 +565,7 @@ gchar *name, *coltitle, *title;
 		title = repbudget_compute_title(tmpmode);
 
 		coltitle = budget_mode_label(tmpmode);
-		node = lst_repbud_to_string(GTK_TREE_VIEW(data->LV_report), tmpmode, coltitle, TRUE);
+		node = lst_repbud_to_string(HB_STRING_PRINT, GTK_TREE_VIEW(data->LV_report), tmpmode, coltitle, TRUE);
 		gint8 leftcols[4] = { 0, 5, -1 };
 		hb_print_listview(GTK_WINDOW(data->window), node->str, leftcols, title, name, FALSE);
 		g_string_free(node, TRUE);
@@ -900,7 +923,7 @@ gchar *coltitle;
 	tmpmode = hbtk_switcher_get_active(HBTK_SWITCHER(data->RA_mode));
 	coltitle = budget_mode_label(tmpmode);
 
-	node = lst_repbud_to_string(GTK_TREE_VIEW(data->LV_report), tmpmode, coltitle, TRUE);
+	node = lst_repbud_to_string(HB_STRING_CLIPBOARD, GTK_TREE_VIEW(data->LV_report), tmpmode, coltitle, TRUE);
 
 	clipboard = gtk_clipboard_get_default(gdk_display_get_default());
 	gtk_clipboard_set_text(clipboard, node->str, node->len);
@@ -934,7 +957,7 @@ gchar *coltitle;
 		if(io != NULL)
 		{
 			coltitle = budget_mode_label(tmpmode);
-			node = lst_repbud_to_string(GTK_TREE_VIEW(data->LV_report), tmpmode, coltitle, FALSE);
+			node = lst_repbud_to_string(HB_STRING_EXPORT, GTK_TREE_VIEW(data->LV_report), tmpmode, coltitle, FALSE);
 			g_io_channel_write_chars(io, node->str, -1, NULL, NULL);
 			g_io_channel_unref (io);
 			g_string_free(node, TRUE);
@@ -2221,7 +2244,7 @@ struct WinGeometry *wg;
 
 	//enable define windows
 	GLOBALS->define_off--;
-	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
+	ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
 
 	//unref window to our open window list
 	GLOBALS->openwindows = g_slist_remove(GLOBALS->openwindows, widget);
@@ -2263,7 +2286,7 @@ gint row;
 
 	//disable define windows
 	GLOBALS->define_off++;
-	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
+	ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
 
     /* create window, etc */
     window = gtk_window_new (GTK_WINDOW_TOPLEVEL);

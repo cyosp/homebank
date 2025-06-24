@@ -1130,7 +1130,7 @@ gint key;
 		}
 		l = g_list_next(l);
 	}
-
+	//no need to free glist
 	return window;
 }
 
@@ -1171,6 +1171,7 @@ gchar **remaining_args;
 		if( i > 0 )
 		{
 			arg_filepath = g_strdup(remaining_args[0]);
+			DB( g_print(" %s\n", arg_filepath) );
 		}
 
 		/*for (i = 0; remaining_args[i]; i++)
@@ -1196,11 +1197,10 @@ GtkWidget *splash = NULL;
 	DB( g_print("\n[homebank] app activate\n") );
 
 	//check if already a window opened
-	//TODO chnage here to enable multiple ?
 	if( GLOBALS->mainwindow != NULL )
 	{
+		//TODO change here to enable multiple ?
 		gtk_window_present (GTK_WINDOW (GLOBALS->mainwindow));
-
 	}
 	else
 
@@ -1231,7 +1231,7 @@ GtkWidget *splash = NULL;
 			gtk_window_set_default_icon_name ("homebank");
 
 			DB( g_print(" app creating window\n" ) );
-			mainwin = (GtkWidget *)create_hbfile_window (NULL);
+			mainwin = (GtkWidget *)ui_wallet_window_new (NULL);
 			if(mainwin)
 			{
 			gchar *rawfilepath = NULL;
@@ -1256,23 +1256,23 @@ GtkWidget *splash = NULL;
 					DB( g_print(" command line open '%s'\n", arg_filepath ) );
 					rawfilepath = g_strdup(arg_filepath);
 					g_free (arg_filepath);
-					ui_mainwindow_open_check(mainwin, rawfilepath);
+					ui_wallet_open_check(mainwin, rawfilepath);
 				}
 				else
 				if( PREFS->showwelcome )
 				{
-					ui_mainwindow_update(mainwin, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_VISUAL));
-					ui_mainwindow_action_help_welcome();
+					ui_wallet_update(mainwin, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_VISUAL));
+					ui_wallet_action_help_welcome();
 				}
 				else
 				if( PREFS->loadlast )
 				{
 					rawfilepath = homebank_lastopenedfiles_load();
-					ui_mainwindow_open_check(mainwin, rawfilepath);
+					ui_wallet_open_check(mainwin, rawfilepath);
 				}
 				else
 					/* update the mainwin display */
-					ui_mainwindow_update(mainwin, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_VISUAL));
+					ui_wallet_update(mainwin, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_VISUAL));
 
 
 				//5.7 test

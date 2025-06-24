@@ -1383,9 +1383,6 @@ gint w, h, dw, dh;
 	g_object_set_data(G_OBJECT(dialog), "inst_data", (gpointer)data);
 	DB( g_print(" - window=%p, inst_data=%p\n", dialog, data) );
 
-    g_signal_connect (dialog, "destroy",
-			G_CALLBACK (gtk_widget_destroyed), &dialog);
-
 	content = gtk_dialog_get_content_area(GTK_DIALOG (dialog));
 
 	mainbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);

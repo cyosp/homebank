@@ -596,11 +596,16 @@ GtkWidget *entry;
 }
 
 
-static GtkWidget *_raw_image_button(GType type, gchar *icon_name, gchar *tooltip_text, gboolean flat)
+static GtkWidget *
+_raw_image_button(GType type, gchar *icon_name, gchar *tooltip_text, gboolean flat, gboolean force_large)
 {
 GtkWidget *image, *button;
 
 	image = gtk_widget_new(GTK_TYPE_IMAGE, "icon-name", icon_name, /*"margin", 2,*/ NULL);
+
+	if(force_large)
+		g_object_set(image, "icon-size", GTK_ICON_SIZE_LARGE_TOOLBAR, NULL);
+
 	button = gtk_widget_new(type, "image", image, "tooltip-text", tooltip_text, NULL);
 	if( flat )
 		gtk_style_context_add_class (gtk_widget_get_style_context (button), GTK_STYLE_CLASS_FLAT);
@@ -608,24 +613,32 @@ GtkWidget *image, *button;
 }
 
 
+//TODO: imagebutton with svg -symbolic looks blurry if we set LARGE_TOOLBAR
 GtkWidget *make_image_button(gchar *icon_name, gchar *tooltip_text)
 {
-	return _raw_image_button(GTK_TYPE_BUTTON, icon_name, tooltip_text, FALSE);
+	return _raw_image_button(GTK_TYPE_BUTTON, icon_name, tooltip_text, FALSE, FALSE);
 }
-
 
 GtkWidget *make_image_toggle_button(gchar *icon_name, gchar *tooltip_text)
 {
-	return _raw_image_button(GTK_TYPE_TOGGLE_BUTTON, icon_name, tooltip_text, FALSE);
+	return _raw_image_button(GTK_TYPE_TOGGLE_BUTTON, icon_name, tooltip_text, FALSE, FALSE);
 }
 
+GtkWidget *make_image_button2(gchar *icon_name, gchar *tooltip_text)
+{
+	return _raw_image_button(GTK_TYPE_BUTTON, icon_name, tooltip_text, FALSE, !PREFS->icon_symbolic);
+}
+
+GtkWidget *make_image_toggle_button2(gchar *icon_name, gchar *tooltip_text)
+{
+	return _raw_image_button(GTK_TYPE_TOGGLE_BUTTON, icon_name, tooltip_text, FALSE, !PREFS->icon_symbolic);
+}
 
 GtkWidget *make_image_radio_button(gchar *icon_name, gchar *tooltip_text)
 {
-GtkWidget * button = _raw_image_button(GTK_TYPE_RADIO_BUTTON, icon_name, tooltip_text, FALSE);
+GtkWidget * button = _raw_image_button(GTK_TYPE_RADIO_BUTTON, icon_name, tooltip_text, FALSE, FALSE);
 
 	gtk_toggle_button_set_mode(GTK_TOGGLE_BUTTON(button), FALSE);
-
 	return button;
 }
 
@@ -640,7 +653,6 @@ GtkWidget *widget = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
 	return widget;
 }
 
-
 GtkWidget *make_tb_separator(void)
 {
 GtkWidget *widget = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
@@ -649,39 +661,22 @@ GtkWidget *widget = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
 	return widget;
 }
 
-
 GtkWidget *make_tb_image_button(gchar *icon_name, gchar *tooltip_text)
 {
-GtkWidget *button = _raw_image_button(GTK_TYPE_BUTTON, icon_name, tooltip_text, TRUE);
-GtkWidget *img = gtk_button_get_image(GTK_BUTTON(button));
-
-	g_object_set(img, "icon-size", GTK_ICON_SIZE_LARGE_TOOLBAR, NULL);
-	return button;
+	return _raw_image_button(GTK_TYPE_BUTTON, icon_name, tooltip_text, TRUE, TRUE);
 }
-
 
 GtkWidget *make_tb_image_toggle_button(gchar *icon_name, gchar *tooltip_text)
 {
-GtkWidget *button = _raw_image_button(GTK_TYPE_TOGGLE_BUTTON, icon_name, tooltip_text, TRUE);
-GtkWidget *img = gtk_button_get_image(GTK_BUTTON(button));
-
-	g_object_set(img, "icon-size", GTK_ICON_SIZE_LARGE_TOOLBAR, NULL);
-	return button;
+	return _raw_image_button(GTK_TYPE_TOGGLE_BUTTON, icon_name, tooltip_text, TRUE, TRUE);
 }
-
 
 GtkWidget *make_tb_image_radio_button(gchar *icon_name, gchar *tooltip_text)
 {
-GtkWidget * button = _raw_image_button(GTK_TYPE_RADIO_BUTTON, icon_name, tooltip_text, TRUE);
-GtkWidget *img = gtk_button_get_image(GTK_BUTTON(button));
-
-	g_object_set(img, "icon-size", GTK_ICON_SIZE_LARGE_TOOLBAR, NULL);
+GtkWidget *button = _raw_image_button(GTK_TYPE_RADIO_BUTTON, icon_name, tooltip_text, TRUE, TRUE);
 	gtk_toggle_button_set_mode(GTK_TOGGLE_BUTTON(button), FALSE);
-
 	return button;
 }
-
-
 
 
 /*

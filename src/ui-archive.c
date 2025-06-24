@@ -144,7 +144,8 @@ gboolean selected, recurring, sensitive;
 		hb_widget_visible(data->CY_weekday, sensitive);
 
 		//update freq label
-		gchar *txt = ui_arc_listview_get_freq_label(freq);
+		//#2108847 not translated
+		gchar *txt = _(ui_arc_listview_get_freq_label(freq));
 		gtk_label_set_text(GTK_LABEL(data->LB_rec_every2), txt);
 
 		sensitive = !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(data->CM_relative));
@@ -1104,7 +1105,6 @@ gint w, h, dw, dh;
 
 
 	// connect dialog signals
-	g_signal_connect (dialog, "destroy", G_CALLBACK (gtk_widget_destroyed), &dialog);
 	g_signal_connect (dialog, "map-event", G_CALLBACK (ui_arc_manage_mapped), &dialog);
 	g_signal_connect (dialog, "key-press-event", G_CALLBACK (ui_arc_manage_cb_on_key_press), (gpointer)data);
 

@@ -56,7 +56,7 @@ extern struct Preferences *PREFS;
 
 /* prototypes */
 static GtkWidget *lst_reptime_create(void);
-static GString *lst_reptime_to_string(GtkTreeView *treeview, gchar *title, gboolean clipboard);
+static GString *lst_reptime_to_string(ToStringMode mode, GtkTreeView *treeview, gchar *title);
 static void lst_reptime_set_cur(GtkTreeView *treeview, guint32 kcur);
 
 
@@ -281,7 +281,7 @@ gint tmpintvl;
 	tmpintvl  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_intvl));
 
 	coltitle = hbtk_get_label(CYA_REPORT_INTVL, tmpintvl);
-	node = lst_reptime_to_string(GTK_TREE_VIEW(data->LV_report), coltitle, TRUE);
+	node = lst_reptime_to_string(HB_STRING_CLIPBOARD, GTK_TREE_VIEW(data->LV_report), coltitle);
 
 	clipboard = gtk_clipboard_get_default(gdk_display_get_default());
 	gtk_clipboard_set_text(clipboard, node->str, node->len);
@@ -318,7 +318,7 @@ gint tmpintvl;
 			tmpintvl  = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_intvl));
 			title = hbtk_get_label(CYA_REPORT_INTVL, tmpintvl);
 
-			node = lst_reptime_to_string(GTK_TREE_VIEW(data->LV_report), title, FALSE);
+			node = lst_reptime_to_string(HB_STRING_EXPORT, GTK_TREE_VIEW(data->LV_report), title);
 			g_io_channel_write_chars(io, node->str, -1, NULL, NULL);
 			g_io_channel_unref (io);
 			g_string_free(node, TRUE);
@@ -909,7 +909,7 @@ gchar *coltitle, *title, *name;
 	GString *node;
 
 		coltitle = hbtk_get_label(CYA_REPORT_INTVL, tmpintvl);
-		node = lst_reptime_to_string(GTK_TREE_VIEW(data->LV_report), coltitle, TRUE);
+		node = lst_reptime_to_string(HB_STRING_PRINT, GTK_TREE_VIEW(data->LV_report), coltitle);
 
 		hb_print_listview(GTK_WINDOW(data->window), node->str, NULL, title, name, FALSE);
 
@@ -1381,7 +1381,7 @@ struct WinGeometry *wg;
 
 	//enable define windows
 	GLOBALS->define_off--;
-	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
+	ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
 
 	//unref window to our open window list
 	GLOBALS->openwindows = g_slist_remove(GLOBALS->openwindows, widget);
@@ -1420,7 +1420,7 @@ gint row;
 
 	//disable define windows
 	GLOBALS->define_off++;
-	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
+	ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_SENSITIVE));
 
     /* create window, etc */
     window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -1713,35 +1713,52 @@ gint row;
 /* = = = = = = = = = = = = = = = = */
 
 
-static GString *lst_reptime_to_string(GtkTreeView *treeview, gchar *title, gboolean clipboard)
+static GString *lst_reptime_to_string(ToStringMode mode, GtkTreeView *treeview, gchar *title)
 {
 GString *node;
 GtkTreeModel *model;
 GtkTreeIter	iter;
 gboolean valid;
-const gchar *format;
+gchar sep;
 
 	node = g_string_new(NULL);
 
-	// header
-	format = (clipboard == TRUE) ? "%s\t%s\n" : "%s;%s\n";
-	g_string_append_printf(node, format, (title == NULL) ? _("Time slice") : title, _("Amount"));
+	sep = (mode == HB_STRING_EXPORT) ? ';' : '\t';
 
+	// header
+	g_string_append (node, (title == NULL) ? _("Time slice") : title );	
+	g_string_append_c (node, sep );
+	g_string_append (node, _("Expense") );	
+	g_string_append_c (node, sep );
+	g_string_append (node, _("Income") );	
+	g_string_append_c (node, sep );
+	g_string_append (node, _("Total") );	
+	g_string_append (node, "\n" );
+
+	// lines
 	model = gtk_tree_view_get_model(treeview);
 	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(model), &iter);
 	while (valid)
 	{
 	gchar *name;
-	gdouble amount;
+	gdouble values[4];
 
 		gtk_tree_model_get (model, &iter,
 			//LST_HUBREPTIME_KEY, i,
-			LST_HUBREPTIME_LABEL  , &name,
-			LST_HUBREPTIME_TOTAL , &amount,
+			LST_HUBREPTIME_LABEL,	&name,
+			LST_HUBREPTIME_EXPENSE, &values[0],
+			LST_HUBREPTIME_INCOME,	&values[1],
+			LST_HUBREPTIME_TOTAL,	&values[2],
 			-1);
 
-		format = (clipboard == TRUE) ? "%s\t%.2f\n" : "%s;%.2f\n";
-		g_string_append_printf(node, format, name, amount);
+		g_string_append (node, name );
+
+		for(guint i=0;i<3;i++)
+		{
+			g_string_append_c(node, sep);
+			_format_decimal(node, mode, values[i]);
+		}
+		g_string_append_c(node, '\n');
 
 		//leak
 		g_free(name);

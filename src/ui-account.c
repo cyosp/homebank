@@ -2080,7 +2080,6 @@ GValue gvalue = G_VALUE_INIT;
 
 
 	// connect dialog signals
-	g_signal_connect (dialog, "destroy"  , G_CALLBACK (gtk_widget_destroyed), &dialog);
 	g_signal_connect (dialog, "map-event", G_CALLBACK (ui_acc_manage_mapped), &dialog);
 	g_signal_connect (dialog, "key-press-event", G_CALLBACK (ui_acc_manage_cb_on_key_press), (gpointer)data);
 

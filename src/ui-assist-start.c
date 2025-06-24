@@ -672,7 +672,7 @@ Account *item;
 
 	//our global list has changed, so update the treeview
 	ui_hub_account_populate(GLOBALS->mainwindow, NULL);
-	ui_mainwindow_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_REFRESHALL));
+	ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_REFRESHALL));
 
 }
 

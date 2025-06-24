@@ -39,8 +39,8 @@
 
 
 #include "hb-types.h"
-
 #include "enums.h"
+
 #include "icon-names.h"
 #include "hb-preferences.h"
 
@@ -81,13 +81,13 @@
 
 #define HOMEBANK_MAJOR	5
 #define HOMEBANK_MINOR	9
-#define HOMEBANK_MICRO	0
+#define HOMEBANK_MICRO	1
 
-#define HB_VERSION		"5.9.0"
+#define HB_VERSION		"5.9.1"
 #define HB_VERSION_NUM	(HOMEBANK_MAJOR*10000) + (HOMEBANK_MINOR*100) + HOMEBANK_MICRO
 
 #define FILE_VERSION		1.6
-#define PREF_VERSION		590
+#define PREF_VERSION		591
 
 #if HB_UNSTABLE == FALSE
 	#define	PROGNAME		"HomeBank"

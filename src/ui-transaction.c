@@ -395,7 +395,7 @@ Account *srcacc;
 
 
 //#1673260
-static gboolean deftransaction_cb_dstamount_focusout(GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
+static gboolean deftransaction_cb_dstamount_focusout(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
 struct deftransaction_data *data;
 gint type;
@@ -443,7 +443,7 @@ static gboolean deftransaction_cb_date_changed(GtkWidget *widget, GdkEventFocus 
 }
 
 
-static gboolean deftransaction_cb_amount_focusout(GtkWidget *widget, GdkEventFocus *event, gpointer user_data)
+static gboolean deftransaction_cb_amount_focusout(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
 struct deftransaction_data *data;
 gint type;
@@ -545,20 +545,9 @@ gchar *tagstr;
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
 	entry = data->ope;
+	type = transaction_get_type(entry);
 
 	DB( g_print(" - ope=%p data=%p\n", data->ope, data) );
-
-
-	//TRANSFER has priority on INCOME
-	//type = TXN_TYPE_NONE;
-	if(entry->flags & OF_INTXFER)
-		type = TXN_TYPE_INTXFER;
-	else
-	{
-		type = TXN_TYPE_EXPENSE;
-		if(entry->flags & OF_INCOME)
-			type = TXN_TYPE_INCOME;
-	}
 
 	g_signal_handlers_block_by_func(G_OBJECT(data->RA_type), G_CALLBACK(deftransaction_cb_type_toggled), NULL);
 	hbtk_switcher_set_active(HBTK_SWITCHER(data->RA_type), type);
@@ -746,12 +735,12 @@ gint type, active;
 	//	return;
 
 	type = hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_type));
+	DB( g_print(" type: %d\n", type) );
 	entry->flags &= ~(OF_INCOME|OF_INTXFER);
 	if( type == TXN_TYPE_INCOME)
 		entry->flags |= OF_INCOME;
 	if( type == TXN_TYPE_INTXFER)
 		entry->flags |= OF_INTXFER;
-	DB( g_print(" type: %d\n", type) );
 
 	entry->date = gtk_date_entry_get_date(GTK_DATE_ENTRY(data->PO_date));
 	DB( hb_print_date(entry->date, " date:") );
@@ -986,7 +975,8 @@ Account *acc;
 		}
 
 		//#1867979 todate
-		if( PREFS->xfer_syncdate == FALSE )
+		//#2109861 child can be null
+		if( PREFS->xfer_syncdate == FALSE && child != NULL )
 			gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_dateto), (guint)child->date);
 	}
 
@@ -1048,12 +1038,15 @@ Account *acc;
 			}
 			else	// just sync the existing xfer
 			{
-				//#1584342 was faultly old_txn
-				transaction_xfer_child_sync(new_txn, child);
-				//#1867979 todate
-				if( PREFS->xfer_syncdate == FALSE )
-					child->date = gtk_date_entry_get_date(GTK_DATE_ENTRY(data->PO_dateto));
-
+				//#2109861 child can be null
+				if( child != NULL)
+				{
+					//#1584342 was faultly old_txn
+					transaction_xfer_child_sync(new_txn, child);
+					//#1867979 todate
+					if( PREFS->xfer_syncdate == FALSE )
+						child->date = gtk_date_entry_get_date(GTK_DATE_ENTRY(data->PO_dateto));
+				}
 				accchanged = TRUE;
 			}
 		}
@@ -1443,7 +1436,7 @@ GtkWidget *box, *menubutton, *image;
 
 
 static gboolean
-deftransaction_getgeometry(GtkWidget *widget, GdkEventConfigure *event, gpointer user_data)
+deftransaction_getgeometry(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
 struct WinGeometry *wg;
 
