@@ -62,7 +62,7 @@ struct deftransaction_data
 	GtkWidget   *RA_status;
 	GtkWidget	*CM_remind;
 
-	GtkWidget   *IB_warnsign;
+	GtkWidget   *IB_warnsign, *LB_warnsign;
 	GtkWidget	*LB_msgadded;
 
 	/* popover */
@@ -81,7 +81,7 @@ struct deftransaction_data
 	gint		accnum;
 	guint32		kacc;
 	gboolean	showtemplate;
-	gboolean	isxferdst;		//edit: true if this is a xfer target (amt > 0) 
+	gint		txnoldtype;
 
 	Transaction *ope;
 };

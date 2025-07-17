@@ -107,7 +107,7 @@ gboolean hb_string_isprint(gchar *str);
 
 void hb_print_date(guint32 jdate, gchar *label);
 
-void hex_dump(guchar *ptr, guint length);
+void hex_dump(gchar *ptr, guint length);
 
 #if( (GLIB_MAJOR_VERSION == 2) && (GLIB_MINOR_VERSION < 68) )
 guint g_string_replace (GString     *string,

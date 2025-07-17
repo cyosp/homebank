@@ -37,14 +37,48 @@ extern struct HomeBank *GLOBALS;
 extern struct Preferences *PREFS;
 
 
-/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*/
+/* = = = = = = = = = = = = = = = = */
 
 
-static gint homebank_alienfile_recognize(gchar *filename)
+static HbFileType
+_str_search_marker(gchar *rawtext, gsize length)
+{
+
+	if( g_str_has_prefix(rawtext, "!") )
+	{
+		if( g_str_has_prefix(rawtext, "!Type")
+		 || g_str_has_prefix(rawtext, "!Account")
+		 ||	g_str_has_prefix(rawtext, "!Option")
+		) return FILETYPE_QIF;
+
+		if( g_str_has_prefix(rawtext, "!type")
+		 || g_str_has_prefix(rawtext, "!account")
+		 ||	g_str_has_prefix(rawtext, "!option")
+		) return FILETYPE_QIF;
+	}
+
+	if( hb_csv_test_line(rawtext) )
+		return FILETYPE_CSV_HB;
+
+	if( g_strstr_len(rawtext, -1, "<OFX>") != NULL )
+		return FILETYPE_OFX;
+	if( g_strstr_len(rawtext, -1, "<ofx>") != NULL )
+		return FILETYPE_OFX;
+
+	if( g_str_has_prefix(rawtext, "<homebank v="))
+		return FILETYPE_HOMEBANK;
+
+	return FILETYPE_UNKNOWN;
+}
+
+
+static HbFileType
+homebank_alienfile_recognize(gchar *filename)
 {
 GIOChannel *io;
-gint i, retval = FILETYPE_UNKNOWN;
+HbFileType retval = FILETYPE_UNKNOWN;
 gchar *tmpstr;
+gsize length, eol_pos;
 gint io_stat;
 GError *err = NULL;
 
@@ -53,76 +87,51 @@ GError *err = NULL;
 	io = g_io_channel_new_file(filename, "r", NULL);
 	if(io != NULL)
 	{
-		g_io_channel_set_encoding(io, NULL, NULL);	/* set to binary mode */
+	guint n_line = 0;
 
-		//#1895478 5.4.4 25 => 48
-		for(i=0;i<48;i++)
+		//set to binary mode
+		g_io_channel_set_encoding(io, NULL, NULL);	
+
+		//#1895478 5.4.4 : 25 => 48
+		while( retval == FILETYPE_UNKNOWN && n_line <= 48 )
 		{
-			if( retval != FILETYPE_UNKNOWN )
-				break;
-
-			io_stat = g_io_channel_read_line(io, &tmpstr, NULL, NULL, &err);
-			if( io_stat == G_IO_STATUS_EOF)
-				break;
-			if( io_stat == G_IO_STATUS_ERROR )
-			{
-				DB (g_print(" + ERROR %s\n",err->message));
-				break;
-			}
+			io_stat = g_io_channel_read_line(io, &tmpstr, &length, &eol_pos, &err);
 			if( io_stat == G_IO_STATUS_NORMAL)
 			{
-				if( *tmpstr != '\0' )
+				n_line++;
+				#if MYDEBUG
+				//5.9.2 fast remove eol
+				if( length > 0 && eol_pos <= length )
+					tmpstr[eol_pos] = 0;
+				g_print(" line %d: ->|%s|<- %ld %ld\n", n_line, tmpstr, length, eol_pos);
+				#endif
+
+				retval = _str_search_marker(tmpstr, length);
+				g_free(tmpstr);
+			}
+			else
+			{
+				if( io_stat == G_IO_STATUS_EOF )
 				{
-					DB( g_print(" line %d: '%s' retval=%d\n", i, tmpstr, retval) );
-
-					// OFX/QFX file ?
-					if( g_strstr_len(tmpstr, -1, "<OFX>") != NULL 
-					 || g_strstr_len(tmpstr, -1, "<ofx>") != NULL
-					 /*||	strcasestr(tmpstr, "<OFC>") != NULL*/
-					  )
-					{
-						DB( g_print(" type is OFX\n") );
-						retval = FILETYPE_OFX;
-					}
-					else
-
-					// QIF file ?
-					if( g_str_has_prefix(tmpstr, "!Type") ||
-					    g_str_has_prefix(tmpstr, "!type") ||
-					    g_str_has_prefix(tmpstr, "!Option") ||
-					    g_str_has_prefix(tmpstr, "!option") ||
-					    g_str_has_prefix(tmpstr, "!Account") ||
-					    g_str_has_prefix(tmpstr, "!account")
-					  )
-					{
-						DB( g_print(" type is QIF\n") );
-						retval = FILETYPE_QIF;
-					}
-					else
-
-					// CSV homebank format ?
-					if( hb_csv_test_line(tmpstr) )
-					{
-						DB( g_print(" type is CSV homebank\n") );
-						retval = FILETYPE_CSV_HB;
-					}
-					else
-					
-					// native homebank file ?
-					if( g_str_has_prefix(tmpstr, "<homebank v="))
-					{
-						DB( g_print(" type is HomeBank\n") );
-						retval = FILETYPE_HOMEBANK;
-					}
-
-
-					g_free(tmpstr);
+					DB( g_print(" eof reached\n") );
+					break;
+				}
+				if( io_stat == G_IO_STATUS_ERROR )
+				{
+					DB (g_print(" + ERROR %s\n", err->message));
+					g_error_free(err);
+					err=NULL;
+					break;
 				}
 			}
 		}
 		g_io_channel_unref (io);
 	}
 
+	#if MYDEBUG
+	gchar *label[NUM_FILETYPE]={"???","hb","ofx","qif","csv"};
+	g_print(" > type is %s", label[retval]);
+	#endif
 	return retval;
 }
 
@@ -210,7 +219,7 @@ da_import_context_new(ImportContext *context)
 }
 
 
-/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*/
+/* = = = = = = = = = = = = = = = = */
 
 GenFile *
 da_gen_file_malloc(void)
@@ -226,6 +235,10 @@ da_gen_file_free(GenFile *genfile)
 		if(genfile->filepath != NULL)
 			g_free(genfile->filepath);
 
+		//#2111468 add error log
+		if(genfile->errlog != NULL)
+			g_free(genfile->errlog);
+
 		g_free(genfile);
 	}
 }
@@ -237,6 +250,8 @@ da_gen_file_get(GList *lst_file, guint32 key)
 GenFile *existfile = NULL;
 GList *list;
 
+	DB( g_print("\n[genfile] get %d\n", key) );
+
 	list = g_list_first(lst_file);
 	while (list != NULL)
 	{
@@ -245,6 +260,7 @@ GList *list;
 		if( key == genfile->key )
 		{
 			existfile = genfile;
+			DB( g_print(" found\n") );
 			break;
 		}
 		list = g_list_next(list);
@@ -259,7 +275,7 @@ da_gen_file_get_by_name(GList *lst_file, gchar *filepath)
 GenFile *existfile = NULL;
 GList *list;
 
-	DB( g_print("da_gen_file_get_by_name\n") );
+	DB( g_print("\n[genfile] get by name\n") );
 
 	list = g_list_first(lst_file);
 	while (list != NULL)
@@ -287,11 +303,10 @@ da_gen_file_append_from_filename(ImportContext *ictx, gchar *filename)
 GenFile *genfile = NULL;
 gint filetype;
 
-	//todo: should check if its a file !!
+	DB( g_print("\n[genfile] append from\n") );
+	DB( g_print(" filename:'%s'\n", filename) );
 
 	filetype = homebank_alienfile_recognize(filename);
-
-	DB( g_print(" - filename '%s', type is %d\n", filename, filetype ) );
 
 	// we keep everything here
 	//if( (filetype == FILETYPE_OFX) || (filetype == FILETYPE_QIF) || (filetype == FILETYPE_CSV_HB) )
@@ -304,12 +319,13 @@ gint filetype;
 		{
 			genfile = da_gen_file_malloc();
 			genfile->filepath = g_strdup(filename);
+			//FILETYPE_UNKNOWN = invalid
 			genfile->filetype = filetype;
 			
 			//append to list
+			DB( g_print(" add to list\n") );
 			genfile->key = g_list_length (ictx->gen_lst_file) + 1;
 			ictx->gen_lst_file = g_list_append(ictx->gen_lst_file, genfile);
-
 		}
 	}
 
@@ -317,7 +333,7 @@ gint filetype;
 }
 
 
-/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*/
+/* = = = = = = = = = = = = = = = = */
 
 
 GenAcc *
@@ -391,6 +407,9 @@ GList *list;
 
 	return existacc;
 }
+
+
+/* = = = = = = = = = = = = = = = = */
 
 
 Account *
@@ -513,7 +532,7 @@ end:
 }
 
 
-/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =*/
+/* = = = = = = = = = = = = = = = = */
 
 
 GenTxn *
@@ -620,7 +639,7 @@ da_gen_txn_append(ImportContext *ctx, GenTxn *gentxn)
 }
 
 
-/* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
+/* = = = = = = = = = = = = = = = = */
 
 
 static void _string_utf8_ucfirst(gchar **str)
@@ -848,6 +867,8 @@ gint count = 0;
 						&& (hb_string_compare(gentxn2->payee, gentxn1->payee) == 0)
 					    //#1954017 add comparison on category
 					    && (hb_string_compare(gentxn2->category, gentxn1->category) == 0)
+					    //#2114674 add comparison to number (cheque)
+					    && (hb_string_compare(gentxn2->number, gentxn1->number) == 0)
 					  )
 					{
 						isimpsimilar = TRUE;
@@ -1544,7 +1565,7 @@ guint nbofxtxn = 0;
 
 
 #if MYDEBUG
-void _import_context_debug_file_list(ImportContext *ctx)
+static void _import_context_debug_file_list(ImportContext *ctx)
 {
 GList *list;
 
@@ -1562,7 +1583,7 @@ GList *list;
 
 }
 
-void _import_context_debug_acc_list(ImportContext *ctx)
+static void _import_context_debug_acc_list(ImportContext *ctx)
 {
 GList *list;
 
@@ -1581,7 +1602,7 @@ GList *list;
 }
 
 
-void _import_context_debug_txn_list(ImportContext *ctx)
+static void _import_context_debug_txn_list(ImportContext *ctx)
 {
 GList *list;
 

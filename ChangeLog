@@ -1,4 +1,26 @@
 
+2025-07-11  Maxime DOYEN
+
+ Made 5.9.4 release
+
+* bugfix: #2116088 ledger window quickfilter bar abnormal height 
+
+
+2025-07-06  Maxime DOYEN
+
+ Made 5.9.3 release
+
+* bugfix: #2114680 Hard to switch an Income transaction to Transfer
+* bugfix: #2114674 QIF import mark transaction similar with different Number
+* bugfix: #2114136 3rd party flatpak broken translation
+* bugfix: #2113492 AppStream metadata are invalid
+* bugfix: #2112649 ledger refresh button faulty clear the filter
+* bugfix: #2111786 change of day is not detected and so future transaction/balances are not updated
+* bugfix: #2111468 CSV import silently skip some lines (with a missing " enclosed)
+* bugfix: #2110461 import a CSV with unsupported format crash
+* bugfix: #2107951 when several ledger window opened, update on transfer is deferred 
+
+
 2025-06-04  Maxime DOYEN
 
  Made 5.9.2 release
