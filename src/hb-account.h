@@ -81,6 +81,7 @@ struct _account
 // unsaved flags -- display/session
 #define FLAG_ACC_TMP_ADDED		(1<< 1)
 #define FLAG_ACC_TMP_EDITED		(1<< 2)
+#define FLAG_ACC_TMP_DIRTY		(1<< 3)	//indicate any display needs a refresh
 
 
 enum
@@ -145,6 +146,8 @@ gboolean account_has_website(Account *item);
 gboolean account_exists(gchar *name);
 gboolean account_rename(Account *item, gchar *newname);
 void account_set_currency(Account *item, guint32 kcur);
+
+void account_set_dirty(Account *acc, guint32 key, gboolean isdirty);
 
 void account_flags_eval(Account *item);
 void account_compute_balances(gboolean init);

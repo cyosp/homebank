@@ -549,6 +549,21 @@ gboolean retval = FALSE;
 }
 
 
+void
+account_set_dirty(Account *acc, guint32 key, gboolean isdirty)
+{
+	if( acc == NULL )
+		acc = da_acc_get(key);
+
+	if( acc != NULL )
+	{
+		if( isdirty )
+			acc->dspflags |= FLAG_ACC_TMP_DIRTY;
+		else
+			acc->dspflags &= ~(FLAG_ACC_TMP_DIRTY);
+	}
+}
+
 
 gboolean
 account_exists(gchar *name)

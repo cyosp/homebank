@@ -71,7 +71,7 @@ gchar *tagstr;
 				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(data->CM_amount), TRUE);
 				break;
 			case LST_DSPOPE_PAYNUMBER:
-				paymode_combo_box_set_active(GTK_COMBO_BOX(data->NU_mode), ope->paymode);
+				kiv_combo_box_set_active(GTK_COMBO_BOX(data->NU_mode), ope->paymode);
 				gtk_entry_set_text(GTK_ENTRY(data->ST_number), (ope->number != NULL) ? ope->number : "");
 				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(data->CM_mode), TRUE);
 				gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(data->CM_number), TRUE);
@@ -277,7 +277,7 @@ guint changes;
 		{
 			if( gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(data->CM_mode)) )
 			{
-				txn->paymode = paymode_combo_box_get_active(GTK_COMBO_BOX(data->NU_mode));
+				txn->paymode = kiv_combo_box_get_active(GTK_COMBO_BOX(data->NU_mode));
 				change = TRUE;
 			}
 		

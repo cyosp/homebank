@@ -40,7 +40,8 @@
 extern struct HomeBank *GLOBALS;
 
 
-#if MYDEBUG 
+#if MYDEBUG
+#include "ui-widgets.h"
 extern HbKvData CYA_ARC_WEEKEND[];
 
 gchar *WDAY[] = { "bad", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};

@@ -1325,7 +1325,7 @@ guint32 key;
 		//ui_cat_comboboxentry_set_active(GTK_COMBO_BOX(PO_cat), item->kcat);
 		ui_cat_entry_popover_set_active(GTK_BOX(PO_cat), item->kcat);
 
-		paymode_combo_box_set_active(GTK_COMBO_BOX(NU_mode), item->paymode);
+		kiv_combo_box_set_active(GTK_COMBO_BOX(NU_mode), item->paymode);
 
 		//#1932193 add notes for payee
 		GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (TB_notes));
@@ -1377,7 +1377,7 @@ guint32 key;
 
 			//item->kcat    = ui_cat_comboboxentry_get_key_add_new(GTK_COMBO_BOX(PO_cat));
 			item->kcat    = ui_cat_entry_popover_get_key_add_new(GTK_BOX(PO_cat));
-			item->paymode = paymode_combo_box_get_active(GTK_COMBO_BOX(NU_mode));
+			item->paymode = kiv_combo_box_get_active(GTK_COMBO_BOX(NU_mode));
 
 			//#1932193 add notes for payee
 			GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (TB_notes));

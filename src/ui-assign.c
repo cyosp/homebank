@@ -903,7 +903,7 @@ gchar *txt;
 		item->kcat    = ui_cat_entry_popover_get_key_add_new(GTK_BOX(data->PO_cat));
 		//item->kpay    = ui_pay_comboboxentry_get_key_add_new(GTK_COMBO_BOX(data->PO_pay));
 		item->kpay    = ui_pay_entry_popover_get_key_add_new(GTK_BOX(data->PO_pay));
-		item->paymode = paymode_combo_box_get_active(GTK_COMBO_BOX(data->NU_mod));
+		item->paymode = kiv_combo_box_get_active(GTK_COMBO_BOX(data->NU_mod));
 
 		gchar *txt = (gchar *)gtk_entry_get_text(GTK_ENTRY(data->ST_tags));
 		DB( g_print(" tags: '%s'\n", txt) );
@@ -969,7 +969,7 @@ gint active;
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(data->CM_mod), active);
 		active = (item->flags & ASGF_OVWMOD) ? 1 : 0;
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(data->CM_modovw), active);
-		paymode_combo_box_set_active(GTK_COMBO_BOX(data->NU_mod), item->paymode);
+		kiv_combo_box_set_active(GTK_COMBO_BOX(data->NU_mod), item->paymode);
 
 		active = (item->flags & ASGF_DOTAG) ? 1 : 0;
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(data->CM_tags), active);

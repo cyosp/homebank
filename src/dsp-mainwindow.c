@@ -520,6 +520,13 @@ Transaction *ope;
 
 				ui_hub_account_compute(GLOBALS->mainwindow, NULL);
 				
+				//dirty and refresh open ledger
+				account_set_dirty(NULL, addtxn->kacc, TRUE);
+				if( (addtxn->flags & OF_INTXFER) )
+					account_set_dirty(NULL, addtxn->kxferacc, TRUE);
+
+				beta_hub_ledger_refresh_txn_opens();
+
 				count++;
 			}
 			else
@@ -1723,6 +1730,22 @@ GtkTreeIter   iter;
 }
 
 
+static gboolean
+ui_wallet_window_focus (GtkWidget *widget, GdkEvent event, gpointer user_data)
+{
+	DB( g_print("\n[ui-mainwindow] focus-in\n") );
+
+	//#2111786 detect day change
+	if( homebank_app_date_get_julian() == TRUE )
+	{
+		DB( g_print(" --day change > recompute\n") );
+		account_compute_balances (FALSE);
+		ui_wallet_update(GLOBALS->mainwindow, GINT_TO_POINTER(UF_REFRESHALL));
+	}
+
+	//return TRUE;//stop
+	return FALSE;//propagate
+}
 
 
 //#2060159 store after every move
@@ -2330,6 +2353,7 @@ GtkWidget *window;
 	g_signal_connect (window, "destroy", G_CALLBACK (ui_wallet_window_destroy), NULL);
     g_signal_connect (window, "delete-event", G_CALLBACK (ui_wallet_window_dispose), (gpointer)data);
 	g_signal_connect (window, "configure-event",	G_CALLBACK (ui_wallet_window_getgeometry), (gpointer)data);
+	g_signal_connect (window, "focus-in-event", G_CALLBACK (ui_wallet_window_focus), NULL);
 
 	//menu signals
 	g_signal_connect (data->MI_new , "activate", G_CALLBACK (ui_wallet_action_new), (gpointer)data);

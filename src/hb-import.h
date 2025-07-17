@@ -32,7 +32,7 @@ typedef struct _generic_txn		GenTxn;
 //those are guin32 special values
 #define DST_ACC_GLOBAL	100001
 #define DST_ACC_NEW		100002
-#define DST_ACC_SKIP		100010
+#define DST_ACC_SKIP	100010
 
 
 /* csv format validator */
@@ -57,6 +57,9 @@ struct _generic_file
 	gint		 datefmt;
 	gboolean	loaded;
 	gboolean    invaliddatefmt;
+	//#2111468 add error log
+	guint		n_error;
+	gchar		*errlog;
 };
 
 

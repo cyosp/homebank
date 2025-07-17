@@ -647,7 +647,7 @@ void hb_string_strip_utf8_bom(gchar *str)
 	if( g_str_has_prefix(str, "\xEF\xBB\xBF") )
 	{
 	gint len;
-		
+
 		DB( g_print("BOM is present into '%s'\n", str) );
 		len = strlen(str);
 		if(len>3)
@@ -663,16 +663,17 @@ void hb_string_strip_crlf(gchar *str)
 {
 gchar *p = str;
 
-	if(str)
+	g_return_if_fail(str != NULL);
+
+	//str[strcspn(str, "\r\n")] = 0;
+	while( *str )
 	{
-		while( *p )
+		if( *str == '\n' || *str == '\r' )
 		{
-			if( *p == '\n' || *p == '\r')
-			{
-				*p = '\0';
-			}
-			p++;
+			*str = '\0';
+			break;
 		}
+		str++;
 	}
 }
 
@@ -1132,17 +1133,20 @@ gint str_len;
 	str_len = strlen(filepath);
 	if( str_len >= 4 )
 	{
-		if( strcasecmp(filepath + str_len - 4, ".ofx") == 0)
-			retval = FILETYPE_OFX;
+		if( strcasecmp(filepath + str_len - 4, ".csv") == 0)
+			retval = FILETYPE_CSV_HB;
+		else
+		if( strcasecmp(filepath + str_len - 4, ".tsv") == 0)
+			retval = FILETYPE_CSV_HB;
 		else
 		if( strcasecmp(filepath + str_len - 4, ".qif") == 0)
 			retval = FILETYPE_QIF;
 		else
-		if( strcasecmp(filepath + str_len - 4, ".qfx") == 0)
+		if( strcasecmp(filepath + str_len - 4, ".ofx") == 0)
 			retval = FILETYPE_OFX;
 		else
-		if( strcasecmp(filepath + str_len - 4, ".csv") == 0)
-			retval = FILETYPE_CSV_HB;
+		if( strcasecmp(filepath + str_len - 4, ".qfx") == 0)
+			retval = FILETYPE_OFX;
 		else
 		if( strcasecmp(filepath + str_len - 4, ".xhb") == 0)
 			retval = FILETYPE_HOMEBANK;
@@ -1466,9 +1470,9 @@ guint32 julian = GLOBALS->today;
 ** hex memory dump
 */
 #define MAX_DUMP 16
-void hex_dump(guchar *ptr, guint length)
+void hex_dump(gchar *ptr, guint length)
 {
-guchar ascii[MAX_DUMP+4];
+gchar ascii[MAX_DUMP+4];
 guint i,j;
 
 	g_print("**hex_dump - %d bytes\n", length);

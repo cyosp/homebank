@@ -1299,6 +1299,7 @@ guint32 i;
 		tmp = &kvdata[i];
 		if( tmp->name == NULL )
 			break;
+		//no gettext for separator
 		if( *tmp->name != 0 )
 		{
 			hbtk_combo_box_text_append(GTK_COMBO_BOX(combobox), tmp->key, (gchar *)_(tmp->name));
@@ -1368,6 +1369,7 @@ guint32 i;
 		tmp = &kvdata[i];
 		if( tmp->name == NULL )
 			break;
+		//no gettext for separator
 		hbtk_combo_box_text_append(GTK_COMBO_BOX(combo_box), tmp->key, (*tmp->name != 0) ? (gchar *)_(tmp->name) : (gchar *)"");
 	}
 }
@@ -1426,8 +1428,107 @@ GList *renderers, *list;
 
 /* = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = */
 
+// kiv common
 
-static HbKivData *hb_kvidata_get_by_key(HbKivData *kivdata, guint32 key)
+enum
+{
+	LST_KIV_KEY,
+	LST_KIV_ICONNAME,
+	LST_KIV_LABEL,
+	LST_KIV_ONOFF,
+	NUM_LST_KIV
+};
+
+
+static GtkListStore *
+kiv_store_new(void)
+{
+GtkListStore *store = gtk_list_store_new (
+		NUM_LST_KIV,
+		G_TYPE_INT,
+		G_TYPE_STRING,
+		G_TYPE_STRING,
+		G_TYPE_BOOLEAN);
+	return store;
+}
+
+static gboolean 
+kiv_combo_box_is_separator (GtkTreeModel *model, GtkTreeIter *iter, gpointer data)
+{
+gint key;
+	gtk_tree_model_get (model, iter, LST_KIV_KEY, &key, -1);
+	return (key == HBTK_IS_SEPARATOR ? TRUE : FALSE);
+}
+
+
+static GtkWidget *
+kiv_combo_box_new_with_model(GtkTreeModel *model, GtkWidget *label)
+{
+GtkWidget *widget;
+GtkCellRenderer *renderer;
+
+	widget = gtk_combo_box_new_with_model(GTK_TREE_MODEL(model));
+	//leak
+	g_object_unref(model);
+
+	renderer = gtk_cell_renderer_pixbuf_new();
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(widget), renderer, FALSE);
+	gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT(widget), renderer, "icon-name", LST_KIV_ICONNAME);
+
+	renderer = gtk_cell_renderer_text_new();
+	g_object_set(renderer, "xpad", SPACING_SMALL, NULL);
+	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(widget), renderer, FALSE);
+	gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT(widget), renderer, "text", LST_KIV_LABEL);
+
+	gtk_combo_box_set_active(GTK_COMBO_BOX(widget), 0);
+
+	if(label)
+		gtk_label_set_mnemonic_widget (GTK_LABEL(label), widget);
+
+	return widget;
+}
+
+
+guint32
+kiv_combo_box_get_active (GtkComboBox *combo_box)
+{
+GtkTreeModel *model = gtk_combo_box_get_model (combo_box);
+GtkTreeIter iter;
+
+	if (gtk_combo_box_get_active_iter (combo_box, &iter))
+    {
+	gint key;
+      gtk_tree_model_get (model, &iter, LST_KIV_KEY, &key, -1);
+      return (guint32)key;
+    }
+	return 0;
+}
+
+
+void
+kiv_combo_box_set_active (GtkComboBox *combo_box, guint32 active_key)
+{
+GtkTreeModel *model = gtk_combo_box_get_model (combo_box);
+GtkTreeIter iter;
+	
+	if (gtk_tree_model_get_iter_first (model, &iter))
+	{
+		do
+		{
+		gint key;
+			gtk_tree_model_get (model, &iter, LST_KIV_KEY, &key, -1);
+			if (key == (gint)active_key)
+			{
+				gtk_combo_box_set_active_iter (combo_box, &iter);
+				break;
+			}
+		} while (gtk_tree_model_iter_next (model, &iter));
+	}
+}
+
+
+static HbKivData *
+hb_kvidata_get_by_key(HbKivData *kivdata, guint32 key)
 {
 HbKivData *tmp = NULL;
 guint32 i;
@@ -1444,16 +1545,17 @@ guint32 i;
 }
 
 
-HbKivData CYA_TXN_GRPFLAG[NUM_GRPFLAG] = 
+HbKivData CYA_TXN_GRPFLAG[NUM_GRPFLAG+3] = 
 {
-//	{ GRPFLAG_NONE,			"hb-gf-none",		N_("(none)") },
+	{ GRPFLAG_ANY, 			NULL,				N_("Any flag") },
 	{ GRPFLAG_RED,			"hb-gf-red",		N_("Red") },
 	{ GRPFLAG_ORANGE,		"hb-gf-orange",		N_("Orange") },
 	{ GRPFLAG_YELLOW,		"hb-gf-yellow",		N_("Yellow") },
 	{ GRPFLAG_GREEN,		"hb-gf-green",		N_("Green") },
 	{ GRPFLAG_BLUE,			"hb-gf-blue",		N_("Blue") },
 	{ GRPFLAG_PURPLE,		"hb-gf-purple",		N_("Purple") },
-
+	{ HBTK_IS_SEPARATOR, 	NULL,				"" },
+	{ GRPFLAG_NONE,			NULL,				N_("No Flag") },
 	{ 0, NULL , NULL }
 };
 
@@ -1470,20 +1572,33 @@ GtkWidget *make_fltgrpflag(GtkWidget *label)
 {
 GtkWidget *combo_box;
 HbKivData *tmp = NULL;
+GtkTreeIter iter;
 guint32 i;
 
-	combo_box = hbtk_combo_box_new(label);
+	GtkListStore *store = kiv_store_new();
 
-	hbtk_combo_box_text_append(GTK_COMBO_BOX(combo_box), GRPFLAG_ANY, _("Any flag"));
+	combo_box = kiv_combo_box_new_with_model(GTK_TREE_MODEL(store), label);
 
 	for(i=0;i<HB_KV_ITEMS_MAX_LEN;i++)
 	{
+	gchar *label;
+
 		tmp = &CYA_TXN_GRPFLAG[i];
 		if( tmp->name == NULL )
 			break;
-		hbtk_combo_box_text_append(GTK_COMBO_BOX(combo_box), tmp->key, (*tmp->name != 0) ? (gchar *)_(tmp->name) : (gchar *)"");
+		//no gettext for separator
+		//#2116088 ledger window quickfilter bar abnormal height 
+		label = (*tmp->name != 0) ? (gchar *)_(tmp->name) : (gchar *)"";
+		gtk_list_store_insert_with_values(store, &iter, -1,
+			LST_KIV_KEY, tmp->key,
+			LST_KIV_ICONNAME, tmp->iconname,
+			LST_KIV_LABEL, label,
+			-1);
 	}
-	hbtk_combo_box_set_active_id(GTK_COMBO_BOX(combo_box), GRPFLAG_ANY);
+
+	gtk_combo_box_set_row_separator_func (GTK_COMBO_BOX (combo_box), kiv_combo_box_is_separator, NULL, NULL);
+
+	kiv_combo_box_set_active(GTK_COMBO_BOX(combo_box), GRPFLAG_ANY);
 	return combo_box;
 }
 
@@ -1531,15 +1646,6 @@ OFX_DIRECTDEBIT 	Merchant initiated debit
 OFX_OTHER 	Somer other type of transaction 
 */
 
-enum
-{
-	LST_PAYMODE_KEY,
-	LST_PAYMODE_ICONNAME,
-	LST_PAYMODE_LABEL,
-	LST_PAYMODE_ONOFF,
-	NUM_LST_PAYMODE
-};
-
 
 HbKivData CYA_TXN_PAYMODE[NUM_PAYMODE_MAX] = 
 {
@@ -1585,50 +1691,6 @@ guint32 i;
 }
 
 
-guint32 paymode_combo_box_get_active (GtkComboBox *combo_box)
-{
-  GtkTreeModel *model;
-  GtkTreeIter iter;
-
-	model = gtk_combo_box_get_model (combo_box);
-
-	if (gtk_combo_box_get_active_iter (combo_box, &iter))
-    {
-	gint key;
-		
-      gtk_tree_model_get (model, &iter, LST_PAYMODE_KEY, &key, -1);
-
-      return (guint32)key;
-    }
-
-
-	return 0;
-}
-
-
-void paymode_combo_box_set_active (GtkComboBox *combo_box, guint32 active_key)
-{
-  GtkTreeModel *model;
-  GtkTreeIter iter;
-
-	model = gtk_combo_box_get_model (combo_box);
-	
-	  if (gtk_tree_model_get_iter_first (model, &iter))
-    do {
-	gint key;
-		  
-      gtk_tree_model_get (model, &iter, LST_PAYMODE_KEY, &key, -1);
-
-      if (key == (gint)active_key)
-        {
-          gtk_combo_box_set_active_iter (combo_box, &iter);
-          break;
-        }
-    } while (gtk_tree_model_iter_next (model, &iter));
-
-}
-
-
 void paymode_list_get_order(GtkTreeView *treeview)
 {
 GtkTreeModel *model;
@@ -1644,8 +1706,8 @@ gint i = 1;
 	gboolean active;
 
 		gtk_tree_model_get (model, &iter, 
-		LST_PAYMODE_KEY, &key,
-		LST_PAYMODE_ONOFF, &active,
+		LST_KIV_KEY, &key,
+		LST_KIV_ONOFF, &active,
 		-1);
 		
 		PREFS->lst_paymode[i++] = (active == TRUE) ? key : -key;
@@ -1654,21 +1716,39 @@ gint i = 1;
 }
 
 
-static GtkListStore *
-paymode_store_new(gboolean prefmode)
+
+static void
+paymode_list_fixed_toggled (GtkCellRendererToggle *cell,
+               gchar                 *path_str,
+               gpointer               data)
 {
-GtkListStore *store;
+GtkTreeModel *model = (GtkTreeModel *)data;
+GtkTreeIter  iter;
+GtkTreePath *path = gtk_tree_path_new_from_string (path_str);
+gboolean fixed;
+
+	/* get toggled iter */
+	gtk_tree_model_get_iter (model, &iter, path);
+	gtk_tree_model_get (model, &iter, LST_KIV_ONOFF, &fixed, -1);
+
+	/* do something with the value */
+	fixed ^= 1;
+
+	/* set new value */
+	gtk_list_store_set (GTK_LIST_STORE (model), &iter, LST_KIV_ONOFF, fixed, -1);
+
+	/* clean up */
+	gtk_tree_path_free (path);
+}
+
+
+
+static void
+paymode_store_populate(GtkListStore *store, gboolean prefmode)
+{
 HbKivData *tmp;
 GtkTreeIter iter;
 guint i;
-
-	store = gtk_list_store_new (
-		NUM_LST_PAYMODE,
-		G_TYPE_INT,
-		G_TYPE_STRING,
-		G_TYPE_STRING,
-		G_TYPE_BOOLEAN
-		);
 
 	//populate our combobox model
 	for(i=0 ; i<NUM_PAYMODE_KEY ; i++)
@@ -1686,41 +1766,14 @@ guint i;
 				continue;
 
 			gtk_list_store_insert_with_values(store, &iter, -1,
-				LST_PAYMODE_KEY, tmp->key,
-				LST_PAYMODE_ICONNAME, tmp->iconname,
-				LST_PAYMODE_LABEL, _(tmp->name),
-				LST_PAYMODE_ONOFF, key > 0 ? TRUE : FALSE,
+				LST_KIV_KEY, tmp->key,
+				LST_KIV_ICONNAME, tmp->iconname,
+				LST_KIV_LABEL, _(tmp->name),
+				LST_KIV_ONOFF, key > 0 ? TRUE : FALSE,
 				-1);
 		}
 	}
-	return store;
 }
-
-
-static void
-fixed_toggled (GtkCellRendererToggle *cell,
-               gchar                 *path_str,
-               gpointer               data)
-{
-  GtkTreeModel *model = (GtkTreeModel *)data;
-  GtkTreeIter  iter;
-  GtkTreePath *path = gtk_tree_path_new_from_string (path_str);
-  gboolean fixed;
-
-  /* get toggled iter */
-  gtk_tree_model_get_iter (model, &iter, path);
-  gtk_tree_model_get (model, &iter, LST_PAYMODE_ONOFF, &fixed, -1);
-
-  /* do something with the value */
-  fixed ^= 1;
-
-  /* set new value */
-  gtk_list_store_set (GTK_LIST_STORE (model), &iter, LST_PAYMODE_ONOFF, fixed, -1);
-
-  /* clean up */
-  gtk_tree_path_free (path);
-}
-
 
 
 GtkWidget *make_paymode_list(void)
@@ -1730,47 +1783,38 @@ GtkWidget *treeview;
 GtkCellRenderer *renderer;
 GtkTreeViewColumn *column;
 
-	store = paymode_store_new(TRUE);
+	store = kiv_store_new();
+
+	paymode_store_populate(store, TRUE);
+
 	treeview = gtk_tree_view_new_with_model (GTK_TREE_MODEL(store));
 
 	/* column for fixed toggles */
 	renderer = gtk_cell_renderer_toggle_new ();
-	g_signal_connect (renderer, "toggled", G_CALLBACK (fixed_toggled), store);
+	g_signal_connect (renderer, "toggled", G_CALLBACK (paymode_list_fixed_toggled), store);
 
-	column = gtk_tree_view_column_new_with_attributes (NULL,
-                                                     renderer,
-                                                     "active", LST_PAYMODE_ONOFF,
-                                                     NULL);
+	column = gtk_tree_view_column_new_with_attributes (NULL, renderer, "active", LST_KIV_ONOFF, NULL);
 	gtk_tree_view_column_set_sizing (GTK_TREE_VIEW_COLUMN (column), GTK_TREE_VIEW_COLUMN_FIXED);
 	//gtk_tree_view_column_set_fixed_width (GTK_TREE_VIEW_COLUMN (column), 50);
 	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
 
 	renderer = gtk_cell_renderer_pixbuf_new ();
-  column = gtk_tree_view_column_new_with_attributes (NULL,
-                                                     renderer,
-                                                     "icon-name",
-                                                     LST_PAYMODE_ICONNAME,
-                                                     NULL);
-  //gtk_tree_view_column_set_sort_column_id (column, LST_PAYMODE_ICONNAME);
-  gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+	column = gtk_tree_view_column_new_with_attributes (NULL, renderer, "icon-name", LST_KIV_ICONNAME, NULL);
+	//gtk_tree_view_column_set_sort_column_id (column, LST_KIV_ICONNAME);	
+	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
-  /* column for description */
-  renderer = gtk_cell_renderer_text_new ();
-  column = gtk_tree_view_column_new_with_attributes (NULL,
-                                                     renderer,
-                                                     "text",
-                                                     LST_PAYMODE_LABEL,
-                                                     NULL);
-  //gtk_tree_view_column_set_sort_column_id (column, LST_PAYMODE_LABEL);
-  gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
+	/* column for description */
+	renderer = gtk_cell_renderer_text_new ();
+	column = gtk_tree_view_column_new_with_attributes (NULL, renderer, "text", LST_KIV_LABEL, NULL);
+	//gtk_tree_view_column_set_sort_column_id (column, LST_KIV_LABEL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW(treeview), column);
 
 	gtk_tree_view_set_headers_visible(GTK_TREE_VIEW (treeview), FALSE);
 	gtk_tree_view_set_reorderable (GTK_TREE_VIEW(treeview), TRUE);
-	
+
 	return GTK_WIDGET(treeview);
 }
-
 
 
 /*
@@ -1778,31 +1822,9 @@ GtkTreeViewColumn *column;
 */
 GtkWidget *make_paymode(GtkWidget *label)
 {
-GtkListStore *store;
-GtkWidget *combobox;
-GtkCellRenderer *renderer, *r1, *r2;
+GtkListStore *store = kiv_store_new();
 
-	store = paymode_store_new(FALSE);
-
-	combobox = gtk_combo_box_new_with_model(GTK_TREE_MODEL(store));
-	//leak
-	g_object_unref(store);
-
-	renderer = r1 = gtk_cell_renderer_pixbuf_new();
-	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox), renderer, FALSE);
-	gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT(combobox), renderer, "icon-name", LST_PAYMODE_ICONNAME);
-
-	renderer = r2 = gtk_cell_renderer_text_new();
-	g_object_set(renderer, "xpad", SPACING_SMALL, NULL);
-	gtk_cell_layout_pack_start(GTK_CELL_LAYOUT(combobox), renderer, FALSE);
-	gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT(combobox), renderer, "text", LST_PAYMODE_LABEL);
-
-
-	gtk_combo_box_set_active(GTK_COMBO_BOX(combobox), 0);
-
-	if(label)
-		gtk_label_set_mnemonic_widget (GTK_LABEL(label), combobox);
-
-	return combobox;
+	paymode_store_populate(store, FALSE);
+	return kiv_combo_box_new_with_model(GTK_TREE_MODEL(store), label);
 }
 

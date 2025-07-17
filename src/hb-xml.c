@@ -437,7 +437,6 @@ GList *list;
 // migrate 5.9.2
 static void homebank_upgrade_to_v14_592(void)
 {
-GList *lst_acc;
 GList *list;
 
 	DB( g_print("\n[hb-xml] homebank_upgrade_to_v14_592\n") );
@@ -1820,7 +1819,7 @@ gboolean rc, dosanity;
 		if( ctx.data_version < 50900 )
 			homebank_upgrade_to_v14_59();
 
-		if( ctx.data_version == 50900 || ctx.data_version == 50901 )
+		if( ctx.data_version >= 50900 && ctx.data_version <= 50901 )
 			//fix arc bad limit
 			homebank_upgrade_to_v14_592();
 

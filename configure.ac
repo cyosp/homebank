@@ -2,9 +2,9 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.71])
-AC_INIT([homebank],[5.9.2])
+AC_INIT([homebank],[5.9.4])
 #AC_INIT([homebank],[x.x-rc])
-#AC_CONFIG_SRCDIR([config.h.in])
+
 AC_CONFIG_HEADERS(config.h)
 
 AM_INIT_AUTOMAKE([1.9 foreign])
@@ -94,7 +94,7 @@ AC_CHECK_FUNCS([floor localeconv memmove memset modf pow setlocale sqrt strcasec
 # International support
 ALL_LINGUAS="af ar be bg br ca ckb cs cy da de el en_AU en_CA en_GB es et eu fa fi fr_CA fr gl he hr hu id is it ja ko lt lv ms nb nds nl oc pl pt_BR pt pt_PT ro ru si sl sq sr sv ta tr uk vi zh_CN zh_TW" 
 
-#AM_GLIB_GNU_GETTEXT
+AM_GLIB_GNU_GETTEXT
 
 GETTEXT_PACKAGE=$PACKAGE
 AC_SUBST(GETTEXT_PACKAGE)

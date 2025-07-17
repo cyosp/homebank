@@ -129,6 +129,7 @@ struct hub_ledger_data
 #define DEFAULT_DELAY 750           /* Default delay in ms */
 
 GtkWidget *hub_ledger_window_new(Account *acc);
+void beta_hub_ledger_refresh_txn_opens(void);
 void hub_ledger_window_init(GtkWidget *widget, gpointer user_data);
 
 

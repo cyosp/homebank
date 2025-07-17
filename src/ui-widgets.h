@@ -179,17 +179,15 @@ GtkWidget *make_popcategory(GtkWidget *label);
 
 gint hb_clicklabel_to_int(const gchar *uri);
 
+const gchar *get_paymode_icon_name(guint32 key);
 const gchar *get_grpflag_icon_name(guint32 key);
 
-GtkWidget *make_fltgrpflag(GtkWidget *label);
-
-const gchar *get_paymode_icon_name(guint32 key);
-
-guint32 paymode_combo_box_get_active (GtkComboBox *combo_box);
-void paymode_combo_box_set_active (GtkComboBox *combo_box, guint32 active_key);
+guint32 kiv_combo_box_get_active (GtkComboBox *combo_box);
+void kiv_combo_box_set_active (GtkComboBox *combo_box, guint32 active_key);
 
 void paymode_list_get_order(GtkTreeView *treeview);
 
+GtkWidget *make_fltgrpflag(GtkWidget *label);
 GtkWidget *make_paymode_list(void);
 GtkWidget *make_paymode(GtkWidget *label);
 

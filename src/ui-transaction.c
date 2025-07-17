@@ -126,7 +126,7 @@ gchar *lbto;
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
 	type    = hbtk_switcher_get_active(HBTK_SWITCHER(data->RA_type));
-	paymode = paymode_combo_box_get_active(GTK_COMBO_BOX(data->NU_mode));
+	paymode = kiv_combo_box_get_active(GTK_COMBO_BOX(data->NU_mode));
 
 	//template: hide date
 	visible = (data->type == TXN_DLG_TYPE_TPL) ? FALSE : TRUE;
@@ -248,7 +248,7 @@ static void deftransaction_update_warnsign(GtkWidget *widget, gpointer user_data
 struct deftransaction_data *data;
 gboolean warning = FALSE;
 gdouble amount;
-gint type;
+gint txntype, type;
 Category *cat;
 
 	DB( g_print("\n[ui-transaction] update warning sign\n") );
@@ -256,21 +256,27 @@ Category *cat;
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
 	//#1830707 no warning for xfer
-	type = hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_type));
-	if( type != TXN_TYPE_INTXFER )
+	txntype = hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_type));
+	//amount = hb_amount_round(gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_amount)), 2);
+	amount = hbtk_decimal_entry_get_value(HBTK_DECIMAL_ENTRY(data->ST_amount));
+	type = 0;
+	if(amount != 0.0)
+		type = (amount > 0) ? 1 : -1;
+
+	if( txntype != TXN_TYPE_INTXFER )
 	{
 		//cat = ui_cat_comboboxentry_get(GTK_COMBO_BOX(data->PO_cat));
 		cat = ui_cat_entry_popover_get(GTK_BOX(data->PO_cat));
 		if(cat != NULL && cat->key > 0)
-		{
-			//amount = hb_amount_round(gtk_spin_button_get_value(GTK_SPIN_BUTTON(data->ST_amount)), 2);
-			amount = hbtk_decimal_entry_get_value(HBTK_DECIMAL_ENTRY(data->ST_amount));
-			if(amount != 0.0)
-			{
-				type = (amount > 0) ? 1 : -1;
-				warning = (category_type_get(cat) != type) ? TRUE : FALSE;
-			}
-		}
+			warning = (category_type_get(cat) != type) ? TRUE : FALSE;
+		gtk_label_set_text(GTK_LABEL(data->LB_warnsign), _("Warning: amount and category sign don't match"));
+	}
+	//#2101050 + 2114680
+	else
+	{
+		if( data->action == TXN_DLG_ACTION_EDIT )
+			warning = (data->txnoldtype == type) ? FALSE : TRUE;
+		gtk_label_set_text(GTK_LABEL(data->LB_warnsign), _("Warning: amount sign don't match"));
 	}
 
 	if(warning)
@@ -282,6 +288,7 @@ Category *cat;
 	else
 		gtk_widget_hide(data->IB_warnsign);
 
+	deftransaction_update(widget, user_data);
 }
 
 
@@ -314,11 +321,11 @@ Payee *pay;
 			g_signal_handlers_unblock_by_func (G_OBJECT (ui_cat_entry_popover_get_entry(GTK_BOX(data->PO_cat))), G_CALLBACK (deftransaction_update_warnsign), NULL);
 		}
 
-		paymode = paymode_combo_box_get_active(GTK_COMBO_BOX(data->NU_mode));
+		paymode = kiv_combo_box_get_active(GTK_COMBO_BOX(data->NU_mode));
 		if( (paymode == PAYMODE_NONE) )
 		{
 			DB( g_print("set paymode to %d\n", pay->paymode) );
-			paymode_combo_box_set_active(GTK_COMBO_BOX(data->NU_mode), pay->paymode);
+			kiv_combo_box_set_active(GTK_COMBO_BOX(data->NU_mode), pay->paymode);
 		}
 	}
 }
@@ -338,7 +345,7 @@ gchar *cheque_str;
 
 	if( data->action != TXN_DLG_ACTION_EDIT )
 	{
-		paymode = paymode_combo_box_get_active(GTK_COMBO_BOX(data->NU_mode));
+		paymode = kiv_combo_box_get_active(GTK_COMBO_BOX(data->NU_mode));
 		if(paymode == PAYMODE_CHECK)
 		{
 			type = hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_type));
@@ -446,9 +453,7 @@ gboolean change;
 		// for internal transfer add, amount must be expense by default
 		if( data->action == TXN_DLG_ACTION_ADD && amount > 0)
 			change = TRUE;
-		//#2101050
-		if( data->action == TXN_DLG_ACTION_EDIT && !data->isxferdst && amount > 0)
-			change = TRUE;
+		//#2101050 never force sign here
 	}		
 	else
 	{
@@ -594,7 +599,7 @@ gchar *tagstr;
 	//ui_acc_comboboxentry_set_active(GTK_COMBO_BOX(data->PO_accto), entry->kxferacc);
 	ui_acc_entry_popover_set_active(GTK_BOX(data->PO_accto), entry->kxferacc);
 	
-	paymode_combo_box_set_active(GTK_COMBO_BOX(data->NU_mode), entry->paymode);
+	kiv_combo_box_set_active(GTK_COMBO_BOX(data->NU_mode), entry->paymode);
 
 }
 
@@ -659,7 +664,7 @@ gboolean visible;
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
 	type    = hbtk_switcher_get_active (HBTK_SWITCHER(data->RA_type));
-	paymode = paymode_combo_box_get_active(GTK_COMBO_BOX(data->NU_mode));
+	paymode = kiv_combo_box_get_active(GTK_COMBO_BOX(data->NU_mode));
 
 	visible = (paymode == PAYMODE_CHECK) ? TRUE : FALSE;
 	visible = (type == TXN_TYPE_INTXFER) ? FALSE : visible;
@@ -789,7 +794,7 @@ gint type, active;
 	}
 	DB( g_print(" info: '%s'\n", entry->number) );
 
-	entry->paymode  = paymode_combo_box_get_active(GTK_COMBO_BOX(data->NU_mode));
+	entry->paymode  = kiv_combo_box_get_active(GTK_COMBO_BOX(data->NU_mode));
 	//entry->kcat     = ui_cat_comboboxentry_get_key_add_new(GTK_COMBO_BOX(data->PO_cat));
 	entry->kcat     = ui_cat_entry_popover_get_key_add_new(GTK_BOX(data->PO_cat)); 
 	//entry->kpay     = ui_pay_comboboxentry_get_key_add_new(GTK_COMBO_BOX(data->PO_pay));
@@ -935,7 +940,12 @@ Account *acc;
 	DB( g_print(" -- test xfer\n") );
 	//5.7 test if xfer src or dst
 	// and disable expense or income as well to avoid mistake
-	data->isxferdst = FALSE;
+	data->txnoldtype = 0;
+	if( old_txn->amount < 0 )
+		data->txnoldtype = -1;
+	if( old_txn->amount > 0 )
+		data->txnoldtype = 1;
+
 	child = NULL;
 	if( old_txn->flags & OF_INTXFER )
 	{
@@ -943,17 +953,12 @@ Account *acc;
 		child = transaction_xfer_child_strong_get(old_txn);
 
 		if( old_txn->amount < 0 )
-		{
 			//disable income
 			hbtk_switcher_set_nth_sensitive(HBTK_SWITCHER(data->RA_type), 1, FALSE);
-		}
-		
+
 		if( old_txn->amount > 0 )
-		{
-			data->isxferdst = TRUE;
 			//disable expense
 			hbtk_switcher_set_nth_sensitive(HBTK_SWITCHER(data->RA_type), 0, FALSE);
-		}
 		
 		//#1867979 todate
 		//#2109861 child can be null
@@ -961,7 +966,7 @@ Account *acc;
 			gtk_date_entry_set_date(GTK_DATE_ENTRY(data->PO_dateto), (guint)child->date);
 	}
 
-	DB( g_print(" xfer is target: %d\n", data->isxferdst) );
+	DB( g_print(" xfer old type: %d\n", data->txnoldtype) );
 
 	deftransaction_set_transaction(dialog, new_txn);
 
@@ -1801,19 +1806,22 @@ gint row;
 	DB( g_print(" -- showall\n") );
 	gtk_widget_show_all(group_grid);
 
-	row++;
-	bar = gtk_info_bar_new ();
-	data->IB_warnsign = bar;
-	gtk_info_bar_set_message_type (GTK_INFO_BAR (bar), GTK_MESSAGE_WARNING);
-	label = gtk_label_new (_("Warning: amount and category sign don't match"));
-	hbtk_box_prepend (GTK_BOX (gtk_info_bar_get_content_area (GTK_INFO_BAR (bar))), label);
-	gtk_grid_attach (GTK_GRID (group_grid), bar, 1, row, 4, 1);
-
 	//#1831975 visual add confirmation
 	row++;
 	label = gtk_label_new(NULL);
 	data->LB_msgadded = label;
 	gtk_grid_attach (GTK_GRID (group_grid), label, 0, row, 4, 1);
+
+	//infobar
+	//row++;
+	bar = gtk_info_bar_new ();
+	//gtk_grid_attach (GTK_GRID (group_grid), bar, 1, row, 4, 1);
+	gtk_box_prepend (GTK_BOX (content), bar);
+	data->IB_warnsign = bar;
+	gtk_info_bar_set_message_type (GTK_INFO_BAR (bar), GTK_MESSAGE_WARNING);
+	label = gtk_label_new (NULL);
+	data->LB_warnsign = label;
+	hbtk_box_prepend (GTK_BOX (gtk_info_bar_get_content_area (GTK_INFO_BAR (bar))), label);
 
 	//setup, init and show window
 	deftransaction_setup(data);

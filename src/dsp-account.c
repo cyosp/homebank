@@ -755,7 +755,7 @@ gint flag, status;
 	//TODO: why this ?
 	data->gpatxn = g_ptr_array_sized_new(64);
 
-	flag   = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_flag));
+	flag   = kiv_combo_box_get_active(GTK_COMBO_BOX(data->CY_flag));
 	status = hbtk_combo_box_get_active_id(GTK_COMBO_BOX(data->CY_status));
 	DB( g_print(" flag=%d\n", flag) );
 
@@ -1017,6 +1017,20 @@ gint range;
 
 
 static void
+hub_ledger_cb_refresh(GtkWidget *widget, gpointer user_data)
+{
+struct hub_ledger_data *data;
+
+	DB( g_print("\n[hub-ledger] filterbar change\n") );
+	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
+
+	hub_ledger_collect_filtered_txn(data->LV_ope, FALSE);
+	hub_ledger_listview_populate(data->LV_ope);
+}
+
+
+
+static void
 hub_ledger_cb_filterbar_change(GtkWidget *widget, gpointer user_data)
 {
 struct hub_ledger_data *data;
@@ -1052,7 +1066,7 @@ GtkWidget *combobox;
 	
 	//#1600356 grpflg
 	g_signal_handlers_block_by_func(data->CY_flag, G_CALLBACK (beta_hub_ledger_cb_preset_change), NULL);
-	hbtk_combo_box_set_active_id(GTK_COMBO_BOX(data->CY_flag), GRPFLAG_ANY);
+	kiv_combo_box_set_active(GTK_COMBO_BOX(data->CY_flag), GRPFLAG_ANY);
 	g_signal_handlers_unblock_by_func(data->CY_flag, G_CALLBACK (beta_hub_ledger_cb_preset_change), NULL);
 	
 
@@ -1127,37 +1141,6 @@ Filter *newflt;
 		hub_ledger_cb_filter_reset(widget, user_data);
 
 	ui_flt_manage_header_sensitive(data->PO_hubfilter, NULL);
-
-}
-
-
-static void
-_list_txn_add_by_value(GtkTreeView *treeview, Transaction *ope)
-{
-GtkTreeModel *model;
-GtkTreeIter  iter;
-//GtkTreePath *path;
-//GtkTreeSelection *sel;
-
-	if( ope == NULL )
-		return;
-	
-	DB( g_print("\n[transaction] add_treeview\n") );
-
-	model = gtk_tree_view_get_model(GTK_TREE_VIEW(treeview));
-	gtk_tree_store_append (GTK_TREE_STORE(model), &iter, NULL);
-	gtk_tree_store_set (GTK_TREE_STORE(model), &iter,
-		MODEL_TXN_POINTER, ope,
-		-1);
-
-	//activate that new line
-	//path = gtk_tree_model_get_path(model, &iter);
-	//gtk_tree_view_expand_to_path(GTK_TREE_VIEW(treeview), path);
-
-	//sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(treeview));
-	//gtk_tree_selection_select_iter(sel, &iter);
-
-	//gtk_tree_path_free(path);
 
 }
 
@@ -1303,19 +1286,47 @@ struct hub_ledger_data *data;
 }
 
 
-static void
-hub_ledger_add_single_transaction(GtkWindow *window, Transaction *txn)
+// future: refresh txn list of open ledger
+void
+beta_hub_ledger_refresh_txn_opens(void)
 {
-struct hub_ledger_data *data;
+	DB( g_print("\n[hub-ledger] refresh txn list of opens\n") );
 
-	if(txn == NULL)
-		return;
+	GList *l = gtk_application_get_windows(GLOBALS->application);
+	while (l != NULL)
+	{
+	GtkWindow *tmpwin = l->data;
+	gint key = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(tmpwin), "key"));
+		
+		//TODO: when multiple wallet, we should check as well for that
+		if( key == -1 || key > 0 )
+		{
+		gboolean refresh = FALSE;
 
-	DB( g_print("\n[hub-ledger] add single txn\n") );
-	
-	data = g_object_get_data(G_OBJECT(window), "inst_data");
+			DB( g_print(" window: %p: key=%d '%s'\n", tmpwin, key, gtk_window_get_title(tmpwin)) );
+			//showall always refresh
+			if( key == -1 )
+				refresh = TRUE;
+			else
+			{
+			Account *acc = da_acc_get(key);
 
-	_list_txn_add_by_value(GTK_TREE_VIEW(data->LV_ope), txn);
+				if( acc && (acc->dspflags & FLAG_ACC_TMP_DIRTY) )
+				{
+					refresh = TRUE;
+					account_set_dirty(acc, 0, FALSE);
+				}
+			}
+
+			if( refresh )
+			{
+				DB( g_print(" >refresh\n") );
+				hub_ledger_collect_filtered_txn(GTK_WIDGET(tmpwin), FALSE);
+				hub_ledger_listview_populate(GTK_WIDGET(tmpwin));
+			}
+		}
+		l = g_list_next(l);
+	}
 }
 
 
@@ -1327,52 +1338,15 @@ hub_ledger_add_after_propagate(struct hub_ledger_data *data, Transaction *add_tx
 
 	if((data->showall == TRUE) || ( (data->acc != NULL) && (add_txn->kacc == data->acc->key) ) )
 	{
-		_list_txn_add_by_value(GTK_TREE_VIEW(data->LV_ope), add_txn);
-		//#1716181 also add to the ptr_array (quickfilter)
-		g_ptr_array_add(data->gpatxn, (gpointer)add_txn);
+		account_set_dirty(data->acc, 0, TRUE);
 
-		//#1840100 updates when use multiple account window
 		if( (add_txn->flags & OF_INTXFER) )
-		{
-		GtkWindow *accwin = homebank_app_find_window(add_txn->kxferacc);
+			account_set_dirty(NULL, add_txn->kxferacc, TRUE);
 
-			if(accwin)
-			{
-			Transaction *child = transaction_xfer_child_strong_get(add_txn);
-
-				if( child )
-				{
-					hub_ledger_add_single_transaction(accwin, child);
-					hub_ledger_update(GTK_WIDGET(accwin), GINT_TO_POINTER(FLG_REG_BALANCE));
-				}
-			}
-		}
+		beta_hub_ledger_refresh_txn_opens();
 	}
 }
 
-
-static void
-_list_txn_remove_active_transaction(GtkTreeView *treeview)
-{
-GtkTreeModel *model;
-GList *list;
-
-	model = gtk_tree_view_get_model(treeview);
-	list = gtk_tree_selection_get_selected_rows(gtk_tree_view_get_selection(treeview), &model);
-
-	if(list != NULL)
-	{
-	GtkTreeIter iter;
-
-		gtk_tree_model_get_iter(model, &iter, list->data);
-		gtk_tree_store_remove(GTK_TREE_STORE(model), &iter);
-	}
-
-	g_list_foreach(list, (GFunc)gtk_tree_path_free, NULL);
-	g_list_free(list);
-
-
-}
 
 
 static void
@@ -1734,9 +1708,21 @@ gint result;
 
 		if(result == GTK_RESPONSE_ACCEPT)
 		{
-		GtkWindow *accwin;
+			DB( g_print(" edit accept\n") );
 			//manage current window display stuff
 			
+			DB( g_print(" date changed: %d\n", old_txn->date != new_txn->date ? 1 : 0 ) );
+			DB( g_print(" type changed: %d\n", transaction_get_type(old_txn) != transaction_get_type(new_txn) ? 1 : 0 ) );
+
+			/*what to evaluate here
+			1) txn remain in same account
+				date chnaged > sort
+			2) txn move
+				a) was not a xfer and become
+				b) was a xfer and removed
+				c) normal txn & account changed
+			*/
+
 			//#1270687: sort if date changed
 			//if(old_txn->date != new_txn->date)
 			//	data->do_sort = TRUE;
@@ -1745,30 +1731,26 @@ gint result;
 			if(data->showall == FALSE)
 			{
 			GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(data->LV_ope));
+				DB( g_print(" >sort force\n") );
 				list_txn_sort_force(GTK_TREE_SORTABLE(model), NULL);
 			}
+
+			//dirty and refresh open ledger
 
 			// txn changed of account
 			//TODO: maybe this should move to deftransaction_external_edit
 			if( data->acc != NULL && (new_txn->kacc != data->acc->key) )
 			{
 				DB( g_print(" >account change\n") );
-					DB( g_print(" rem current ledger \n") );
-				_list_txn_remove_active_transaction(GTK_TREE_VIEW(data->LV_ope));
-				//#1667501 update target account window if open
-				accwin = homebank_app_find_window(new_txn->kacc);
-				if(accwin)
-				{
-					DB( g_print(" add new ledger \n") );
-					hub_ledger_add_single_transaction(accwin, new_txn);
-					hub_ledger_update(GTK_WIDGET(accwin), GINT_TO_POINTER(FLG_REG_BALANCE));
-					GLOBALS->changes_count++;
-				}
+				account_set_dirty(data->acc, 0, TRUE);
+				account_set_dirty(NULL, new_txn->kacc, TRUE);
 			}
 
 			//#1812470 txn is xfer update target account window if open
 			if( (old_txn->flags & OF_INTXFER) && (old_txn->amount != new_txn->amount) )
 			{
+			GtkWindow *accwin;
+
 				DB( g_print(" >xfer amt change\n") );
 				accwin = homebank_app_find_window(new_txn->kxferacc);
 				if(accwin)
@@ -1782,18 +1764,13 @@ gint result;
 			if( ((old_txn->flags & OF_INTXFER) > 0) && ((new_txn->flags & OF_INTXFER)==0) )
 			{
 				DB( g_print("\n >break xfer - %d > %d\n", old_txn->kacc, oldkxferacc) );
-				hub_ledger_collect_filtered_txn(GTK_WIDGET(data->window), FALSE);
-				hub_ledger_listview_populate(GTK_WIDGET(data->window));
-				accwin = homebank_app_find_window(oldkxferacc);
-				if(accwin)
-				{
-					DB( g_print(" update xfer dst win %d\n", old_txn->kxferacc) );
-					hub_ledger_collect_filtered_txn(GTK_WIDGET(accwin), FALSE);
-					hub_ledger_listview_populate(GTK_WIDGET(accwin));
-				}
+				account_set_dirty(NULL, old_txn->kacc, TRUE);
+				account_set_dirty(NULL, new_txn->kacc, TRUE);
 			}
+		
+			beta_hub_ledger_refresh_txn_opens();
 
-			//da_transaction_copy(new_txn, old_txn);
+			//todo: probably move this to refresh as well
 			hub_ledger_update(data->window, GINT_TO_POINTER(FLG_REG_SENSITIVE|FLG_REG_BALANCE));
 
 			//TODO: saverecondate is handled in external edit already
@@ -3738,7 +3715,7 @@ GMenu *gmenumodel;
 		g_signal_connect( ui_flt_popover_hub_get_combobox(GTK_BOX(data->PO_hubfilter), NULL), "changed", G_CALLBACK (beta_hub_ledger_cb_preset_change), NULL);
 
 	g_signal_connect (data->BT_reset  , "clicked", G_CALLBACK (hub_ledger_cb_filter_reset), NULL);
-	g_signal_connect (data->BT_refresh, "clicked", G_CALLBACK (hub_ledger_cb_filterbar_change), NULL);
+	g_signal_connect (data->BT_refresh, "clicked", G_CALLBACK (hub_ledger_cb_refresh), NULL);
 
 	g_signal_connect (data->BT_filter , "clicked", G_CALLBACK (hub_ledger_cb_editfilter), NULL);
 
