@@ -1,6 +1,9 @@
 Release notes
 -------------
 
+##### 5.9.4.1 ⑂ CYOSP (2025-07-17)
+* Import 5.9.4 release
+
 ##### 5.9.2.1 ⑂ CYOSP (2025-06-25)
 * Import 5.9.2 release
 

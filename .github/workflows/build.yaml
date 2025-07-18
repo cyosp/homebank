@@ -48,7 +48,7 @@ jobs:
           name: HomeBank-${{ steps.tag.outputs.NAME }}.x64.dmg
 
   arm86-app:
-      runs-on: macos-14
+      runs-on: macos-15
       steps:
         - name: Get tag name
           id: tag
