@@ -58,7 +58,7 @@ struct ui_flt_manage_data
 
 	gboolean	saveable;
 	gboolean	show_account;
-
+	gboolean	txnmode;
 
 	GtkWidget	*dialog;
 	GtkWidget	*stack;

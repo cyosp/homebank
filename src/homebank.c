@@ -226,8 +226,27 @@ gint i;
 
 
 /* = = = = = = = = = = = = = = = = = = = = */
-//5.7 test check update online
 
+static void
+homebank_util_check_backup(void)
+{
+	if( PREFS->bak_is_automatic == FALSE )
+		return;
+
+	if(! g_file_test(PREFS->path_hbbak, (G_FILE_TEST_EXISTS | G_FILE_TEST_IS_DIR)))
+	{
+
+		ui_dialog_msg_infoerror(GTK_WINDOW(GLOBALS->mainwindow), GTK_MESSAGE_ERROR,
+			_("Invalid Backup directory."),
+			_("The files backup will not work, directory is:\n'%s'."),
+				PREFS->path_hbbak
+			);
+	
+	}
+}
+
+
+//5.7 test check update online
 
 /*
 static gint homebank_util_check_update(GtkWindow *parent)
@@ -1274,6 +1293,10 @@ GtkWidget *splash = NULL;
 					/* update the mainwin display */
 					ui_wallet_update(mainwin, GINT_TO_POINTER(UF_TITLE+UF_SENSITIVE+UF_VISUAL));
 
+				//#2121204 check backup dir is reachable
+				#ifndef PORTABLE_APP
+				homebank_util_check_backup();
+				#endif
 
 				//5.7 test
 				//homebank_util_check_update(mainwin);

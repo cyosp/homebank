@@ -661,8 +661,6 @@ void hb_string_strip_utf8_bom(gchar *str)
 
 void hb_string_strip_crlf(gchar *str)
 {
-gchar *p = str;
-
 	g_return_if_fail(str != NULL);
 
 	//str[strcspn(str, "\r\n")] = 0;
@@ -1209,18 +1207,18 @@ GPtrArray *array;
 	{
 		while ((tmpname = g_dir_read_name (dir)) != NULL)
 		{
-		gboolean match;
-	
-			match = g_pattern_match_string(pspec, tmpname);
+		gboolean match = g_pattern_match_string(pspec, tmpname);
+		
 			if( match )
 			{
 				DB( g_print(" %d => '%s'\n", match, tmpname) );
 				g_ptr_array_add(array, g_strdup(tmpname));
 			}
 		}
+		//#2121204 move here to avoid console msg when null
+		g_dir_close (dir);
 	}
 	g_free(pattern);
-	g_dir_close (dir);
 	g_pattern_spec_free(pspec);
 	g_free(rawfilename);
 

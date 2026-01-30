@@ -139,6 +139,7 @@ guint32		da_acc_get_first_key(void);
 void da_acc_consistency(Account *item);
 void da_acc_anonymize(Account *item);
 
+void da_acc_pos_sanitize(void);
 
 void account_transaction_sort(void);
 guint account_is_used(guint32 key);

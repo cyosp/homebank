@@ -752,7 +752,7 @@ gint flag, status;
 	if(data->gpatxn != NULL)
 		g_ptr_array_free (data->gpatxn, TRUE);
 
-	//TODO: why this ?
+	//our txn storage to populate and quickfilter
 	data->gpatxn = g_ptr_array_sized_new(64);
 
 	flag   = kiv_combo_box_get_active(GTK_COMBO_BOX(data->CY_flag));
@@ -1024,10 +1024,15 @@ struct hub_ledger_data *data;
 	DB( g_print("\n[hub-ledger] filterbar change\n") );
 	data = g_object_get_data(G_OBJECT(gtk_widget_get_ancestor(widget, GTK_TYPE_WINDOW)), "inst_data");
 
+	//#2119051 add new txn needs to extend all date range
+	if(data->filter->range == FLT_RANGE_MISC_ALLDATE)
+	{
+		hub_ledger_cb_filter_daterange(data->window, NULL);
+	}
+
 	hub_ledger_collect_filtered_txn(data->LV_ope, FALSE);
 	hub_ledger_listview_populate(data->LV_ope);
 }
-
 
 
 static void
@@ -1321,8 +1326,7 @@ beta_hub_ledger_refresh_txn_opens(void)
 			if( refresh )
 			{
 				DB( g_print(" >refresh\n") );
-				hub_ledger_collect_filtered_txn(GTK_WIDGET(tmpwin), FALSE);
-				hub_ledger_listview_populate(GTK_WIDGET(tmpwin));
+				hub_ledger_cb_refresh(GTK_WIDGET(tmpwin), NULL);
 			}
 		}
 		l = g_list_next(l);
@@ -1346,7 +1350,6 @@ hub_ledger_add_after_propagate(struct hub_ledger_data *data, Transaction *add_tx
 		beta_hub_ledger_refresh_txn_opens();
 	}
 }
-
 
 
 static void
