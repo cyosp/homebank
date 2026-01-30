@@ -10,7 +10,9 @@ public_icons = \
 	$(NULL)
 
 private_icons = \
+	hicolor_actions_scalable_data-usage-symbolic.svg \
 	hicolor_actions_scalable_edit-split-symbolic.svg \
+	hicolor_actions_scalable_emblem-system-symbolic.svg \
 	hicolor_actions_scalable_eye-not-looking-symbolic.svg \
 	hicolor_actions_scalable_list-collapse-all-symbolic.svg \
 	hicolor_actions_scalable_list-duplicate-symbolic.svg \
@@ -21,16 +23,6 @@ private_icons = \
 	hicolor_actions_scalable_open-menu-symbolic.svg \
 	hicolor_actions_scalable_text-casesensitive-symbolic.svg \
 	hicolor_actions_scalable_text-regularexpression-symbolic.svg \
-	hicolor_actions_scalable_data-usage-symbolic.svg \
-	hicolor_actions_scalable_edit-split-symbolic.svg \
-	hicolor_actions_scalable_list-collapse-all-symbolic.svg \
-	hicolor_actions_scalable_list-duplicate-symbolic.svg \
-	hicolor_actions_scalable_list-expand-all-symbolic.svg \
-	hicolor_actions_scalable_list-merge-symbolic.svg \
-	hicolor_actions_scalable_list-move-after-symbolic.svg \
-	hicolor_actions_scalable_text-casesensitive-symbolic.svg \
-	hicolor_actions_scalable_text-regularexpression-symbolic.svg \
-	hicolor_actions_scalable_data-usage-symbolic.svg \
 	$(NULL)
 
 

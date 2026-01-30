@@ -1,0 +1,86 @@
+2;-;Avgifter
+2;-;Studieavgift/terminavgift
+1;-;Nöje
+1;-;Avgifter
+1;-;Mat
+1;-;Gåvor
+1;-;Livsmedel
+1;-;Hälso- och sjukvård
+2;-;Tandvård
+2;-;Ögonvård
+2;-;Sjukhus
+2;-;Läkare
+2;-;Receptbelagda läkemedel
+1;-;Hobby/Fritid
+2;-;Böcker & tidskrifter
+2;-;Kulturevenemang
+2;-;Underhållning (hemma)
+2;-;Film-/videouttag
+2;-;Sportevenemang
+2;-;Sportutrustning
+2;-;Kassetter & CD-skivor
+2;-;Leksaker & spel
+1;-;Husrenovering
+1;-;Hushåll
+2;-;Inredning/möbler
+2;-;Städning
+2;-;Trädgårdsservice
+1;-;Försäkring
+2;-;Bil
+2;-;Hälsa
+2;-;Hemförsäkring/Hyresgästförsäkring
+2;-;Livförsäkring
+1;-;Arbetsrelaterade kostnader
+2;-;Ej ersatta
+2;-;Ersatta
+1;-;Lån
+2;-;Låneränta
+2;-;Bolåneränta
+2;-;Studielåneränta
+1;-;Övrigt
+1;-;Bolån/hyra
+1;-;Personlig hygien/vård
+1;-;Djurvård
+2;-;Foder
+2;-;Tillbehör
+2;-;Veterinär
+1;-;Telefon/mobil
+1;-;Tjänster/medlemskap
+1;-;Skatter
+2;-;Lokal inkomstskatt
+2;-;Andra skatter
+2;-;Fastighetsskatt
+2;-;Moms
+2;-;Socialförsäkringsavgift
+2;-;Statlig inkomstskatt
+2;-;Län skatt
+1;-;Resor/Semester
+2;-;Boende
+2;-;Arbetsresa
+1;-;El, vatten, avlopp
+1;+;Inkomst
+1;+;Investeringsinkomst
+2;+;Kapitalvinst
+2;+;Utdelning
+2;+;Ränta
+2;+;Skattefri ränta
+1;+;Inte en kostnad
+1;+;Annan inkomst
+2;+;Barnbidrag (mottaget)
+2;+;Personaloptioner (aktier)
+2;+;Mottagna gåvor
+2;+;Lånekapital mottaget
+2;+;Lotterier
+2;+;Återbäring av statlig/kommunal skatt
+2;+;Arbetslöshetsersättning
+1;+;Pensionsinkomst
+2;+;Tjänstepension
+2;+;Pensioner och livräntor
+2;+;Folkpension
+2;+;Lön
+2;+;Bonus
+2;+;Provision
+2;+;Arbetsgivaravgift
+2;+;Bruttolön
+2;+;Nettolön
+2;+;Övertid

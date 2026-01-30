@@ -142,9 +142,13 @@ guint32 max_key = 0;
 gboolean
 da_acc_delete(guint32 key)
 {
+gboolean retval = FALSE;
+
 	DB( g_print("da_acc_remove %d\n", key) );
 
-	return g_hash_table_remove(GLOBALS->h_acc, &key);
+	retval = g_hash_table_remove(GLOBALS->h_acc, &key);
+	da_acc_pos_sanitize();
+	return retval;
 }
 
 
@@ -245,6 +249,7 @@ Account *existitem;
 		item->key = da_acc_get_max_key() + 1;
 		item->pos = da_acc_length() + 1;
 		da_acc_insert(item);
+		da_acc_pos_sanitize();
 		return TRUE;
 	}
 
@@ -311,17 +316,13 @@ da_acc_get(guint32 key)
 }
 
 
-static gint da_acc_glist_compare_pos_func(Account *a, Account *b) { return ((gint)a->pos - b->pos); }
-
 guint32
 da_acc_get_first_key(void)
 {
 GList *lacc, *list;
-
 guint32 retval = 0;
 
-	list = g_hash_table_get_values(GLOBALS->h_acc);
-	lacc = list = g_list_sort(list, (GCompareFunc)da_acc_glist_compare_pos_func);
+	lacc = list = account_glist_sorted(HB_GLIST_SORT_POS);
 	if( list != NULL )
 	{
 	Account *accitem = list->data;
@@ -329,6 +330,25 @@ guint32 retval = 0;
 	}
 	g_list_free(lacc);
 	return retval;
+}
+
+
+//
+void
+da_acc_pos_sanitize(void)
+{
+GList *lacc, *list;
+guint32 pos = 1;
+
+	lacc = list = account_glist_sorted(HB_GLIST_SORT_POS);
+	while (list != NULL)
+	{
+	Account *accitem = list->data;
+
+		accitem->pos = pos++;
+		list = g_list_next(list);
+	}
+	g_list_free(lacc);
 }
 
 

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop">
-  <id>fr.free.mdoyen.HomeBank.desktop</id>
-  <metadata_license>CC0-1.0</metadata_license>
-  <project_license>GPL-2.0+</project_license>
+  <id>fr.free.mdoyen.HomeBank</id>
   <name>HomeBank</name>
   <summary>Free, easy, personal accounting, for everyone</summary>
+  <launchable type="desktop-id">homebank.desktop</launchable>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-2.0+</project_license>
   <description>
     <_p>
       HomeBank is a free software (as in "free speech" and also as in "free beer") 
@@ -21,9 +22,9 @@
   </description>
   <screenshots>
     <screenshot type="default">
-      <image width="624" type="default" height="351">http://homebank.free.fr/img/homebank-appdata.png</image>
+      <image width="624" type="default" height="351">https://www.gethomebank.org/img/homebank-appdata.png</image>
     </screenshot>
   </screenshots>
-  <url type="homepage">http://homebank.free.fr</url>
+  <url type="homepage">https://www.gethomebank.org</url>
   <update_contact>homebank@free.fr</update_contact>
 </component>

@@ -433,6 +433,16 @@ GList *list;
 	
 }
 
+// migrate 5.9.5
+static void homebank_upgrade_to_v14_595(void)
+{
+	DB( g_print("\n[hb-xml] homebank_upgrade_to_v14_595\n") );
+
+	//#2121309 fix potential bad position
+	da_acc_pos_sanitize();
+}
+
+
 
 // migrate 5.9.2
 static void homebank_upgrade_to_v14_592(void)
@@ -1819,9 +1829,12 @@ gboolean rc, dosanity;
 		if( ctx.data_version < 50900 )
 			homebank_upgrade_to_v14_59();
 
-		if( ctx.data_version >= 50900 && ctx.data_version <= 50901 )
+		if( ctx.data_version == 50900 || ctx.data_version == 50901 )
 			//fix arc bad limit
 			homebank_upgrade_to_v14_592();
+
+		if( ctx.data_version < 50904 )
+			homebank_upgrade_to_v14_595();		
 
 		// next ?
 

@@ -625,12 +625,25 @@ gboolean
 category_key_budget_active(guint32 key)
 {
 Category *catitem = da_cat_get(key);
-gboolean retval = FALSE;
 
-	if( catitem != NULL && catitem->flags & (GF_BUDGET|GF_FORCED) )
-		retval = TRUE;
+	if( catitem == NULL )
+		return FALSE;
 
-	return retval;
+	if( catitem->flags & (GF_BUDGET|GF_FORCED) )
+		return TRUE;
+
+	//#2121405 eval also parent budget
+	if( catitem->parent > 0 )
+	{
+		catitem = da_cat_get(catitem->parent);
+		if( catitem != NULL )
+		{
+			if( catitem->flags & (GF_BUDGET|GF_FORCED) )
+				return TRUE;
+		}
+	}
+
+	return FALSE;
 }
 
 
@@ -664,15 +677,15 @@ guint32 retval = 0;
 
 	if(subcat == FALSE)
 	{
-	Category *catentry = da_cat_get(key);
-		if(catentry)
-			retval = (catentry->flags & GF_SUB) ? catentry->parent : catentry->key;
+	Category *catitem = da_cat_get(key);
+		if(catitem)
+			retval = (catitem->flags & GF_SUB) ? catitem->parent : catitem->key;
 	}
 	else
 	{
 		retval = key;
 	}
-	//DB( g_print("- cat '%s' reportid = %d\n", catentry->name, retval) );
+	//DB( g_print("- cat '%s' reportid = %d\n", catitem->name, retval) );
 	return retval;
 }
 

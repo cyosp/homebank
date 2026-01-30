@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   id="svg7384"
+   height="16"
+   width="16"
+   version="1.1"
+   inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
+   sodipodi:docname="hicolor_actions_scalable_emblem-system-symbolic.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <title
+     id="title1057">Emblem System</title>
+  <defs
+     id="defs12">
+    <linearGradient
+       id="linearGradient5606"
+       inkscape:swatch="solid">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop5608" />
+    </linearGradient>
+    <filter
+       style="color-interpolation-filters:sRGB"
+       id="filter7554">
+      <feBlend
+         mode="darken"
+         in2="BackgroundImage"
+         id="feBlend7556" />
+    </filter>
+    <filter
+       style="color-interpolation-filters:sRGB"
+       id="filter7554-5">
+      <feBlend
+         mode="darken"
+         in2="BackgroundImage"
+         id="feBlend7556-6" />
+    </filter>
+    <filter
+       id="filter7554-1"
+       style="color-interpolation-filters:sRGB">
+      <feBlend
+         id="feBlend7556-8"
+         in2="BackgroundImage"
+         mode="darken" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1003"
+     id="namedview10"
+     showgrid="true"
+     inkscape:zoom="33.625"
+     inkscape:cx="7.8364312"
+     inkscape:cy="6.9888476"
+     inkscape:window-x="1440"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg7384"
+     inkscape:pagecheckerboard="0"
+     inkscape:showpageshadow="0"
+     inkscape:deskcolor="#d1d1d1">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3219" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata90">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Maxime DOYEN</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:source>https://www.gethomebank.org</dc:source>
+        <dc:title>Emblem System</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <path
+     d="M 5.8109453,15.92 5.4925373,13.3728 Q 5.2338308,13.2733 5.0049751,13.134 4.7761194,12.9947 4.5572139,12.8355 L 2.1890547,13.8305 0,10.0495 2.0497512,8.4973 q -0.0199,-0.1393 -0.0199,-0.26865 v -0.5373 q 0,-0.12935 0.0199,-0.26865 L 0,5.8705 2.1890547,2.0895 4.5572139,3.0845 Q 4.7761194,2.9253 5.0149254,2.786 5.2537313,2.6467 5.4925373,2.5472 L 5.8109453,0 h 4.3781097 l 0.318408,2.5472 q 0.258706,0.0995 0.487562,0.2388 0.228856,0.1393 0.447761,0.2985 L 13.810945,2.0895 16,5.8705 13.950249,7.4227 q 0.0199,0.1393 0.0199,0.26865 v 0.5373 q 0,0.12935 -0.0398,0.26865 l 2.049751,1.5522 -2.189055,3.781 -2.348259,-0.995 q -0.218905,0.1592 -0.457711,0.2985 -0.238806,0.1393 -0.477612,0.2388 L 10.189055,15.92 Z m 1.3930348,-1.592 h 1.5721393 l 0.278607,-2.1094 q 0.6169154,-0.1592 1.1442786,-0.46765 0.527363,-0.30845 0.965174,-0.74625 l 1.970149,0.8159 0.77612,-1.3532 -1.711443,-1.2934999 Q 12.298507,8.8953 12.338309,8.58685 12.37811,8.2784 12.37811,7.96 q 0,-0.3184 -0.0398,-0.62685 Q 12.298507,7.0247 12.199005,6.7461 L 13.910448,5.4526 13.134328,4.0994 11.164179,4.9352 Q 10.726368,4.4775 10.199005,4.16905 9.6716418,3.8606 9.0547264,3.7014 L 8.7960199,1.592 H 7.2238806 L 6.9452736,3.7014 Q 6.3283582,3.8606 5.800995,4.16905 5.2736318,4.4775 4.8358209,4.9153 L 2.8656716,4.0994 2.0895522,5.4526 3.800995,6.7262 q -0.099502,0.2985 -0.1393035,0.597 -0.039801,0.2985 -0.039801,0.6368 0,0.3184 0.039801,0.6169 0.039801,0.2985 0.1393035,0.5970001 L 2.0895522,10.4674 2.8656716,11.8206 4.8358209,10.9848 q 0.4378109,0.4577 0.9651741,0.76615 0.5273632,0.30845 1.1442786,0.46765 z M 8.039801,10.746 q 1.1542289,0 1.970149,-0.8159 0.815921,-0.8159 0.815921,-1.9701 0,-1.1542 -0.815921,-1.9700999 Q 9.1940299,5.174 8.039801,5.174 6.8656716,5.174 6.0597015,5.9899001 5.2537313,6.8058 5.2537313,7.96 q 0,1.1542 0.8059702,1.9701 0.8059701,0.8159 1.9800995,0.8159 z M 8,7.96 Z"
+     id="path2"
+     style="stroke-width:0.0199003;fill:#bebebe" />
+</svg>

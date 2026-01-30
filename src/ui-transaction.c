@@ -271,13 +271,16 @@ Category *cat;
 			warning = (category_type_get(cat) != type) ? TRUE : FALSE;
 		gtk_label_set_text(GTK_LABEL(data->LB_warnsign), _("Warning: amount and category sign don't match"));
 	}
-	//#2101050 + 2114680
+	//#2101050+#2114680 xfer sign change
 	else
 	{
-		if( data->action == TXN_DLG_ACTION_EDIT )
+		//#2114680 exclude template
+		if( (data->type != TXN_DLG_TYPE_TPL) && (data->action == TXN_DLG_ACTION_EDIT) )
 			warning = (data->txnoldtype == type) ? FALSE : TRUE;
 		gtk_label_set_text(GTK_LABEL(data->LB_warnsign), _("Warning: amount sign don't match"));
 	}
+
+	DB( g_print("> type=%d oldtype=%d > warn=%d\n", type, data->txnoldtype, warning) );
 
 	if(warning)
 	{

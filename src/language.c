@@ -751,7 +751,9 @@ language_init (const gchar *language)
   /*  We already set the locale according to the environment, so just
    *  return early if no language is set in gimprc.
    */
-  if (! language)
+  //if (! language)
+  //#2120855 also test ''
+  if (! language || strlen (language) == 0) 
     return;
 
 	#if MYDEBUG == 1

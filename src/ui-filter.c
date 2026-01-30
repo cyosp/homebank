@@ -703,9 +703,11 @@ static void ui_flt_manage_setup(struct ui_flt_manage_data *data)
 
 	if(data->show_account == TRUE && data->LV_acc != NULL)
 	{
+	gint insert_type = data->txnmode ? ACC_LST_INSERT_NORMAL : ACC_LST_INSERT_REPORT;
+
 		//gtk_tree_selection_set_mode(GTK_TREE_SELECTION(gtk_tree_view_get_selection(GTK_TREE_VIEW(data->LV_acc))), GTK_SELECTION_MULTIPLE);
 
-		ui_acc_listview_populate(data->LV_acc, ACC_LST_INSERT_REPORT, NULL);
+		ui_acc_listview_populate(data->LV_acc, insert_type, NULL);
 		//populate_view_acc(data->LV_acc, GLOBALS->acc_list, FALSE);
 	}
 
@@ -1347,6 +1349,8 @@ gint w, h, dw, dh;
 
 	data->filter   = filter;
 	data->saveable = filter->key > 0 ? TRUE : FALSE;
+	data->show_account = show_account;
+	data->txnmode = txnmode;
 
 	data->dialog = dialog = gtk_dialog_new_with_buttons (NULL,
 			GTK_WINDOW (parentwindow),
@@ -1413,7 +1417,6 @@ gint w, h, dw, dh;
 	page = ui_flt_page_status(data);
 	gtk_stack_add_titled (GTK_STACK (stack), page, FLT_PAGE_NAME_STA, _("Status"));
 
-	data->show_account = show_account;
 	if(show_account == TRUE)
 	{
 		page = ui_flt_page_account(data);
